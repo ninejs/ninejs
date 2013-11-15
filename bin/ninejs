@@ -1,0 +1,38 @@
+#!/usr/bin/env node --harmony
+'use strict';
+var ninejs,
+	argv,
+	fs = require('fs'),
+	path = require('path'),
+	localCmd;
+function globalRun() {
+	ninejs = require('../lib/ninejs');
+	argv = require('optimist').argv;
+	if (argv.verbose) {
+		ninejs.on('log', function(data) {
+			console.log(data.message);
+		});
+	}
+	if (!argv.quiet) {
+		ninejs.on('print', function(data) {
+			console.log(data.message);
+		});
+	}
+	ninejs.run(argv._);
+}
+localCmd = path.resolve(process.cwd(), 'node_modules', 'ninejs', 'bin', 'ninejs');
+fs.exists(localCmd, function(val) {
+	if (val) {
+		fs.realpath(localCmd, {}, function(err, real) {
+			if ((!err) && (real !== __filename)) {
+				require(real);
+			}
+			else {
+				globalRun();
+			}
+		});
+	}
+	else {
+		globalRun();
+	}
+});
