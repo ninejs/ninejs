@@ -1,0 +1,54 @@
+<html>
+	<head>
+		<script>
+			var dojoConfig = {
+				baseUrl : '../../../../..',
+				packages: [
+					{ name: 'dojo', location: 'dojo' },
+					{ name: 'ninejs', location: 'ninejs' }
+				]
+			};
+		</script>
+		<script src='../../../../../dojo/dojo.js'></script>
+		<script type='text/javascript'>
+			require(['ninejs/ui/utils/setClass', 'dojo/query', 'dojo/domReady!'], function(setClass, query) {
+				query('body div').forEach(function(node) {
+					setClass(node, '!hasBorder');
+					setClass(node, '!hasBorder');
+					setClass(node, 'otherClass');
+					setClass(node, 'otherClass');
+					setClass(node, 'otherClass2');
+					setClass(node, '!!');
+				});
+			});
+		</script>
+		<style>
+			.hasBorder {
+				border-radius: 15px;
+				width: 500px;
+				height: 500px;
+				border-style: solid;
+			}
+		</style>
+	</head>
+	<body>
+		<div class='a hasBorder b'>
+			This is some text
+		</div>
+		<div class='hasBorder b'>
+			This is some text
+		</div>
+		<div class='hasBorder'>
+			This is some text
+		</div>
+		<div class='a hasBorder'>
+			This is some text
+		</div>
+		<div class='none'>
+			This is some text
+		</div>
+		<div class='none hasBorder hasBorder hasBorder a'>
+			This is some text
+		</div>
+	</body>
+</html>

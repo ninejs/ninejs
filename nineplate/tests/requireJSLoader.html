@@ -1,0 +1,21 @@
+<html>
+	<head>
+		<script src="../../../requirejs/require.js"></script>
+		<script>
+  		require.config({
+    		baseUrl: '../../..',
+    		waitSeconds: 15
+  		});
+  		require( ['ninejs/nineplate!ninejs/nineplate/tests/template.html'],
+    		function(template) {
+        		var result = template.render({title: 'The title'});
+        		alert(result.domNode);
+//        		window.document.body.appendChild(result.dom);
+    		}
+  		);
+</script>
+	</head>
+	<body>
+		
+	</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>NineJS - Core - extend Demo 1</title>
+</head>
+<body class="claro" style="margin-left: 20px">
+	<h2>extend Demo</h2>
+	<div id="panel">
+	</div>
+
+	<script type="text/javascript">
+	var dojoConfig = {
+		parseOnLoad: false,
+		isDebug: true,
+		async: true,
+		packages: [
+		{ name: 'ninejs', location: '../ninejs' }],
+		locale: 'es-do',
+		extraLocale: ['en-us']
+	};
+	</script>
+	<script src="../../../dojo/dojo.js"></script>
+	<script type="text/javascript">
+
+	require(['ninejs/core/extend'], function(
+		extend
+	) {
+		var MyClass = extend('MyClass', {
+			a: 1,
+			add: function(x) {
+				this.a += x;
+				return this.a;
+			}
+		});
+		var obj = new MyClass();
+		obj.add(2);
+	});
+</script>
+</body>
+</html>

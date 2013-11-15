@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>NineJS - UI - Vertical Menu Demo 1</title>
+	<style>
+		.njsVerticalMenu {
+			width: 182px;
+		}
+		.njsVerticalMenu ul {
+			width: 167px;
+		}
+	</style>
+</head>
+<body class="claro" style="margin-left: 20px">
+	<h2>Vertical Menu Demo</h2>
+	<div id="panel">
+		<div style="float:left">
+			<div id="menuHolder">
+			</div>
+		</div>
+		<div class="box" style="float:right;width: 88%">
+			
+		</div>
+	</div>
+
+	<script type="text/javascript">
+	var dojoConfig = {
+		parseOnLoad: false,
+		isDebug: true,
+		async: true,
+		packages: [
+		{ name: 'ninejs', location: '../ninejs' },
+		{ name: 'dijit', location: '../dijit' }],
+		locale: 'es-do',
+		extraLocale: ['en-us']
+	};
+	</script>
+	<script src="../../../../../dojo/dojo.js"></script>
+	<script type="text/javascript">
+
+	require(['ninejs/ui/menu/VerticalMenu', 'ninejs/css!dijit/themes/claro/claro.css!enable'], function(
+		VerticalMenu
+	) {
+		var menu = new VerticalMenu({}).placeAt('menuHolder');
+
+		var o1 = menu.addItem('Option 1', 'The long description of Option 1', 'option1');
+		var o2 = menu.addItem('Option 2', 'The long description of Option 2');
+		o1.action = function() { window.alert('You selected Option 1'); };
+		o2.action = function() { window.alert('You selected Option 2'); };
+	});
+</script>
+</body>
+</html>

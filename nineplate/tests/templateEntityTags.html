@@ -1,0 +1,19 @@
+<div class="${class}" xmlns:a1="http://eduardoburgos.com/" data-ninejs-tagName="${tagName}">
+	<h1 data-ninejs-attach="titleNode">${title}</h1>
+	<div data-ninejs-attach="contentNode" class="content">
+		This is the content.
+	</div>
+	<div><span>More content${fn('key')}more data</span></div>
+	<div data-ninejs-attach="multiAttach">${doubleFunction(title)('key')}</div>
+	<div data-ninejs-attach="multiAttach">This is a number: ${number}.</div>
+	<h1>Another h1</h1>
+	<div>Another div</div>
+	<div class="testANumberInAnObject">${anObject.aNumber}</div>
+	<div>This is a widget${button}</div>
+	${@for persons person}
+	<div>${person.name}</div>
+	${@/for}
+	<a1:hi>Hello</a1:hi>
+	<hi xmlns="http://eduardoburgos.com/">Hi there!</hi>
+	<div>&lt;&#215;&gt;</div>
+</div>

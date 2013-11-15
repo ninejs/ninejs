@@ -1,0 +1,9 @@
+.main {
+	border-style: dotted;
+	height: 500px;
+	width: 100%;
+}
+
+.styleCss {
+	display: block;
+}

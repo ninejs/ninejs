@@ -1,0 +1,54 @@
+/*
+Searched for defined client side 9js modules, requires them and initializes with their respective config
+
+modules must have:
+{
+	mid: 'ninejs/sampleModule' //The AMD moduleID
+}
+*/
+define(['./config', './moduleRegistry', './Module', '../core/extend', '../core/deferredUtils', './client/router', './ninejs-client', './client/container', './client/singlePageContainer'], function(clientConfig, registry, Module, extend, deferredUtils) {
+	'use strict';
+	var modules = clientConfig.modules || {},
+		moduleArray = [],
+		prefix = clientConfig.prefix || 'ninejs',
+		onDemandModules = {
+			'ninejs': prefix + '/modules/ninejs-client',
+			'router': prefix + '/modules/client/router',
+			'container': prefix + '/modules/client/container',
+			'singlePageContainer': prefix + '/modules/client/singlePageContainer'
+		};
+	registry.set('onDemandModules', onDemandModules);
+	for (var p in modules) {
+		if (modules.hasOwnProperty(p)) {
+			moduleArray.push(p);
+		}
+	}
+	var moduleLoadPromise = deferredUtils.defer();
+	require(moduleArray, function() {
+		var cnt,
+			current,
+			unitCfg;
+		for (cnt = 0; cnt < arguments.length; cnt += 1) {
+			registry.addModule(arguments[cnt]);
+		}
+		for (cnt = 0; cnt < arguments.length; cnt += 1) {
+			current = arguments[cnt];
+			unitCfg = modules[moduleArray[cnt]];
+			extend.mixinRecursive(clientConfig, { units: {} });
+			extend.mixinRecursive(clientConfig.units, unitCfg);
+//			clientConfig.units[moduleArray[cnt]] = unitCfg;
+			Module.prototype.enable.call(current, clientConfig.units);
+		}
+		moduleLoadPromise.resolve(true);
+	});
+	return deferredUtils.when(moduleLoadPromise.promise, function(){
+		var defer = deferredUtils.defer();
+		deferredUtils.when(registry.enableModules(), function(val) {
+			defer.resolve(val);
+		});
+		return defer.promise;
+	}, function(error) {
+		console.log(error);
+		throw new Error(error);
+	});
+});

@@ -1,0 +1,889 @@
+@import 'nib'
+
+//FUNCTIONS
+_icon(sz) {
+  width: sz;
+  height: sz;
+}
+smallIcon() {
+  _icon(16px);
+}
+mediumIcon() {
+  _icon(24px);
+}
+singleExpressionGridBorders(c) {
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: c;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: c;
+}
+singleExpressionInvalidGridBorders(c) {
+  border-left-style: dashed !important;
+  border-right-style: none;
+  border-top-style: none;
+  border-bottom-style: none;
+  border-left-width: 2px;
+  margin-left: -2px;
+  border-left-color: c !important;
+  border-radius: 8px;
+  transition: all 500ms cubic-bezier(1, 0, 0, 1); 
+}
+setLevelColor(c, level){
+  &.multiple {
+    >.mainContent {
+      
+    }
+  }
+  >.mainContent {
+    min-width: (960 - ((level - 1)*26))px;
+    
+    >.multiExpressionHolder {
+      background-color: c;
+    }
+  }
+}
+setBackgroundColor(c){
+  background-color: c;
+}
+setBackgroundColorPane(c){
+  setBackgroundColor(c);
+  .dojoxFloatingPaneCanvas {
+    .dojoxFloatingPaneContent {
+      setBackgroundColor(c);
+    }
+    .dijitToolbar {
+      setBackgroundColor(c);
+    }
+  }
+}
+setHover(c) {
+  &.dijitHover {
+    background-image: embedurl(c);
+  }
+}
+hasLevels(fn) {
+      //Dealing with multiple levels
+//      &.weLevel0 {
+//        fn($color_multipleExpressionLevel0, 0);
+//      }
+      &.weLevel1 {
+        fn($color_multipleExpressionLevel1, 1);
+      }
+      &.weLevel2 {
+        fn($color_multipleExpressionLevel2, 2);
+      }
+      &.weLevel3 {
+        fn($color_multipleExpressionLevel3, 3);
+      }
+      &.weLevel4 {
+        fn($color_multipleExpressionLevel4, 4);
+      }
+      &.weLevel5 {
+        fn($color_multipleExpressionLevel5, 5);
+      }
+      &.weLevel6 {
+        fn($color_multipleExpressionLevel6, 6);
+      }
+      &.weLevel7 {
+        fn($color_multipleExpressionLevel7, 7);
+      }
+}
+
+$tableDisplay = table;
+
+//VARIABLES
+$images_NewCondition_off = "images/FilterBuilder/new_condition_off.png";
+$images_NewCondition_on = "images/FilterBuilder/new_condition_on.png";
+$images_Trash_off = "images/FilterBuilder/trash_off.png";
+$images_Trash_on = "images/FilterBuilder/trash_on.png";
+$images_Options_off = "images/FilterBuilder/options_off.png";
+$images_Options_on = "images/FilterBuilder/options_on.png";
+$images_Positive_off = "images/FilterBuilder/plus_off.png";
+$images_Positive_on = "images/FilterBuilder/plus_on.png";
+$images_Negative_off = "images/FilterBuilder/minus_off.png";
+$images_Negative_on = "images/FilterBuilder/minus_on.png";
+$images_GroupExpression_off = "images/FilterBuilder/group_off.png";
+$images_GroupExpression_on = "images/FilterBuilder/group_on.png";
+$images_UnGroupExpression_off = "images/FilterBuilder/ungroup_off.png";
+$images_UnGroupExpression_on = "images/FilterBuilder/ungroup_on.png";
+$images_Reset_off = "images/FilterBuilder/reset_off.png";
+$images_Reset_on = "images/FilterBuilder/reset_on.png";
+$images_small_funnel_add_off = "images/FilterBuilder/funnel_add_off.png";
+$images_small_funnel_add_on = "images/FilterBuilder/funnel_add_on.png";
+$images_small_funnel_on = "images/FilterBuilder/funnel_on.png";
+$images_small_Positive_off = "images/FilterBuilder/plus_small_off.png";
+$images_small_Positive_on = "images/FilterBuilder/plus_small_on.png";
+$images_small_Negative_off = "images/FilterBuilder/minus_small_off.png";
+$images_small_Negative_on = "images/FilterBuilder/minus_small_on.png";
+$images_small_CustomBoolean_off = "images/FilterBuilder/custom_boolean_off.png";
+$images_small_CustomBoolean_on = "images/FilterBuilder/custom_boolean_on.png";
+$images_small_Options_off = "images/FilterBuilder/options_off.png";
+$images_small_Options_on = "images/FilterBuilder/options_on.png";
+$images_small_Strict_off = "images/FilterBuilder/strict_off.png";
+$images_small_Strict_on = "images/FilterBuilder/strict_on.png";
+$images_small_UnRestricted_off = "images/FilterBuilder/unrestricted_off.png";
+$images_small_UnRestricted_on = "images/FilterBuilder/unrestricted_on.png";
+$images_small_HelpIcon_off = "images/FilterBuilder/helpIcon_off.png";
+$images_small_HelpIcon_on = "images/FilterBuilder/helpIcon_on.png";
+$images_small_CloseIcon_off = "images/FilterBuilder/close_off.png";
+$images_small_CloseIcon_on = "images/FilterBuilder/close_on.png";
+$images_Undo_on = "images/FilterBuilder/undo_on.png";
+$images_Undo_off = "images/FilterBuilder/undo_off.png";
+$images_Redo_on = "images/FilterBuilder/redo_on.png";
+$images_Redo_off = "images/FilterBuilder/redo_off.png";
+
+$settings_SingleExpression_minHeight = 22px;
+
+$color_multipleExpressionLevel0 = transparent;
+$color_multipleExpressionLevel1 = #85FFD6;
+$color_multipleExpressionLevel2 = #52CCA3;
+$color_multipleExpressionLevel3 = #99FF99;
+$color_multipleExpressionLevel4 = #ADFFAD;
+$color_multipleExpressionLevel5 = #FF9999;
+$color_multipleExpressionLevel6 = #FFADAD;
+$color_multipleExpressionLevel7 = #D685FF;
+
+
+
+//The actual CSS starts here
+
+.weFilterBuilder {
+  //for Editor
+  *.weEditor {
+    //DropDown list controls
+    &.dataType-list {
+      > {
+        table {
+          width: 186px;
+          max-width: 186px;
+          .dijitButtonContents {
+            width: 165px;
+            max-width: 165px;
+            .dijitInputField {
+              width: 100%;
+              .dijitInline {
+                max-width: 100%;
+                overflow: ellipsis;
+              }
+            }
+          }
+        }
+      }
+    }
+    //Date controls
+    &.dataType-date {
+      > {
+        div {
+          width: 172px;
+        }
+      }
+    }
+    //The rest of the controls, whatever they are
+    > {
+      table {
+        width: 100%;
+      }
+    }
+    
+    * {
+      //Fix the size for any Editor's dropdown arrow
+      &.dijitArrowButton {
+        width: 20px;
+      }
+    }
+  }
+  
+  //Rules that apply while in "strict" mode
+  &.strict {
+    .weAddExpressionButton {
+        display: none;
+    }
+    &.valid {
+      .weAddExpressionButton {
+        display: block;
+      }
+    }
+    &.invalid {
+      .checkBoxHolder {
+        display: none;
+      }
+    }
+    .resetButton {
+      display: none;
+    }
+  }
+  &.invalid {
+    &>.mainContent {
+      &>.singleExpressionHolder {
+//        singleExpressionInvalidGridBorders(red);
+      }
+    }
+  }
+  &.njsAmbiguous {
+      &>.mainContent {
+        &>.multiExpressionHolder {
+          singleExpressionInvalidGridBorders(red);
+        }
+      }
+  }
+  
+  * {
+    //Fix my own down arrow buttons
+    .weDownArrowButton {
+      width: 20px;
+    }
+    
+    //What is weSelect anyway? //TODO: check this
+    .weSelect {
+      width: 95%;
+    }
+  }
+  
+  //Note that here we are targeting an individual expression's mainContent, not its children
+  &.mainContent {
+    padding-left: 12px;
+    //float: left;
+    width: auto;
+  }
+  
+  &.mainNode {
+    width: 100%;  
+    height: 100%;
+    float: left;
+    position: relative;
+
+    //If I'm the only single expression around don't show the checkbox
+    &.weAlone {
+      .checkBoxHolder {
+        display: none;
+      }
+
+      .deleteButton {
+        display: none;
+      }    
+    }
+    
+    .helpNode {
+      margin-top: 15px;
+      margin-left: 17px;
+      font-family: verdana;
+      height: 40px;
+    }
+
+///  border-collapse:separate;
+///  border-left-style: dotted;
+///  border-left-width: 1px;
+///  border-style: solid; 
+///  padding-top: 10px; 
+///  padding-left: 15px; 
+   
+    //When this is negative
+    &.negative {
+    ///  border-color: red; 
+      > {
+        &.mainContent {
+          > {
+            &.singleExpressionHolder {
+              border-top-style: outset;
+              border-top-color: orange;
+              border-bottom-style: outset;
+              border-bottom-color: orange;
+              border-left-style: outset;
+              border-left-color: orange;
+              border-left-width: 1px;
+              padding-left: 2px;
+              > {
+                &.deleteButtonHolder {
+                  >{
+                    &.negativeButton {
+                      background-image: embedurl($images_Negative_off);
+                      setHover($images_Negative_on);
+                    }
+                  }
+                }
+              }
+            }
+            &.multiExpressionHolder {
+              border-top-style: outset;
+              border-top-color: orange;
+              border-top-width: 1px;
+              border-bottom-style: outset;
+              border-bottom-color: orange;
+              border-bottom-width: 1px;
+              border-left-style: outset;
+              border-left-color: orange;
+              border-left-width: 2px;
+              margin-left: -2px;
+              >div {
+                >div {
+                  &>.negativeButton {
+                      background-image: embedurl($images_Negative_off);
+                      setHover($images_Negative_on);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    } 
+ 
+    hasLevels(setLevelColor);
+    //When this expression is AND/OR and spans onto it's children
+    &.multiple {
+      //I'm doing this to target specifically the direct children
+      > {
+        //This was used to make a border around multiple expressions but it turns out it didn't look that cool
+        &.mainContent {
+///          border-style: dotted;
+///          border-width: 1px;
+          > {
+            &.checkBoxHolder {
+              display: none;
+            }
+          }
+        }
+      }      
+      
+      //Multiple expression options pane
+      .dojoxFloatingPane {
+        position:absolute;
+        width:42px;
+        max-width: 42px;
+        height:70px;
+        visibility:hidden;
+        padding: 8px;
+        border-radius: 10px;
+        hasLevels(setBackgroundColorPane);
+        .dojoxFloatingPaneTitle {
+          display: none;
+//          border: 0;
+//          border-bottom-color: lightblue;
+//          border-bottom-style: dotted;
+//          border-bottom-width: 3px;
+//          border-top-color: lightblue;
+//          border-top-style: dotted;
+//          border-top-width: 3px;
+//          .dijitTitleNode {
+//            font-style: oblique;
+//            font-weight: bold;
+//          }
+        }
+        .dojoxFloatingPaneCanvas  {
+          height: auto;
+          max-width: 40px;
+          .dojoxFloatingPaneContent {
+            overflow: hidden;
+          }
+          .dijitToolbar {
+            border: 0;
+            .dijitButton {
+              width: 33px;
+              margin-top: -2px;
+              .dijitButtonNode {
+                width: 30px;
+              }
+            }
+          }
+        }
+        .dijitToolbar {
+          .dijitButton {
+            width: 100px;
+            .dijitButtonNode {
+              width: 100px;
+              .dijitButtonContents {
+                text-align: left;
+                width: 100px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  &.state-start {
+    > {
+     &.mainContent {
+       > {
+         &.singleExpressionHolder {
+           > {
+             &.deleteButtonHolder {
+               > {
+                 &.resetButton {
+                   display: none;
+                 }
+               }
+             }
+           }
+         }
+       }
+     }
+    }
+
+  }
+  
+  //This div is visible only when the expression is single as in not having AND/OR. Can be a child too
+  &.singleExpressionHolder {
+    width: 98%;
+    min-height: $settings_SingleExpression_minHeight;
+    display: $tableDisplay;
+  
+    //Experimental
+    singleExpressionGridBorders(lightgray);
+    
+    //word wraps
+    * {
+      word-wrap: break-word;
+    }
+    > {
+    &.checkBoxHolder {
+      float: left;
+      margin-top: 5px;
+      height: 100%;
+      width: 16px;
+      text-align: center;
+      vertical-align: middle;
+      display: $tableDisplay;
+    }
+    
+    &.summaryListHolder {
+      width: 140px;
+      float: left;
+      
+      div {
+        table {
+          width: 100%;
+        }
+      }
+      
+      .dijitButtonText {
+        text-align: left;
+        width: 100%;
+      }
+    }
+    
+    &.operatorListHolder {
+      width: 153px;
+      float: left;
+      padding-left: 15px;
+      
+      .dijitButtonText {
+        text-align: left;
+        width: 100%;
+      }
+    }
+    
+    &.fieldListHolder {
+      width: 223px;
+      float: left;
+      margin-top: 2px;
+      padding-left: 15px;
+
+	  &>.funnelHolder {
+	  	display: none;
+	  	float: right;
+		width: auto;
+	  	&>div {
+	  		background-image: embedurl($images_small_funnel_add_off);
+    		mediumIcon();
+    		setHover($images_small_funnel_add_on);
+	  	}
+	  }
+	  &.funnelCapable {
+	  	&>div.fieldSelectHolder {
+	  		max-width: 196px;
+	  	}
+	  	&>.funnelHolder {
+	  		display: block;
+	  	}
+	  	&.funnelSet {
+	  		&>.funnelHolder {
+	  			&>div {
+	  				background-image: embedurl($images_small_funnel_on);
+	  			}
+	  		}
+	  	}
+	  }
+      &>div.fieldSelectHolder {
+      	float: left;
+		    width: 100%;
+        &>div {
+          &.dijitComboBox {
+            height: 21px;
+            width: 100%;
+            div {
+              height: 21px;
+              &.dijitInputField {
+                height: 19px;
+                border-radius: 4px 0 0 4px;
+                background-image: -webkit-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
+//                linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
+              }
+              
+              input {
+                /// margin-top: 4px; 
+                border: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    &.valueListHolder {
+      width: 173px; /// was 18%;
+      float: left;
+      margin-top: 4px;
+      padding-left: 15px;
+      
+      .dijitButtonText {
+        text-align: left;
+        width: 100%;
+      }
+    }
+      &.addExpressionButtonHolder {
+        float:right;
+      }
+      
+    }
+    
+}
+  
+  //This div is visible only when the expression is AND/OR
+  &.multiExpressionHolder {
+    width: auto; /// was 95%
+    min-width: 800px;
+    padding-left: 15px;
+    border-radius: 8px;
+    
+    //Here I am targeting the ComboButtons (Dropdowns) that say "AND"/"OR" in between of any single expression to fix their size
+    .multiExpressionLink {
+      width: 80px;
+      float: left;
+    }
+    
+    > {
+      &div {
+        > {
+          &div {
+            > {
+                &.deleteButton {
+                  display: none;
+                }
+            }
+          } 
+        }
+      }
+      &.weAddExpressionButton {
+        float: left;
+      }
+             
+    }  
+  }
+  
+  //The toolbar, only appears on top of the main expression (unless you want to define it differently)
+  &.weFilterBuilderToolbar {
+    &.dijit.dijitToolbar {
+      background-color: transparent;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
+  
+  //ICONS
+  &.weIconAdd {
+    background-image: embedurl($images_NewCondition_off);
+    smallIcon(); 
+    setHover($images_NewCondition_on);
+  }
+  
+  &.weIconAllPositive {
+    background-image: embedurl($images_small_Positive_off);
+    smallIcon();
+    &.weEnabled {
+      background-image: embedurl($images_small_Positive_on);
+    }
+  }
+  
+  &.weIconAllNegative {
+    background-image: embedurl($images_small_Negative_off);
+    smallIcon();
+    &.weEnabled {
+      background-image: embedurl($images_small_Negative_on);
+    } 
+  }
+  
+  &.weIconCustomBoolean {
+    background-image: embedurl($images_small_CustomBoolean_off);
+    smallIcon();
+    &.weEnabled {
+      background-image: embedurl($images_small_CustomBoolean_on);
+    }
+  }
+  
+  &.weIconGroupExpression {
+    background-image: embedurl($images_GroupExpression_off);
+    mediumIcon();
+  }
+  
+  &.weIconUnGroupExpression {
+    background-image: embedurl($images_UnGroupExpression_off);
+    mediumIcon();
+  }
+  
+  &.weIconUndo {
+    background-image: embedurl($images_Undo_on);
+    smallIcon();
+  }
+  
+  &.weIconRedo {
+    background-image: embedurl($images_Redo_on);
+    smallIcon();
+  }
+  
+  //ICONS
+  &.weIconOptions {
+    background-image: embedurl($images_Options_off);
+    smallIcon(); 
+    setHover($images_Options_on);
+  }
+  
+  
+  &.deleteButtonHolder {
+    width: 80px;
+    float: left;
+    margin-left: 20px;
+  }
+  
+  &.deleteButton {
+    background-image: embedurl($images_Trash_off);
+    mediumIcon();
+    background-repeat: no-repeat;
+    border: none;
+    float: left;
+    margin-top: 2px;
+    setHover($images_Trash_on);
+  }
+  
+  &.resetButton {
+    background-image: embedurl($images_Reset_off);
+    mediumIcon();
+    background-repeat: no-repeat;
+    border: none;
+    float: left;
+    margin-top: 2px;
+    setHover($images_Reset_on);
+  }
+  
+  &.negativeButton {
+    background-image: embedurl($images_Positive_off);
+    mediumIcon();
+    background-repeat: no-repeat;
+    border: none;
+    float: left;
+    margin-top: 2px;
+    display: none;
+    setHover($images_Positive_on)
+  }
+  
+  //Don't know what's this for //TODO check this
+  div {
+    .dijitComboButton  {
+      width: 100%;
+      
+      tbody {
+        tr {
+          .dijitDownArrowButton {
+            width: 20px;
+          }
+        }
+      }
+    }
+  }
+  
+  //Custom negatives mode shows the negative button on all expressions
+  &.weCustomNegatives .negativeButton {
+    display: block;
+  }
+  
+  .weAdvancedToolbar {
+    smallIcon();
+    background-image: embedurl($images_small_Options_off);
+  }
+}
+
+.dijitHover {
+  .weIconUnGroupExpression {
+    background-image: embedurl($images_UnGroupExpression_on);
+  }
+  .weIconGroupExpression {
+    background-image: embedurl($images_GroupExpression_on);
+  }
+  .weIconAdd {
+    background-image: embedurl($images_NewCondition_on);
+  }
+  .weAdvancedToolbar {
+    background-image: embedurl($images_small_Options_on);
+  }
+}
+
+//DISABLED ICONS
+.dijitDisabled {
+  .weFilterBuilder {
+    &.weIconUndo {
+      background-image: embedurl($images_Undo_off);
+    }
+    &.weIconRedo {
+      background-image: embedurl($images_Redo_off);
+    }
+  }
+}
+
+.dijitMenuPopup {
+  .weIconAllPositive {
+      background-image: embedurl($images_small_Positive_off);
+      smallIcon();
+      &.weEnabled {
+        background-image: embedurl($images_small_Positive_on);
+      }
+    }
+  
+    .weIconAllNegative {
+      background-image: embedurl($images_small_Negative_off);
+      smallIcon();
+      &.weEnabled {
+        background-image: embedurl($images_small_Negative_on);
+      } 
+    }
+  
+    .weIconCustomBoolean {
+      background-image: embedurl($images_small_CustomBoolean_off);
+      smallIcon();
+      &.weEnabled {
+        background-image: embedurl($images_small_CustomBoolean_on);
+      }
+    }
+    
+    .weStrictMode {
+      background-image: embedurl($images_small_Strict_off);
+      smallIcon();
+      &.weEnabled {
+        background-image: embedurl($images_small_Strict_on);
+      }
+    }
+    .weUnRestrictedMode {
+      background-image: embedurl($images_small_UnRestricted_off);
+      smallIcon();
+      &.weEnabled {
+        background-image: embedurl($images_small_UnRestricted_on);
+      }
+    }
+}
+
+.nineFbAdvancedOptionsPanelPopup {
+	margin-left: 30px;
+	max-width: 581px;
+  background-color: white;
+}
+.nineFbAdvancedOptionsPanel {
+	border-radius: 9px;
+	border-style: solid;
+	background-image: linear-gradient(#ffffff 0px, rgba(255, 255, 255, 1) 3px, rgba(255, 255, 255, 0.75) 100%);
+	padding-left: 20px;
+	padding-right: 20px;
+	.nineFbPanelCaption {
+		height: 10px;
+		.nineRightSpacer {
+			width: 8px;
+			height: 1px;
+			float: right;
+		}
+		.nineHelpIcon {
+			float: right;
+			smallIcon();
+			background-image: embedurl($images_small_HelpIcon_off);
+			&.njsHover {
+        		background-image: embedurl($images_small_HelpIcon_on);
+      		}
+		}
+		.nineCloseIcon {
+			float: right;
+			smallIcon();
+			background-image: embedurl($images_small_CloseIcon_off);
+			&.dijitHover {
+        		background-image: embedurl($images_small_CloseIcon_on);
+      		}
+		}
+	}
+	.nineAdvancedOptionsTitle {
+		color: darkblue;
+		font-weight: bold;
+		font-size: 16px;
+	}
+	.nineAdvancedOptionsMessage {
+		font-style: italic;
+		font-size: 13px;
+		font-family: verdana;
+	}
+	.nineAdvancedOptionsGroupBox {
+		padding-top: 15px;
+		padding-left: 10px;
+		padding-bottom: 15px;
+		border: 1px solid;
+		border-radius: 8px;
+    width: 530px;
+		legend {
+			-webkit-padding-start: 10px;
+			font-size: 14px;
+			font-weight: bold;
+			font-style: italic;
+			color: darkcyan;
+		}
+		.nineFbAdvancedRbOption {
+			padding-bottom: 10px;
+			margin-left: 35px;
+			max-width: 450px;
+			span {
+				font-style: italic;
+			}
+		}
+		.nineFbHorizontalRb {
+			padding-right: 20px;
+		}
+	}
+	.nineFbPadding {
+		padding-bottom: 20px;
+	}
+}
+.nineFbDialog {
+	height: auto;
+	min-width: 1032px;
+	max-height: 270px;
+	&>.dijitDialogPaneContent {
+		&>.dijitDialogPaneActionBar {
+			padding-bottom: 10px;
+			padding-top: 10px;
+		}
+	}
+}
+.nineFbSubExpressionDialog {
+	height: auto;
+	max-height: 187px;
+	&>.weFilterBuilder  {
+		&.mainNode {
+			float: none;
+			&>.mainContent {
+				max-height: 168px;
+				overflow-y: auto;
+				padding-top: 14px;
+			}
+		}
+	}
+	.helpNode {
+		display: none;
+	}
+
+}

@@ -1,0 +1,34 @@
+<html>
+	<head>
+		<script>
+			var dojoConfig = {
+				baseUrl : '../../../..',
+				packages: [
+					{ name: 'dojo', location: 'dojo' },
+					{ name: 'ninejs', location: 'ninejs' }
+				]
+			};
+		</script>
+		<script src='../../../../dojo/dojo.js'></script>
+		<script type='text/javascript'>
+			require(['ninejs/ui/Widget', 'ninejs/ui/Skin', 'ninejs/nineplate', 'ninejs/css', 'dojo/has'], function(Widget, Skin, nineplate, css, has) {
+				var ieTemplate = nineplate.buildTemplate('<div><span>This is being shown in IE</span></div>');
+				var otherTemplate = nineplate.buildTemplate('<div><span>This is being shown in another browser</span></div>');
+				var skin1 = new Skin({ template: ieTemplate.compileDom(), applies: function() {
+					return has('ie');
+				}});
+				var skin2 = new Skin({ template: otherTemplate.compileDom() });
+				var widget1 = new Widget({
+					skin: [skin1, skin2]
+				});
+				widget1.show();
+				setTimeout(function() {
+					document.getElementById('target').appendChild(widget1.domNode);
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id='target'></div>
+	</body>
+</html>

@@ -1,0 +1,30 @@
+<div class="${class}" xmlns:a1="http://eduardoburgos.com/" data-ninejs-tagName="${tagName}">
+	<h1 data-ninejs-attach="titleNode">${title}</h1>
+	<div data-ninejs-attach="contentNode" class="content">
+		This is the content.
+	</div>
+	<div><span>More content${fn('key')}more data</span></div>
+	<div data-ninejs-attach="multiAttach">${doubleFunction(title)('key')}</div>
+	<div data-ninejs-attach="multiAttach">This is a number: ${number}.</div>
+	<h1>Another h1</h1>
+	<div>Another div</div>
+	<div class="testANumberInAnObject">${anObject.aNumber}</div>
+	<div>This is a widget${button}</div>
+	${@for persons person}
+	<div>${person.name}</div>
+	${@/for}
+	<a1:hi xmlns:hey="http://hey.com/">Hello</a1:hi>
+	<hi xmlns="http://eduardoburgos.com/">Hi there!</hi>
+	<div class="${tagName} ${class}"><span>This is some static text that should be </span><span>rendered</span><span> as innerHTML in a DOM rendered environment. Even though it has variables such as ${number|String} it should be able to render as innerHTML because those variables like ${title|String} are not bound and do not represent an attach point node.</span></div>
+	<div>
+		<div class="persons" data-ninejs-attach="personsNode">
+			%{@for persons person | key @ div/@data-key}
+			<div data-key="${person.name}">
+				<div>%{person.name|String,DOM,Dijit,9js}</div>
+				<div>%{person.gender|String}</div>
+				<div class="age">%{person.age|String}</div>
+			</div>
+			%{@/for}
+		</div>
+	</div>
+</div>

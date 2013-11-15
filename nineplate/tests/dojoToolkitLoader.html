@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<script>
+			var dojoConfig = {
+				baseUrl : '../../..',
+				packages: [
+					{ name: 'dojo', location: 'dojo' },
+					{ name: 'dijit', location: 'dijit' },
+					{ name: 'ninejs', location: 'ninejs' }
+				]
+			};
+		</script>
+		<script src='../../../dojo/dojo.js'></script>
+		<script type='text/javascript'>
+			require(['ninejs/nineplate!./templateEntityTags.html', './template-generated', 'dijit/form/Button', 'ninejs/css!dojo/resources/dojo.css', 'ninejs/css!dijit/themes/claro/claro.css', 'dojo/domReady!'], function(template, generated, Button, dojoCss, claroCss) {
+				dojoCss.enable();
+				claroCss.enable();
+				var context = {
+					title : 'The title',
+					persons: [
+						{name: 'Eduardo Burgos'},
+						{name: 'Amanda Burgos'}
+					],
+					'class': 'container',
+					number: 8,
+					anObject: {
+						aNumber: 5
+					},
+					fn: function(arg) {
+						return '#' + arg + '#';
+					},
+					doubleFunction: function(arg) {
+						var x = arg + ' ==> ';
+						return function(arg2) {
+							return x + arg2;
+						};
+					},
+					button: new Button({ label: 'Click here'})
+				};
+				var result = template.renderDom(context);
+				var genResult = generated(context);
+				setTimeout(function() {
+					document.getElementById('target').appendChild(result.domNode);
+					document.getElementById('target').appendChild(genResult.domNode);
+				}, 50);
+			});
+		</script>
+	</head>
+	<body class="claro">
+		<div id='target'></div>
+	</body>
+</html>

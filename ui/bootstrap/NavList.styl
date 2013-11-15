@@ -1,0 +1,59 @@
+$linkColor = #08c;
+$baseLineHeight = 20px;
+$grayLight = #999;
+$grayLighter = #eee;
+navDivider($top = #e5e5e5, $bottom = white) {
+  // IE7 needs a set width since we gave a height. Restricting just
+  // to IE7 to keep the 1px left/right space in other browsers.
+  // It is unclear where IE is getting the extra space that we need
+  // to negative-margin away, but so it goes.
+  *width: 100%;
+  height: 1px;
+  margin: (($baseLineHeight / 2) - 1) 1px; // 8px 1px
+  *margin: -5px 0 5px;
+  overflow: hidden;
+  background-color: $top;
+  border-bottom: 1px solid $bottom;
+}
+.NavList {
+	.nav-list {
+		padding-left: 15px;
+		padding-right: 15px;
+		margin-bottom: 0;
+	}
+	.nav-list > li > a, .nav-list .nav-header {
+		margin-left:  -15px;
+		margin-right: -15px;
+		text-shadow: 0 1px 0 rgba(255,255,255,.5);
+	}
+	.nav-list > li > a {
+		padding: 3px 15px;
+	}
+	.nav-list > .active > a, .nav-list > .active > a:hover, .nav-list > .active > a:focus {
+		color: white;
+		text-shadow: 0 -1px 0 rgba(0,0,0,.2);
+		background-color: $linkColor;
+	}
+	.nav-list [class^="icon-"], .nav-list [class*=" icon-"] {
+		margin-right: 2px;
+	}
+	// Dividers (basically an hr) within the dropdown
+	.nav-list .divider {
+		navDivider();
+	}
+	// Nav headers (for dropdowns and lists)
+	.nav-header {
+		display: block;
+		padding: 3px 15px;
+		font-size: 11px;
+		font-weight: bold;
+		line-height: $baseLineHeight;
+		color: $grayLight;
+		text-shadow: 0 1px 0 rgba(255,255,255,.5);
+		text-transform: uppercase;
+	}
+	// Space them out when they follow another list item (link)
+	.nav li + .nav-header {
+		margin-top: 9px;
+	}
+}

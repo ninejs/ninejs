@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>NineJS - UI - Bootstrap - Tests</title>
+</head>
+<body class="claro" style="margin-left: 20px">
+	<h2>NavBar</h2>
+	<div id="navbar">
+	</div>
+	<h2>ButtonDropdownMenu</h2>
+	<div id="buttondropdown">
+	</div>
+	<h2>Dropdown</h2>
+	<div id="dropdown">
+	</div>
+
+	<script type="text/javascript">
+	var dojoConfig = {
+		parseOnLoad: false,
+		isDebug: true,
+		async: true,
+		packages: [
+		{ name: 'dojo', location: '../dojo' },
+		{ name: 'ninejs', location: '../ninejs' }
+		],
+		locale: 'es-do',
+		extraLocale: ['en-us']
+	};
+	</script>
+	<script src="../../../../dojo/dojo.js"></script>
+	<script type="text/javascript">
+
+	require(['ninejs/ui/bootstrap/ButtonDropdownMenu', 'ninejs/ui/bootstrap/Dropdown', 'ninejs/ui/bootstrap/NavBar', 'ninejs/ui/bootstrap/bootstrap'], function(
+		ButtonDropdownMenu, Dropdown, NavBar
+	) {
+		var menu = new ButtonDropdownMenu({ label: 'Options', 'labelClass': 'btn-info' }).show('buttondropdown');
+
+		var o1 = menu.addItem({ label: 'Option 1', action: function() {
+			alert('Clicked Option 1');
+		} });
+		var o2 = menu.addItem({ label: 'Option 2', action: function() {
+			alert('Clicked Option 2');
+		} });
+		var o3 = menu.addItem({ type: 'divider' });
+		var o4 = menu.addItem({ type: 'parent', label: 'Parent Option 1', children: [
+			{
+				label: 'Child 1',
+				action: function() {
+					alert('Clicked Child 1');
+				}
+			},
+			{
+				label: 'Child 2',
+				action: function() {
+					alert('Clicked Child 2');
+				}
+			}
+		] });
+
+		var dropdown = new Dropdown({ label: 'Options' }).show('dropdown');
+
+		o1 = menu.addItem({ label: 'Option 1', action: function() {
+			alert('Clicked Option 1');
+		} });
+		o2 = menu.addItem({ label: 'Option 2', action: function() {
+			alert('Clicked Option 2');
+		} });
+		o3 = menu.addItem({ type: 'divider' });
+		o4 = menu.addItem({ type: 'parent', label: 'Parent Option 1', children: [
+			{
+				label: 'Child 1',
+				action: function() {
+					alert('Clicked Child 1');
+				}
+			},
+			{
+				label: 'Child 2',
+				action: function() {
+					alert('Clicked Child 2');
+				}
+			}
+		] });
+
+		var navbar = new NavBar({ brand: 'Brand' }).show('navbar');
+		o1 = navbar.addItem({ label: 'Option 1', action: function() {
+			alert('Clicked Option 1');
+		} });
+		o2 = navbar.addItem({ label: 'Option 2', action: function() {
+			alert('Clicked Option 2');
+		} });
+		o3 = navbar.addItem({ type: 'divider' });
+		o4 = navbar.addItem({ type: 'parent', label: 'Parent Option 1', children: [
+			{
+				label: 'Child 1',
+				action: function() {
+					alert('Clicked Child 1');
+				}
+			},
+			{
+				label: 'Child 2',
+				action: function() {
+					alert('Clicked Child 2');
+				}
+			}
+		] });
+		var navDropdown = new Dropdown({ label: 'My Options', tagName: 'li' });
+		navbar.addItem(navDropdown);
+		navDropdown.addItem({ label: 'Account' });
+		navDropdown.addItem({ label: 'Settings' });
+	});
+</script>
+</body>
+</html>

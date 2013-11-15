@@ -1,0 +1,62 @@
+<html>
+	<head>
+		<script>
+			var dojoConfig = {
+				baseUrl : '../../../..',
+				packages: [
+					{ name: 'dojo', location: 'dojo' },
+					{ name: 'ninejs', location: 'ninejs' }
+				]
+			};
+		</script>
+		<script src='../../../../dojo/dojo.js'></script>
+		<script type='text/javascript'>
+			require(['ninejs/ui/TransitionPanel', 'ninejs/ui/Skin', 'ninejs/nineplate', 'dojo/on', 'dojo/domReady!'], function(TransitionPanel, Skin, nineplate, on) {
+				var firstStepTemplate = nineplate.buildTemplate('<div id="target" class="block">This is a text that is about to be transitioned with the panel</div>');
+				var template = nineplate.buildTemplate('<div class="block"><span>This is being shown in a TransitionPanel</span></div>');
+				var firstStepSkin = new Skin({
+					template: firstStepTemplate.compileDom()
+				});
+				var skin1 = new Skin({
+					template: template.compileDom()
+				});
+				var firstStep = new TransitionPanel({
+					skin: firstStepSkin
+				});
+				firstStep.show(window.document.getElementById('container'));
+				var panel = new TransitionPanel({
+					previousPanel: firstStep,
+					skin: skin1
+				});
+				var currentPanel = firstStep;
+				on(window.document.getElementById('transitionButton'), 'click', function() {
+					currentPanel = currentPanel.next();
+				});
+				on(window.document.getElementById('transitionOutButton'), 'click', function() {
+					currentPanel = currentPanel.previous();
+				});
+			});
+		</script>
+		<style>
+			#container {
+				width: 500px;
+				height: 500px;
+			}
+			.block {
+				border-radius: 15px;
+				width: 494px;
+				height: 494px;
+				border-style: solid;
+			}
+			button {
+				
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container" class="njsTransitionPanelContainer">
+		</div>
+		<button id="transitionOutButton">Previous</button>
+		<button id="transitionButton">Next</button>
+	</body>
+</html>

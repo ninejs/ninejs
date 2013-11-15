@@ -1,0 +1,174 @@
+hasMarginPct(c = 0) {
+	margin-top: (1 + (100 * (c / 12)))%;
+}
+.no-margin {
+	margin: 0 !important;
+}
+.no-margin-left {
+	margin-left: 0 !important;
+}
+.no-margin-top {
+	margin-top: 0 !important;
+}
+.no-margin-right {
+	margin-right: 0 !important;
+}
+.no-margin-bottom {
+	margin-bottom: 0 !important;
+}
+.row, .container, .row-fluid, .container-fluid {
+	.vpan12 {
+		height: 100%;
+	}
+	.vpan11 {
+		height: (100 * 11 / 12)%;
+	}
+	.voffset11 {
+		hasMarginPct(11);
+	}
+	.vpan10 {
+		height: (100 * 10 / 12)%;
+	}
+	.voffset10 {
+		hasMarginPct(10);
+	}
+	.vpan9 {
+		height: (100 * 9 / 12)%;
+	}
+	.voffset9 {
+		hasMarginPct(9);
+	}
+	.vpan8 {
+		height: (100 * 8 / 12)%;
+	}
+	.voffset8 {
+		hasMarginPct(8);
+	}
+	.vpan7 {
+		height: (100 * 7 / 12)%;
+	}
+	.voffset7 {
+		hasMarginPct(7);
+	}
+	.vpan6 {
+		height: (100 * 6 / 12)%;
+	}
+	.voffset6 {
+		hasMarginPct(6);
+	}
+	.vpan5 {
+		height: (100 * 5 / 12)%;
+	}
+	.voffset5 {
+		hasMarginPct(5);
+	}
+	.vpan4 {
+		height: (100 * 4 / 12)%;
+	}
+	.voffset4 {
+		hasMarginPct(4);
+	}
+	.vpan3 {
+		height: (100 * 3 / 12)%;
+	}
+	.voffset3 {
+		hasMarginPct(3);
+	}
+	.vpan2 {
+		height: (100 * 2 / 12)%;
+	}
+	.voffset2 {
+		hasMarginPct(2);
+	}
+	.vpan1 {
+		height: (100 * 1 / 12)%;
+	}
+	.voffset1 {
+		hasMarginPct(1);
+	}
+}
+verticalGrid($maxHeight, $vmargin){
+	hasMargin(c, $vmargin, $maxHeight) {
+		//margin-top: ($vmargin + ($maxHeight * c / 12));
+	}
+	.vpan12 {
+		height: ($maxHeight);
+	}
+	.vpan11 {
+		height: ($maxHeight * 11 / 12);
+		hasMargin(0, $vmargin, $maxHeight);
+	}
+	.voffset11 {
+		hasMargin(11, $vmargin, $maxHeight);
+	}
+	.vpan10 {
+		height: ($maxHeight * 10 / 12);
+		hasMargin(0, $vmargin, $maxHeight);
+	}
+	.voffset10 {
+		hasMargin(10, $vmargin, $maxHeight);
+	}
+	.vpan9 {
+		height: ($maxHeight * 9 / 12);
+		hasMargin(0, $vmargin, $maxHeight);
+	}
+	.voffset9 {
+		hasMargin(9, $vmargin, $maxHeight);
+	}
+	.vpan8 {
+		height: ($maxHeight * 8 / 12);
+		hasMargin(0, $vmargin, $maxHeight);
+	}
+	.voffset8 {
+		hasMargin(8, $vmargin, $maxHeight);
+	}
+	.vpan7 {
+		height: ($maxHeight * 7 / 12);
+		hasMargin(0, $vmargin, $maxHeight);
+	}
+	.voffset7 {
+		hasMargin(7, $vmargin, $maxHeight);
+	}
+	.vpan6 {
+		height: ($maxHeight * 6 / 12);
+		hasMargin(0, $vmargin, $maxHeight);
+	}
+	.voffset6 {
+		hasMargin(6, $vmargin, $maxHeight);
+	}
+	.vpan5 {
+		height: ($maxHeight * 5 / 12);
+		hasMargin(0, $vmargin, $maxHeight);
+	}
+	.voffset5 {
+		hasMargin(5, $vmargin, $maxHeight);
+	}
+	.vpan4 {
+		height: ($maxHeight * 4 / 12);
+		hasMargin(0, $vmargin, $maxHeight);
+	}
+	.voffset4 {
+		hasMargin(4, $vmargin, $maxHeight);
+	}
+	.vpan3 {
+		height: ($maxHeight * 3 / 12);
+		hasMargin(0, $vmargin, $maxHeight);
+	}
+	.voffset3 {
+		hasMargin(3, $vmargin, $maxHeight);
+	}
+	.vpan2 {
+		height: ($maxHeight * 2 / 12);
+		hasMargin(0, $vmargin, $maxHeight);
+	}
+	.voffset2 {
+		hasMargin(2, $vmargin, $maxHeight);
+	}
+	.vpan1 {
+		height: ($maxHeight * 1 / 12);
+		hasMargin(0, $vmargin, $maxHeight);
+	}
+	.voffset1 {
+		hasMargin(1, $vmargin, $maxHeight);
+	}
+}

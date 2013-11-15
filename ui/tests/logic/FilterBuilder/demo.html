@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>NineJS - UI - Filter Builder Demo 1</title>
+	<style>
+	#panel {
+		height: auto;
+		width: 1000px;
+	}
+
+	#panel .dijitTitlePaneContentOuter {
+		height: 500px;
+	}
+
+	.box {
+		float:left;
+		height: auto;
+		width: 100%;
+
+		border: 1px solid #696;
+		/*	padding: 60px 0; */
+		padding-bottom: 15px;
+		/*	text-align: center; */
+		width: 200px;
+		-webkit-border-radius: 15px;
+		-moz-border-radius: 15px;
+		border-radius: 15px;
+		-webkit-box-shadow: #666 0px -2px 3px;
+		-moz-box-shadow: #666 0px -2px 3px;
+		box-shadow: #666 0px -2px 3px;
+		background: #a4b2db;
+/*	background: -webkit-gradient(linear, 0 0, 0 bottom, from(#FFFFFF), to(#A4B2DB)); 
+	background: -webkit-linear-gradient(#FFFFFF, #A4B2DB); 
+	background: -moz-linear-gradient(#FFFFFF, #A4B2DB);
+	background: -ms-linear-gradient(#FFFFFF, #A4B2DB);
+	background: -o-linear-gradient(#FFFFFF, #A4B2DB);
+	background: linear-gradient(#FFFFFF, #A4B2DB);
+	-pie-background: linear-gradient(#FFFFFF, #A4B2DB);
+	behavior: url(/PIE.htc);*/
+
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0, #fff), color-stop(1, #a4b2db));
+	background:-webkit-linear-gradient(top, #fff 0%, #a4b2db 100%);
+	background:-moz-linear-gradient(top, #fff 0%, #a4b2db 100%);
+	background:-o-linear-gradient(top, #fff 0%, #a4b2db 100%);
+	background:-ms-linear-gradient(top, #fff 0%, #a4b2db 100%);
+	background:linear-gradient(top, #fff 0%, #a4b2db 100%);
+}
+</style>
+</head>
+<body class="claro" style="margin-left: 20px">
+	<h2>Filter Builder Demo</h2>
+	<div id="panel">
+		<div class="box" style="width: 100%">
+			<div id="FilterBuilder"></div>
+		</div>
+	</div>
+	<div style="float:left; width: 100%; color: red">
+		Output: <div id="outputNode"></div>
+	</div>
+	<div style="float:left; width: 100%; color: green">
+		Is a valid expression?: <div id="validExpressionNode"></div>
+	</div>
+
+	<script type="text/javascript">
+	var dojoConfig = {
+		parseOnLoad: false,
+		isDebug: true,
+		async: true,
+		packages: [
+		{ name: 'ninejs', location: '../ninejs' },
+		{ name: 'put-selector', location: '../put-selector' },
+		{ name: 'dojox', location: '../dojox' },
+		{ name: 'dijit', location: '../dijit' }],
+		locale: 'es-do',
+		extraLocale: ['en-us'],
+		debugContainerId: 'debugContainer'
+	};
+	</script>
+	<script src="../../../../../dojo/dojo.js"></script>
+	<script type="text/javascript">
+
+	require(['ninejs/ui/logic/FilterBuilder',
+		'ninejs/core/logic/Expression',
+		'ninejs/ui/utils/domUtils',
+		'put-selector/put',
+		'dojo/dom',
+		'ninejs/ui/logic/FilterBuilder/DefaultClipboardStrategy',
+		'ninejs/css!dojo/resources/dojo.css!enable',
+		'ninejs/css!dijit/themes/claro/claro.css!enable'], function(
+	FilterBuilder,
+	Expression,
+	domUtils,
+	put,
+	dom,
+	DefaultClipboardStrategy) {
+
+		var ebuilder = new FilterBuilder({
+			clipboardStrategy: new DefaultClipboardStrategy(),
+			outputNode: dom.byId("outputNode"),
+			fieldList: [{
+				value: "DocumentType",
+				label: "Document Type"
+			}, {
+				value: "LastName",
+				label: "Last Name",
+				dataType: "alphanumeric"
+			}, {
+				value: "Age",
+				label: "Age",
+				dataType: "integer"
+			}, {
+				value: "Weight",
+				label: "Weight",
+				dataType: "decimal"
+			}, {
+				value: "Price",
+				label: "Price",
+				dataType: "decimal",
+				decimalFormat: "currency"
+			}, {
+				value: "IsSingle",
+				label: "Single",
+				dataType: "boolean"
+			}, {
+				value: "BirthDay",
+				label: "Date of Birth",
+				dataType: "date"
+			}, {
+				value: "MeetingDate",
+				label: "Date/Time of Meeting",
+				dataType: "datetime"
+			}, {
+				value: "City",
+				label: "City",
+				dataType: "list",
+				values: ["New York", "London", "Paris"]
+			}, {
+				value: "Gender",
+				label: "Gender",
+				dataType: "list",
+				values: [{
+					value: "M",
+					label: "Male"
+				}, {
+					value: "F",
+					label: "Female"
+				}]
+			}, {
+				value: "UserType",
+				label: "User Type",
+				dataType: "list",
+				values: {
+					normal: "Normal",
+					admin: "Administrator"
+				}
+			}, {
+				value: "TransactionType",
+				label: "Transaction Type",
+				dataType: "list",
+				listValueField: "id",
+				listLabelField: "label",
+				values: [{
+					value: 1,
+					label: "Read"
+				}, {
+					value: 2,
+					label: "Insert"
+				}, {
+					value: 3,
+					label: "Delete"
+				}, {
+					value: 4,
+					label: "Update"
+				}, {
+					value: 5,
+					label: "Commit"
+				}, {
+					value: 6,
+					label: "Rollback"
+				}]
+			}, {
+				value: "TransactionTypeMultiple",
+				label: "Transaction Type Multiple",
+				isMultiValued: true,
+				dataType: "list",
+				listValueField: "id",
+				listLabelField: "label",
+				values: [{
+					value: 1,
+					label: "Read"
+				}, {
+					value: 2,
+					label: "Insert"
+				}, {
+					value: 3,
+					label: "Delete"
+				}, {
+					value: 4,
+					label: "Update"
+				}, {
+					value: 5,
+					label: "Commit"
+				}, {
+					value: 6,
+					label: "Rollback"
+				}]
+			}, {
+				value: "TransactionTypeRadio",
+				label: "Transaction Type Radio",
+				dataType: "list",
+				listType: "radio",
+				listValueField: "id",
+				listLabelField: "label",
+				values: [{
+					value: 1,
+					label: "Read"
+				}, {
+					value: 2,
+					label: "Insert"
+				}, {
+					value: 3,
+					label: "Delete"
+				}, {
+					value: 4,
+					label: "Update"
+				}, {
+					value: 5,
+					label: "Commit"
+				}, {
+					value: 6,
+					label: "Rollback"
+				}]
+			}, {
+				value: "Group",
+				label: "Group",
+				dataType: "record",
+				isMultiValued: true,
+				children: [{
+					value: "DocumentType",
+					label: "Document Type"
+				}, {
+					value: "LastName",
+					label: "Last Name",
+					dataType: "alphanumeric"
+				}, {
+					value: "Age",
+					label: "Age",
+					dataType: "integer"
+				}, {
+					value: "BirthDay",
+					label: "Date of Birth",
+					dataType: "date"
+				}, {
+					value: "MeetingDate",
+					label: "Date/Time of Meeting",
+					dataType: "datetime"
+				}, {
+					value: "City",
+					label: "City",
+					dataType: "list",
+					values: ["New York", "London", "Paris"]
+				}, {
+					value: "NestedGroup",
+					label: "Nested Group",
+					dataType: "record",
+					isMultiValued: true,
+					children: [{
+						value: "SubSubField1",
+						label: "Nested Field 1"
+					}, {
+						value: "SubSubField2",
+						label: "Nested Field 2",
+						dataType: "integer"
+					}]
+				}]
+			}, {
+				value: "Path"
+			},
+				"Field"]
+		}, "FilterBuilder");
+		ebuilder.startup();
+
+		var validNode = dom.byId('validExpressionNode');
+		ebuilder.on('valid', function(data) {
+			domUtils.empty(validNode);
+			put(validNode, '', data.value ? 'yes' : 'no');
+		});
+
+
+		//		var panel = new TitlePane({title: "Filter"},"panel");	
+
+	});
+</script>
+</body>
+</html>

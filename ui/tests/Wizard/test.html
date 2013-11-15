@@ -1,0 +1,47 @@
+<html>
+	<head>
+		<script>
+			var dojoConfig = {
+				baseUrl : '../../../..',
+				packages: [
+					{ name: 'dojo', location: 'dojo' },
+					{ name: 'ninejs', location: 'ninejs' }
+				]
+			};
+		</script>
+		<script src='../../../../dojo/dojo.js'></script>
+		<script type='text/javascript'>
+			require(['ninejs/ui/Wizard', 'ninejs/ui/TransitionPanel', 'ninejs/nineplate', 'ninejs/ui/Skin', 'dojo/domReady!'], function(Wizard, TransitionPanel, nineplate, Skin) {
+				var wizard = new Wizard();
+				var step1 = new TransitionPanel({
+					skin: new Skin({
+						template: nineplate.buildTemplate('<div>Configure your step 1</div>').compileDom()
+					}),
+					label: 'Step 1'
+				});
+				var step2 = new TransitionPanel({
+					skin: new Skin({
+						template: nineplate.buildTemplate('<div>Configure your step 2</div>').compileDom()
+					}),
+					label: 'Step 2'
+				});
+				var step1_5 = new TransitionPanel({
+					skin: new Skin({
+						template: nineplate.buildTemplate('<div>Configure your step 1.5</div>').compileDom()
+					}),
+					label: 'Step 1.5'
+				});
+				wizard.addStep(step1);
+				wizard.addStep(step2);
+				wizard.addStep(step1_5, step2);
+				wizard.show(window.document.body);
+			});
+		</script>
+		<style>
+			
+		</style>
+	</head>
+	<body>
+
+	</body>
+</html>

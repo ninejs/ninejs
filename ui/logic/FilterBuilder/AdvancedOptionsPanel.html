@@ -1,0 +1,35 @@
+<div class="${baseClass}">
+	<div class="nineFbPanelCaption">
+		<div class="nineCloseIcon" data-dojo-attach-point="closeIcon"></div>
+		<div class="nineRightSpacer"></div>
+		<div class="nineHelpIcon" data-dojo-attach-point="helpIcon"></div>
+	</div>
+	<div>
+		<div><span class="nineAdvancedOptionsTitle" data-dojo-attach-point="titleNode"></span></div>
+		<div class="nineFbPadding"><span class="nineAdvancedOptionsMessage" data-dojo-attach-point="messageNode"></span></div>
+		<div class="nineFbPadding">
+			<fieldset class="nineAdvancedOptionsGroupBox">
+				<legend data-dojo-attach-point="conditionEvaluationMessageNode"></legend>
+				<div class="nineFbPadding"><span class="nineAdvancedOptionsMessage" data-dojo-attach-point="conditionEvaluationDescriptionNode"></span></div>
+				<div>
+					<div data-dojo-attach-point="trueRbNode"></div><label class="nineFbHorizontalRb" data-dojo-attach-point="trueNode"></label>
+					<div data-dojo-attach-point="falseRbNode"></div><label class="nineFbHorizontalRb" data-dojo-attach-point="falseNode"></label>
+					<div data-dojo-attach-point="customRbNode"></div><label class="nineFbHorizontalRb" data-dojo-attach-point="customNode"></label>
+				</div>
+			</fieldset>
+		</div>
+		<div class="nineFbPadding">
+			<fieldset class="nineAdvancedOptionsGroupBox">
+				<legend data-dojo-attach-point="conditionModeMessageNode"></legend>
+				<div>
+					<div data-dojo-attach-point="stepByStepRbNode"></div><label data-dojo-attach-point="strictNode"></label>
+					<div class="nineFbAdvancedRbOption"><label data-dojo-attach-point="stepByStepDescriptionNode"></label></div>
+				</div>
+				<div>
+					<div data-dojo-attach-point="advancedModeRbNode"></div><label data-dojo-attach-point="unrestrictedNode"></label>
+					<div class="nineFbAdvancedRbOption"><label data-dojo-attach-point="advancedModeDescriptionNode"></label></div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>

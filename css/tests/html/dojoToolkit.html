@@ -1,0 +1,57 @@
+<html>
+	<head>
+		<style type="text/css">
+			.startHidden {
+				display: none;
+			}
+		</style>
+		<script type="text/javascript">
+			var dojoConfig = {
+			baseUrl : '../../../..',
+					packages: [
+						{ name: 'dojo', location: 'dojo' },
+						{ name: 'ninejs', location: 'ninejs' }
+					]
+			};
+		</script>
+		<script src='../../../../dojo/dojo.js'></script>
+		<script type='text/javascript'>
+			require(['ninejs/css!../resources/style1.css', 'ninejs/css!../resources/style2.less', 'ninejs/css!../resources/style3.css'], function(style1, style2, style3) {
+				
+			});
+		</script>
+	</head>
+	<body>
+		<div class="main">
+			<div>
+				<h1>This is a sample</h1>
+			</div>
+			<div class="child">
+				<h2>First Article</h2>
+				<div class="content">Lorem</div>
+				<div class="itemFooter">by User1</div>
+			</div>
+			<div class="child">
+				<h2>Second Article</h2>
+				<div class="content">Ipsum</div>
+				<div class="itemFooter">by User2</div>
+			</div>
+			<div class="child startHidden styleCss">
+				<h2>Third Article (CSS)</h2>
+				<div class="content">Lorem Impsum</div>
+				<div class="itemFooter">by User3</div>
+			</div>
+			<div class="child startHidden styleLess">
+				<h2>Fourth Article (LESS)</h2>
+				<div class="content">muspmI meroL</div>
+				<div class="itemFooter">by User4</div>
+			</div>
+			<div class="child startHidden styleStylus">
+				<h2>Fifth Article (Stylus)</h2>
+				<div class="content">Ipsum Lorem</div>
+				<div class="itemFooter">by User5</div>
+			</div>
+		</div>
+	</body>
+
+</html>

@@ -1,0 +1,33 @@
+<div class="weFilterBuilder mainNode" id="{id}">
+	<div class="weFilterBuilder mainToolBar" data-dojo-attach-point="defaultToolbarNode"></div>
+	<div class="weFilterBuilder mainContent">
+		<div class="weFilterBuilder singleExpressionHolder" data-dojo-attach-point="singleExpressionHolderNode">
+			<div class="weFilterBuilder checkBoxHolder" data-dojo-attach-point="checkBoxHolderNode">
+				<div data-dojo-attach-point="checkBoxNode"></div>
+			</div>
+			<div class="weFilterBuilder summaryListHolder" data-dojo-attach-point="summaryListHolderNode">
+				<div data-dojo-attach-point="selectedSummarySelectNode"></div>
+			</div>
+			<div class="weFilterBuilder fieldListHolder" data-dojo-attach-point="fieldListHolderNode" style="display: none; opacity: 0">
+				<div class="fieldSelectHolder" data-dojo-attach-point="selectedFieldSelectNode"></div>
+				<div class="funnelHolder"><div data-dojo-attach-point="funnelNode"></div></div>
+			</div>
+
+			<div class="weFilterBuilder operatorListHolder" data-dojo-attach-point="operatorListHolder" style="display: none; opacity: 0">
+				<div data-dojo-attach-point="selectedOperatorSelectNode"></div>
+			</div>
+			<div class="weFilterBuilder valueListHolder" data-dojo-attach-point="valueListHolder" style="display: none; opacity: 0">
+				<div data-dojo-attach-point="selectedValueSelectNode"></div>
+			</div>
+			<div class="weFilterBuilder deleteButtonHolder" data-dojo-attach-point="deleteButtonHolderNode">
+				<span class="weFilterBuilder negativeButton" data-dojo-attach-point="negativeButtonNode" data-dojo-attach-event="onclick: _onNegativeButtonClick" href="javascript:;"></span>
+				<span class="weFilterBuilder resetButton" data-dojo-attach-point="resetButtonNode" data-dojo-attach-event="onclick: _onResetButtonClick" href="javascript:;"></span>
+				<span class="weFilterBuilder deleteButton" data-dojo-attach-point="deleteButtonNode" data-dojo-attach-event="onclick: _onDeleteButtonClick" href="javascript:;"></span>
+			</div>
+			<div class="weFilterBuilder addExpressionButtonHolder" data-dojo-attach-point="addExpressionButtonSingleNode">
+			</div>
+		</div>
+		<div class="weFilterBuilder multiExpressionHolder" data-dojo-attach-point="multiExpressionHolderNode"></div>
+
+	</div>
+</div>

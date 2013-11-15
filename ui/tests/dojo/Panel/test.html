@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>NineJS - UI - Dojo Panel Demo 1</title>
+</head>
+<body class="claro" style="margin-left: 20px">
+	<h2>Dojo Panel Demo</h2>
+	<div id="panel">
+	</div>
+
+	<script type="text/javascript">
+	var dojoConfig = {
+		parseOnLoad: false,
+		isDebug: true,
+		async: true,
+		packages: [
+		{ name: 'ninejs', location: '../ninejs' },
+		{ name: 'dijit', location: '../dijit' }],
+		locale: 'es-do',
+		extraLocale: ['en-us']
+	};
+	</script>
+	<script src="../../../../../dojo/dojo.js"></script>
+	<script type="text/javascript">
+
+	require(['ninejs/ui/dojo/Panel', 'ninejs/ui/Skin', 'ninejs/core/extend', 'dojo/_base/declare', 'ninejs/nineplate', 'ninejs/css!dijit/themes/claro/claro.css!enable', 'dojo/domReady!'], function(
+		Panel, Skin, extend, declare, nineplate
+	) {
+		var templateString = '<div><div><div>TEST</div></div></div>';
+		var template = nineplate.buildTemplate(templateString).compileDom();
+		var skin = new Skin({template: template});
+		var Pan = extend(Panel, {
+			skin: skin
+		});
+		var widget = new Pan({}, 'panel');
+	});
+</script>
+</body>
+</html>
