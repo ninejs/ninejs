@@ -2,6 +2,8 @@
 
 A library for building single-page websites. It relies heavily in Dojo Toolkit for the client side. It contains a lot of tools to help you build applications.
 ## Installation
+**npm**
+    npm install ninejs
 
 **Clone from source control**
 
