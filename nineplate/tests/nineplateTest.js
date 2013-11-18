@@ -288,6 +288,14 @@ describe('nineplate :: Nineplate', function () {
 				assert(parser.parse('<data>${config.data[\'key\'].i18n.get("i18nKey", 5, \'6\',func())}</data>'));
 				done();
 			});
+			it('should parse content ending with percent', function(done) {
+				assert(parser.parse('100%'));
+				done();
+			});
+			it('should parse content ending with dollar', function(done) {
+				assert(parser.parse('100$'));
+				done();
+			});
 		});
 		describe('-> Loops Parsing', function() {
 			it('should parse loops defining an inline template', function(done) {

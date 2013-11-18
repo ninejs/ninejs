@@ -94,6 +94,7 @@ var grammar = {
 			['LeftBraces', '$$ = $1']
 		],
 		'ANYNOLEFTBRACES': [
+			['', '$$ = ""'],
 			['ANYCOMMON', '$$ = $1'],
 			['DollarSign', '$$ = $1'],
 			['PercentSign', '$$ = $1']
