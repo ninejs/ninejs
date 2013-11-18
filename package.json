@@ -10,11 +10,6 @@
   "main": "lib/ninejs",
   "dojoBuild": "profile.build.js",
   "dependencies": {
-    "grunt": "git://github.com/gruntjs/grunt.git",
-    "grunt-simple-mocha": "*",
-    "grunt-jslint": "*",
-    "grunt-contrib-jshint": "*",
-    "node-xml": "~1.0.2",
     "q": "*",
     "underscore": "*",
     "bunyan": "*",
@@ -24,6 +19,10 @@
     "optimist": "~0.6.0"
   },
   "devDependencies": {
+    "node-xml": "~1.0.2",
+    "grunt": "*",
+    "grunt-simple-mocha": "*",
+    "grunt-contrib-jshint": "*",
     "mocha": "~1.12.0",
     "uubench": "*",
     "should": "*",
@@ -37,7 +36,7 @@
     "grunt-mocha-test": "*",
     "dojo": "git://github.com/dojo/dojo.git",
     "jison": "*",
-    "grunt-njs-stylus": "git://github.com/ninejs/grunt-njs-stylus.git",
+    "grunt-njs-css": "*",
     "eyes": "~0.1.8",
     "chai": "~1.7.2",
     "blanket": "~1.1.5"

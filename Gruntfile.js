@@ -122,7 +122,7 @@ function exports(grunt) {
 		}
 	});
 
-	grunt.loadNpmTasks('grunt-njs-stylus');
+	grunt.loadNpmTasks('grunt-njs-css');
 	grunt.loadNpmTasks('grunt-mocha-test');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
