@@ -57,20 +57,23 @@ define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./NavBar.h
 				newItemNode = item.domNode;
 			}
 			else {
-				if (item.domNode) {
+				if (!item.domNode) {
 					newItemNode = setClass(append(parentNode, 'li'), 'cursor-pointer');
 					newItemNode.title = item.tooltip || '';
 					setText(append(newItemNode, 'a'), item.label);
+					if (item.action) {
+						on(newItemNode, 'click', function() {
+							if (self.activeItem) {
+								setClass(self.activeItem, '!active');
+							}
+							item.action.apply(this, arguments);
+							self.activeItem = this;
+							setClass(self.activeItem, 'active');
+						});
+					}
 				}
-				if (item.action) {
-					on(newItemNode, 'click', function() {
-						if (self.activeItem) {
-							setClass(self.activeItem, '!active');
-						}
-						item.action.apply(this, arguments);
-						self.activeItem = this;
-						setClass(self.activeItem, 'active');
-					});
+				else {
+					newItemNode = append(parentNode, item.domNode);
 				}
 				copyClasses.call(this, item, newItemNode);
 			}

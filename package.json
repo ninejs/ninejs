@@ -1,7 +1,7 @@
 {
   "name": "ninejs",
   "description": "NineJs",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Eduardo Burgos <eburgos@gmail.com>",
   "repository": {
     "type": "git",
@@ -16,7 +16,9 @@
     "express": "*",
     "mime": "*",
     "connect": "~2.8.4",
-    "optimist": "~0.6.0"
+    "optimist": "~0.6.0",
+    "cluster": "*",
+    "dojo": "git://github.com/dojo/dojo.git"
   },
   "devDependencies": {
     "node-xml": "~1.0.2",
@@ -34,7 +36,6 @@
     "grunt-contrib-watch": "~0.2.0rc7",
     "requirejs": "*",
     "grunt-mocha-test": "*",
-    "dojo": "git://github.com/dojo/dojo.git",
     "jison": "*",
     "grunt-njs-css": "*",
     "eyes": "~0.1.8",
