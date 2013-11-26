@@ -7,7 +7,7 @@ A library for building single-page websites. It relies heavily in Dojo Toolkit f
 
 **Clone from source control**
 
-    git clone https://eburgos@bitbucket.org/eburgos/ninejs
+    git clone git@github.com:ninejs/ninejs.git
 
 
 
