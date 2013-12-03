@@ -16,13 +16,13 @@
 	@param {Object} Properties - a mixin class that allows a class to have a getter and setter and some events
 	@exports nineplate
 	*/
-	function moduleExport(requireText, extend, Properties, deferredUtils, DomProcessor, TextProcessor) {
+	function moduleExport(requireText, extend, Properties, def, domProcessor, textProcessor) {
 		var Template = extend(Properties, {
 			text: '',
 			toAmd: function(sync) {
 				var preText = 'define([], function() {\n/* jshint -W074 */\n/* globals window: true */\n\'use strict\';\nvar r = ', postText =  ';\nreturn r;\n});\n';
 				if (isNode && !sync) {
-					return deferredUtils.when(this.compileDom(), function(value) {
+					return def.when(this.compileDom(), function(value) {
 						return preText + value + postText;
 					});
 				}
@@ -35,7 +35,7 @@
 						return preText + this.compileText() + postText;
 					}
 					else {
-						return deferredUtils.when(this.compileText(), function(value) {
+						return def.when(this.compileText(), function(value) {
 							return preText + value + postText;
 						});
 					}
@@ -47,12 +47,12 @@
 				var result = this.compiledDomVersion,
 					self = this;
 				if (!result) {
-					result = new DomProcessor().compileDom(this.template, sync, { ignoreHtmlOptimization: false });
+					result = domProcessor.compileDom(this.template, sync, { ignoreHtmlOptimization: false });
 					if (sync) {
 						this.compiledDomVersion = result;
 					}
 					else {
-						result = deferredUtils.when(result, function(val) {
+						result = def.when(result, function(val) {
 							self.compiledDomVersion = val;
 							return val;
 						});
@@ -70,12 +70,12 @@
 					self = this;
 				if (!result) {
 					//Do some processing
-					result = new TextProcessor().compileText(this.template, sync);
+					result = textProcessor.compileText(this.template, sync);
 					if (sync) {
 						this.compiledTextVersion = result;
 					}
 					else {
-						result = deferredUtils.when(result, function(val) {
+						result = def.when(result, function(val) {
 							self.compiledTextVersion = val;
 							return val;
 						});
@@ -151,13 +151,7 @@
 			define(['text/text', './core/extend', './core/ext/Properties', './core/deferredUtils', './nineplate/DomProcessor', './nineplate/TextProcessor'], moduleExport);
 		}
 	} else if (isNode) { //Server side
-		var text = req('./nineplate/utils/node/text'),
-			extend = req('./core/extend'),
-			Properties = req('./core/ext/Properties'),
-			deferredUtils = req('./core/deferredUtils'),
-			DomProcessor = req('./nineplate/DomProcessor'),
-			TextProcessor = req('./nineplate/TextProcessor');
-		module.exports = moduleExport(text, extend, Properties, deferredUtils, DomProcessor, TextProcessor);
+		module.exports = moduleExport(req('./nineplate/utils/node/text'), req('./core/extend'), req('./core/ext/Properties'), req('./core/deferredUtils'), req('./nineplate/DomProcessor'), req('./nineplate/TextProcessor'));
 	} else {
 		// plain script in a browser
 		throw new Error('Non AMD environments are not supported');

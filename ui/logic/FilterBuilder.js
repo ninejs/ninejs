@@ -47,10 +47,11 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 	}
 
 	/*
-	 * The big control that integrates everything and brings us a filtering
-	 * experience.
-	 * @constructor
-	 */
+	The big control that integrates everything and brings us a filtering
+	experience.
+	@constructor
+	@exports FilterBuilder
+	*/
 	FilterBuilder = declare([WidgetBase, TemplatedMixin, WidgetsInTemplateMixin, Evented],
 	{
 		/* Default Controls. You can override if you need */
@@ -66,25 +67,25 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 		expression: null,
 
 		/**
-		 * @type {Object}
 		 * 
 		 * possible properties:
 		 * - keepValuesWhileChangingFields: true if you want the values to be kept when changing from one field to another
+		 * @type {Object}
 		 */
 		config: {},
 
 		/**
-		 * @type {String,Store,Array}
+		 * @type {String|Store|Array}
 		 */
 		fieldList: [],
 
 		/**
-		 * @type {String,Function}
+		 * @type {String|Function}
 		 */
 		valueField: 'value',
 
 		/**
-		 * @type {String,Function}
+		 * @type {String|Function}
 		 */
 		labelField: 'label',
 
@@ -173,9 +174,8 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 		 */
 		template: true,
 		/**
-		 * @type {String} templateString
-		 *       html template for this
-		 *       control
+		 * html template for this control
+		 * @type {String} 
 		 */
 		templateString: template,
 
@@ -875,7 +875,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 		/**
 		 * @internal
 		 */
-		_setFieldListAttr: function( /** @param {String,Store,Array}*/ val)
+		_setFieldListAttr: function( /** @param {String|Store|Array}*/ val)
 		{
 
 			if (lang.isString(val))
@@ -1008,15 +1008,13 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 		/**
 		 * @internal
 		 */
-		_setSummaryListAttr: function( /** @param {String,Store,Array}*/ val)
-		{
+		_setSummaryListAttr: function( /** @param {String|Store|Array}*/ val) {
 			this.summaryList = val;
 			this._doSetSummaryList(val);
 
 		},
 
-		_setSummaryValueAttr: function( /** @param {String} */ val)
-		{
+		_setSummaryValueAttr: function( /** @param {String} */ val) {
 			this.summaryValue = val;
 			if (val)
 			{
@@ -1414,7 +1412,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 		/**
 		 * @internal
 		 */
-		_setDataFieldListAttr: function( /** @param {String,Store,Array}*/ val)
+		_setDataFieldListAttr: function( /** @param {String|Store|Array}*/ val)
 		{
 
 			if (lang.isArray(val))
@@ -2553,9 +2551,6 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 
 		},
 
-		/**
-		 *
-		 */
 		startup: function()
 		{
 			this.inherited(arguments);

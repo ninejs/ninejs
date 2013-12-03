@@ -1,8 +1,5 @@
-/**
- *
- */
 define({
-  not: 'NE',
-  and: 'ET',
-  or: 'AU'
-	});
+	not: 'NE',
+	and: 'ET',
+	or: 'AU'
+});

@@ -1,6 +1,3 @@
-/**
- *
- */
 define({
 	alwaysFalse : 'SIEMPRE FALSO',
 	alwaysTrue : 'SIEMPRE VERDADERO',

@@ -1,18 +1,11 @@
 /* jshint strict: false */
 /**
- * @projectDescription   Expression Builder control.
- *
- * @author   Eduardo Burgos
- * @version  0.1
- *
- * @id Expression
- * @alias Expression
- * @alias ninejs/core/logic/Expression
- * @classDescription Expression used to hold a logic expression and being able to
- * represent it and evaluate it over a collection of data or a service.
- * @return {ninejs/core/logic/Expression}   Returns a new Expression.
- * @constructor
- */
+@author   Eduardo Burgos
+@version  0.1
+@description Expression used to hold a logic expression and being able to
+represent it and evaluate it over a collection of data or a service.
+@exports ninejs/core/logic/Expression
+*/
 define(['dojo/_base/declare', 'dojo/Stateful', 'dojo/i18n!./nls/Expression', 'dojo/_base/array', 'dojo/_base/lang', 'dojo/date/stamp'], function(declare, Stateful, resources, array, lang, stamp) {
 
 	var startsWith = function(src, target) {
@@ -33,6 +26,9 @@ define(['dojo/_base/declare', 'dojo/Stateful', 'dojo/i18n!./nls/Expression', 'do
 		return context[src];
 	};
 
+	/**
+	@constructor
+	*/
 	var Expression = declare([Stateful], {
 
 		/*

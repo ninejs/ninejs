@@ -1,6 +1,3 @@
-/**
- *
- */
 define({
 	root: {
 		addNewCondition: 'Add new condition',

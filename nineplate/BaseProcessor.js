@@ -1,5 +1,5 @@
 /** 
-@module ninejs/nineplate/BaseProcessor 
+@module ninejs/nineplate/baseProcessor 
 @author Eduardo Burgos <eburgos@gmail.com>
 */
 (function() {
@@ -8,19 +8,21 @@
 	var isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
 	var isNode = (typeof(window) === 'undefined');
 	var req = (isDojo && isNode)? global.require : require;
-	function moduleExport(xmlParser, extend) {
-
-		function manualTrim(str){
-			str = str.replace(/^\s+/, '');
-			for(var i = str.length - 1; i >= 0; i-= 1){
-				if(/\S/.test(str.charAt(i))){
-					str = str.substring(0, i + 1);
-					break;
-				}
+	function manualTrim(str){
+		str = str.replace(/^\s+/, '');
+		for(var i = str.length - 1; i >= 0; i-= 1){
+			if(/\S/.test(str.charAt(i))){
+				str = str.substring(0, i + 1);
+				break;
 			}
-			return str;
 		}
-		var XmlNode = extend({
+		return str;
+	}
+	function moduleExport(xmlParser, extend) {
+		var XmlNode,
+			TextParseContext;
+
+		XmlNode = extend({
 			nodeType: function() {
 				return this.node.nodeType;
 			},
@@ -80,13 +82,28 @@
 		}, function(parsedXmlNode) {
 			this.node = parsedXmlNode;
 		});
+		TextParseContext = extend({
+			append: function(line) {
+				this.appendLine();
+				this.r.push(line);
+			},
+			appendLine: function() {
+				if (this.lineBuffer.length) {
+					this.r.push('result.push(\'' + this.lineBuffer.join('') + '\');\n');
+					this.lineBuffer = [];
+				}
+			},
+			getText: function() {
+				return this.r.join('');
+			}
+		}, function() {
+			this.r = [];
+			this.lineBuffer = [];
+		});
 
-		/**
-		@class BaseProcessor
-		@classdesc Common class for DOM processing or text processing of templates
-		*/
-		var BaseProcessor = extend({
+		var baseProcessor = {
 			XmlNode: XmlNode,
+			TextParseContext: TextParseContext,
 			/**
 			returns the string's internal trim result or does a manual trim otherwise
 			@param {String} content - the string to be trimmed
@@ -134,8 +151,8 @@
 					return xmlDoc;
 				}
 			}
-		});
-		return BaseProcessor;
+		};
+		return baseProcessor;
 	}
 
 	if (isAmd) { //AMD

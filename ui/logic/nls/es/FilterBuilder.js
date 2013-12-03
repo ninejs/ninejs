@@ -1,6 +1,3 @@
-/**
- *
- */
 define({
 	addNewCondition: 'Nueva condición',
 	addOperation: 'Agregar Operación',

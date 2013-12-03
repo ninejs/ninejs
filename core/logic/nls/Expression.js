@@ -1,6 +1,6 @@
 /**
- *
- */
+Expression i18n resource file
+*/
 define({
 	root : {
 		alwaysFalse : 'ALWAYS FALSE',

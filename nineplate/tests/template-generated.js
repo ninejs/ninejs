@@ -205,13 +205,11 @@ node = nodes.pop();
 nodes.push(node);
 node = e(node, 'h1', node.ownerDocument);
 result = [];
-result.push('Another h1');
 node.innerHTML = result.join("");
 node = nodes.pop();
 nodes.push(node);
 node = e(node, 'div', node.ownerDocument);
 result = [];
-result.push('Another div');
 node.innerHTML = result.join("");
 node = nodes.pop();
 nodes.push(node);
@@ -293,13 +291,11 @@ context[ident] = temp;
 nodes.push(node);
 node = e(node, 'hi', node.ownerDocument);
 result = [];
-result.push('Hello');
 node.innerHTML = result.join("");
 node = nodes.pop();
 nodes.push(node);
 node = e(node, 'hi', node.ownerDocument);
 result = [];
-result.push('Hi there!');
 node.innerHTML = result.join("");
 node = nodes.pop();
 nodes.push(node);
@@ -312,12 +308,22 @@ av += ' ';
 putValue = context['class'];
 av += putValue || "";
 node.className = av;
-result.push('<span>This is some static text that should be</span><span>rendered</span><span>as innerHTML in a DOM rendered environment. Even though it has variables such as ');
-v = context['number'];
-result.push(v);result.push(' it should be able to render as innerHTML because those variables like ');
-v = context['title'];
-result.push(v);result.push(' are not bound and do not represent an attach point node.</span>');
 node.innerHTML = result.join("");
+node = nodes.pop();
+nodes.push(node);
+node = e(node, 'div', node.ownerDocument);
+attachTemp = r['emptyNode'];
+if (attachTemp) {
+if ( Object.prototype.toString.call( attachTemp ) === '[object Array]' ) {
+attachTemp.push(node);
+}
+else {
+r['emptyNode'] = [attachTemp, node];
+}
+}
+else {
+r['emptyNode'] = node;
+}
 node = nodes.pop();
 nodes.push(node);
 node = e(node, 'div', node.ownerDocument);
@@ -375,8 +381,7 @@ node = nodes.pop();
 nodes.push(node);
 node = e(node, 'div', node.ownerDocument);
 result = [];
-v = context['person']['gender'];
-result.push(v);node.innerHTML = result.join("");
+node.innerHTML = result.join("");
 node = nodes.pop();
 nodes.push(node);
 node = e(node, 'div', node.ownerDocument);
@@ -384,8 +389,7 @@ result = [];
 av = '';
 av += 'age';
 node.className = av;
-v = context['person']['age'];
-result.push(v);node.innerHTML = result.join("");
+node.innerHTML = result.join("");
 node = nodes.pop();
 node = nodes.pop();
 txn = t(node, '', node.ownerDocument);
