@@ -29,7 +29,7 @@ function exports(grunt) {
 					require: 'coverage'
 				}
 			},
-			coverage: {
+			cover: {
 				src: testFiles,
 				options: {
 					reporter: 'html-cov',
@@ -96,6 +96,11 @@ function exports(grunt) {
 					localStorage : true,
 					define : true
 				}
+			}
+		},
+		jscoverage: {
+			all: {
+
 			}
 		},
 		stylus:
@@ -201,7 +206,7 @@ function exports(grunt) {
 	grunt.registerTask('css', ['less', 'ncss', 'stylus']);
 	grunt.registerTask('cover', ['jscoverage', 'mochaTest:cover']);
 	// Default task.
-	grunt.registerTask('default', ['jshint', 'css', 'generateParsers', 'mochaTest']);
+	grunt.registerTask('default', ['jshint', 'css', 'generateParsers', 'jscoverage', 'test']);
 
 }
 

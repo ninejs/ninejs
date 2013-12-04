@@ -63,7 +63,7 @@ describe('core/deferredUtils', function () {
 				},
 				packages: [{
 						name: 'dojo',
-						location: 'dojo'
+						location: 'ninejs/node_modules/dojo'
 					},{
 						name: 'ninejs',
 						location: 'ninejs'

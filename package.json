@@ -40,7 +40,8 @@
     "grunt-njs-css": "*",
     "eyes": "~0.1.8",
     "chai": "~1.7.2",
-    "blanket": "~1.1.5"
+    "blanket": "~1.1.5",
+    "text": "git://github.com/requirejs/text.git"
   },
   "bin": {
     "ninejs": "./bin/ninejs"

@@ -8,7 +8,7 @@ describe('nineplate :: Nineplate', function () {
 			// Configuration Object for Dojo Loader:
 			// jshint unused: false
 			global.dojoConfig = {
-				baseUrl : __dirname + '/../../../../', // Where we will put our packages
+				baseUrl : __dirname + '/../../node_modules/', // Where we will put our packages
 				async: 0, // We want to make sure we are using the "modern" loader
 				has: {
 					'host-node': 1, // Ensure we "force" the loader into Node.js mode
@@ -20,7 +20,7 @@ describe('nineplate :: Nineplate', function () {
 				// explicit about our package map.
 				packages: [{
 						name: 'dojo',
-						location: __dirname + '/../../../dojo'
+						location: __dirname + '/../../node_modules/dojo'
 					},{
 						name: 'ninejs',
 						location: __dirname + '/../..'
@@ -134,7 +134,7 @@ describe('nineplate :: Nineplate', function () {
 			nodeRequire: require,
 			paths: {
 				'ninejs': __dirname + '/../../',
-				'text': __dirname + '/../../../text/'
+				'text': __dirname + '/../../node_modules/text/'
 			}
 		});
 		describe('-> Template Rendering', function () {
