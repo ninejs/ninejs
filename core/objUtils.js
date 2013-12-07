@@ -45,9 +45,9 @@
 				return result;
 			}
 
-			var result = 'null',
+			var result = '',
 				o, idx;
-			if (obj) {
+			if ((obj !== null) && (obj !== undefined)) {
 				if (obj instanceof Array) {
 					result = resolveArray(obj);
 				} else if (typeof(obj) === 'string') {
@@ -71,10 +71,22 @@
 					result = obj.toString();
 				}
 			}
+			else if (obj === null) {
+				result = 'null';
+			}
 			return result;
 		}
+		function protoClone(obj) {
+			function A() {
+			}
+			A.prototype = obj;
+			return new A();
+		}
 
-		return { deepToString: deepToString };
+		return {
+			deepToString: deepToString,
+			protoClone: protoClone
+		};
 	}
 
 	if (isAmd) { //AMD

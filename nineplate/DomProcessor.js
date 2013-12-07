@@ -12,7 +12,7 @@
 	/** 
 	@exports domProcessor
 	*/
-	function moduleExport(functions, parser, def, baseProcessor, objUtils/*, renderer*/) {
+	function moduleExport(functions, parser, def, baseProcessor, objUtils, Renderer) {
 		/**
 		Takes a template object and transforms it into a function that renders that xml (or html)
 		@param {string} template - XML text that we want to be compiled.
@@ -20,6 +20,11 @@
 		@param {Object} options - Options object used to modify the compilers behavior.
 		*/
 		function compileDom(template, sync, options) {
+			var renderer = new Renderer(true);
+			renderer
+				.addGlobal('window')
+				.addGlobal('Object')
+				.addGlobal('Array');
 			/*
 			Transforms xml text into an object model that the compiler understands
 			@param {string} template - Nineplate's template object that we want to be compiled.
@@ -47,45 +52,41 @@
 			@param {XmlNode} template - Nineplate's template object that we want to be compiled.
 			*/
 			function processParsedXml(xmlNode, parentNode, elementContext) {
-				var r = '',
-					childrenString = '',
-					cnt,
+				var cnt,
 					attributes,
 					childNodes,
 					TextParseContext,
 					textParseContext;
 				function act(callback) {
-					var tempCtx = {},
-						r;
-					r = callback.call(null, tempCtx);
+					var tempCtx = {};
+					callback.call(null, tempCtx);
 					if (tempCtx.needsDom) {
 						elementContext.needsDom = true;
 					}
-					return r;
 				}
 				function nodeAct(xmlNode, parentXmlNode) {
-					return act.call(null, function(tempCtx) {
-						return processParsedXml(xmlNode, parentXmlNode, tempCtx);
+					act.call(null, function(tempCtx) {
+						processParsedXml(xmlNode, parentXmlNode, tempCtx);
 					});
 				}
 				function processAttributeAct(xmlNode, nodeName) {
-					return act.call(null, function(tempCtx) {
-						return processAttribute(xmlNode, nodeName, tempCtx);
+					act.call(null, function(tempCtx) {
+						processAttribute(xmlNode, nodeName, tempCtx);
 					});
 				}
 				function processTextAct(nodeValue, target, targetType) {
-					return act.call(null, function(tempCtx) {
-						return processTextFragment(nodeValue, target, targetType, null, null, tempCtx);
+					act.call(null, function(tempCtx) {
+						processTextFragment(nodeValue, target, targetType, null, null, tempCtx);
 					});
 				}
 				function visitChildNodes() {
 					attributes = xmlNode.getAttributes();
 					for (cnt = 0; cnt < attributes.length; cnt += 1) {
-						childrenString += nodeAct(attributes[cnt], xmlNode);
+						nodeAct(attributes[cnt], xmlNode);
 					}
 					childNodes = xmlNode.getChildNodes();
 					for (cnt = 0; cnt < childNodes.length; cnt += 1) {
-						childrenString += nodeAct(childNodes[cnt], xmlNode);
+						nodeAct(childNodes[cnt], xmlNode);
 					}
 					if (!elementContext.needsDom && !options.ignoreHtmlOptimization) { //Taking the innerHTML route instead
 						TextParseContext = baseProcessor.TextParseContext;
@@ -94,21 +95,32 @@
 							processParsedXml(childNodes[cnt], xmlNode, elementContext);
 						}
 						textParseContext.appendLine();
-						r += 'result = [];\n';
-						childrenString = '';
+						renderer.addAssignment('result', renderer.literal([]));
+						
 						attributes = xmlNode.getAttributes();
 						for (cnt = 0; cnt < attributes.length; cnt += 1) {
-							childrenString += nodeAct(attributes[cnt], xmlNode);
+							nodeAct(attributes[cnt], xmlNode);
 						}
-						r += childrenString;
-						r += textParseContext.getText();
+						//r += childrenString;
+						//r += textParseContext.getText();
 						if (childNodes.length) {
-							r += 'node.innerHTML = result.join("");\n';
+							renderer
+								.addAssignment(
+									renderer
+										.expression('node')
+										.member('innerHTML'),
+									renderer
+										.expression('result')
+										.member('join')
+										.invoke(
+											renderer.literal('')
+										)
+									);
 						}
 					}
-					else {
-						r += childrenString;
-					}
+					// else {
+					// 	r += childrenString;
+					// }
 				}
 				function nodeType(xmlNode) {
 					return xmlNode.nodeType();
@@ -117,303 +129,581 @@
 					return xmlNode.nodeValue();
 				}
 				if (!parentNode) {
-					r += 'if (!document) {\ndocument = window.document;\n}\n';
-					r += 'var nodes = [], node, att, txn, attachTemp, putValue, x, y, e = (fn.tst()?fn.e:fn.ae), a = fn.a, t = fn.t, av, result, v;\n';
-					r += solveTagName(xmlNode, true, elementContext);
-					r += 'nodes.push(node);\n';
+					renderer
+						.addCondition(renderer.not(renderer.varName('document'))).renderer
+						.addAssignment('document', 'window.document');
+					renderer
+						.addVar('nodes', renderer.raw('[]'))
+						.addVar('node')
+						.addVar('att')
+						.addVar('txn')
+						.addVar('attachTemp')
+						.addVar('putValue')
+						.addVar('x')
+						.addVar('y')
+						.addVar('e', '(' + renderer.varName('fn') + '.tst()?' + renderer.varName('fn') + '.e:' + renderer.varName('fn') + '.ae)')
+						.addVar('a', renderer.varName('fn') + '.a')
+						.addVar('t', renderer.varName('fn') + '.t')
+						.addVar('av')
+						.addVar('result')
+						.addVar('v');
+					solveTagName(xmlNode, true, elementContext);
+					renderer
+						.addStatement(renderer.expression('nodes').member('push').invoke(renderer.expression('node')));
 					visitChildNodes();
-					r += 'node = nodes.pop();\n';
-					r += 'r.domNode = node;\n';
+					renderer.addAssignment('node', renderer.expression('nodes').member('pop').invoke());
+					renderer.addAssignment(renderer.expression('r').member('domNode'), renderer.expression('node'));
 				} else {
 					if (nodeType(xmlNode) === 1 /* Element */ ) {
-						r += 'nodes.push(node);\n';
-						r += solveTagName(xmlNode, false, elementContext);
+						renderer
+							.addStatement(renderer.expression('nodes').member('push').invoke(renderer.expression('node')));
+						solveTagName(xmlNode, false, elementContext);
 						visitChildNodes();
-						r += 'node = nodes.pop();\n';
+						renderer.addAssignment('node', renderer.expression('nodes').member('pop').invoke());
 					} else if (nodeType(xmlNode) === 2 /* Attribute */ ) {
-						r += processAttributeAct(xmlNode, xmlNode.nodeName());
+						processAttributeAct(xmlNode, xmlNode.nodeName());
 					} else if (nodeType(xmlNode) === 3 /* Text */ ) {
-						r += 'txn = t(node, \'\', node.ownerDocument);\n';
-						r += processTextAct(nodeValue(xmlNode), 'txn.nodeValue', 'text');
+						renderer.addAssignment('txn', renderer.expression('t').invoke('node', renderer.literal(''), renderer.expression('node').member('ownerDocument')));
+						processTextAct(nodeValue(xmlNode), renderer.expression('txn').member('nodeValue'), 'text');
 					}
 				}
-
+			}
+			var forLoopStack = [];
+			function processParsedResult(result, target, targetType, arr, idx, elementContext) {
+				var cnt,
+					fName;
+				if (result.type === 'mixed'){
+					for (cnt=0; cnt < result.content.length; cnt += 1){
+						processParsedResult(result.content[cnt], target, targetType, arr, idx, elementContext);
+					}
+				}
+				else if (result.type === 'expressionToken'){
+					processExpressionToken(result, target, targetType, elementContext);
+				}
+				else if (result.type === 'any'){
+					renderer
+						.addAssignment(
+							target,
+							target.op('+', renderer.literal(baseProcessor.safeFilter(result.content)))
+						);
+//					r += target + ' += \'' + baseProcessor.safeFilter(result.content) + '\';\n';
+				}
+				else if (result.type === 'beginFor'){
+					fName = renderer.getNewVariable();
+					forLoopStack.push(fName);
+					renderer = renderer.innerFunction(fName);
+					renderer
+						.addParameter('context')
+						.addVar('arr')
+						.addVar('temp')
+						.addVar('cnt')
+						.addVar('ident', renderer.literal(result.identifier));
+					renderer
+						.addAssignment(
+							'temp',
+							renderer.expression('context').element('ident')
+						);
+					renderer
+						.addAssignment(
+							'arr',
+							makePutValue(result.value.value, false)
+								.or(
+									renderer.literal([])
+								)
+						);
+					//r += '(function(context) {\n';
+					// r += 'var arr, temp, cnt, ident;\n';
+					// r += 'ident = \'' + result.identifier + '\';\n';
+					//r += 'temp = context[ident];\n';
+					//r += 'arr = ' + makePutValue(result.value.value, false) + ' || [];\n';
+					renderer = renderer
+								.addFor(
+									renderer.newAssignment('cnt', renderer.literal(0)),
+									renderer.expression('cnt')
+										.lessThan(renderer.expression('arr').member('length')),
+									renderer.newAssignment('cnt', renderer.expression('cnt').plus(renderer.literal(1)))
+								);
+					renderer.addAssignment(renderer.expression('context').element(renderer.expression('ident')), renderer.expression('arr').element(renderer.expression('cnt')));
+//					r += 'for (cnt=0;cnt < arr.length; cnt += 1) {\n';
+//					r += 'context[ident] = arr[cnt];\n';
+				}
+				else if (result.type === 'endFor'){
+					renderer = renderer.getParentRenderer();
+					renderer
+						.addAssignment(
+							renderer
+								.expression('context').member(renderer.expression('ident')),
+							renderer.expression('temp')
+						);
+					renderer = renderer.getParentRenderer();
+					fName = forLoopStack.pop();
+					renderer
+						.addStatement(
+							renderer
+								.expression(fName)
+								.member('call')
+								.invoke(
+									renderer.expression('this'),
+									renderer.expression('context')
+								)
+							);
+//					r += '}\n';
+//					r += 'context[ident] = temp;\n';
+//					r += '}).call(this, context);\n';
+				}
+			}
+			function processTextFragment(content, target, targetType, arr, idx, elementContext) {
+				content = baseProcessor.trim(content);
+				if (content) {
+					var parseResult = parser.parse(content);
+					processParsedResult(parseResult, target, targetType, arr, idx, elementContext);
+				}
+			}
+			//MUST RETURN Renderer::Expression
+			function makePutValue(expression, inFunctionCall) {
+				var exp,
+					cnt,
+					arr;
+				if (expression.contentType === 'identifier'){
+					if (expression.content && expression.content.content) {
+						return makePutValue(expression.content);
+					}
+					else {
+						arr = expression.content.split('.');
+						if (inFunctionCall) {
+							exp = renderer.expression('x');
+							for (cnt = 0; cnt < arr.length - 1; cnt += 1){
+								exp = exp.element(renderer.literal(arr[cnt]));
+								// if (cnt === arr.length - 1){
+								// 	t += 'y = x;\n';
+								// }
+								// t += 'x = x[\'' + arr[cnt] + '\'];\n';
+							}
+							if (arr.length > 1) {
+								exp = renderer.newAssignment('y', exp).member(arr[arr.length-1]);
+							}
+						}
+						else {
+							exp = renderer.expression('context');
+							for (cnt = 0; cnt < arr.length; cnt += 1){
+								exp = exp.element(renderer.literal(arr[cnt]));
+							}
+						}
+						return exp;
+					}
+				}
+				else if (expression.contentType === 'functionCall'){
+					return solveFunctionCall(expression, inFunctionCall);
+				}
+				else if (expression.contentType === 'string'){
+					return renderer.literal(baseProcessor.safeFilter(expression.content));
+				}
+				else {
+					throw new Error('unsupported content type ' + expression.contentType);
+				}
+			}
+			function processExpression(expression, target, targetType, elementContext) {
+				var optimized = expression.optimized || ['String', 'DOM', '9js', 'Dijit'],
+					condition;
+				function putValue(targetType) {
+					var cnt;
+					function optimizerSort(a, b) {
+						var map = { '9js': 1, 'Dijit': 2, 'DOM': 3, 'String' : 4};
+						return (map[a] || 4) - (map[b] || 4);
+					}
+					function testPut(opType) {
+						if (opType === 'String') {
+							return renderer.expression('putValue');
+						}
+						else if (opType === 'DOM') {
+							return renderer.expression('putValue').member('tagName');
+						}
+						else if (opType === 'Dijit') {
+							return renderer.expression('putValue').member('domNode');
+						}
+						else if (opType === '9js') {
+							return renderer.expression('putValue').element(renderer.literal('$njsWidget'));
+						}
+					}
+					function processPut(opType) {
+						if (opType === 'String') {
+							renderer
+								.addAssignment(
+									target,
+									renderer.expression(target).plus(renderer.expression('putValue'))
+								);
+						}
+						else if (opType === 'DOM') {
+							renderer.addStatement(renderer.expression('node').member('appendChild').invoke(renderer.expression('putValue')));
+							renderer
+								.addAssignment(
+									'txn',
+									renderer
+										.expression('t')
+										.invoke(
+											renderer.expression('node'),
+											renderer.literal(''),
+											renderer
+												.expression('node')
+												.member('ownerDocument')
+										)
+									);
+//							r += 'node.appendChild(putValue);\ntxn = t(node, \'\', node.ownerDocument);\n';
+						}
+						else if (opType === '9js') {
+							renderer
+								.addStatement(
+									renderer
+										.expression('putValue')
+										.member('show')
+										.invoke(renderer.expression('node'))
+								);
+//							r += 'putValue.show(node);\n';
+						}
+						else if (opType === 'Dijit') {
+							renderer
+								.addStatement(
+									renderer
+										.expression('node')
+										.member('appendChild')
+										.invoke(renderer.expression('putValue').member('domNode'))
+								);
+//							r += 'node.appendChild(putValue.domNode);\n';
+						}
+					}
+					if (targetType === 'attr'){
+						renderer.addAssignment(target, renderer.expression('putValue').or(renderer.literal('')));
+//						r += target + ' += putValue || "";\n';
+					}
+					else if (targetType === 'text'){
+						if (optimized.length > 1) {
+							elementContext.needsDom = true;
+							renderer = renderer.addCondition(renderer.expression('putValue')).renderer;
+							//r += 'if (putValue) {\n';
+							optimized = optimized.sort(optimizerSort);
+							for (cnt = 0; cnt < optimized.length; cnt += 1) {
+								if (cnt === 0) {
+									condition = renderer.addCondition(testPut(optimized[cnt]));
+									renderer = condition.renderer;
+								}
+								else {
+									renderer = condition.elseIf(testPut(optimized[cnt]));
+								}
+								processPut(optimized[cnt]);
+							}
+							renderer = renderer.getParentRenderer(); //out of inner if
+							renderer = renderer.getParentRenderer(); //out of if(putValue)
+							//r += '}\n';
+						}
+						else {
+							if (optimized[0] !== 'String') {//Only String optimizers are elegible for an innerHTML solution
+								elementContext.needsDom = true;
+							}
+							processPut(optimized[0]);
+						}
+					}
+				}
+				var r = '';
+				if ((expression.contentType === 'identifier') || (expression.contentType === 'functionCall')){
+					renderer.addAssignment('putValue', makePutValue(expression));
+					putValue(targetType);
+					//var putValueText = 'putValue = ' + makePutValue(expression) + ';\n';
+					//r += putValueText;
+					//r += putValue(targetType);
+				// }
+				// else if (expression.contentType === 'functionCall') {
+				// 	var putValueText = 'putValue = ' + makePutValue(expression) + ';\n';
+				// 	r += putValueText;
+				// 	r += putValue(targetType);
+				}
+				else {
+					console.log('unsupported expression content type: ');
+					console.log(expression);
+				}
 				return r;
 			}
+			/**
+			If the parser finds a live expression then it attempts to rewrite the whole element or attribute on change
+			*/
+			function processLiveExpression(/*expression, target, targetType, elementContext*/) {
+				return processExpression.apply(null, arguments);
+			}
+			
+			/**
+			Tells whether a given class attribute is representing an attach point
+			@param {Object|Array|Function|String} obj - the object to be represented
+			*/
+			function isAttachPoint(xmlNode) {
+				return (/^data-(ninejs-attach|dojo-attach-point)$/).test(xmlNode.nodeName());
+			}
+			function processAttachPoint(xmlNode) {
+				var condition,
+					conditionRenderer,
+					innerCondition,
+					innerElse,
+					elseRenderer;
+				renderer
+					.addAssignment(
+						'attachTemp',
+						renderer
+							.expression('r')
+							.element(renderer.literal(xmlNode.value()))
+					);
+				condition = renderer.addCondition(renderer.expression('attachTemp'));
+				conditionRenderer = condition.renderer;
+				innerCondition = conditionRenderer
+					.addCondition(
+						conditionRenderer
+							.expression('Object')
+							.member('prototype')
+							.member('toString')
+							.member('call')
+							.invoke(conditionRenderer.expression('attachTemp'))
+							.equals(
+								conditionRenderer.literal('[object Array]')
+							)
+					);
+				innerCondition
+					.renderer
+					.addStatement(
+						innerCondition.renderer
+							.expression('attachTemp')
+							.member('push')
+							.invoke(
+								innerCondition.renderer.expression('node')
+							)
+					);
+				innerElse = innerCondition.elseDo();
+				innerElse
+					.addAssignment(
+						innerElse
+							.expression('r')
+							.element(innerElse.literal(xmlNode.value())),
+						innerElse
+							.array()
+								.add(innerElse.expression('attachTemp'))
+								.add(innerElse.expression('node'))
+					);
+				elseRenderer = condition.elseDo();
+				elseRenderer
+					.addAssignment(
+						elseRenderer
+							.expression('r')
+							.element(elseRenderer.literal(xmlNode.value())),
+						elseRenderer
+							.expression('node')
+					);
+				//return 'attachTemp = r[\'' + xmlNode.value() + '\'];\nif (attachTemp) {\nif ( Object.prototype.toString.call( attachTemp ) === \'[object Array]\' ) {\nattachTemp.push(node);\n}\nelse {\nr[\'' + xmlNode.value() + '\'] = [attachTemp, node];\n}\n}\nelse {\nr[\'' + xmlNode.value() + '\'] = node;\n}\n';
+			}
+			function processExpressionToken(result, target, targetType, elementContext) {
+				if (result.modifier === 'live') {
+					if (result.value.type === 'expression'){
+						processLiveExpression(result.value, target, targetType, elementContext);
+					}
+					else {
+						console.log('unsupported expression token type: ');
+						console.log(result.value);
+					}
+				}
+				else {
+					if (result.value.type === 'expression'){
+						processExpression(result.value, target, targetType, elementContext);
+					}
+					else {
+						console.log('unsupported expression token type: ');
+						console.log(result.value);
+					}
+				}
+			}
+			//MUST return Renderer::Expression
+			function solveFunctionCall(expression, inFunctionCall){
+				var arr = expression['arguments'];
+				var cnt;
+				var functionArgs = [];
+				for (cnt = 0; cnt < arr.length; cnt += 1){
+					functionArgs.push(makePutValue(arr[cnt]));
+				}
+				if (inFunctionCall) {
+					renderer.addAssignment('x', makePutValue(expression.content, true));
+					renderer
+						.addAssignment(
+							'x',
+							renderer
+								.expression('x')
+								.member('apply')
+								.invoke(
+									renderer.expression('y'),
+									renderer.array(functionArgs)
+								)
+						);
+					return renderer.expression('x');
+//					r += 'y = x;\nx = x.apply(y, [' + functionArgs.join(', ') + ']);\n';
+				}
+				else {
+					if (expression.content && expression.content.contentType !== 'functionCall') {
+						return renderer
+							.newAssignment(
+								'x',
+								makePutValue(expression.content, false)
+									.member('apply')
+									.invoke(renderer.expression('context'), renderer.array(functionArgs))
+								);
+					}
+					else {
+						return renderer
+							.newAssignment(
+								'x',
+								makePutValue(expression.content, false)
+									.member('apply')
+									.invoke(renderer.expression('x'), renderer.array(functionArgs))
+								);
+					}
+// 					renderer
+// 						.addAssignment('x', renderer.expression('context'));
+// //					r += 'null;\nx = context;\n';
+// 					renderer
+// 						.addAssignment('x', renderer.expression('context'));
+// //					r += 'y = context;\n';
+// ///////////////
+// 					renderer.addAssignment('y', renderer.expression('x'));
+// 					renderer.addAssignment(
+// 						'putValue',
+// 						renderer
+// 							.expression('x')
+// 							.member('apply')
+// 							.invoke(
+// 								renderer.expression('y'),
+// 								renderer.array(functionArgs)
+// 							)
+// 					);
+// 					return makePutValue(expression.content, true);
+//					r += makePutValue(expression.content, true) + 'y = x;\nputValue = x.apply(y, [' + functionArgs.join(', ') + ']);\n';
+				}
+			}
+			function solveTagName(xmlNode, isRoot, elementContext) {
+				if (xmlNode.hasVariableTagName()) {
+					xmlNode.getVariableTagName(function(val) {
+						processTextFragment(val, renderer.expression('x'), 'attr', null, null, elementContext);
+					});
+					if (isRoot) {
+						renderer
+							.addAssignment(
+								'node',
+								renderer
+									.expression('document')
+									.member('createElement')
+									.invoke(
+										renderer.expression('putValue').or(renderer.literal(xmlNode.nodeName()))
+									)
+							);
+//						r += 'node = document.createElement(putValue || \'' + xmlNode.nodeName() + '\');\n';
+					}
+					else {
+						renderer
+							.addAssignment(
+								'node',
+								renderer
+									.expression('e')
+									.invoke(
+										renderer.expression('node'),
+										renderer.expression('putValue').or(renderer.literal(xmlNode.nodeName())),
+										renderer.expression('node').member('ownerDocument')
+									)
+							);
+//						r += 'node = e(node, putValue || \'' + xmlNode.nodeName() + '\', node.ownerDocument);\n';
+					}
+				}
+				else {
+					if (isRoot) {
+						renderer
+							.addAssignment(
+								'node',
+								renderer
+									.expression('document')
+									.member('createElement')
+									.invoke(
+										renderer.literal(xmlNode.nodeName())
+									)
+							);
+//						r += 'node = document.createElement(\'' + xmlNode.nodeName() + '\');\n';
+					}
+					else {
+						renderer
+							.addAssignment(
+								'node',
+								renderer
+									.expression('e')
+									.invoke(
+										renderer.expression('node'),
+										renderer.literal(xmlNode.nodeName()),
+										renderer.expression('node').member('ownerDocument')
+									)
+							);
+//						r += 'node = e(node, \'' + xmlNode.nodeName() + '\', node.ownerDocument);\n';
+					}
+				}
+			}
+			function processAttribute(xmlNode, attName, elementContext) {
+				if (isAttachPoint(xmlNode) || attName === 'data-ninejs-tagName') {
+					elementContext.needsDom = true;
+					processAttachPoint(xmlNode);
+				} else {
+					renderer.addAssignment('av', renderer.literal(''));
+//					r += 'av = \'\';\n';
+					processTextFragment(xmlNode.value(), renderer.expression('av'), 'attr', null, null, elementContext);
+					if (attName === 'class') {
+						renderer
+							.addAssignment(
+								renderer.expression('node').member('className'),
+								renderer.expression('av')
+							);
+//						r += 'node.className = av;\n';
+					}
+					else {
+						renderer
+							.addStatement(
+								renderer
+									.expression('node')
+									.member('setAttribute')
+									.invoke(
+										renderer.literal(attName),
+										renderer.expression('av')
+									)
+							);
+//						r += 'node.setAttribute(\'' + attName + '\', av);\n';
+					}
+				}
+//				return r;
+			}
 			var result,
-				buildString,
 				promise;
 			//Do some processing
-			buildString = '\'use strict\';\n';
-			buildString += 'var fn, r = {};\n';
-			buildString += 'fn = ' + objUtils.deepToString(functions) + ';\n';
+			renderer
+				.addParameter('context')
+				.addParameter('document')
+				.init()
+				.addVar('fn', objUtils.deepToString(functions))
+				.addVar('r', renderer.raw('{}'));
 
 			if (sync) {
-				/* jshint evil: true */
-				buildString += processDom();
-				buildString += 'return r;\n';
-				result = new Function(['context', 'document'], buildString);
+				//buildString += processDom();
+				processDom();
+				renderer.addReturn(renderer.varName('r'));
+				result = renderer.renderFunction();
 			}
 			else {
 				promise = processDom();
-				return def.when(promise, function(value) {
-					/* jshint evil: true */
+				return def.when(promise, function(/*value*/) {
 					var result;
-					buildString += value;
-					buildString += 'return r;\n';
-					result = new Function(['context', 'document'], buildString);
+					//buildString += value;
+					renderer.addReturn('r');
+					result = renderer.renderFunction();
 					return result;
 				});
 			}
 			return result;
 		}
-		function makePutValue(expression, inFunctionCall) {
-			var r = '', cnt, t, arr;
-			if (expression.contentType === 'identifier'){
-				if (expression.content && expression.content.content) {
-					r += makePutValue(expression.content);
-				}
-				else {
-					arr = expression.content.split('.');
-					if (inFunctionCall) {
-						t = '';
-						for (cnt = 0; cnt < arr.length; cnt += 1){
-							if (cnt === arr.length - 1){
-								t += 'y = x;\n';
-							}
-							t += 'x = x[\'' + arr[cnt] + '\'];\n';
-						}
-					}
-					else {
-						t = 'context';
-						for (cnt = 0; cnt < arr.length; cnt += 1){
-							t += '[\'' + arr[cnt] + '\']';
-						}
-					}
-					r += t;
-				}
-			}
-			else if (expression.contentType === 'functionCall'){
-				r += solveFunctionCall(expression, inFunctionCall);
-			}
-			else if (expression.contentType === 'string'){
-				r += '\'' + baseProcessor.safeFilter(expression.content) + '\'';
-			}
-
-			return r;
-		}
-		function processParsedResult(result, target, targetType, arr, idx, elementContext) {
-			var r = '', cnt;
-			if (result.type === 'mixed'){
-				for (cnt=0; cnt < result.content.length; cnt += 1){
-					r += processParsedResult(result.content[cnt], target, targetType, arr, idx, elementContext);
-				}
-			}
-			else if (result.type === 'expressionToken'){
-				r += processExpressionToken(result, target, targetType, elementContext);
-			}
-			else if (result.type === 'any'){
-				r += target + ' += \'' + baseProcessor.safeFilter(result.content) + '\';\n';
-			}
-			else if (result.type === 'beginFor'){
-				r += '(function(context) {\n';
-				r += 'var arr, temp, cnt, ident;\n';
-				r += 'ident = \'' + result.identifier + '\';\n';
-				r += 'temp = context[ident];\n';
-				r += 'arr = ' + makePutValue(result.value.value, false) + ' || [];\n';
-				r += 'for (cnt=0;cnt < arr.length; cnt += 1) {\n';
-				r += 'context[ident] = arr[cnt];\n';
-			}
-			else if (result.type === 'endFor'){
-				r += '}\n';
-				r += 'context[ident] = temp;\n';
-				r += '}).call(this, context);\n';
-			}
-			return r;
-		}
-		function processExpression(expression, target, targetType, elementContext) {
-			var optimized = expression.optimized || ['String', 'DOM', '9js', 'Dijit'];
-			function putValue(targetType) {
-				var r = '', cnt;
-				function optimizerSort(a, b) {
-					var map = { '9js': 1, 'Dijit': 2, 'DOM': 3, 'String' : 4};
-					return (map[a] || 4) - (map[b] || 4);
-				}
-				function testPut(opType) {
-					if (opType === 'String') {
-						r += 'if (putValue) {\n';
-					}
-					else if (opType === 'DOM') {
-						r += 'if (putValue.tagName) {\n';
-					}
-					else if (opType === 'Dijit') {
-						r += 'if (putValue.domNode) {\n';
-					}
-					else if (opType === '9js') {
-						r += 'if (putValue["$njsWidget"]) {\n';
-					}
-				}
-				function processPut(opType) {
-					if (opType === 'String') {
-						r += target + ' += ' + 'putValue;\n';
-					}
-					else if (opType === 'DOM') {
-						r += 'node.appendChild(putValue);\ntxn = t(node, \'\', node.ownerDocument);\n';
-					}
-					else if (opType === '9js') {
-						r += 'putValue.show(node);\n';
-					}
-					else if (opType === 'Dijit') {
-						r += 'node.appendChild(putValue.domNode);\n';
-					}
-				}
-				if (targetType === 'attr'){
-					r += target + ' += putValue || "";\n';
-				}
-				else if (targetType === 'text'){
-					if (optimized.length > 1) {
-						elementContext.needsDom = true;
-						r += 'if (putValue) {\n';
-						optimized = optimized.sort(optimizerSort);
-						for (cnt = 0; cnt < optimized.length; cnt += 1) {
-							if (cnt > 0) {
-								r += 'else ';
-							}
-							testPut(optimized[cnt]);
-							processPut(optimized[cnt]);
-							r += '}\n';
-						}
-						r += '}\n';
-					}
-					else {
-						if (optimized[0] !== 'String') {//Only String optimizers are elegible for an innerHTML solution
-							elementContext.needsDom = true;
-						}
-						processPut(optimized[0]);
-					}
-				}
-				return r;
-			}
-			var r = '';
-			if (expression.contentType === 'identifier'){
-				var putValueText = 'putValue = ' + makePutValue(expression) + ';\n';
-				r += putValueText;
-				r += putValue(targetType);
-			}
-			else if (expression.contentType === 'functionCall') {
-				var putValueText = 'putValue = ' + makePutValue(expression) + ';\n';
-				r += putValueText;
-				r += putValue(targetType);
-			}
-			else {
-				console.log('unsupported expression content type: ');
-				console.log(expression);
-			}
-			return r;
-		}
-		function processLiveExpression(/*expression, target, targetType, elementContext*/) {
-			return processExpression.apply(null, arguments);
-		}
-		function processTextFragment(content, target, targetType, arr, idx, elementContext) {
-			var r = '';
-			content = baseProcessor.trim(content);
-			if (content) {
-				var parseResult = parser.parse(content);
-				r = processParsedResult(parseResult, target, targetType, arr, idx, elementContext);
-			}
-			return r;
-		}
-		/**
-		Tells whether a given class attribute is representing an attach point
-		@param {Object|Array|Function|String} obj - the object to be represented
-		*/
-		function isAttachPoint(xmlNode) {
-			return (/^data-(ninejs-attach|dojo-attach-point)$/).test(xmlNode.nodeName());
-		}
-		function processAttachPoint(xmlNode) {
-			return 'attachTemp = r[\'' + xmlNode.value() + '\'];\nif (attachTemp) {\nif ( Object.prototype.toString.call( attachTemp ) === \'[object Array]\' ) {\nattachTemp.push(node);\n}\nelse {\nr[\'' + xmlNode.value() + '\'] = [attachTemp, node];\n}\n}\nelse {\nr[\'' + xmlNode.value() + '\'] = node;\n}\n';
-		}
-		function processExpressionToken(result, target, targetType, elementContext) {
-			var r = '';
-			if (result.modifier === 'live') {//No me voy, me quedo aqui... 
-				if (result.value.type === 'expression'){
-					r += processLiveExpression(result.value, target, targetType, elementContext);
-				}
-				else {
-					console.log('unsupported expression token type: ');
-					console.log(result.value);
-				}
-			}
-			else {
-				if (result.value.type === 'expression'){
-					r += processExpression(result.value, target, targetType, elementContext);
-				}
-				else {
-					console.log('unsupported expression token type: ');
-					console.log(result.value);
-				}
-			}
-			return r;
-		}
-		function solveFunctionCall(expression, inFunctionCall){
-			var r = '';
-			var arr = expression['arguments'];
-			var cnt;
-			var functionArgs = [];
-			for (cnt=0; cnt < arr.length; cnt += 1){
-				functionArgs.push(makePutValue(arr[cnt]));
-			}
-			if (inFunctionCall) {
-				r += makePutValue(expression.content, true);
-				r += 'y = x;\nx = x.apply(y, [' + functionArgs.join(', ') + ']);\n';
-			}
-			else {
-				r += 'null;\nx = context;\n';
-				r += 'y = context;\n';
-				r += makePutValue(expression.content, true) + 'y = x;\nputValue = x.apply(y, [' + functionArgs.join(', ') + ']);\n';
-			}
-			return r;
-		}
-		function solveTagName(xmlNode, isRoot, elementContext) {
-			var	r = '';
-			if (xmlNode.hasVariableTagName()) {
-				r += xmlNode.getVariableTagName(function(val) {
-					return processTextFragment(val, 'x', 'attr', null, null, elementContext);
-				});
-				if (isRoot) {
-					r += 'node = document.createElement(putValue || \'' + xmlNode.nodeName() + '\');\n';
-				}
-				else {
-					r += 'node = e(node, putValue || \'' + xmlNode.nodeName() + '\', node.ownerDocument);\n';
-				}
-			}
-			else {
-				if (isRoot) {
-					r += 'node = document.createElement(\'' + xmlNode.nodeName() + '\');\n';
-				}
-				else {
-					r += 'node = e(node, \'' + xmlNode.nodeName() + '\', node.ownerDocument);\n';
-				}
-			}
-			return r;
-		}
-		function processAttribute(xmlNode, attName, elementContext) {
-			var r = '';
-			if (isAttachPoint(xmlNode) || attName === 'data-ninejs-tagName') {
-				elementContext.needsDom = true;
-				r += processAttachPoint(xmlNode);
-			} else {
-				r += 'av = \'\';\n';
-				r += processTextFragment(xmlNode.value(), 'av', 'attr', null, null, elementContext);
-				if (attName === 'class') {
-					r += 'node.className = av;\n';
-				}
-				else {
-					r += 'node.setAttribute(\'' + attName + '\', av);\n';
-				}
-			}
-			return r;
-		}
+		
 		/**
 		nineplate's template DOM processor
 		@exports domProcessor
@@ -426,9 +716,9 @@
 
 	if (isAmd) { //AMD
 		//Trying for RequireJS and hopefully every other (Assuming text module is in 'text/text' btw)
-		define(['./utils/functions', './utils/parser/amd', '../core/deferredUtils', './BaseProcessor', '../core/objUtils', './renderers/javascript'], moduleExport);
+		define(['./utils/functions', './utils/parser/amd', '../core/deferredUtils', './BaseProcessor', '../core/objUtils', './renderers/JavascriptRenderer'], moduleExport);
 	} else if (isNode) { //Server side
-		module.exports = moduleExport(req('./utils/functions'), req('./utils/parser/commonjs'), req('../core/deferredUtils'), req('./BaseProcessor'), req('../core/objUtils'), req('./renderers/javascript'));
+		module.exports = moduleExport(req('./utils/functions'), req('./utils/parser/commonjs'), req('../core/deferredUtils'), req('./BaseProcessor'), req('../core/objUtils'), req('./renderers/JavascriptRenderer'));
 	} else {
 		// plain script in a browser
 		throw new Error('Non AMD environments are not supported');
