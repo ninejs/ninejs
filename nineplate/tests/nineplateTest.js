@@ -54,6 +54,9 @@ describe('nineplate :: Nineplate', function () {
 							return function(arg2) {
 								return x + arg2;
 							};
+						},
+						liveChanges: {
+							val: 0
 						}
 					});
 					assert(typeof(result) === 'string');
@@ -98,6 +101,9 @@ describe('nineplate :: Nineplate', function () {
 							return function(arg2) {
 								return x + arg2;
 							};
+						},
+						liveChanges: {
+							val: 0
 						}
 					});
 					assert(typeof(result) === 'string');
@@ -133,8 +139,7 @@ describe('nineplate :: Nineplate', function () {
 			//are loaded relative to the top-level JS file.
 			nodeRequire: require,
 			paths: {
-				'ninejs': __dirname + '/../../',
-				'text': __dirname + '/../../node_modules/text/'
+				'ninejs': __dirname + '/../../'
 			}
 		});
 		describe('-> Template Rendering', function () {
@@ -157,6 +162,9 @@ describe('nineplate :: Nineplate', function () {
 							return function(arg2) {
 								return x + arg2;
 							};
+						},
+						liveChanges: {
+							val: 0
 						}
 					});
 					assert(typeof(result) === 'string');
@@ -182,6 +190,9 @@ describe('nineplate :: Nineplate', function () {
 							return function(arg2) {
 								return x + arg2;
 							};
+						},
+						liveChanges: {
+							val: 0
 						}
 					});
 					expect(result).to.match(/<div class=\'testANumberInAnObject\'>5<\/div>/);

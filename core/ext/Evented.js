@@ -1,29 +1,43 @@
 /** 
 @module ninejs/core/ext/Evented 
 @author Eduardo Burgos <eburgos@gmail.com>
-This is just an abstraction that detects if it's running in client side to return dojo/_base/Deferred or server side to return kriskowal's Q
 */
 (function() {
 	'use strict';
-	var isAmd = (typeof(define) !== 'undefined') && define.amd;
-	var isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
-	var isNode = (typeof(window) === 'undefined');
-	var req = (isDojo && isNode)? global.require : require;
+	var isAmd = (typeof(define) !== 'undefined') && define.amd,
+		isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org',
+		isNode = (typeof(window) === 'undefined'),
+		req = (isDojo && isNode)? global.require : require;
 
-	function evented(Evented) {
-		return Evented;
+	function evented(on, aspect) {
+		var after = aspect.after;
+		return {
+			on: function(type, listener){
+				return on.parse(this, type, listener, function(target, type){
+					return after(target, 'on' + type, listener, true);
+				});
+			},
+			emit: function(/*type, event*/){
+				var args = [this];
+				args.push.apply(args, arguments);
+				return on.emit.apply(on, args);
+			}
+		};
 	}
 
 	if (isAmd) { //AMD
-		//Testing for dojo toolkit
-		if (isDojo) {
-			define(['dojo/Evented'], evented);
-		} else {
-			throw new Error('Evented is unsupported in non-Dojo AMD');
+		if (isNode) {
+			define(['events'], function(events) {
+				return events.EventEmitter;
+			});
+		}
+		else {
+			define(['../on', '../aspect'], evented);
 		}
 	} else if (isNode) { //Server side
+		//If it's node then Evented is the same as EventEmitter
 		var Evented = req('events').EventEmitter;
-		module.exports = evented(Evented);
+		module.exports = Evented;
 	} else {
 		// plain script in a browser
 		throw new Error('Non AMD environments are not supported');

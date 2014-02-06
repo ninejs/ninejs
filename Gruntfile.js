@@ -29,6 +29,13 @@ function exports(grunt) {
 					require: 'coverage'
 				}
 			},
+			watch: {
+				src: testFiles,
+				options: {
+					reporter: 'spec',
+					globals: []
+				}
+			},
 			cover: {
 				src: testFiles,
 				options: {
@@ -54,7 +61,7 @@ function exports(grunt) {
 			},
 			test: {
 				files: underscore.union(testFiles, jsFiles),
-				tasks: ['jshint', 'generateParsers', 'mochaTest:normal', 'mocha']
+				tasks: ['jshint', 'generateParsers', 'mochaTest:watch', 'mocha']
 			}
 
 		},

@@ -6,8 +6,20 @@ var ninejs,
 	path = require('path'),
 	localCmd;
 function globalRun() {
-	ninejs = require('../lib/ninejs');
 	argv = require('optimist').argv;
+	if (process.env['NINEJS_CWD']) {
+		process.chdir(process.env['NINEJS_CWD']);
+	}
+	if (process.env['NINEJS_ARGS']) {
+		var arr = process.env['NINEJS_ARGS'].split(' ');
+		arr.forEach(function(item) {
+			argv._.push(item);
+		});
+	}
+	if (argv.cwd) {
+		process.chdir(argv.cwd);
+	}
+	ninejs = require('../lib/ninejs');
 	if (argv.verbose) {
 		ninejs.on('log', function(data) {
 			console.log(data.message);

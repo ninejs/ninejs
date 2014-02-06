@@ -1,7 +1,7 @@
 {
   "name": "ninejs",
   "description": "NineJs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Eduardo Burgos <eburgos@gmail.com>",
   "repository": {
     "type": "git",
@@ -17,8 +17,8 @@
     "mime": "*",
     "connect": "~2.8.4",
     "optimist": "~0.6.0",
-    "cluster": "*",
-    "dojo": "git+https://github.com/dojo/dojo.git#master"
+    "dojo": "git+https://github.com/dojo/dojo.git#master",
+    "request": "~2.33.0"
   },
   "devDependencies": {
     "node-xml": "~1.0.2",

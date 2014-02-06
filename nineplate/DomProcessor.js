@@ -20,7 +20,16 @@
 		@param {Object} options - Options object used to modify the compilers behavior.
 		*/
 		function compileDom(template, sync, options) {
-			var renderer = new Renderer(true);
+			var rendererStack = [];
+			function pushRenderer(r) {
+				rendererStack.push(r);
+				return r;
+			}
+			function popRenderer() {
+				rendererStack.pop();
+				return rendererStack[rendererStack.length - 1];
+			}
+			var renderer = pushRenderer(new Renderer(true));
 			renderer
 				.addGlobal('window')
 				.addGlobal('Object')
@@ -52,50 +61,60 @@
 			@param {XmlNode} template - Nineplate's template object that we want to be compiled.
 			*/
 			function processParsedXml(xmlNode, parentNode, elementContext) {
-				var cnt,
-					attributes,
+				var attributes,
 					childNodes,
 					TextParseContext,
 					textParseContext;
-				function act(callback) {
+				function tryNewContext(action) {
 					var tempCtx = {};
-					callback.call(null, tempCtx);
+					action(tempCtx);
 					if (tempCtx.needsDom) {
 						elementContext.needsDom = true;
 					}
 				}
 				function nodeAct(xmlNode, parentXmlNode) {
-					act.call(null, function(tempCtx) {
-						processParsedXml(xmlNode, parentXmlNode, tempCtx);
+					tryNewContext(function(tempCtx) {
+						if (nodeType(xmlNode) === 3) {
+							processParsedXml(xmlNode, parentXmlNode, elementContext);
+						}
+						else {
+							processParsedXml(xmlNode, parentXmlNode, tempCtx);
+						}
 					});
 				}
 				function processAttributeAct(xmlNode, nodeName) {
-					act.call(null, function(tempCtx) {
-						processAttribute(xmlNode, nodeName, tempCtx);
+					tryNewContext(function(/*tempCtx*/) {
+						processAttribute(xmlNode, nodeName, elementContext);
 					});
 				}
 				function processTextAct(nodeValue, target, targetType) {
-					act.call(null, function(tempCtx) {
-						processTextFragment(nodeValue, target, targetType, null, null, tempCtx);
+					tryNewContext(function(/*tempCtx*/) {
+						processTextFragment(nodeValue, target, targetType, null, null, elementContext);
 					});
 				}
 				function visitChildNodes() {
+					var cnt,
+						chunk;
 					attributes = xmlNode.getAttributes();
 					for (cnt = 0; cnt < attributes.length; cnt += 1) {
 						nodeAct(attributes[cnt], xmlNode);
 					}
 					childNodes = xmlNode.getChildNodes();
+					chunk = renderer.chunk();
+					renderer = pushRenderer(chunk.renderer);
 					for (cnt = 0; cnt < childNodes.length; cnt += 1) {
 						nodeAct(childNodes[cnt], xmlNode);
 					}
-					if (!elementContext.needsDom && !options.ignoreHtmlOptimization) { //Taking the innerHTML route instead
+					if ((!elementContext.needsDom) && (!options.ignoreHtmlOptimization)) { //Taking the innerHTML route instead
+						chunk.clear();
+						elementContext.asText = true;
 						TextParseContext = baseProcessor.TextParseContext;
 						textParseContext = new TextParseContext();
+						renderer.addAssignment('result', renderer.literal([]));
 						for (cnt = 0; cnt < childNodes.length; cnt += 1) {
 							processParsedXml(childNodes[cnt], xmlNode, elementContext);
 						}
 						textParseContext.appendLine();
-						renderer.addAssignment('result', renderer.literal([]));
 						
 						attributes = xmlNode.getAttributes();
 						for (cnt = 0; cnt < attributes.length; cnt += 1) {
@@ -118,15 +137,106 @@
 									);
 						}
 					}
-					// else {
-					// 	r += childrenString;
-					// }
+					renderer = popRenderer();
 				}
 				function nodeType(xmlNode) {
 					return xmlNode.nodeType();
 				}
 				function nodeValue(xmlNode) {
 					return xmlNode.nodeValue();
+				}
+				function checkRerendering() {
+					var newVarName,
+						newFunctionName,
+						innerCondition,
+						arr = elementContext.reRenderTargets || [],
+						cnt,
+						partCnt,
+						partLen,
+						part,
+						current,
+						watchFn,
+						watchVariable,
+						innerWatch,
+						forIn,
+						len = arr.length;
+					if (elementContext.needsRerenderer) {
+						renderer.addReturn(renderer.varName('node'));
+						renderer.comment('Here starts a live expression', true);
+						renderer.comment('Here ends the live expression');
+						newFunctionName = renderer.convertToFunctionCall();
+						newVarName = renderer.getNewVariable();
+						renderer.addVar(newVarName);
+						watchVariable = renderer.getNewVariable();
+						renderer.addVar(watchVariable);
+						renderer.addAssignment(newVarName, renderer.expression(newFunctionName).invoke());
+						renderer.comment('Add trigger events here');
+						watchFn = renderer.newFunction([]);
+						watchFn
+							.addVar('freeze', watchFn.literal({}))
+							.addVar('freezeNode', watchFn.expression(newVarName));
+						for (cnt = 0; cnt < forLoopVariableStack.length; cnt += 1) {
+							watchFn
+								.addAssignment(
+									watchFn.expression('freeze').element(watchFn.literal(forLoopVariableStack[cnt])),
+									watchFn.expression('context').element(watchFn.literal(forLoopVariableStack[cnt]))
+								);
+						}
+						innerWatch = watchFn.innerFunction('wfn');
+						innerWatch
+							.addParameter('name')
+							.addParameter('oldValue')
+							.addParameter('newValue');
+						innerCondition = innerWatch
+							.addCondition(innerWatch.not(innerWatch.expression('oldValue').equals('newValue').parenthesis())).renderer;
+						innerWatch
+							.addVar('temps', innerWatch.literal({}))
+							.addVar('p');
+						forIn = innerCondition.addForIn(innerWatch.expression('p'), innerWatch.expression('freeze'));
+						forIn.addAssignment(forIn.expression('temps').element(forIn.raw('p')), forIn.expression('context').element(forIn.raw('p')));
+						forIn.addAssignment(forIn.expression('context').element(forIn.raw('p')), forIn.expression('freeze').element(forIn.raw('p')));
+
+						innerCondition.addAssignment(
+							'freezeNode',
+							innerWatch
+								.expression('freezeNode')
+								.member('parentNode')
+								.member('replaceChild')
+								.invoke(
+									innerWatch.expression(newFunctionName).invoke(),
+									innerWatch.expression('freezeNode')
+								)
+							);
+
+						forIn = innerCondition.addForIn(innerWatch.expression('p'), innerWatch.expression('freeze'));
+						forIn.addAssignment(forIn.expression('context').element(forIn.raw('p')), forIn.expression('temps').element(forIn.raw('p')));
+						
+
+						watchFn.addReturn(watchFn.expression('wfn'));
+
+						renderer.addAssignment(watchVariable, watchFn);
+						for (cnt = 0; cnt < len; cnt += 1) {
+							current = arr[cnt];
+							partLen = current.length;
+							renderer.addAssignment('ctxTemp', renderer.expression('context'));
+							for (partCnt = 0; partCnt < partLen - 1; partCnt += 1) {
+								part = current[partCnt];
+								renderer.addAssignment('ctxTemp', renderer.expression('ctxTemp').element(renderer.literal(part)));
+							}
+							renderer
+								.addCondition(renderer.expression('ctxTemp').member('watch'))
+								.renderer
+								.addStatement(
+									renderer
+										.expression('ctxTemp')
+										.member('watch')
+										.invoke(
+											renderer.literal(current[partLen - 1]),
+											renderer.expression(watchVariable).invoke()
+										)
+								);
+						}
+					}
 				}
 				if (!parentNode) {
 					renderer
@@ -140,6 +250,7 @@
 						.addVar('attachTemp')
 						.addVar('putValue')
 						.addVar('x')
+						.addVar('ctxTemp')
 						.addVar('y')
 						.addVar('e', '(' + renderer.varName('fn') + '.tst()?' + renderer.varName('fn') + '.e:' + renderer.varName('fn') + '.ae)')
 						.addVar('a', renderer.varName('fn') + '.a')
@@ -151,17 +262,23 @@
 					renderer
 						.addStatement(renderer.expression('nodes').member('push').invoke(renderer.expression('node')));
 					visitChildNodes();
+					checkRerendering();
 					renderer.addAssignment('node', renderer.expression('nodes').member('pop').invoke());
 					renderer.addAssignment(renderer.expression('r').member('domNode'), renderer.expression('node'));
 				} else {
 					if (nodeType(xmlNode) === 1 /* Element */ ) {
 						renderer
 							.addStatement(renderer.expression('nodes').member('push').invoke(renderer.expression('node')));
+						renderer = pushRenderer(renderer.chunk().renderer);
 						solveTagName(xmlNode, false, elementContext);
 						visitChildNodes();
+						checkRerendering();
 						renderer.addAssignment('node', renderer.expression('nodes').member('pop').invoke());
+						renderer = popRenderer();
 					} else if (nodeType(xmlNode) === 2 /* Attribute */ ) {
+						renderer = pushRenderer(renderer.chunk().renderer);
 						processAttributeAct(xmlNode, xmlNode.nodeName());
+						renderer = popRenderer();
 					} else if (nodeType(xmlNode) === 3 /* Text */ ) {
 						renderer.addAssignment('txn', renderer.expression('t').invoke('node', renderer.literal(''), renderer.expression('node').member('ownerDocument')));
 						processTextAct(nodeValue(xmlNode), renderer.expression('txn').member('nodeValue'), 'text');
@@ -169,6 +286,7 @@
 				}
 			}
 			var forLoopStack = [];
+			var forLoopVariableStack = [];
 			function processParsedResult(result, target, targetType, arr, idx, elementContext) {
 				var cnt,
 					fName;
@@ -191,7 +309,8 @@
 				else if (result.type === 'beginFor'){
 					fName = renderer.getNewVariable();
 					forLoopStack.push(fName);
-					renderer = renderer.innerFunction(fName);
+					forLoopVariableStack.push(result.identifier);
+					renderer = pushRenderer(renderer.innerFunction(fName));
 					renderer
 						.addParameter('context')
 						.addVar('arr')
@@ -216,27 +335,28 @@
 					// r += 'ident = \'' + result.identifier + '\';\n';
 					//r += 'temp = context[ident];\n';
 					//r += 'arr = ' + makePutValue(result.value.value, false) + ' || [];\n';
-					renderer = renderer
+					renderer = pushRenderer(renderer
 								.addFor(
 									renderer.newAssignment('cnt', renderer.literal(0)),
 									renderer.expression('cnt')
 										.lessThan(renderer.expression('arr').member('length')),
 									renderer.newAssignment('cnt', renderer.expression('cnt').plus(renderer.literal(1)))
-								);
+								));
 					renderer.addAssignment(renderer.expression('context').element(renderer.expression('ident')), renderer.expression('arr').element(renderer.expression('cnt')));
 //					r += 'for (cnt=0;cnt < arr.length; cnt += 1) {\n';
 //					r += 'context[ident] = arr[cnt];\n';
 				}
 				else if (result.type === 'endFor'){
-					renderer = renderer.getParentRenderer();
+					renderer = popRenderer();//Still inside the for loop //renderer.getParentRenderer();
 					renderer
 						.addAssignment(
 							renderer
 								.expression('context').member(renderer.expression('ident')),
 							renderer.expression('temp')
 						);
-					renderer = renderer.getParentRenderer();
+					renderer = popRenderer();//Now at real previous point //renderer = renderer.getParentRenderer();
 					fName = forLoopStack.pop();
+					forLoopVariableStack.pop();
 					renderer
 						.addStatement(
 							renderer
@@ -250,6 +370,9 @@
 //					r += '}\n';
 //					r += 'context[ident] = temp;\n';
 //					r += '}).call(this, context);\n';
+				}
+				else {
+					throw new Error('unsupported token');
 				}
 			}
 			function processTextFragment(content, target, targetType, arr, idx, elementContext) {
@@ -378,21 +501,23 @@
 					else if (targetType === 'text'){
 						if (optimized.length > 1) {
 							elementContext.needsDom = true;
-							renderer = renderer.addCondition(renderer.expression('putValue')).renderer;
+							renderer = pushRenderer(renderer.addCondition(renderer.expression('putValue')).renderer);
 							//r += 'if (putValue) {\n';
 							optimized = optimized.sort(optimizerSort);
 							for (cnt = 0; cnt < optimized.length; cnt += 1) {
 								if (cnt === 0) {
 									condition = renderer.addCondition(testPut(optimized[cnt]));
-									renderer = condition.renderer;
+									renderer = pushRenderer(condition.renderer);
 								}
 								else {
 									renderer = condition.elseIf(testPut(optimized[cnt]));
 								}
 								processPut(optimized[cnt]);
+								if ((cnt + 1) === optimized.length) {
+									renderer = popRenderer();// renderer.getParentRenderer(); //out of inner if
+								}
 							}
-							renderer = renderer.getParentRenderer(); //out of inner if
-							renderer = renderer.getParentRenderer(); //out of if(putValue)
+							renderer = popRenderer();// renderer.getParentRenderer(); //out of if(putValue)
 							//r += '}\n';
 						}
 						else {
@@ -407,14 +532,6 @@
 				if ((expression.contentType === 'identifier') || (expression.contentType === 'functionCall')){
 					renderer.addAssignment('putValue', makePutValue(expression));
 					putValue(targetType);
-					//var putValueText = 'putValue = ' + makePutValue(expression) + ';\n';
-					//r += putValueText;
-					//r += putValue(targetType);
-				// }
-				// else if (expression.contentType === 'functionCall') {
-				// 	var putValueText = 'putValue = ' + makePutValue(expression) + ';\n';
-				// 	r += putValueText;
-				// 	r += putValue(targetType);
 				}
 				else {
 					console.log('unsupported expression content type: ');
@@ -425,7 +542,16 @@
 			/**
 			If the parser finds a live expression then it attempts to rewrite the whole element or attribute on change
 			*/
-			function processLiveExpression(/*expression, target, targetType, elementContext*/) {
+			function processLiveExpression(expression, target, targetType, elementContext) {
+				/* jshint unused: true */
+				elementContext.needsRerenderer = true;
+				elementContext.needsDom = true;
+				if (!elementContext.reRenderTargets) {
+					elementContext.reRenderTargets = [];
+				}
+				if (expression.contentType === 'identifier') {
+					elementContext.reRenderTargets.push((expression.content || '').split('.'));
+				}
 				return processExpression.apply(null, arguments);
 			}
 			
@@ -689,7 +815,7 @@
 				//buildString += processDom();
 				processDom();
 				renderer.addReturn(renderer.varName('r'));
-				result = renderer.renderFunction();
+				result = renderer.getFunction();
 			}
 			else {
 				promise = processDom();
@@ -697,9 +823,13 @@
 					var result;
 					//buildString += value;
 					renderer.addReturn('r');
-					result = renderer.renderFunction();
+					result = renderer.getFunction();
 					return result;
 				});
+			}
+			renderer = popRenderer();
+			if (renderer) {
+				throw new Error('syntax error. May be an unclosed control structure.');
 			}
 			return result;
 		}

@@ -26,6 +26,7 @@ var fn = {t:function (e, text, doc) {
     attachTemp,
     putValue,
     x,
+    ctxTemp,
     y,
     e = (fn.tst()?fn.e:fn.ae),
     a = fn.a,
@@ -33,7 +34,7 @@ var fn = {t:function (e, text, doc) {
     av,
     result,
     v,
-    _0 = function anonymous(context) {
+    _0 = 	function (context) {
 	var arr,
 	    temp,
 	    cnt,
@@ -46,18 +47,18 @@ var fn = {t:function (e, text, doc) {
 		node = e(node,'div',node.ownerDocument);
 		txn = t(node,'',node.ownerDocument);
 		putValue = context['person']['name'];
-if (putValue){
-if (putValue['$njsWidget']){
+		if (putValue){
+			if (putValue['$njsWidget']){
 				putValue.show(node);
 
-			} else if (putValue.domNode){
+			} else 			if (putValue.domNode){
 				node.appendChild(putValue.domNode);
 
-			} else if (putValue.tagName){
+			} else 			if (putValue.tagName){
 				node.appendChild(putValue);
 				txn = t(node,'',node.ownerDocument);
 
-			} else if (putValue){
+			} else 			if (putValue){
 				txn.nodeValue = txn.nodeValue + putValue;
 
 			}
@@ -67,11 +68,79 @@ if (putValue['$njsWidget']){
 	}	context.ident = temp;
 
 },
-    _1 = function anonymous(context) {
+    _1 = 	function () {
+//Here starts a live expression
+node = e(node,'div',node.ownerDocument);
+av = '';
+av = av + 'liveChanges';
+node.className = av;
+txn = t(node,'',node.ownerDocument);
+putValue = context['liveChanges']['val'];
+txn.nodeValue = txn.nodeValue + putValue;
+return node;
+//Here ends the live expression
+
+},
+    _2,
+    _3,
+    _4 = 	function (context) {
 	var arr,
 	    temp,
 	    cnt,
-	    ident = 'person';
+	    ident = 'person',
+	    _0 = 			function () {
+		//Here starts a live expression
+		node = e(node,'div',node.ownerDocument);
+		txn = t(node,'',node.ownerDocument);
+		putValue = context['person']['name'];
+		if (putValue){
+			if (putValue['$njsWidget']){
+				putValue.show(node);
+
+			} else 			if (putValue.domNode){
+				node.appendChild(putValue.domNode);
+
+			} else 			if (putValue.tagName){
+				node.appendChild(putValue);
+				txn = t(node,'',node.ownerDocument);
+
+			} else 			if (putValue){
+				txn.nodeValue = txn.nodeValue + putValue;
+
+			}
+		}		return node;
+		//Here ends the live expression
+
+},
+	    _1,
+	    _2,
+	    _3 = 			function () {
+		//Here starts a live expression
+		node = e(node,'div',node.ownerDocument);
+		txn = t(node,'',node.ownerDocument);
+		putValue = context['person']['gender'];
+		txn.nodeValue = txn.nodeValue + putValue;
+		return node;
+		//Here ends the live expression
+
+},
+	    _4,
+	    _5,
+	    _6 = 			function () {
+		//Here starts a live expression
+		node = e(node,'div',node.ownerDocument);
+		av = '';
+		av = av + 'age';
+		node.className = av;
+		txn = t(node,'',node.ownerDocument);
+		putValue = context['person']['age'];
+		txn.nodeValue = txn.nodeValue + putValue;
+		return node;
+		//Here ends the live expression
+
+},
+	    _7,
+	    _8;
 	temp = context[ident];
 	arr = (context['persons']) || [];
 	for ((cnt = 0); cnt < arr.length; (cnt = cnt + 1)){
@@ -83,53 +152,110 @@ if (putValue['$njsWidget']){
 		av = (putValue) || '';
 		node.setAttribute('data-key',av);
 		nodes.push(node);
-		node = e(node,'div',node.ownerDocument);
-		txn = t(node,'',node.ownerDocument);
-		putValue = context['person']['name'];
-if (putValue){
-if (putValue['$njsWidget']){
-				putValue.show(node);
+		_1 = _0();
+		//Add trigger events here
+		_2 = 			function () {
+			var freeze = {},
+			    freezeNode = _1,
+			    wfn = 				function (name,oldValue,newValue) {
+				var temps = {},
+				    p;
+				if (!(oldValue === newValue)){
+					for (p in freeze){
+					if (freeze.hasOwnProperty(p)) {
+						temps[p] = context[p];
+						context[p] = freeze[p];
 
-			} else if (putValue.domNode){
-				node.appendChild(putValue.domNode);
+					}
+					}					freezeNode = freezeNode.parentNode.replaceChild(_0(),freezeNode);
+					for (p in freeze){
+					if (freeze.hasOwnProperty(p)) {
+						context[p] = temps[p];
 
-			} else if (putValue.tagName){
-				node.appendChild(putValue);
-				txn = t(node,'',node.ownerDocument);
+					}
+					}
+				}
+};
+			freeze['person'] = context['person'];
+			return wfn;
 
-			} else if (putValue){
-				txn.nodeValue = txn.nodeValue + putValue;
+};
+		ctxTemp = context;
+		ctxTemp = ctxTemp['person'];
+		if (ctxTemp.watch){
+			ctxTemp.watch('name',_2());
 
-			}
 		}		node = nodes.pop();
 		nodes.push(node);
-		node = e(node,'div',node.ownerDocument);
-		txn = t(node,'',node.ownerDocument);
-		putValue = context['person']['gender'];
-		txn.nodeValue = txn.nodeValue + putValue;
-		txn = t(node,'',node.ownerDocument);
-		putValue = context['person']['gender'];
-		txn.nodeValue = txn.nodeValue + putValue;
-		result = [];
-		node.innerHTML = result.join('');
-		node = nodes.pop();
+		_4 = _3();
+		//Add trigger events here
+		_5 = 			function () {
+			var freeze = {},
+			    freezeNode = _4,
+			    wfn = 				function (name,oldValue,newValue) {
+				var temps = {},
+				    p;
+				if (!(oldValue === newValue)){
+					for (p in freeze){
+					if (freeze.hasOwnProperty(p)) {
+						temps[p] = context[p];
+						context[p] = freeze[p];
+
+					}
+					}					freezeNode = freezeNode.parentNode.replaceChild(_3(),freezeNode);
+					for (p in freeze){
+					if (freeze.hasOwnProperty(p)) {
+						context[p] = temps[p];
+
+					}
+					}
+				}
+};
+			freeze['person'] = context['person'];
+			return wfn;
+
+};
+		ctxTemp = context;
+		ctxTemp = ctxTemp['person'];
+		if (ctxTemp.watch){
+			ctxTemp.watch('gender',_5());
+
+		}		node = nodes.pop();
 		nodes.push(node);
-		node = e(node,'div',node.ownerDocument);
-		av = '';
-		av = av + 'age';
-		node.className = av;
-		txn = t(node,'',node.ownerDocument);
-		putValue = context['person']['age'];
-		txn.nodeValue = txn.nodeValue + putValue;
-		txn = t(node,'',node.ownerDocument);
-		putValue = context['person']['age'];
-		txn.nodeValue = txn.nodeValue + putValue;
-		result = [];
-		av = '';
-		av = av + 'age';
-		node.className = av;
-		node.innerHTML = result.join('');
-		node = nodes.pop();
+		_7 = _6();
+		//Add trigger events here
+		_8 = 			function () {
+			var freeze = {},
+			    freezeNode = _7,
+			    wfn = 				function (name,oldValue,newValue) {
+				var temps = {},
+				    p;
+				if (!(oldValue === newValue)){
+					for (p in freeze){
+					if (freeze.hasOwnProperty(p)) {
+						temps[p] = context[p];
+						context[p] = freeze[p];
+
+					}
+					}					freezeNode = freezeNode.parentNode.replaceChild(_6(),freezeNode);
+					for (p in freeze){
+					if (freeze.hasOwnProperty(p)) {
+						context[p] = temps[p];
+
+					}
+					}
+				}
+};
+			freeze['person'] = context['person'];
+			return wfn;
+
+};
+		ctxTemp = context;
+		ctxTemp = ctxTemp['person'];
+		if (ctxTemp.watch){
+			ctxTemp.watch('age',_8());
+
+		}		node = nodes.pop();
 		node = nodes.pop();
 		txn = t(node,'',node.ownerDocument);
 
@@ -149,7 +275,7 @@ av = (putValue) || '';
 node.className = av;
 attachTemp = r['${tagName}'];
 if (attachTemp){
-if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
+	if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
 		attachTemp.push(node);
 
 	} 		r['${tagName}'] = [];
@@ -159,7 +285,7 @@ nodes.push(node);
 node = e(node,'h1',node.ownerDocument);
 attachTemp = r['titleNode'];
 if (attachTemp){
-if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
+	if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
 		attachTemp.push(node);
 
 	} 		r['titleNode'] = [];
@@ -168,17 +294,17 @@ if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
 txn = t(node,'',node.ownerDocument);
 putValue = context['title'];
 if (putValue){
-if (putValue['$njsWidget']){
+	if (putValue['$njsWidget']){
 		putValue.show(node);
 
-	} else if (putValue.domNode){
+	} else 	if (putValue.domNode){
 		node.appendChild(putValue.domNode);
 
-	} else if (putValue.tagName){
+	} else 	if (putValue.tagName){
 		node.appendChild(putValue);
 		txn = t(node,'',node.ownerDocument);
 
-	} else if (putValue){
+	} else 	if (putValue){
 		txn.nodeValue = txn.nodeValue + putValue;
 
 	}
@@ -187,7 +313,7 @@ nodes.push(node);
 node = e(node,'div',node.ownerDocument);
 attachTemp = r['contentNode'];
 if (attachTemp){
-if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
+	if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
 		attachTemp.push(node);
 
 	} 		r['contentNode'] = [];
@@ -207,17 +333,17 @@ txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'More content';
 putValue = (x = context['fn'].apply(context,[]));
 if (putValue){
-if (putValue['$njsWidget']){
+	if (putValue['$njsWidget']){
 		putValue.show(node);
 
-	} else if (putValue.domNode){
+	} else 	if (putValue.domNode){
 		node.appendChild(putValue.domNode);
 
-	} else if (putValue.tagName){
+	} else 	if (putValue.tagName){
 		node.appendChild(putValue);
 		txn = t(node,'',node.ownerDocument);
 
-	} else if (putValue){
+	} else 	if (putValue){
 		txn.nodeValue = txn.nodeValue + putValue;
 
 	}
@@ -228,7 +354,7 @@ nodes.push(node);
 node = e(node,'div',node.ownerDocument);
 attachTemp = r['multiAttach'];
 if (attachTemp){
-if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
+	if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
 		attachTemp.push(node);
 
 	} 		r['multiAttach'] = [];
@@ -237,17 +363,17 @@ if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
 txn = t(node,'',node.ownerDocument);
 putValue = (x = (x = context['doubleFunction'].apply(context,[])).apply(x,[]));
 if (putValue){
-if (putValue['$njsWidget']){
+	if (putValue['$njsWidget']){
 		putValue.show(node);
 
-	} else if (putValue.domNode){
+	} else 	if (putValue.domNode){
 		node.appendChild(putValue.domNode);
 
-	} else if (putValue.tagName){
+	} else 	if (putValue.tagName){
 		node.appendChild(putValue);
 		txn = t(node,'',node.ownerDocument);
 
-	} else if (putValue){
+	} else 	if (putValue){
 		txn.nodeValue = txn.nodeValue + putValue;
 
 	}
@@ -256,7 +382,7 @@ nodes.push(node);
 node = e(node,'div',node.ownerDocument);
 attachTemp = r['multiAttach'];
 if (attachTemp){
-if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
+	if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
 		attachTemp.push(node);
 
 	} 		r['multiAttach'] = [];
@@ -266,17 +392,17 @@ txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'This is a number: ';
 putValue = context['number'];
 if (putValue){
-if (putValue['$njsWidget']){
+	if (putValue['$njsWidget']){
 		putValue.show(node);
 
-	} else if (putValue.domNode){
+	} else 	if (putValue.domNode){
 		node.appendChild(putValue.domNode);
 
-	} else if (putValue.tagName){
+	} else 	if (putValue.tagName){
 		node.appendChild(putValue);
 		txn = t(node,'',node.ownerDocument);
 
-	} else if (putValue){
+	} else 	if (putValue){
 		txn.nodeValue = txn.nodeValue + putValue;
 
 	}
@@ -286,19 +412,11 @@ nodes.push(node);
 node = e(node,'h1',node.ownerDocument);
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'Another h1';
-txn = t(node,'',node.ownerDocument);
-txn.nodeValue = txn.nodeValue + 'Another h1';
-result = [];
-node.innerHTML = result.join('');
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'div',node.ownerDocument);
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'Another div';
-txn = t(node,'',node.ownerDocument);
-txn.nodeValue = txn.nodeValue + 'Another div';
-result = [];
-node.innerHTML = result.join('');
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'div',node.ownerDocument);
@@ -308,17 +426,17 @@ node.className = av;
 txn = t(node,'',node.ownerDocument);
 putValue = context['anObject']['aNumber'];
 if (putValue){
-if (putValue['$njsWidget']){
+	if (putValue['$njsWidget']){
 		putValue.show(node);
 
-	} else if (putValue.domNode){
+	} else 	if (putValue.domNode){
 		node.appendChild(putValue.domNode);
 
-	} else if (putValue.tagName){
+	} else 	if (putValue.tagName){
 		node.appendChild(putValue);
 		txn = t(node,'',node.ownerDocument);
 
-	} else if (putValue){
+	} else 	if (putValue){
 		txn.nodeValue = txn.nodeValue + putValue;
 
 	}
@@ -329,17 +447,17 @@ txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'This is a widget';
 putValue = context['button'];
 if (putValue){
-if (putValue['$njsWidget']){
+	if (putValue['$njsWidget']){
 		putValue.show(node);
 
-	} else if (putValue.domNode){
+	} else 	if (putValue.domNode){
 		node.appendChild(putValue.domNode);
 
-	} else if (putValue.tagName){
+	} else 	if (putValue.tagName){
 		node.appendChild(putValue);
 		txn = t(node,'',node.ownerDocument);
 
-	} else if (putValue){
+	} else 	if (putValue){
 		txn.nodeValue = txn.nodeValue + putValue;
 
 	}
@@ -350,19 +468,11 @@ nodes.push(node);
 node = e(node,'hi',node.ownerDocument);
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'Hello';
-txn = t(node,'',node.ownerDocument);
-txn.nodeValue = txn.nodeValue + 'Hello';
-result = [];
-node.innerHTML = result.join('');
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'hi',node.ownerDocument);
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'Hi there!';
-txn = t(node,'',node.ownerDocument);
-txn.nodeValue = txn.nodeValue + 'Hi there!';
-result = [];
-node.innerHTML = result.join('');
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'div',node.ownerDocument);
@@ -377,19 +487,11 @@ nodes.push(node);
 node = e(node,'span',node.ownerDocument);
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'This is some static text that should be';
-txn = t(node,'',node.ownerDocument);
-txn.nodeValue = txn.nodeValue + 'This is some static text that should be';
-result = [];
-node.innerHTML = result.join('');
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'span',node.ownerDocument);
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'rendered';
-txn = t(node,'',node.ownerDocument);
-txn.nodeValue = txn.nodeValue + 'rendered';
-result = [];
-node.innerHTML = result.join('');
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'span',node.ownerDocument);
@@ -401,71 +503,13 @@ txn.nodeValue = txn.nodeValue + ' it should be able to render as innerHTML becau
 putValue = context['title'];
 txn.nodeValue = txn.nodeValue + putValue;
 txn.nodeValue = txn.nodeValue + ' are not bound and do not represent an attach point node.';
-txn = t(node,'',node.ownerDocument);
-txn.nodeValue = txn.nodeValue + 'as innerHTML in a DOM rendered environment. Even though it has variables such as ';
-putValue = context['number'];
-txn.nodeValue = txn.nodeValue + putValue;
-txn.nodeValue = txn.nodeValue + ' it should be able to render as innerHTML because those variables like ';
-putValue = context['title'];
-txn.nodeValue = txn.nodeValue + putValue;
-txn.nodeValue = txn.nodeValue + ' are not bound and do not represent an attach point node.';
-result = [];
-node.innerHTML = result.join('');
 node = nodes.pop();
-nodes.push(node);
-node = e(node,'span',node.ownerDocument);
-txn = t(node,'',node.ownerDocument);
-txn.nodeValue = txn.nodeValue + 'This is some static text that should be';
-txn = t(node,'',node.ownerDocument);
-txn.nodeValue = txn.nodeValue + 'This is some static text that should be';
-result = [];
-node.innerHTML = result.join('');
-node = nodes.pop();
-nodes.push(node);
-node = e(node,'span',node.ownerDocument);
-txn = t(node,'',node.ownerDocument);
-txn.nodeValue = txn.nodeValue + 'rendered';
-txn = t(node,'',node.ownerDocument);
-txn.nodeValue = txn.nodeValue + 'rendered';
-result = [];
-node.innerHTML = result.join('');
-node = nodes.pop();
-nodes.push(node);
-node = e(node,'span',node.ownerDocument);
-txn = t(node,'',node.ownerDocument);
-txn.nodeValue = txn.nodeValue + 'as innerHTML in a DOM rendered environment. Even though it has variables such as ';
-putValue = context['number'];
-txn.nodeValue = txn.nodeValue + putValue;
-txn.nodeValue = txn.nodeValue + ' it should be able to render as innerHTML because those variables like ';
-putValue = context['title'];
-txn.nodeValue = txn.nodeValue + putValue;
-txn.nodeValue = txn.nodeValue + ' are not bound and do not represent an attach point node.';
-txn = t(node,'',node.ownerDocument);
-txn.nodeValue = txn.nodeValue + 'as innerHTML in a DOM rendered environment. Even though it has variables such as ';
-putValue = context['number'];
-txn.nodeValue = txn.nodeValue + putValue;
-txn.nodeValue = txn.nodeValue + ' it should be able to render as innerHTML because those variables like ';
-putValue = context['title'];
-txn.nodeValue = txn.nodeValue + putValue;
-txn.nodeValue = txn.nodeValue + ' are not bound and do not represent an attach point node.';
-result = [];
-node.innerHTML = result.join('');
-node = nodes.pop();
-result = [];
-av = '';
-putValue = context['tagName'];
-av = (putValue) || '';
-av = av + ' ';
-putValue = context['class'];
-av = (putValue) || '';
-node.className = av;
-node.innerHTML = result.join('');
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'div',node.ownerDocument);
 attachTemp = r['emptyNode'];
 if (attachTemp){
-if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
+	if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
 		attachTemp.push(node);
 
 	} 		r['emptyNode'] = [];
@@ -475,20 +519,54 @@ node = nodes.pop();
 nodes.push(node);
 node = e(node,'div',node.ownerDocument);
 nodes.push(node);
+_2 = _1();
+//Add trigger events here
+_3 = 	function () {
+	var freeze = {},
+	    freezeNode = _2,
+	    wfn = 		function (name,oldValue,newValue) {
+		var temps = {},
+		    p;
+		if (!(oldValue === newValue)){
+			for (p in freeze){
+			if (freeze.hasOwnProperty(p)) {
+				temps[p] = context[p];
+				context[p] = freeze[p];
+
+			}
+			}			freezeNode = freezeNode.parentNode.replaceChild(_1(),freezeNode);
+			for (p in freeze){
+			if (freeze.hasOwnProperty(p)) {
+				context[p] = temps[p];
+
+			}
+			}
+		}
+};
+	return wfn;
+
+};
+ctxTemp = context;
+ctxTemp = ctxTemp['liveChanges'];
+if (ctxTemp.watch){
+	ctxTemp.watch('val',_3());
+
+}node = nodes.pop();
+nodes.push(node);
 node = e(node,'div',node.ownerDocument);
 av = '';
 av = av + 'persons';
 node.className = av;
 attachTemp = r['personsNode'];
 if (attachTemp){
-if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
+	if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
 		attachTemp.push(node);
 
 	} 		r['personsNode'] = [];
 
 } 	r['personsNode'] = node;
 txn = t(node,'',node.ownerDocument);
-_1.call(this,context);
+_4.call(this,context);
 node = nodes.pop();
 node = nodes.pop();
 node = nodes.pop();

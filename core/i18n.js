@@ -7,10 +7,11 @@
 		path;
 
 	function moduleExport(extend, Evented, amdText, json) {
-		function getFile(src, require, load) {
+		json = json || global.JSON;
+		function getFile(src, require, load, config) {
 			var obj;
 			if (isAmd) {
-				obj = amdText.load(src, require, load);
+				obj = amdText.load(src, require, load, config);
 			}
 			else if (isNode) {
 				obj = req(src);
@@ -75,7 +76,7 @@
 			I18n,
 			getResource;
 
-		getResource = function(src, require, load) {
+		getResource = function(src, require, load, config) {
 			var obj,
 				root,
 				available = {},
@@ -108,18 +109,18 @@
 				return resourceSet;
 			}
 			if (!load) {
-				obj = getFile(src, require, load);
+				obj = getFile(src, require, load, config);
 				return rest(obj);
 			}
 			else {
 				getFile(src, require, function(obj) {
 					load(rest(json.parse(obj)));
-				});
+				}, config);
 			}
 		};
 		I18n = extend({
-			load: function(mid, require, load) {
-				getResource(mid, require, load);
+			load: function(mid, require, load, config) {
+				getResource(mid, require, load, config);
 			},
 			getResource: getResource
 		});
@@ -132,7 +133,7 @@
 			define(['./extend', './ext/Evented', 'dojo/text', 'dojo/json'], moduleExport);
 		}
 		else {
-			define(['./extend', './ext/Evented', 'text/text', global.JSON], moduleExport);
+			define(['./extend', './ext/Evented', './text'], moduleExport);
 		}
 	} else if (isNode) { //Server side
 		module.exports = moduleExport(req('./extend'), req('./ext/Evented'), {}, JSON);

@@ -47,7 +47,7 @@
 				var result = this.compiledDomVersion,
 					self = this;
 				if (!result) {
-					result = domProcessor.compileDom(this.template, sync, { ignoreHtmlOptimization: false });
+					result = domProcessor.compileDom(this.template, sync, { ignoreHtmlOptimization: true });
 					if (sync) {
 						this.compiledDomVersion = result;
 					}
@@ -147,8 +147,8 @@
 		if (isDojo) {
 			define(['dojo/text', './core/extend', './core/ext/Properties', './core/deferredUtils', './nineplate/DomProcessor', './nineplate/TextProcessor'], moduleExport);
 		} else {
-			//Trying for RequireJS and hopefully every other (Assuming text module is in 'text/text' btw)
-			define(['text/text', './core/extend', './core/ext/Properties', './core/deferredUtils', './nineplate/DomProcessor', './nineplate/TextProcessor'], moduleExport);
+			//Trying for RequireJS and hopefully every other
+			define(['./core/text', './core/extend', './core/ext/Properties', './core/deferredUtils', './nineplate/DomProcessor', './nineplate/TextProcessor'], moduleExport);
 		}
 	} else if (isNode) { //Server side
 		module.exports = moduleExport(req('./nineplate/utils/node/text'), req('./core/extend'), req('./core/ext/Properties'), req('./core/deferredUtils'), req('./nineplate/DomProcessor'), req('./nineplate/TextProcessor'));

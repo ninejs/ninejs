@@ -81,10 +81,10 @@ define(['./core/extend', './css/builder', 'dojo/has', 'dojo/query'], function(ex
 			/*
 			Taken from Stack overflow question 384286
 			*/
-			/* global HTMLElement */
+			/* global window */
 			function isDomElement(o){
 				return (
-					typeof HTMLElement === 'object' ? o instanceof HTMLElement : //DOM2
+					typeof HTMLElement === 'object' ? o instanceof window.HTMLElement : //DOM2
 					o && typeof o === 'object' && o.nodeType === 1 && typeof o.nodeName==='string'
 				);
 			}

@@ -82,10 +82,22 @@
 			A.prototype = obj;
 			return new A();
 		}
+		function isFunction(f) {
+			return typeof(f) === 'function';
+		}
+		function isString(obj) {
+			return Object.prototype.toString.call(obj) === '[object String]';
+		}
+		function isArray(obj) {
+			return (Object.prototype.toString.call(obj) === '[object Array]');
+		}
 
 		return {
 			deepToString: deepToString,
-			protoClone: protoClone
+			protoClone: protoClone,
+			isFunction: isFunction,
+			isString: isString,
+			isArray: isArray
 		};
 	}
 
