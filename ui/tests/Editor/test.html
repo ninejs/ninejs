@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<script>
+			var dojoConfig = {
+				baseUrl : '../../../..',
+				packages: [
+					{ name: 'dojo', location: 'dojo' },
+					{ name: 'ninejs', location: 'ninejs' }
+				]
+			};
+		</script>
+		<script src='../../../../dojo/dojo.js'></script>
+		<style>
+
+		</style>
+	</head>
+	<body>
+		<div id="textEditor"></div>
+		<div id="numberEditor"></div>
+		<div id="dateEditor"></div>
+		<div id="timeEditor"></div>
+		<div id="listEditor"></div>
+		<script type='text/javascript'>
+			require(['ninejs/ui/Editor'], function(Editor) {
+				setTimeout(function() {
+					var textEditor = new Editor({ dataType: 'alphanumeric' }),
+						numberEditor = new Editor({ dataType: 'integer' }),
+						dateEditor = new Editor({ dataType: 'date' }),
+						timeEditor = new Editor({ dataType: 'time' }),
+						listEditor = new Editor({ dataType: 'list', options: ['first', 'second', 'third'] });
+					textEditor.show('textEditor');
+					numberEditor.show('numberEditor');
+					dateEditor.show('dateEditor');
+					timeEditor.show('timeEditor');
+					listEditor.show('listEditor');
+				});
+			});
+		</script>
+	</body>
+</html>

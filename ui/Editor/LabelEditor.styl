@@ -1,0 +1,16 @@
+.njsEditor.labelEditor {
+	.njsLabel {
+		display: none;
+		width: 100%;
+		height: 100%;
+		cursor: pointer;
+	}
+	&.isLabel {
+		> * {
+			display: none;
+		}
+		.njsLabel {
+			display: block !important;
+		}
+	}
+}
