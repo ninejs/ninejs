@@ -27,6 +27,7 @@ define(['./config', './moduleRegistry', './Module', '../core/extend', '../core/d
 	require(moduleArray, function() {
 		var cnt,
 			current,
+			allUnitsCfg = {},
 			unitCfg;
 		for (cnt = 0; cnt < arguments.length; cnt += 1) {
 			registry.addModule(arguments[cnt]);
@@ -34,9 +35,13 @@ define(['./config', './moduleRegistry', './Module', '../core/extend', '../core/d
 		for (cnt = 0; cnt < arguments.length; cnt += 1) {
 			current = arguments[cnt];
 			unitCfg = modules[moduleArray[cnt]];
-			extend.mixinRecursive(clientConfig, { units: {} });
-			extend.mixinRecursive(clientConfig.units, unitCfg);
-//			clientConfig.units[moduleArray[cnt]] = unitCfg;
+			extend.mixinRecursive(allUnitsCfg, unitCfg);
+		}
+		extend.mixinRecursive(clientConfig, { units: {} });
+		extend.mixinRecursive(allUnitsCfg, clientConfig.units);
+		extend.mixinRecursive(clientConfig.units, allUnitsCfg);
+		for (cnt = 0; cnt < arguments.length; cnt += 1) {
+			current = arguments[cnt];
 			Module.prototype.enable.call(current, clientConfig.units);
 		}
 		moduleLoadPromise.resolve(true);

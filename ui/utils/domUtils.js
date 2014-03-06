@@ -1,8 +1,9 @@
-define(['put-selector/put', './setText', 'dojo/has', 'dojo/on', 'dojo/mouse', 'dojo/dom-style', 'dijit/Tooltip', '../../core/extend', 'dojo/dom', 'dojo/_base/fx', 'dojo/Deferred', 'dojo/_base/window', '../../css!../css/common.css'], function (put, setText, has, on, mouse, domStyle, Tooltip, extend, dom, fx, Deferred, window, commonCss) {
+define(['./setClass', './setText', '../../modernizer', '../../core/on', 'dojo/mouse', 'dojo/dom-style', 'dijit/Tooltip', '../../core/extend', 'dojo/_base/fx', '../../core/deferredUtils', '../../css!../css/common.css'], function (setClass, setText, has, on, mouse, domStyle, Tooltip, extend, fx, def, commonCss) {
 	'use strict';
+	/* global window */
 	commonCss.enable();
 	has.add('scopedCss', function(){
-		var r = false, document = window.doc;
+		var r = false, document = window.document;
 		if (document) {
 			var style = document.createElement('style');
 			if (style.scoped) {
@@ -13,11 +14,11 @@ define(['put-selector/put', './setText', 'dojo/has', 'dojo/on', 'dojo/mouse', 'd
 	}, true);
 
 	function elementMouseOver(e) {
-		put(e.currentTarget, '.dijitHover');
+		setClass(e.currentTarget, 'dijitHover');
 	}
 
 	function elementMouseOut(e) {
-		put(e.currentTarget, '!dijitHover');
+		setClass(e.currentTarget, '!dijitHover');
 	}
 
 	var DomUtils = extend({
@@ -42,7 +43,7 @@ define(['put-selector/put', './setText', 'dojo/has', 'dojo/on', 'dojo/mouse', 'd
 			}
 
 			var effect = null,
-				promise = new Deferred();
+				d = def.defer();
 
 			if (withEffect) {
 				effect = fx.fadeOut;
@@ -53,13 +54,13 @@ define(['put-selector/put', './setText', 'dojo/has', 'dojo/on', 'dojo/mouse', 'd
 					node: node
 				});
 				fxObj.on('End', function () {
-					promise.resolve();
+					d.resolve();
 				});
 				fxObj.play();
 			} else {
-				promise.resolve();
+				d.resolve();
 			}
-			promise.then(function () {
+			def.when(d.promise, function () {
 				domStyle.set(node, 'display', 'none');
 			});
 		},
@@ -122,7 +123,7 @@ define(['put-selector/put', './setText', 'dojo/has', 'dojo/on', 'dojo/mouse', 'd
 			var node = control,
 				config;
 			if (typeof(control) === 'string') {
-				node = dom.byId(control);
+				node = window.document.getElementById(control);
 			}
 			else if (control.domNode) {
 				node = control.domNode;

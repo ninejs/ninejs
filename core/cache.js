@@ -69,7 +69,7 @@ Dojo Toolkit's dojo/text as of jan 2014
 						}
 					}
 				};
-				console.error('dojo/text plugin failed to load because loader does not support getText');
+				//console.error('dojo/text plugin failed to load because loader does not support getText');
 			}
 		}
 		var cache = function( /*String||Object*/ module, /*String*/ url, /*String||Object?*/ value) {

@@ -3,7 +3,12 @@ define(['./core/extend', './css/builder', 'dojo/has', 'dojo/query'], function(ex
 	'use strict';
 	var result;
 	result = {};
-	var ielt10 = has('ie') && (has('ie') < 10), ielt9 = has('ie') && (has('ie') < 9), ieNode, ieCssText, ieCssUpdating;
+	var ielt10 = has('ie') && (has('ie') < 10),
+		ielt9 = has('ie') && (has('ie') < 9),
+		ieNode,
+		ieCssText,
+		ieCssUpdating,
+		externalCssCache = {};
 
 	var StyleObject = extend({
 		normalizeUrls: function(css) {
@@ -89,9 +94,10 @@ define(['./core/extend', './css/builder', 'dojo/has', 'dojo/query'], function(ex
 				);
 			}
 
-			var isScoped = (isDomElement(parent));
+			var isScoped = (isDomElement(parent)),
+				linkNode,
+				result;
 
-			var cssText = '' + this.data + '';
 			var document;
 			if (!parent) {
 				document = this.globalWindow.document;
@@ -100,10 +106,29 @@ define(['./core/extend', './css/builder', 'dojo/has', 'dojo/query'], function(ex
 			else {
 				document = parent.ownerDocument;
 			}
+			var cssText = '' + this.data + '';
+			if ((!this.data) && this.path) {
+				if (!externalCssCache[this.path]) {
+					linkNode = document.createElement('link');
+					linkNode.type = 'text/css';
+					linkNode.rel = 'stylesheet';
+					linkNode.href = this.path;
+					externalCssCache[this.path] = linkNode;
+				}
+				else {
+					linkNode = externalCssCache[this.path];
+				}
+				result = new StyleInstance();
+				result.styleNode = linkNode;
+				result.children = [];
+				parent.appendChild(linkNode);
+				return result;
+			}
 
 			var searchStyleNodes = query('style[data-ninejs-path="' + this.path + '"]');
-			var found;
-			var styleNode;
+			var styleNode,
+				cnt,
+				found;
 			if (searchStyleNodes.length){
 				styleNode = searchStyleNodes[0];
 			}
@@ -126,21 +151,25 @@ define(['./core/extend', './css/builder', 'dojo/has', 'dojo/query'], function(ex
 				found = true;
 			}
 			this.document = document;
-			var result = new StyleInstance(), cnt;
+			result = new StyleInstance();
 			result.styleNode = styleNode;
-			result.children = [];
-			if (this.children) {
-				for (cnt = 0; cnt < this.children.length; cnt += 1) {
-					var child = this.children[cnt], childHandle;
-					if (isScoped) {
-						childHandle = child.enable(parent);
+			function getChildren(self) {
+				var r = [];
+				if (self.children) {
+					for (cnt = 0; cnt < self.children.length; cnt += 1) {
+						var child = self.children[cnt], childHandle;
+						if (isScoped) {
+							childHandle = child.enable(parent);
+						}
+						else {
+							childHandle = child.enable();
+						}
+						r.push(childHandle);
 					}
-					else {
-						childHandle = child.enable();
-					}
-					result.children.push(childHandle);
 				}
+				return r;
 			}
+			result.children = getChildren(this);
 			function handleFound(self) {
 				if (found) {
 					if (ielt10) {
@@ -205,8 +234,12 @@ define(['./core/extend', './css/builder', 'dojo/has', 'dojo/query'], function(ex
 
 			load(r);
 		}
-
-		builder.processCss(data, path, path, prefixes, baseUrl, {}, processCallback);
+		if (!data) {
+			processCallback({ path: path });
+		}
+		else {
+			builder.processCss(data, path, path, prefixes, baseUrl, {}, processCallback);
+		}
 	}
 
 	result.style = buildStyleObject;
@@ -237,22 +270,26 @@ define(['./core/extend', './css/builder', 'dojo/has', 'dojo/query'], function(ex
 			});
 		}
 		else {
-			var extIdx = fname.lastIndexOf('.');
-			if (extIdx < 0)
-			{
-				fname = fname + '.css';
-			}
-			if (isDojo)
-			{ //Dojo Toolkit
-				var path = require.toUrl(parts[0]);
-				require.getText(path, true, function(data)
+			if ((fname.indexOf('http:') === 0) || (fname.indexOf('https:') === 0)) {
+				loadStyle(null, fname, require.rawConfig.packages, '', autoEnable, load);
+			} else {
+				var extIdx = fname.lastIndexOf('.');
+				if (extIdx < 0)
 				{
-					loadStyle(data, path, require.rawConfig.packages, '', /*require.rawConfig.baseUrl, */ autoEnable, load);
-				});
-			}
-			else
-			{ //requirejs not implemented (yet)
-				load(null);
+					fname = fname + '.css';
+				}
+				if (isDojo)
+				{ //Dojo Toolkit
+					var path = require.toUrl(parts[0]);
+					require.getText(path, true, function(data)
+					{
+						loadStyle(data, path, require.rawConfig.packages, '', /*require.rawConfig.baseUrl, */ autoEnable, load);
+					});
+				}
+				else
+				{ //requirejs not implemented (yet)
+					load(null);
+				}
 			}
 		}
 	};

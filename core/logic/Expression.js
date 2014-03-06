@@ -497,12 +497,14 @@ represent it and evaluate it over a collection of data or a service.
 									len = arr.length,
 									current;
 								for (cnt = 0; cnt < len; cnt += 1) {
-									current = arr[cnt][fldName];
-									if (isArray(current)) {
-										r.push.apply(r, current);
-									}
-									else {
-										r.push(current);
+									if (arr[cnt]) {
+										current = arr[cnt][fldName];
+										if (isArray(current)) {
+											r.push.apply(r, current);
+										}
+										else {
+											r.push(current);
+										}
 									}
 								}
 								return r;

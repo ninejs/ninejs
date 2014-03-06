@@ -78,6 +78,12 @@
 			},
 			nodeName: function() {
 				return this.node.nodeName;
+			},
+			nodeLocalName: function() {
+				return this.node.localName;
+			},
+			namespaceUri: function() {
+				return this.node.namespaceURI;
 			}
 		}, function(parsedXmlNode) {
 			this.node = parsedXmlNode;

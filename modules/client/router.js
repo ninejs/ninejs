@@ -35,16 +35,17 @@ define(['../Module', '../../core/extend', 'dojo/router', 'dojo/hash', '../config
 		router.startup();
 		var start;
 		start = hash() || clientConfig.boot;
+		hash('');
 		if (start) {
 			if (typeof(start) === 'function') {
 				start();
 			}
 			else if (typeof(start) === 'string') {
-				router.go(start);
+				router.go(start, true);
 			}
 		}
 		else {
-			router.go('/');
+			router.go('/', true);
 		}
 	});
 	return result;

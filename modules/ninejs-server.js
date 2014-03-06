@@ -13,9 +13,8 @@ var NineJs = extend(Module, {
 		return r;
 	},
 	loggerGetter: function(name) {
-		name = name || 'default';
-		if (!this.logger[name]) {
-			var loggingConfig = (this.config['ninejs'] || {}).logging || [];
+		function createLogger(config) {
+			var loggingConfig = (config || {}).logging || [];
 			var cnt;
 			if (Object.prototype.toString.call(loggingConfig) !== '[object Array]') {
 				loggingConfig = [loggingConfig];
@@ -38,17 +37,39 @@ var NineJs = extend(Module, {
 					}
 				}]
 			});
-			this.logger[name] = bunyan.createLogger(cfg);
+			(cfg.streams || []).forEach(function(item) {
+				if (item.stream === 'console') {
+					item.type = 'raw';
+					item.stream = {
+						write: function(data) {
+							console.log('[' + data.time.toDateString() + ' ' + data.time.toLocaleTimeString() + '] ' + data.msg);
+						}
+					};
+				}
+			});
+			return bunyan.createLogger(cfg);
+		}
+		name = name || 'default';
+		if (!this.logger[name]) {
+			this.logger[name] = createLogger(this.config);
 		}
 		return this.logger[name];
+	},
+	init: function(name, config) {
+		if (name === 'ninejs') {
+			this.config = config;
+			var log = this.get('logger');
+			njs.on('log', function(data) {
+				log.info(data.message);
+			});
+		}
 	}
 }, extend.postConstruct(function() {
 	var provide = {
 			id: 'ninejs',
 			version: packageJson.version,
 			features: {}
-		},
-		log;
+		};
 	extend.mixin(this, {
 		provides: [
 			provide
@@ -60,10 +81,6 @@ var NineJs = extend(Module, {
 	if ((typeof(global) !== 'undefined') && (global.Proxy)) {
 		provide.features['harmony'] = true;
 	}
-	log = this.get('logger');
-	njs.on('log', function(data) {
-		log.info(data.message);
-	});
 }));
 var result = new NineJs();
 module.exports = result;

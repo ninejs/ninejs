@@ -122,7 +122,7 @@
 						return moduleSet[name];
 					}
 					else {
-						throw new Error('Cannot require a "' + name + '" module that this module does not consume');
+						throw new Error('Cannot require a "' + name + '" unit that this module does not consume');
 					}
 				};
 				m.getUnit = function(name) {
@@ -130,7 +130,7 @@
 						return moduleSet[name].getProvides.apply(moduleSet[name], arguments);
 					}
 					else {
-						throw new Error('Cannot require a "' + name + '" module that this module does not consume');
+						throw new Error('Cannot require a "' + name + '" unit that this module does not consume');
 					}
 				};
 			};

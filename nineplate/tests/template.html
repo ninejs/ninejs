@@ -18,7 +18,7 @@
 	<div class="${tagName} ${class}"><span>This is some static text that should be </span><span>rendered</span><span> as innerHTML in a DOM rendered environment. Even though it has variables such as ${number|String} it should be able to render as innerHTML because those variables like ${title|String} are not bound and do not represent an attach point node.</span></div>
 	<div data-ninejs-attach="emptyNode"></div>
 	<div>
-		<div class="liveChanges">%{liveChanges.val|String}</div>
+		<div class="liveChanges" data-value="%{liveChanges.val}">%{liveChanges.val|String}</div>
 		<div class="persons" data-ninejs-attach="personsNode">
 			%{@for persons person | key @ div/@data-key}
 			<div data-key="${person.name}">

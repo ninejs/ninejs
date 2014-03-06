@@ -1,4 +1,4 @@
-define(['../core/extend', '../core/ext/Properties', '../nineplate'], function(extend, Properties, nineplate){
+define(['../core/extend', '../core/ext/Properties', '../nineplate', '../core/deferredUtils'], function(extend, Properties, nineplate, def){
 	'use strict';
 	var Skin = extend('9js.Skin', {
 		cssList: [],
@@ -19,7 +19,11 @@ define(['../core/extend', '../core/ext/Properties', '../nineplate'], function(ex
 			}
 		},
 		enable: function(widget) {
-			var cnt=0, nTemplate, templateResult;
+			var cnt,
+				nTemplate,
+				templateResult,
+				self = this,
+				defer = def.defer();
 			if (this.cssList){
 				for(cnt = 0; cnt < this.cssList.length; cnt += 1) {
 					this.cssList[cnt] = this.cssList[cnt].enable();
@@ -36,17 +40,21 @@ define(['../core/extend', '../core/ext/Properties', '../nineplate'], function(ex
 					parentNode = widget.domNode.parentNode;
 					oldNode = widget.domNode;
 				}
-				templateResult = this.template(widget);
-				if (widget.mixinProperties){
-					widget.mixinProperties(templateResult);
-				}
-				else {
-					extend.mixin(widget, templateResult);
-				}
-				if (parentNode) {
-					parentNode.replaceChild(widget.domNode, oldNode);
-				}
+				require(this.template.amdDependencies || [], function() {
+					templateResult = self.template(widget);
+					if (widget.mixinProperties){
+						widget.mixinProperties(templateResult);
+					}
+					else {
+						extend.mixin(widget, templateResult);
+					}
+					if (parentNode) {
+						parentNode.replaceChild(widget.domNode, oldNode);
+					}
+					defer.resolve(true);
+				});
 			}
+			return defer.promise;
 		},
 		disable: function() {
 			var cnt=0;
@@ -55,6 +63,8 @@ define(['../core/extend', '../core/ext/Properties', '../nineplate'], function(ex
 					this.cssList[cnt] = this.cssList[cnt].disable();
 				}
 			}
+		},
+		updated: function() {
 		}
 	}, Properties);
 	return Skin;

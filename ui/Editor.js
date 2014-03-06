@@ -1,6 +1,5 @@
-/* jshint strict: false, unused: true */
+/* global window */
  /**
- * @projectDescription   Expression Builder control.
  *
  * @author   Eduardo Burgos
  * @version  0.1
@@ -12,17 +11,220 @@
  * @return {ninejs/ui/Editor}   Returns a new Editor.
  * @constructor
  */
-define(['dojo/_base/declare', 'dijit/_WidgetBase', 'dijit/form/Select', 'dijit/form/NumberTextBox', 'dijit/form/DateTextBox', 'dijit/form/TimeTextBox', 'dijit/form/CheckBox', 'dijit/form/TextBox', './utils/setClass', 'dojo/dom-construct', 'dojo/_base/lang', 'dojo/on', 'dijit/focus', 'dojo/keys'], function(declare, WidgetBase, Select, NumberTextBox, DateTextBox, TimeTextBox, CheckBox, TextBox, setClass, domConstruct, lang, on, focus, keys) {
+define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/Default', '../core/deferredUtils', '../modernizer', '../core/array', './utils/setClass', '../core/objUtils', '../core/on', './utils/setText', './utils/append'], function(extend, Widget, Properties, defaultSkin, def, modernizer, array, setClass, objUtils, on, setText, append) {
+	'use strict';
 
-	return declare([WidgetBase], {
+	var NumberTextBox,
+		DateTextBox,
+		CheckBox,
+		TextBox,
+		Select,
+		TimeTextBox,
+		ControlBase,
+		ENTER = 13;
+	ControlBase = extend(Properties, {
+		on: function(type, act) {
+			//TODO: possible leak
+			on(this.domNode, type, act);
+		},
+		destroyRecursive: function() {
+
+		},
+		startup: function() {
+
+		},
+		focus: function() {
+			this.domNode.focus();
+		},
+		valueSetter: function(v) {
+			this.value = v;
+			this.domNode.value = v;
+		},
+		valueGetter: function() {
+			return this.value;
+		}
+	}, function() {
+		var self = this;
+		on(this.domNode, 'change', function(){
+			self.set('value', self.domNode.value);
+		});
+		// on(this.domNode, 'blur', function(e){
+		// 	on.emit(self.domNode, 'blur', e);
+		// });
+	});
+	if (!modernizer.inputtypes.number) {
+		NumberTextBox = require('dijit/form/NumberTextBox');
+	}
+	else {
+		var goodNumber = /^(\+|-)?((\d+(\.\d+)?)|(\.\d+))$/,
+			goodPrefix = /^(\+|-)?((\d*(\.?\d*)?)|(\.\d*))$/;
+		NumberTextBox = extend(function() {
+			this.domNode = window.document.createElement('input');
+			this.domNode.type = 'number';
+			var self = this,
+				previousValue;
+			on(this.domNode, 'input,propertyChange', function() {
+				if ( !goodPrefix.test(this.value) ) {
+					this.value = previousValue;
+				}
+				if (!goodNumber.test(this.value)) {
+					setClass(self.domNode, 'invalid');
+				}
+				else {
+					setClass(self.domNode, '!invalid');
+					previousValue = this.value;
+				}
+			});
+		}, ControlBase, {
+			stepSetter: function(p) {
+				this.domNode.step = p;
+			}
+		});
+	}
+	if (!modernizer.inputtypes.date) {
+		DateTextBox = require('dijit/form/DateTextBox');
+	}
+	else {
+		DateTextBox = extend(function() {
+			this.domNode = window.document.createElement('input');
+			this.domNode.type = 'date';
+		}, ControlBase);
+	}
+	CheckBox = extend(function() {
+		this.domNode = window.document.createElement('input');
+		this.domNode.type = 'check';
+	}, ControlBase);
+	TextBox = extend(function() {
+		this.domNode = window.document.createElement('input');
+		this.domNode.type = 'text';
+	}, ControlBase);
+	Select = extend(function() {
+		this.domNode = window.document.createElement('select');
+	}, ControlBase, {
+		optionsSetter: function(v) {
+			var node = this.domNode;
+			setText.emptyNode(node);
+			if (v) {
+				array.forEach(v, function(item) {
+					var key,
+						value,
+						opt;
+					if ((item.key !== undefined) && (item.key !== null)) {
+						key = item.key;
+					}
+					else if ((item.value !== undefined) && (item.value !== null)) {
+						key = item.value;
+					}
+					else {
+						key = item;
+					}
+					if ((item.value !== undefined) && (item.value !== null)) {
+						value = item.value;
+					}
+					else {
+						value = item;
+					}
+
+					opt = setText(append(node, 'option'), value);
+					opt.setAttribute('value', key);
+				});
+			}
+		}
+	});
+	TimeTextBox = extend(function() {
+		this.domNode = window.document.createElement('input');
+		this.domNode.type = 'time';
+	}, ControlBase);
+
+	return Widget.extend({
+		skin: defaultSkin,
 		_clearDataTypeClasses : function() {
-			setClass(this.domNode, '!dataType-integer', '!dataType-decimal', '!dataType-date', '!dataType-datetime', '!dataType-boolean', '!dataType-record', '!dataType-alphanumeric', '!dataType-list');
+			var self = this;
+			return def.when(this.show(), function() {
+				setClass(self.domNode, '!dataType-integer', '!dataType-decimal', '!dataType-date', '!dataType-datetime', '!dataType-boolean', '!dataType-record', '!dataType-alphanumeric', '!dataType-list');
+			});
 		},
-		postCreate : function() {
-			this.inherited(arguments);
-			setClass(this.domNode, 'weEditor');
-		},
+		onUpdatedSkin : extend.after(function() {
+			var self = this;
+			this.own(
+				this.on('blur', function() {
+					return self.onBlur.apply(self, arguments);
+				})
+			);
+			this.watch('value', function() {
+				self.emit('change', {});
+			});
+		}),
 		dataType : null,
+		controlClassSetter: function(v) {
+			if (this.control) {
+				var arg = v.split(' ');
+				arg.unshift(this.control.domNode);
+				setClass.apply(null, arg);
+			}
+			else {
+				throw new Error('Please set control\'s dataType property prior to assigning \'controlClass\' property');
+			}
+		},
+		placeholderSetter: function(v) {
+			this.placeholder = v;
+			if (this.control) {
+				this.control.domNode.placeholder = v;
+			}
+			else {
+				throw new Error('Please set control\'s dataType property prior to assigning \'placeholder\' property');
+			}
+		},
+		placeholderGetter: function() {
+			return this.placeholder;
+		},
+		autocompleteSetter: function(v) {
+			if (this.control) {
+				this.control.domNode.autocomplete = v;
+			}
+			else {
+				throw new Error('Please set control\'s dataType property prior to assigning \'autocomplete\' property');
+			}
+		},
+		passwordSetter: function(v) {
+			if (this.control) {
+				if (this.get('dataType') === 'alphanumeric') {
+					if (!!v) {
+						this.control.domNode.type = 'password';
+					}
+					else {
+						this.control.domNode.type = 'text';
+					}
+				}
+				else {
+					throw new Error('Can only assign \'password\' property when \'dataType\' = \'alphanumeric\'');
+				}
+			}
+			else {
+				throw new Error('Please set control\'s dataType property prior to assigning \'password\' property');
+			}
+		},
+		requiredSetter: function(v) {
+			if (this.domNode) {
+				if (!!v) {
+					this.domNode.required = 'required';
+				}
+				else {
+					this.domNode.required = null;
+				}
+			}
+			else {
+				var self = this;
+				on.once('updatedSkin', function() {
+					if (!!v) {
+						self.domNode.required = 'required';
+					}
+					else {
+						self.domNode.required = null;
+					}
+				});
+			}
+		},
 
 		onBlur : function() {
 
@@ -31,9 +233,11 @@ define(['dojo/_base/declare', 'dijit/_WidgetBase', 'dijit/form/Select', 'dijit/f
 			if (target) {
 				var self = this;
 				this.watch('value', function(pname, oldv, newv){
+					/* jshint unused: true */
 					target.set(name, newv);
 				});
 				target.watch(name, function(pname, oldv, newv) {
+					/* jshint unused: true */
 					self.set('value', newv);
 				});
 			}
@@ -41,7 +245,7 @@ define(['dojo/_base/declare', 'dijit/_WidgetBase', 'dijit/form/Select', 'dijit/f
 		},
 
 		focus : function() {
-			if (this.control) {
+			if (this.control && (typeof(this.control.focus) === 'function')) {
 				this.control.focus();
 			}
 		},
@@ -50,126 +254,172 @@ define(['dojo/_base/declare', 'dijit/_WidgetBase', 'dijit/form/Select', 'dijit/f
 		 * "list"
 		 *
 		 */
-		_setDataTypeAttr : function(val) {
+		dataTypeSetter : function(val) {
+			var self = this,
+				normalKeyDownEventHandler,
+				buildNumberTextBox,
+				buildDateTextBox,
+				buildTextBox,
+				buildSelect,
+				buildCheckBox,
+				buildTimeTextBox;
 
-			function normalKeyDownEventHandler(e) {
-				if (e.keyCode === keys.ENTER) {
-					on.emit(this, 'Blur', {
+			normalKeyDownEventHandler = function(e) {
+				if (e.keyCode === ENTER) {
+					on.emit(this, 'blur', {
 						bubbles : true,
 						cancellable : true
 					});
-					focus.curNode.blur();
 				}
-			}
+			};
 
-			function buildNumberTextBox(places) {
+			buildNumberTextBox = function(places) {
 				var NumberTextBoxControl = this.NumberTextBoxControl || NumberTextBox;
 				var args = {
-					places : places,
-					editor : this,
-					onKeyDown: normalKeyDownEventHandler,
-					intermediateChanges: true,
-					onBlur: function() {
-						this.editor.onBlur();
-					}
-				};
-				lang.mixin(args, this.args);
+						places : places,
+						step: (typeof(places) === 'number')? window.Math.pow(0.1, places).toString() : 'any',
+						editor : this,
+						onKeyDown: normalKeyDownEventHandler,
+						intermediateChanges: true
+					},
+					self = this;
+				extend.mixin(args, this.args);
 				var control = new NumberTextBoxControl(args);
-
-				control.watch('value', lang.hitch(this, function(name, old, newv) {
-					this.set('value', newv, true);
-				}));
+				self.own(
+					on((control.domNode || control), 'blur', function(e) {
+						control.editor.emit('blur', e);
+					})
+				);
+				control.watch('value', function(name, old, newv) {
+					/* jshint unused: true */
+					self.set('value', newv, true);
+				});
 				return control;
-			}
+			};
 
-			function buildDateTextBox() {
+			buildDateTextBox = function() {
 				var DateTextBoxControl = this.DateTextBoxControl || DateTextBox;
 				var args = {
-					editor : this,
+						editor : this,
 
-					onBlur : function() {
-						this.editor.onBlur();
-					}
-				};
-				lang.mixin(args, this.args);
+						onBlur : function(e) {
+							this.editor.emit('blur', e);
+						}
+					},
+					self = this;
+				extend.mixin(args, this.args);
 				var control = new DateTextBoxControl(args);
-				control.watch('value', lang.hitch(this, function(name, old, newv) {
-					this.set('value', newv, true);
-				}));
+				self.own(
+					on((control.domNode || control), 'blur', function(e) {
+						control.editor.emit('blur', e);
+					})
+				);
+				control.watch('value', function(name, old, newv) {
+					/* jshint unused: true */
+					self.set('value', newv, true);
+				});
 				return control;
-			}
+			};
 
-			function buildTimeTextBox() {
+			buildTimeTextBox = function() {
 				var TimeTextBoxControl = this.TimeTextBoxControl || TimeTextBox;
 				var args = {
-					editor : this,
+						editor : this,
 
-					onBlur : function() {
-						this.editor.onBlur();
-					}
-				};
-				lang.mixin(args, this.args);
+						onBlur : function(e) {
+							this.editor.emit('blur', e);
+						}
+					},
+					self = this;
+				extend.mixin(args, this.args);
 				var control = new TimeTextBoxControl(args);
-				control.watch('value', lang.hitch(this, function(name, old, newv) {
-					this.set('value', newv, true);
-				}));
+				self.own(
+					on((control.domNode || control), 'blur', function(e) {
+						control.editor.emit('blur', e);
+					})
+				);
+				control.watch('value', function(name, old, newv) {
+					/* jshint unused: true */
+					self.set('value', newv, true);
+				});
 				return control;
-			}
+			};
 
-			function buildCheckBox() {
+			buildCheckBox = function() {
 				var CheckBoxControl = this.CheckBoxControl || CheckBox;
 				var args = {
-					editor : this,
-					nullValue : false,
+						editor : this,
+						nullValue : false,
 
-					onBlur : function() {
-						this.editor.onBlur();
-					}
-				};
-				lang.mixin(args, this.args);
+						onBlur : function(e) {
+							this.editor.emit('blur', e);
+						}
+					},
+					self = this;
+				extend.mixin(args, this.args);
 				var control = new CheckBoxControl(args);
-				control.watch('checked', lang.hitch(this, function(name, old, newv) {
-					this.set('value', newv, true);
-				}));
+				self.own(
+					on((control.domNode || control), 'blur', function(e) {
+						control.editor.emit('blur', e);
+					})
+				);
+				control.watch('checked', function(name, old, newv) {
+					/* jshint unused: true */
+					self.set('value', newv, true);
+				});
 				return control;
-			}
+			};
 
-			function buildTextBox() {
+			buildTextBox = function() {
 				var TextBoxControl = this.TextBoxControl || TextBox;
 				var args = {
-					editor: this,
-					nullValue: '',
-					intermediateChanges: true,
-					onKeyDown : normalKeyDownEventHandler,
-					onBlur : function() {
-						this.editor.onBlur();
-					}
-				};
-				lang.mixin(args, this.args);
+						editor: this,
+						nullValue: '',
+						intermediateChanges: true,
+						onKeyDown : normalKeyDownEventHandler,
+						onBlur : function(e) {
+							this.editor.emit('blur', e);
+						}
+					},
+					self = this;
+				extend.mixin(args, this.args);
 				var control = new TextBoxControl(args);
-				control.watch('value', lang.hitch(this, function(name, old, newv) {
-					this.set('value', newv, true);
-				}));
+				self.own(
+					on((control.domNode || control), 'blur', function(e) {
+						control.editor.emit('blur', e);
+					})
+				);
+				control.watch('value', function(name, old, newv) {
+					/* jshint unused: true */
+					self.set('value', newv, true);
+				});
 				return control;
-			}
+			};
 
-			function buildSelect() {
+			buildSelect = function () {
 				var SelectControl = this.SelectControl || Select;
 				var args = {
-					editor : this,
-					options : this.get('options'),
+						editor : this,
+						options : this.get('options'),
 
-					onBlur : function() {
-						this.editor.onBlur();
-					}
-				};
-				lang.mixin(args, this.args);
+						onBlur : function(e) {
+							this.editor.emit('blur', e);
+						}
+					},
+					self = this;
+				extend.mixin(args, this.args);
 				var control = new SelectControl(args);
-				control.watch('value', lang.hitch(this, function(name, old, newv) {
-					this.set('value', newv, true);
-				}));
+				self.own(
+					on((control.domNode || control), 'blur', function(e) {
+						control.editor.emit('blur', e);
+					})
+				);
+				control.watch('value', function(name, old, newv) {
+					/* jshint unused: true */
+					self.set('value', newv, true);
+				});
 				return control;
-			}
+			};
 
 			if (val && (val !== this.dataType)) {
 
@@ -177,48 +427,51 @@ define(['dojo/_base/declare', 'dijit/_WidgetBase', 'dijit/form/Select', 'dijit/f
 					this.control.destroyRecursive(false);
 				}
 				this.control = null;
-				this._clearDataTypeClasses();
+				def.when(this._clearDataTypeClasses(), function() {
+					setClass(self.domNode, ('dataType-' + val));
 
-				setClass(this.domNode, ('dataType-' + val));
+					var controlMap = {
+						'integer' : function() {
+							return buildNumberTextBox.apply(self, [0]);
+						},
+						'decimal' : buildNumberTextBox,
+						'date' : buildDateTextBox,
+						'time' : buildTimeTextBox,
+						'datetime' : buildTimeTextBox,
+						'boolean' : buildCheckBox,
+						'record' : buildTextBox,
+						'alphanumeric' : buildTextBox,
+						'list' : buildSelect
+					};
 
-				var controlMap = {
-					'integer' : function() {
-						return buildNumberTextBox.apply(this, [0]);
-					},
-					'decimal' : buildNumberTextBox,
-					'date' : buildDateTextBox,
-					'datetime' : buildTimeTextBox,
-					'boolean' : buildCheckBox,
-					'record' : buildTextBox,
-					'alphanumeric' : buildTextBox,
-					'list' : buildSelect
-				};
+					self.control = controlMap[val].apply(self);
 
-				this.control = controlMap[val].apply(this);
+					self.control.startup();
+					append(self.domNode, self.control.domNode);
+				});
 
-				this.control.startup();
-				domConstruct.place(this.control.domNode, this.domNode);
 				this.dataType = val;
 			}
 		},
 
-		_setNullValueAttr: function (val) {
+		nullValueSetter: function (val) {
 			if (this.control) {
 				this.control.nullValue = val;
 			}
 		},
 
-		_setValueAttr : function(val, stopPropagate) {
+		valueSetter : function(val, stopPropagate) {
 			var undef = (function(u){ return u; }());
-			if ((val === null) && this.control && (this.control.nullValue !== undef)){
+			if ((val === null) && this.control && (this.control.nullValue !== undef) && (this.control.nullValue !== null)){
 				val = this.control.nullValue;
-				this._set('value', val, true);
+				this.value = val;
+				this.set('value', val, true);
 			}
 			else {
-				if ((this.dataType === 'boolean') && (lang.isString(val))) {
+				if ((this.dataType === 'boolean') && (objUtils.isString(val))) {
 					val = val.toLowerCase() !== 'false';
 				}
-				this._set('value', val);
+				this.value = val;
 			}
 
 			if (!stopPropagate) {
@@ -232,7 +485,7 @@ define(['dojo/_base/declare', 'dijit/_WidgetBase', 'dijit/form/Select', 'dijit/f
 
 				if ((dataType === 'integer') || (dataType === 'decimal')) {
 					implied = val;
-					if (val && lang.isString(val)) {
+					if (val && objUtils.isString(val)) {
 						implied = val * 1;
 					}
 					this.control.set('value', implied);
@@ -244,8 +497,8 @@ define(['dojo/_base/declare', 'dijit/_WidgetBase', 'dijit/form/Select', 'dijit/f
 			}
 		},
 
-		_setOptionsAttr : function(values) {
-			this._set('options', values);
+		optionsSetter : function(values) {
+			this.options = values;
 			if (this.get('dataType') === 'list') {
 				this.control.set('options', values);
 				this.control.set('value', this.value);

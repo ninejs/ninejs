@@ -141,10 +141,21 @@ var Utils = extend({
 		this.aliases.push([moduleName, alias]);
 	},
 	addBoot: function(target) {
-		this.boot.push(target);
+		if (this.boot.indexOf(target) < 0) {
+			this.boot.push(target);
+		}
 	},
 	addModule: function(name, target) {
 		this.modules[name] = target;
+	},
+	getUnit: function(name) {
+		if (!this.units[name]) {
+			this.units[name] = {};
+		}
+		return this.units[name];
+	},
+	addPostAction: function(action) {
+		this.postActions.push(action);
 	},
 	dojoConfigHandler: function(req, res) {
 		/* jshint unused: true */
@@ -153,6 +164,7 @@ var Utils = extend({
 			cfg,
 			packages = this.amdPaths,
 			modules = this.modules,
+			units = this.units,
 			p;
 		cfg = {
 			parseOnLoad: false,
@@ -173,7 +185,8 @@ var Utils = extend({
 			packages: [
 			],
 			ninejs: {
-				modules: {}
+				modules: {},
+				units: {}
 			},
 			callback: function () {
 			}
@@ -188,10 +201,18 @@ var Utils = extend({
 				cfg.ninejs.modules[p] = modules[p];
 			}
 		}
+		for (p in units) {
+			if (units.hasOwnProperty(p)) {
+				cfg.ninejs.units[p] = units[p];
+			}
+		}
 		extend.mixinRecursive(cfg.has, this.has);
 		cfg.aliases = this.aliases;
 		r.push(JSON.stringify(cfg));
 		r.push(';');
+		this.postActions.forEach(function(item) {
+			r.push('(' + item.toString() + ').apply();');
+		});
 		result = r.join('');
 		this.dojoConfigEndpoint.applyETag(res, result);
 		res.end(result);
@@ -203,7 +224,9 @@ var Utils = extend({
 	this.aliases = [];
 	this.has = {};
 	this.modules = {};
+	this.units = {};
 	this.boot = [];
+	this.postActions = [];
 	var dojoLocation = require.resolve('dojo');
 	if (dojoLocation) {
 		dojoLocation = path.dirname(dojoLocation);

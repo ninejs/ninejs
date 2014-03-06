@@ -1,5 +1,5 @@
 /*
-Dojo Toolkit's dojo/text as of jan 2014
+Dojo Toolkit's dojo/request as of jan 2014
 */
 (function() {
 	'use strict';

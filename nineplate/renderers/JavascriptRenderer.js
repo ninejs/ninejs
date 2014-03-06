@@ -251,17 +251,36 @@
 				statements.push(stmt);
 				return this;
 			};
+			this.createObject = function(expr) {
+				var cnt,
+					len = arguments.length,
+					thisExpression = new Expression();
+				thisExpression.append('new (').append(expr).append(')(');
+				for (cnt = 1; cnt < len; cnt += 1) {
+					if (cnt > 1) {
+						thisExpression.append(',');
+					}
+					thisExpression.append(arguments[cnt]);
+				}
+				thisExpression.append(')');
+				return thisExpression;
+			};
 			/*
 			Converts this renderer's body into a function call and inserts a statement to invoke it
 
 			@returns new function's name
 			*/
-			this.convertToFunctionCall = function() {
+			this.convertToFunctionCall = function(parameters) {
 				var child = new JavascriptRenderer(debugMode, null, context, indent + 1, this),
 					cnt,
 					len = statements.length;
 				for (cnt = 0; cnt < len; cnt += 1) {
 					child.append(statements[cnt]);
+				}
+				parameters = parameters || [];
+				len = parameters.length;
+				for (cnt = 0; cnt < len; cnt += 1) {
+					child.addParameter(parameters[cnt]);
 				}
 				statements = [];
 				var newName = this.getNewVariable();
@@ -299,9 +318,9 @@
 						}
 					}
 					if (lastElse) {
-						r.push(' ' + lastElse.renderBody());
+						r.push([' else {', lastElse.renderBody(), getIndent() + '}'].join(lineSeparator));
 					}
-					return r.join('');
+					return r.join('') + lineSeparator;
 				};
 			}
 			function ForLoop(init, cond, iter, parent) {
@@ -366,12 +385,34 @@
 						.append(' === ')
 						.append(expr);
 				};
+				this.notEquals = function(expr) {
+					return new Expression()
+						.append(this)
+						.append(' !== ')
+						.append(expr);
+				};
 				this.or = function(expr) {
 					return new Expression()
 						.append('(')
 						.append(this)
 						.append(') || ')
 						.append(expr);
+				};
+				this.and = function(expr) {
+					return new Expression()
+						.append('(')
+						.append(this)
+						.append(') && ')
+						.append(expr);
+				};
+				this.iif = function(trueExpr, falseExpr) {
+					return new Expression()
+						.append('(')
+						.append(this)
+						.append(')? ')
+						.append(trueExpr)
+						.append(':')
+						.append(falseExpr);
 				};
 				this.lessThan = function(expr) {
 					return new Expression()
@@ -441,7 +482,7 @@
 				};
 				this.render = function() {
 					var cnt,
-						len,
+						len = elements.length,
 						r = [];
 					for (cnt = 0; cnt < len; cnt += 1) {
 						r.push(elements[cnt].toString());

@@ -141,6 +141,22 @@
 						});
 					});
 				});
+				it('should render updated live values in attributes', function (done) {
+					nineplate.getTemplate('./liveExpressions/inAttribute01.html', function(template){
+						var data = new Properties({
+							liveChanges: new Properties({
+								val: 0
+							})
+						});
+						var result = template.renderDom(data);
+//						data.get('persons')[1].set('age', 1);
+						data.get('liveChanges').set('val', 1);
+						check(done, function() {
+							expect(result.domNode.querySelectorAll('.liveChanges')[0].getAttribute('data-value')).to.equal('1');
+//							expect(result.personsNode.getElementsByTagName('div')[4].getElementsByTagName('div')[2].innerText).to.equal('1');
+						});
+					});
+				});
 				it('should render updated live values in a loop', function (done) {
 					nineplate.getTemplate('./template.html', function(template){
 						var data = new Properties({
@@ -250,6 +266,43 @@
 					});
 				});
 			});
+			describe(' -> AMD Extensions', function() {
+				//Setting up AMD with RequireJS
+				it('should render a template with an editor widget', function(done) {
+					nineplate.getTemplate('./amdExtensions/editor01.html', function (template) {
+						var compiled = template.compileDom();
+						require(['dijit/form/DateTextBox'], function() {
+							require(compiled.amdDependencies, function() {
+								var result = compiled({
+								});
+								check(done, function() {
+									expect(result.editor.$njsWidget).to.not.equal(undefined);
+								});
+							});
+						});
+					});
+				});
+				it('should support 2-way binding with an AMD control', function(done) {
+					nineplate.getTemplate('./amdExtensions/editor02.html', function (template) {
+						var compiled = template.compileDom();
+						require(['dijit/form/DateTextBox'], function() {
+							require(compiled.amdDependencies, function() {
+								var data = new Properties(),
+									result = compiled({
+										data: data
+									});
+								check(done, function() {
+									data.set('age', 24);
+									data.set('age', 31);
+									expect(result.editor.get('value')).to.equal(31);
+									result.editor.set('value', 45);
+									expect(data.get('age')).to.equal(45);
+								});
+							});
+						});
+					});
+				});
+			});
 			describe(' -> Bug fixes', function() {
 				it('should render all tags. Should pass even if ignoreHtmlOptimization: false', function(done) {
 					nineplate.getTemplate('./test001.html', function (template) {
@@ -260,6 +313,40 @@
 						});
 						check(done, function() {
 							expect(result.domNode.textContent).to.contain('@');
+						});
+					});
+				});
+				it('should keep all classes when dealing with a calculated class attribute', function(done) {
+					nineplate.getTemplate('./test002.html', function (template) {
+						var result = template.renderDom({
+							i18n: function(a) {
+								return a;
+							},
+							navClass: 'nav',
+							'class': 'navbarclass',
+							role: 'navigation',
+							brand: 'test'
+						});
+						check(done, function() {
+							var classes = Array.prototype.slice.call(result.domNode.classList, 0);
+							expect(classes).to.contain('NavBar');
+							expect(classes).to.contain('navbar');
+							expect(classes).to.contain('nav');
+							expect(classes).to.contain('navbarclass');
+							expect(classes).to.contain('vpan12');
+						});
+					});
+				});
+				it('should render with a string filter', function (done) {
+					nineplate.getTemplate('./testCases/filter01.html', function (template) {
+						var result = template.renderDom({
+							data: 1234.56,
+							filter: function(v) {
+								return '$' + v;
+							}
+						});
+						check(done, function() {
+							expect(result.domNode.textContent).to.equal('$1234.56');
 						});
 					});
 				});

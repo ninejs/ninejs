@@ -16,7 +16,7 @@
 		/**
 		Takes a template object and transforms it into a function that renders that xml (or html)
 		@param {string} template - XML text that we want to be compiled.
-		@param {bool} sync - Tells wether or not the compilation is evented (Node.js) or synchronous (The template is compiled as soon as it returns).
+		@param {bool} sync - Tells whether or not the compilation is evented (Node.js) or synchronous (The template is compiled as soon as it returns).
 		@param {Object} options - Options object used to modify the compilers behavior.
 		*/
 		function compileDom(template, sync, options) {
@@ -29,11 +29,21 @@
 				rendererStack.pop();
 				return rendererStack[rendererStack.length - 1];
 			}
-			var renderer = pushRenderer(new Renderer(true));
+			var renderer = pushRenderer(new Renderer(true)),
+				parentRenderer = renderer,
+				amdPathMapping = {},
+				amdEnabled = false;
 			renderer
 				.addGlobal('window')
 				.addGlobal('Object')
 				.addGlobal('Array');
+			function enableAmd() {
+				if (!amdEnabled) {
+					parentRenderer
+						.addGlobal('require');
+					amdEnabled = true;
+				}
+			}
 			/*
 			Transforms xml text into an object model that the compiler understands
 			@param {string} template - Nineplate's template object that we want to be compiled.
@@ -66,7 +76,7 @@
 					TextParseContext,
 					textParseContext;
 				function tryNewContext(action) {
-					var tempCtx = {};
+					var tempCtx = { mode: elementContext.mode };
 					action(tempCtx);
 					if (tempCtx.needsDom) {
 						elementContext.needsDom = true;
@@ -75,7 +85,9 @@
 				function nodeAct(xmlNode, parentXmlNode) {
 					tryNewContext(function(tempCtx) {
 						if (nodeType(xmlNode) === 3) {
-							processParsedXml(xmlNode, parentXmlNode, elementContext);
+							if (!elementContext.mode) {
+								processParsedXml(xmlNode, parentXmlNode, elementContext);
+							}
 						}
 						else {
 							processParsedXml(xmlNode, parentXmlNode, tempCtx);
@@ -105,7 +117,7 @@
 					for (cnt = 0; cnt < childNodes.length; cnt += 1) {
 						nodeAct(childNodes[cnt], xmlNode);
 					}
-					if ((!elementContext.needsDom) && (!options.ignoreHtmlOptimization)) { //Taking the innerHTML route instead
+					if ((!elementContext.mode) && (!elementContext.needsDom) && (!options.ignoreHtmlOptimization)) { //Taking the innerHTML route instead
 						chunk.clear();
 						elementContext.asText = true;
 						TextParseContext = baseProcessor.TextParseContext;
@@ -238,6 +250,154 @@
 						}
 					}
 				}
+				function checkRerenderingAttribute() {
+					var newVarName,
+						newFunctionName,
+						innerCondition,
+						arr = elementContext.reRenderTargets || [],
+						cnt,
+						partCnt,
+						partLen,
+						part,
+						current,
+						watchFn,
+						watchVariable,
+						innerWatch,
+						forIn,
+						len = arr.length;
+					if (elementContext.needsRerenderer) {
+						renderer.addReturn(renderer.varName('node'));
+						renderer.comment('Here starts a live expression with attribute', true);
+						renderer.comment('Here ends the live expression');
+						newFunctionName = renderer.convertToFunctionCall(['node']);
+						newVarName = renderer.getNewVariable();
+						renderer.addVar(newVarName);
+						watchVariable = renderer.getNewVariable();
+						renderer.addVar(watchVariable);
+						renderer.addAssignment(newVarName, renderer.expression(newFunctionName).invoke(renderer.expression('node')));
+						renderer.comment('Add trigger events here');
+						watchFn = renderer.newFunction([]);
+						watchFn
+							.addVar('freeze', watchFn.literal({}))
+							.addVar('freezeNode', watchFn.expression(newVarName));
+						for (cnt = 0; cnt < forLoopVariableStack.length; cnt += 1) {
+							watchFn
+								.addAssignment(
+									watchFn.expression('freeze').element(watchFn.literal(forLoopVariableStack[cnt])),
+									watchFn.expression('context').element(watchFn.literal(forLoopVariableStack[cnt]))
+								);
+						}
+						innerWatch = watchFn.innerFunction('wfn');
+						innerWatch
+							.addParameter('name')
+							.addParameter('oldValue')
+							.addParameter('newValue');
+						innerCondition = innerWatch
+							.addCondition(innerWatch.not(innerWatch.expression('oldValue').equals('newValue').parenthesis())).renderer;
+						innerWatch
+							.addVar('temps', innerWatch.literal({}))
+							.addVar('p');
+						forIn = innerCondition.addForIn(innerWatch.expression('p'), innerWatch.expression('freeze'));
+						forIn.addAssignment(forIn.expression('temps').element(forIn.raw('p')), forIn.expression('context').element(forIn.raw('p')));
+						forIn.addAssignment(forIn.expression('context').element(forIn.raw('p')), forIn.expression('freeze').element(forIn.raw('p')));
+
+						innerCondition.addStatement(innerWatch.expression(newFunctionName).invoke(innerWatch.expression('freezeNode')));
+
+						forIn = innerCondition.addForIn(innerWatch.expression('p'), innerWatch.expression('freeze'));
+						forIn.addAssignment(forIn.expression('context').element(forIn.raw('p')), forIn.expression('temps').element(forIn.raw('p')));
+						
+
+						watchFn.addReturn(watchFn.expression('wfn'));
+
+						renderer.addAssignment(watchVariable, watchFn);
+						for (cnt = 0; cnt < len; cnt += 1) {
+							current = arr[cnt];
+							partLen = current.length;
+							renderer.addAssignment('ctxTemp', renderer.expression('context'));
+							for (partCnt = 0; partCnt < partLen - 1; partCnt += 1) {
+								part = current[partCnt];
+								renderer.addAssignment('ctxTemp', renderer.expression('ctxTemp').element(renderer.literal(part)));
+							}
+							renderer
+								.addCondition(renderer.expression('ctxTemp').member('watch'))
+								.renderer
+								.addStatement(
+									renderer
+										.expression('ctxTemp')
+										.member('watch')
+										.invoke(
+											renderer.literal(current[partLen - 1]),
+											renderer.expression(watchVariable).invoke()
+										)
+								);
+							if (isAmdExtension(parentNode)) {
+								var amd2Way = renderer.newFunction(),
+									amdSetter = amd2Way.newFunction();
+								amdSetter
+									.addParameter('name')
+									.addParameter('old')
+									.addParameter('newv')
+									.addStatement(amdSetter.expression('ctxTemp').member('set').invoke(amdSetter.literal(current[partLen - 1]), amdSetter.expression('newv')));
+								amd2Way
+									.addParameter('ctxTemp')
+									.addReturn(amd2Way.expression(amdSetter));
+									
+								renderer
+									.addCondition(renderer.expression('node').member('watch'))
+									.renderer
+									.addStatement(
+										renderer
+											.expression('node')
+											.member('watch')
+											.invoke(
+												renderer.literal(xmlNode.nodeName()),
+												renderer.expression(amd2Way).parenthesis().invoke('ctxTemp')
+											)
+									);
+							}
+						}
+					}
+				}
+				function isAmdExtension(nodeParameter) {
+					var nsUri = ((nodeParameter || xmlNode).namespaceUri() || '');
+					return (nsUri.indexOf('amd://') === 0);
+				}
+				function solveAmdExtension() {
+					var amdPrefix = xmlNode.namespaceUri().substr(6),
+						name = xmlNode.nodeLocalName(),
+						mid = amdPrefix + '/' + name,
+						amdModuleVar = amdPathMapping[mid],
+						instanceName,
+						conditionRenderer;
+					enableAmd();
+					if (!amdModuleVar) {
+						amdModuleVar = renderer.getNewVariable();//Here I'm asking renderer and not parentRenderer to avoid a shadowing
+						amdPathMapping[mid] = amdModuleVar;
+						parentRenderer
+							.addVar(
+								amdModuleVar,
+								parentRenderer
+									.expression('require')
+									.invoke(
+										parentRenderer.literal(mid)
+									)
+							);
+					}
+					instanceName = renderer.getNewVariable();
+					renderer.addVar(instanceName);
+					renderer.addAssignment(instanceName, renderer.createObject(amdModuleVar));
+					conditionRenderer = renderer.addCondition(renderer.expression(instanceName).member('$njsWidget')).renderer;
+					conditionRenderer
+						.addStatement(
+							conditionRenderer
+								.expression(instanceName)
+								.member('show')
+								.invoke(
+									conditionRenderer.expression('node')
+								)
+						);
+					renderer.addAssignment('node', renderer.expression(instanceName));
+				}
 				if (!parentNode) {
 					renderer
 						.addCondition(renderer.not(renderer.varName('document'))).renderer
@@ -270,14 +430,23 @@
 						renderer
 							.addStatement(renderer.expression('nodes').member('push').invoke(renderer.expression('node')));
 						renderer = pushRenderer(renderer.chunk().renderer);
-						solveTagName(xmlNode, false, elementContext);
-						visitChildNodes();
-						checkRerendering();
+						if (isAmdExtension()) {
+							elementContext.mode = 'amdExtension';
+							solveAmdExtension();
+							visitChildNodes();
+							renderer.addAssignment('node', renderer.expression('node').member('domNode'));
+						}
+						else {
+							solveTagName(xmlNode, false, elementContext);
+							visitChildNodes();
+							checkRerendering();
+						}
 						renderer.addAssignment('node', renderer.expression('nodes').member('pop').invoke());
 						renderer = popRenderer();
 					} else if (nodeType(xmlNode) === 2 /* Attribute */ ) {
 						renderer = pushRenderer(renderer.chunk().renderer);
 						processAttributeAct(xmlNode, xmlNode.nodeName());
+						checkRerenderingAttribute();
 						renderer = popRenderer();
 					} else if (nodeType(xmlNode) === 3 /* Text */ ) {
 						renderer.addAssignment('txn', renderer.expression('t').invoke('node', renderer.literal(''), renderer.expression('node').member('ownerDocument')));
@@ -436,7 +605,7 @@
 					}
 					function testPut(opType) {
 						if (opType === 'String') {
-							return renderer.expression('putValue');
+							return renderer.expression('putValue').notEquals(renderer.raw('undefined')).parenthesis();
 						}
 						else if (opType === 'DOM') {
 							return renderer.expression('putValue').member('tagName');
@@ -453,7 +622,15 @@
 							renderer
 								.addAssignment(
 									target,
-									renderer.expression(target).plus(renderer.expression('putValue'))
+									renderer
+										.expression(target)
+										.plus(
+											renderer
+												.expression('putValue')
+												.notEquals(renderer.raw('undefined'))
+												.iif(renderer.expression('putValue'), renderer.literal(''))
+												.parenthesis()
+										)
 								);
 						}
 						else if (opType === 'DOM') {
@@ -495,13 +672,32 @@
 						}
 					}
 					if (targetType === 'attr'){
-						renderer.addAssignment(target, renderer.expression('putValue').or(renderer.literal('')));
+						var attrCondition = renderer.addCondition(renderer.expression(target).notEquals(renderer.literal('')));
+						attrCondition.renderer.addAssignment(target, renderer.expression(target).op('+', renderer.expression('putValue').or(renderer.literal('')).parenthesis() ));
+						var attrElse = attrCondition.elseDo();
+						attrElse.addAssignment(target, renderer.expression('putValue').or(renderer.literal('')).parenthesis());
 //						r += target + ' += putValue || "";\n';
 					}
 					else if (targetType === 'text'){
 						if (optimized.length > 1) {
 							elementContext.needsDom = true;
-							renderer = pushRenderer(renderer.addCondition(renderer.expression('putValue')).renderer);
+							renderer = pushRenderer(
+								renderer.addCondition(
+									renderer.expression('putValue')
+										.notEquals(
+											renderer.raw('undefined')
+										)
+										.parenthesis()
+										.and(
+											renderer
+												.expression('putValue')
+												.notEquals(
+													renderer.raw('null')
+												)
+												.parenthesis()
+										)
+								)
+								.renderer);
 							//r += 'if (putValue) {\n';
 							optimized = optimized.sort(optimizerSort);
 							for (cnt = 0; cnt < optimized.length; cnt += 1) {
@@ -647,7 +843,7 @@
 				var cnt;
 				var functionArgs = [];
 				for (cnt = 0; cnt < arr.length; cnt += 1){
-					functionArgs.push(makePutValue(arr[cnt]));
+					functionArgs.push(makePutValue(arr[cnt], inFunctionCall));
 				}
 				if (inFunctionCall) {
 					renderer.addAssignment('x', makePutValue(expression.content, true));
@@ -777,29 +973,53 @@
 					renderer.addAssignment('av', renderer.literal(''));
 //					r += 'av = \'\';\n';
 					processTextFragment(xmlNode.value(), renderer.expression('av'), 'attr', null, null, elementContext);
-					if (attName === 'class') {
-						renderer
-							.addAssignment(
-								renderer.expression('node').member('className'),
-								renderer.expression('av')
-							);
-//						r += 'node.className = av;\n';
-					}
-					else {
+					if (elementContext.mode === 'amdExtension') {
 						renderer
 							.addStatement(
 								renderer
 									.expression('node')
-									.member('setAttribute')
+									.member('set')
 									.invoke(
 										renderer.literal(attName),
 										renderer.expression('av')
 									)
 							);
-//						r += 'node.setAttribute(\'' + attName + '\', av);\n';
+					}
+					else {
+						if (attName === 'class') {
+							renderer
+								.addAssignment(
+									renderer.expression('node').member('className'),
+									renderer.expression('av')
+								);
+	//						r += 'node.className = av;\n';
+						}
+						else {
+							renderer
+								.addStatement(
+									renderer
+										.expression('node')
+										.member('setAttribute')
+										.invoke(
+											renderer.literal(attName),
+											renderer.expression('av')
+										)
+								);
+	//						r += 'node.setAttribute(\'' + attName + '\', av);\n';
+						}
 					}
 				}
 //				return r;
+			}
+			function assignDependencies(fn) {
+				var p,
+					r = [];
+				for (p in amdPathMapping) {
+					if (amdPathMapping.hasOwnProperty(p)) {
+						r.push(p);
+					}
+				}
+				fn.amdDependencies = r;
 			}
 			var result,
 				promise;
@@ -816,6 +1036,7 @@
 				processDom();
 				renderer.addReturn(renderer.varName('r'));
 				result = renderer.getFunction();
+				assignDependencies(result);
 			}
 			else {
 				promise = processDom();
@@ -824,6 +1045,7 @@
 					//buildString += value;
 					renderer.addReturn('r');
 					result = renderer.getFunction();
+					assignDependencies(result);
 					return result;
 				});
 			}

@@ -47,43 +47,100 @@ var fn = {t:function (e, text, doc) {
 		node = e(node,'div',node.ownerDocument);
 		txn = t(node,'',node.ownerDocument);
 		putValue = context['person']['name'];
-		if (putValue){
+		if (((putValue !== undefined)) && (putValue !== null)){
 			if (putValue['$njsWidget']){
 				putValue.show(node);
 
 			} else 			if (putValue.domNode){
 				node.appendChild(putValue.domNode);
 
-			} else 			if (putValue.tagName){
+			}
+ else 			if (putValue.tagName){
 				node.appendChild(putValue);
 				txn = t(node,'',node.ownerDocument);
 
-			} else 			if (putValue){
-				txn.nodeValue = txn.nodeValue + putValue;
+			}
+ else 			if ((putValue !== undefined)){
+				txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
 
 			}
-		}		node = nodes.pop();
+
+
+		}
+		node = nodes.pop();
 		txn = t(node,'',node.ownerDocument);
 
 	}	context.ident = temp;
 
 },
-    _1 = 	function () {
-//Here starts a live expression
-node = e(node,'div',node.ownerDocument);
+    _1 = 	function (node) {
+//Here starts a live expression with attribute
 av = '';
-av = av + 'liveChanges';
-node.className = av;
-txn = t(node,'',node.ownerDocument);
 putValue = context['liveChanges']['val'];
-txn.nodeValue = txn.nodeValue + putValue;
+if (av !== ''){
+	av = av + ((putValue) || '');
+
+} else {
+	av = ((putValue) || '');
+
+}
+node.setAttribute('data-value',av);
 return node;
 //Here ends the live expression
 
 },
     _2,
     _3,
-    _4 = 	function (context) {
+    _4 = 	function () {
+//Here starts a live expression
+node = e(node,'div',node.ownerDocument);
+av = '';
+av = av + 'liveChanges';
+node.className = av;
+_2 = _1(node);
+//Add trigger events here
+_3 = 	function () {
+	var freeze = {},
+	    freezeNode = _2,
+	    wfn = 		function (name,oldValue,newValue) {
+		var temps = {},
+		    p;
+		if (!(oldValue === newValue)){
+			for (p in freeze){
+			if (freeze.hasOwnProperty(p)) {
+				temps[p] = context[p];
+				context[p] = freeze[p];
+
+			}
+			}			_1(freezeNode);
+			for (p in freeze){
+			if (freeze.hasOwnProperty(p)) {
+				context[p] = temps[p];
+
+			}
+			}
+		}
+
+};
+	return wfn;
+
+};
+ctxTemp = context;
+ctxTemp = ctxTemp['liveChanges'];
+if (ctxTemp.watch){
+	ctxTemp.watch('val',_3());
+
+}
+txn = t(node,'',node.ownerDocument);
+putValue = context['liveChanges']['val'];
+txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
+return node;
+//Here ends the live expression
+
+},
+    _5,
+    _6,
+    _7 = 	function (context) {
 	var arr,
 	    temp,
 	    cnt,
@@ -93,22 +150,27 @@ return node;
 		node = e(node,'div',node.ownerDocument);
 		txn = t(node,'',node.ownerDocument);
 		putValue = context['person']['name'];
-		if (putValue){
+		if (((putValue !== undefined)) && (putValue !== null)){
 			if (putValue['$njsWidget']){
 				putValue.show(node);
 
 			} else 			if (putValue.domNode){
 				node.appendChild(putValue.domNode);
 
-			} else 			if (putValue.tagName){
+			}
+ else 			if (putValue.tagName){
 				node.appendChild(putValue);
 				txn = t(node,'',node.ownerDocument);
 
-			} else 			if (putValue){
-				txn.nodeValue = txn.nodeValue + putValue;
+			}
+ else 			if ((putValue !== undefined)){
+				txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
 
 			}
-		}		return node;
+
+
+		}
+		return node;
 		//Here ends the live expression
 
 },
@@ -119,7 +181,7 @@ return node;
 		node = e(node,'div',node.ownerDocument);
 		txn = t(node,'',node.ownerDocument);
 		putValue = context['person']['gender'];
-		txn.nodeValue = txn.nodeValue + putValue;
+		txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
 		return node;
 		//Here ends the live expression
 
@@ -134,7 +196,7 @@ return node;
 		node.className = av;
 		txn = t(node,'',node.ownerDocument);
 		putValue = context['person']['age'];
-		txn.nodeValue = txn.nodeValue + putValue;
+		txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
 		return node;
 		//Here ends the live expression
 
@@ -149,7 +211,13 @@ return node;
 		node = e(node,'div',node.ownerDocument);
 		av = '';
 		putValue = context['person']['name'];
-		av = (putValue) || '';
+		if (av !== ''){
+			av = av + ((putValue) || '');
+
+		} else {
+			av = ((putValue) || '');
+
+		}
 		node.setAttribute('data-key',av);
 		nodes.push(node);
 		_1 = _0();
@@ -175,6 +243,7 @@ return node;
 					}
 					}
 				}
+
 };
 			freeze['person'] = context['person'];
 			return wfn;
@@ -185,7 +254,8 @@ return node;
 		if (ctxTemp.watch){
 			ctxTemp.watch('name',_2());
 
-		}		node = nodes.pop();
+		}
+		node = nodes.pop();
 		nodes.push(node);
 		_4 = _3();
 		//Add trigger events here
@@ -210,6 +280,7 @@ return node;
 					}
 					}
 				}
+
 };
 			freeze['person'] = context['person'];
 			return wfn;
@@ -220,7 +291,8 @@ return node;
 		if (ctxTemp.watch){
 			ctxTemp.watch('gender',_5());
 
-		}		node = nodes.pop();
+		}
+		node = nodes.pop();
 		nodes.push(node);
 		_7 = _6();
 		//Add trigger events here
@@ -245,6 +317,7 @@ return node;
 					}
 					}
 				}
+
 };
 			freeze['person'] = context['person'];
 			return wfn;
@@ -255,7 +328,8 @@ return node;
 		if (ctxTemp.watch){
 			ctxTemp.watch('age',_8());
 
-		}		node = nodes.pop();
+		}
+		node = nodes.pop();
 		node = nodes.pop();
 		txn = t(node,'',node.ownerDocument);
 
@@ -265,22 +339,41 @@ return node;
 if (!document){
 	document = window.document;
 
-}putValue = context['tagName'];
-x = (putValue) || '';
+}
+putValue = context['tagName'];
+if (x !== ''){
+	x = x + ((putValue) || '');
+
+} else {
+	x = ((putValue) || '');
+
+}
 node = document.createElement((putValue) || 'div');
 nodes.push(node);
 av = '';
 putValue = context['class'];
-av = (putValue) || '';
+if (av !== ''){
+	av = av + ((putValue) || '');
+
+} else {
+	av = ((putValue) || '');
+
+}
 node.className = av;
 attachTemp = r['${tagName}'];
 if (attachTemp){
 	if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
 		attachTemp.push(node);
 
-	} 		r['${tagName}'] = [];
+	} else {
+		r['${tagName}'] = [attachTemp,node];
 
-} 	r['${tagName}'] = node;
+	}
+
+} else {
+	r['${tagName}'] = node;
+
+}
 nodes.push(node);
 node = e(node,'h1',node.ownerDocument);
 attachTemp = r['titleNode'];
@@ -288,27 +381,38 @@ if (attachTemp){
 	if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
 		attachTemp.push(node);
 
-	} 		r['titleNode'] = [];
+	} else {
+		r['titleNode'] = [attachTemp,node];
 
-} 	r['titleNode'] = node;
+	}
+
+} else {
+	r['titleNode'] = node;
+
+}
 txn = t(node,'',node.ownerDocument);
 putValue = context['title'];
-if (putValue){
+if (((putValue !== undefined)) && (putValue !== null)){
 	if (putValue['$njsWidget']){
 		putValue.show(node);
 
 	} else 	if (putValue.domNode){
 		node.appendChild(putValue.domNode);
 
-	} else 	if (putValue.tagName){
+	}
+ else 	if (putValue.tagName){
 		node.appendChild(putValue);
 		txn = t(node,'',node.ownerDocument);
 
-	} else 	if (putValue){
-		txn.nodeValue = txn.nodeValue + putValue;
+	}
+ else 	if ((putValue !== undefined)){
+		txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
 
 	}
-}node = nodes.pop();
+
+
+}
+node = nodes.pop();
 nodes.push(node);
 node = e(node,'div',node.ownerDocument);
 attachTemp = r['contentNode'];
@@ -316,9 +420,15 @@ if (attachTemp){
 	if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
 		attachTemp.push(node);
 
-	} 		r['contentNode'] = [];
+	} else {
+		r['contentNode'] = [attachTemp,node];
 
-} 	r['contentNode'] = node;
+	}
+
+} else {
+	r['contentNode'] = node;
+
+}
 av = '';
 av = av + 'content';
 node.className = av;
@@ -331,23 +441,28 @@ nodes.push(node);
 node = e(node,'span',node.ownerDocument);
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'More content';
-putValue = (x = context['fn'].apply(context,[]));
-if (putValue){
+putValue = (x = context['fn'].apply(context,['key']));
+if (((putValue !== undefined)) && (putValue !== null)){
 	if (putValue['$njsWidget']){
 		putValue.show(node);
 
 	} else 	if (putValue.domNode){
 		node.appendChild(putValue.domNode);
 
-	} else 	if (putValue.tagName){
+	}
+ else 	if (putValue.tagName){
 		node.appendChild(putValue);
 		txn = t(node,'',node.ownerDocument);
 
-	} else 	if (putValue){
-		txn.nodeValue = txn.nodeValue + putValue;
+	}
+ else 	if ((putValue !== undefined)){
+		txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
 
 	}
-}txn.nodeValue = txn.nodeValue + 'more data';
+
+
+}
+txn.nodeValue = txn.nodeValue + 'more data';
 node = nodes.pop();
 node = nodes.pop();
 nodes.push(node);
@@ -357,27 +472,38 @@ if (attachTemp){
 	if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
 		attachTemp.push(node);
 
-	} 		r['multiAttach'] = [];
+	} else {
+		r['multiAttach'] = [attachTemp,node];
 
-} 	r['multiAttach'] = node;
+	}
+
+} else {
+	r['multiAttach'] = node;
+
+}
 txn = t(node,'',node.ownerDocument);
-putValue = (x = (x = context['doubleFunction'].apply(context,[])).apply(x,[]));
-if (putValue){
+putValue = (x = (x = context['doubleFunction'].apply(context,[context['title']])).apply(x,['key']));
+if (((putValue !== undefined)) && (putValue !== null)){
 	if (putValue['$njsWidget']){
 		putValue.show(node);
 
 	} else 	if (putValue.domNode){
 		node.appendChild(putValue.domNode);
 
-	} else 	if (putValue.tagName){
+	}
+ else 	if (putValue.tagName){
 		node.appendChild(putValue);
 		txn = t(node,'',node.ownerDocument);
 
-	} else 	if (putValue){
-		txn.nodeValue = txn.nodeValue + putValue;
+	}
+ else 	if ((putValue !== undefined)){
+		txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
 
 	}
-}node = nodes.pop();
+
+
+}
+node = nodes.pop();
 nodes.push(node);
 node = e(node,'div',node.ownerDocument);
 attachTemp = r['multiAttach'];
@@ -385,28 +511,39 @@ if (attachTemp){
 	if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
 		attachTemp.push(node);
 
-	} 		r['multiAttach'] = [];
+	} else {
+		r['multiAttach'] = [attachTemp,node];
 
-} 	r['multiAttach'] = node;
+	}
+
+} else {
+	r['multiAttach'] = node;
+
+}
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'This is a number: ';
 putValue = context['number'];
-if (putValue){
+if (((putValue !== undefined)) && (putValue !== null)){
 	if (putValue['$njsWidget']){
 		putValue.show(node);
 
 	} else 	if (putValue.domNode){
 		node.appendChild(putValue.domNode);
 
-	} else 	if (putValue.tagName){
+	}
+ else 	if (putValue.tagName){
 		node.appendChild(putValue);
 		txn = t(node,'',node.ownerDocument);
 
-	} else 	if (putValue){
-		txn.nodeValue = txn.nodeValue + putValue;
+	}
+ else 	if ((putValue !== undefined)){
+		txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
 
 	}
-}txn.nodeValue = txn.nodeValue + '.';
+
+
+}
+txn.nodeValue = txn.nodeValue + '.';
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'h1',node.ownerDocument);
@@ -425,43 +562,53 @@ av = av + 'testANumberInAnObject';
 node.className = av;
 txn = t(node,'',node.ownerDocument);
 putValue = context['anObject']['aNumber'];
-if (putValue){
+if (((putValue !== undefined)) && (putValue !== null)){
 	if (putValue['$njsWidget']){
 		putValue.show(node);
 
 	} else 	if (putValue.domNode){
 		node.appendChild(putValue.domNode);
 
-	} else 	if (putValue.tagName){
+	}
+ else 	if (putValue.tagName){
 		node.appendChild(putValue);
 		txn = t(node,'',node.ownerDocument);
 
-	} else 	if (putValue){
-		txn.nodeValue = txn.nodeValue + putValue;
+	}
+ else 	if ((putValue !== undefined)){
+		txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
 
 	}
-}node = nodes.pop();
+
+
+}
+node = nodes.pop();
 nodes.push(node);
 node = e(node,'div',node.ownerDocument);
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'This is a widget';
 putValue = context['button'];
-if (putValue){
+if (((putValue !== undefined)) && (putValue !== null)){
 	if (putValue['$njsWidget']){
 		putValue.show(node);
 
 	} else 	if (putValue.domNode){
 		node.appendChild(putValue.domNode);
 
-	} else 	if (putValue.tagName){
+	}
+ else 	if (putValue.tagName){
 		node.appendChild(putValue);
 		txn = t(node,'',node.ownerDocument);
 
-	} else 	if (putValue){
-		txn.nodeValue = txn.nodeValue + putValue;
+	}
+ else 	if ((putValue !== undefined)){
+		txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
 
 	}
-}node = nodes.pop();
+
+
+}
+node = nodes.pop();
 txn = t(node,'',node.ownerDocument);
 _0.call(this,context);
 nodes.push(node);
@@ -478,10 +625,22 @@ nodes.push(node);
 node = e(node,'div',node.ownerDocument);
 av = '';
 putValue = context['tagName'];
-av = (putValue) || '';
+if (av !== ''){
+	av = av + ((putValue) || '');
+
+} else {
+	av = ((putValue) || '');
+
+}
 av = av + ' ';
 putValue = context['class'];
-av = (putValue) || '';
+if (av !== ''){
+	av = av + ((putValue) || '');
+
+} else {
+	av = ((putValue) || '');
+
+}
 node.className = av;
 nodes.push(node);
 node = e(node,'span',node.ownerDocument);
@@ -498,10 +657,10 @@ node = e(node,'span',node.ownerDocument);
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'as innerHTML in a DOM rendered environment. Even though it has variables such as ';
 putValue = context['number'];
-txn.nodeValue = txn.nodeValue + putValue;
+txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
 txn.nodeValue = txn.nodeValue + ' it should be able to render as innerHTML because those variables like ';
 putValue = context['title'];
-txn.nodeValue = txn.nodeValue + putValue;
+txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
 txn.nodeValue = txn.nodeValue + ' are not bound and do not represent an attach point node.';
 node = nodes.pop();
 node = nodes.pop();
@@ -512,18 +671,24 @@ if (attachTemp){
 	if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
 		attachTemp.push(node);
 
-	} 		r['emptyNode'] = [];
+	} else {
+		r['emptyNode'] = [attachTemp,node];
 
-} 	r['emptyNode'] = node;
+	}
+
+} else {
+	r['emptyNode'] = node;
+
+}
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'div',node.ownerDocument);
 nodes.push(node);
-_2 = _1();
+_5 = _4();
 //Add trigger events here
-_3 = 	function () {
+_6 = 	function () {
 	var freeze = {},
-	    freezeNode = _2,
+	    freezeNode = _5,
 	    wfn = 		function (name,oldValue,newValue) {
 		var temps = {},
 		    p;
@@ -534,7 +699,7 @@ _3 = 	function () {
 				context[p] = freeze[p];
 
 			}
-			}			freezeNode = freezeNode.parentNode.replaceChild(_1(),freezeNode);
+			}			freezeNode = freezeNode.parentNode.replaceChild(_4(),freezeNode);
 			for (p in freeze){
 			if (freeze.hasOwnProperty(p)) {
 				context[p] = temps[p];
@@ -542,6 +707,7 @@ _3 = 	function () {
 			}
 			}
 		}
+
 };
 	return wfn;
 
@@ -549,9 +715,10 @@ _3 = 	function () {
 ctxTemp = context;
 ctxTemp = ctxTemp['liveChanges'];
 if (ctxTemp.watch){
-	ctxTemp.watch('val',_3());
+	ctxTemp.watch('val',_6());
 
-}node = nodes.pop();
+}
+node = nodes.pop();
 nodes.push(node);
 node = e(node,'div',node.ownerDocument);
 av = '';
@@ -562,11 +729,17 @@ if (attachTemp){
 	if (Object.prototype.toString.call(attachTemp) === '[object Array]'){
 		attachTemp.push(node);
 
-	} 		r['personsNode'] = [];
+	} else {
+		r['personsNode'] = [attachTemp,node];
 
-} 	r['personsNode'] = node;
+	}
+
+} else {
+	r['personsNode'] = node;
+
+}
 txn = t(node,'',node.ownerDocument);
-_4.call(this,context);
+_7.call(this,context);
 node = nodes.pop();
 node = nodes.pop();
 node = nodes.pop();

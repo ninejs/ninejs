@@ -25,6 +25,17 @@ define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./NavBar.h
 		skin: new Skin({ template: template, cssList: [css] }),
 		role: 'navigation',
 		brandHref: '#',
+		brandSetter: function(val) {
+			this.brand = val;
+			on.once(this, 'updatedSkin', function() {
+				if (!val) {
+					setClass(this.brandNode, 'hidden');
+				}
+				else {
+					setClass(this.brandNode, '!hidden');
+				}
+			});
+		},
 		updateSkin: extend.after(function() {
 			var self = this;
 			on(this.barToggle, 'click', function() {

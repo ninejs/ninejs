@@ -27,8 +27,10 @@ Dojo Toolkit's dojo/on as of jan 2014
 		has.add('jscript', major && (major() + window.ScriptEngineMinorVersion() / 10));
 		has.add('event-orientationchange', has('touch') && !has('android')); // TODO: how do we detect this?
 		has.add('event-stopimmediatepropagation', window.Event && !! window.Event.prototype && !! window.Event.prototype.stopImmediatePropagation);
-		has.add('event-focusin', function(global, doc, element) {
+		has.add('event-focusin', function() {
 			/* jshint unused: true */
+			var doc = window.document,
+				element = doc.createElement('input');
 			return 'onfocusin' in element || (element.addEventListener && (function() {
 				var hasFocusInEvent = false;
 

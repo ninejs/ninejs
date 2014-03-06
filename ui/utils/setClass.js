@@ -30,6 +30,9 @@ define([], function() {
 			}
 		}
 	}
+	clSetClass.has = function(node, name) {
+		return node.classList.contains(name);
+	};
 	function oldSetClass(node, clName) {
 		var name = trim(clName), remove, className = ' ' + node[classProp] + ' ', toggle, idx, strip;
 		if (name.indexOf('!!') === 0) {
@@ -63,15 +66,31 @@ define([], function() {
 			}
 		}
 	}
+	oldSetClass.has = function(node, name) {
+		var className = ' ' + node[classProp] + ' ';
+		return name && (className.indexOf(' ' + name + ' ') >= 0);
+	};
 	function unkSetClass(node, clName){
 		var undef, hasClassList = node.classList && node.classList.length !== undef;
 		if (hasClassList){
 			doSetClass = clSetClass;
+			setClass.has = clSetClass.has;
 		}
 		else {
 			doSetClass = oldSetClass;
+			setClass.has = oldSetClass.has;
 		}
-		doSetClass(node, clName);
+		return doSetClass(node, clName);
+	}
+	function unkHas(node, clName) {
+		var undef, hasClassList = node.classList && node.classList.length !== undef;
+		if (hasClassList){
+			setClass.has = clSetClass.has;
+		}
+		else {
+			setClass.has = oldSetClass.has;
+		}
+		return setClass.has(node, clName);
 	}
 	var doSetClass = unkSetClass;
 	var setClass = function(node) {
@@ -82,5 +101,6 @@ define([], function() {
 		}
 		return node;
 	};
+	setClass.has = unkHas;
 	return setClass;
 });

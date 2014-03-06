@@ -1,4 +1,4 @@
-define(['../../ui/Widget', './Skin/FullScreenFrame', '../../ui/utils/append', '../../ui/utils/setClass', 'dojo/query'], function(Widget, defaultSkin, append, setClass, query) {
+define(['../../ui/Widget', './Skin/FullScreenFrame', '../../ui/utils/append', '../../ui/utils/setClass', 'dojo/query', '../../core/on', '../../core/deferredUtils'], function(Widget, defaultSkin, append, setClass, query, on, def) {
 	'use strict';
 	function isNumber(n) {
 		return !isNaN(parseFloat(n)) && isFinite(n);
@@ -17,20 +17,57 @@ define(['../../ui/Widget', './Skin/FullScreenFrame', '../../ui/utils/append', '.
 			else if (idx.domNode) {
 				target = idx.domNode;
 			}
+			else if (idx['$njsWidget'] && (typeof(idx.show) === 'function')) {
+				idx.show();
+				target = idx.domNode;
+			}
 			else {
 				target = idx;
 			}
+			function deactivate(node) {
+				return function() {
+					on.emit(node, 'njsDeactivated', { bubbles: false, cancelable: false });
+				};
+			}
+			function activate(target) {
+				setTimeout(function() {
+					on.emit(target, 'njsActivated', { bubbles: false, cancelable: false });
+				}, 10);
+			}
+			var foundIdx;
 			for (cnt = 0; cnt < len; cnt += 1) {
 				current = arr[cnt];
+				if (setClass.has(current, 'active')) {
+					setTimeout(deactivate(current), 10);
+				}
 				setClass(current, '!active');
 				if (current === target) {
-					setClass(arr[cnt], 'active');
+					foundIdx = cnt;
 				}
+			}
+			if (foundIdx !== undefined) {
+				setClass(arr[foundIdx], 'active');
+				activate(arr[foundIdx]);
 			}
 		},
 		addChild: function(child) {
-			append(this.containerNode, child);
-			return query('> *', this.containerNode).length - 1;
+			function doAddChild(container, child) {
+				if (child.domNode) {
+					child = child.domNode;
+				}
+				append(container, child);
+				return query('> *', container).length - 1;
+			}
+			var self;
+			if ((!child.domNode) && (typeof(child.show) === 'function')) {
+				self = this;
+				return def.when(child.show(), function() {
+					doAddChild(self.containerNode, child);
+				});
+			}
+			else {
+				return doAddChild(this.containerNode, child);
+			}
 		}
 	});
 	return FullScreenFrame;
