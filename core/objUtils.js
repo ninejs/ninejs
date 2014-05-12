@@ -91,13 +91,21 @@
 		function isArray(obj) {
 			return (Object.prototype.toString.call(obj) === '[object Array]');
 		}
+		function isArrayLike(value) {
+			return value &&
+				typeof value === 'object' &&
+				typeof value.length === 'number' &&
+				//hasOwnProperty.call(value, "length") &&
+				((!value.length) || hasOwnProperty.call(value, value.length - 1));
+		}
 
 		return {
 			deepToString: deepToString,
 			protoClone: protoClone,
 			isFunction: isFunction,
 			isString: isString,
-			isArray: isArray
+			isArray: isArray,
+			isArrayLike: isArrayLike
 		};
 	}
 

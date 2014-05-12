@@ -10,15 +10,16 @@
   "main": "lib/ninejs",
   "dojoBuild": "profile.build.js",
   "dependencies": {
-    "q": "*",
-    "underscore": "*",
-    "bunyan": "*",
-    "express": "*",
-    "mime": "*",
-    "connect": "~2.8.4",
+    "q": "~1.0.1",
+    "underscore": "~1.6.0",
+    "bunyan": "~0.22.1",
+    "express": "~3.4.8",
+    "mime": "~1.2.11",
+    "connect": "~2.14.3",
     "optimist": "~0.6.0",
     "dojo": "git+https://github.com/dojo/dojo.git#master",
-    "request": "~2.33.0"
+    "request": "~2.33.0",
+    "kew": "~0.3.4"
   },
   "devDependencies": {
     "node-xml": "~1.0.2",

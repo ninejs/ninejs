@@ -59,6 +59,15 @@ define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./NavBar.h
 				self.collapsed = !self.collapsed;
 			});
 		}),
+		deactivateItem: function() {
+			if (this.activeItem) {
+				setClass(this.activeItem, '!active');
+			}
+		},
+		activateItem: function(item) {
+			this.activeItem = item;
+			setClass(this.activeItem, 'active');
+		},
 		addItem: function(item, parentNode) {
 			var self = this;
 			parentNode = parentNode || this.itemContainer;
@@ -71,15 +80,15 @@ define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./NavBar.h
 				if (!item.domNode) {
 					newItemNode = setClass(append(parentNode, 'li'), 'cursor-pointer');
 					newItemNode.title = item.tooltip || '';
+					if (item.id) {
+						newItemNode.setAttribute('data-tabKey', item.id);
+					}
 					setText(append(newItemNode, 'a'), item.label);
 					if (item.action) {
 						on(newItemNode, 'click', function() {
-							if (self.activeItem) {
-								setClass(self.activeItem, '!active');
-							}
+							self.deactivateItem();
 							item.action.apply(this, arguments);
-							self.activeItem = this;
-							setClass(self.activeItem, 'active');
+							self.activateItem(this);
 						});
 					}
 				}
@@ -92,7 +101,28 @@ define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./NavBar.h
 			return newItemNode;
 		}
 	}, function() {
+		/* global window */
+		var self = this;
 		this.collapsed = true;
+		this.own(
+			on(window, '9jsRouteChanged', function(evt) {
+				if (typeof(evt.tabKey) !== 'undefined') {
+					self.deactivateItem();
+					if (evt.tabKey !== null) {
+						var nodes = self.itemContainer.childNodes,
+							cnt,
+							len = nodes.length,
+							current;
+						for (cnt = 0; cnt < len; cnt += 1) {
+							current = nodes[cnt];
+							if (current.getAttribute('data-tabKey') === evt.tabKey) {
+								self.activateItem(current);
+							}
+						}
+					}
+				}
+			})
+		);
 	});
 	return NavBar;
 });

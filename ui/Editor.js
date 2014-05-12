@@ -42,6 +42,10 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 		},
 		valueGetter: function() {
 			return this.value;
+		},
+		nameSetter: function(v) {
+			this.name = v;
+			this.domNode.name = v;
 		}
 	}, function() {
 		var self = this;
@@ -93,6 +97,7 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 	CheckBox = extend(function() {
 		this.domNode = window.document.createElement('input');
 		this.domNode.type = 'check';
+		this.domNode.value = 'true';
 	}, ControlBase);
 	TextBox = extend(function() {
 		this.domNode = window.document.createElement('input');
@@ -177,6 +182,15 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 		},
 		placeholderGetter: function() {
 			return this.placeholder;
+		},
+		nameSetter: function(v) {
+			this.name = v;
+			if (this.control) {
+				this.control.set('name', v);
+			}
+			else {
+				throw new Error('Please set control\'s dataType property prior to assigning \'name\' property');
+			}
 		},
 		autocompleteSetter: function(v) {
 			if (this.control) {

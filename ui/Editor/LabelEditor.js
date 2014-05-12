@@ -42,7 +42,7 @@ define(['../../core/extend', '../Editor', '../utils/append', '../utils/setText',
 					self.set('isLabel', false);
 					self.focus();
 				}),
-				this.on('blur,change', function() {
+				this.on('blur', function() {
 					self.set('isLabel', true);
 				})
 			);

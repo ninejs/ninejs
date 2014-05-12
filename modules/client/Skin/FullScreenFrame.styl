@@ -2,9 +2,15 @@
 	> {
 		* {
 			display: none;
+			@media print {
+				display: none;
+			}
 		}
 		.active {
 			display: block;
+			@media print {
+				display: block;
+			}
 		}
 	}
 }

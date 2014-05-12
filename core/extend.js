@@ -29,9 +29,9 @@
 			}
 		}
 		function mixinAll(obj, target) {
-			/* jshint forin: false */
 			var p;
 			for(p in target) {
+				/* jshint forin: false */
 				obj[p] = target[p];
 			}
 		}

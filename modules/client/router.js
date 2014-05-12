@@ -1,4 +1,4 @@
-define(['../Module', '../../core/extend', 'dojo/router', 'dojo/hash', '../config'], function (Module, extend, router, hash, clientConfig) {
+define(['../Module', '../../core/extend', '../../client/router', '../../client/hash', '../config'], function (Module, extend, router, hash, clientConfig) {
 	'use strict';
 	var HashRouter = Module.extend({
 		getProvides: function(name) {
@@ -35,18 +35,19 @@ define(['../Module', '../../core/extend', 'dojo/router', 'dojo/hash', '../config
 		router.startup();
 		var start;
 		start = hash() || clientConfig.boot;
-		hash('');
-		if (start) {
-			if (typeof(start) === 'function') {
-				start();
+		setTimeout(function() {
+			if (start) {
+				if (typeof(start) === 'function') {
+					start();
+				}
+				else if (typeof(start) === 'string') {
+					router.go(start, true);
+				}
 			}
-			else if (typeof(start) === 'string') {
-				router.go(start, true);
+			else {
+				router.go('/', true);
 			}
-		}
-		else {
-			router.go('/', true);
-		}
+		});
 	});
 	return result;
 });

@@ -107,8 +107,8 @@ represent it and evaluate it over a collection of data or a service.
 				'Number'
 			]
 		},
-		'lesserThanOrEquals':{
-			name: 'lesserThanOrEquals',
+		'lessThanOrEquals':{
+			name: 'lessThanOrEquals',
 			'operator': function(a,b) { return a <= b; },
 			dataTypeList: [
 				'Number'

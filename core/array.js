@@ -42,6 +42,23 @@
 				}
 			};
 		}
+		if (typeof(Array.prototype.indexOf) === 'function') {
+			result.indexOf = function(arr, obj) {
+				return Array.prototype.indexOf.call(arr, obj);
+			};
+		}
+		else {
+			result.indexOf = function(arr, obj) {
+				var cnt,
+					len = arr.len;
+				for (cnt = 0; cnt < len; cnt += 1) {
+					if (arr[cnt] === obj) {
+						return cnt;
+					}
+				}
+				return -1;
+			};
+		}
 		return result;
 	}
 

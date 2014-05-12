@@ -276,11 +276,11 @@ describe('core/logic/Expression', function () {
 				expect(e.evaluate(data)).to.equal(false);
 			});
 		});
-		it('should evaluate lesserThanOrEquals operator', function (done) {
+		it('should evaluate lessThanOrEquals operator', function (done) {
 			var e = new Expression();
 			e.fromJson({
 				sourceField: 'age',
-				operator: 'lesserThanOrEquals',
+				operator: 'lessThanOrEquals',
 				target: 2
 			});
 			var data = {
@@ -290,11 +290,11 @@ describe('core/logic/Expression', function () {
 				expect(e.evaluate(data)).to.equal(true);
 			});
 		});
-		it('should evaluate lesserThanOrEquals operator 2', function (done) {
+		it('should evaluate lessThanOrEquals operator 2', function (done) {
 			var e = new Expression();
 			e.fromJson({
 				sourceField: 'age',
-				operator: 'lesserThanOrEquals',
+				operator: 'lessThanOrEquals',
 				target: 2
 			});
 			var data = {
@@ -304,11 +304,11 @@ describe('core/logic/Expression', function () {
 				expect(e.evaluate(data)).to.equal(true);
 			});
 		});
-		it('should evaluate false lesserThanOrEquals operator', function (done) {
+		it('should evaluate false lessThanOrEquals operator', function (done) {
 			var e = new Expression();
 			e.fromJson({
 				sourceField: 'age',
-				operator: 'lesserThanOrEquals',
+				operator: 'lessThanOrEquals',
 				target: 2
 			});
 			var data = {

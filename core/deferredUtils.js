@@ -62,6 +62,13 @@ This is just an abstraction that detects if it's running in client side to retur
 							return result;
 						});
 					}
+				},
+				delay: function(ms) {
+					var defer = this.defer();
+					setTimeout(function() {
+						defer.resolve(true);
+					}, ms);
+					return defer.promise;
 				}
 			});
 		}
@@ -70,11 +77,30 @@ This is just an abstraction that detects if it's running in client side to retur
 				defer: function() {
 					return Q.defer();
 				},
-				when: function() {
-					return Q.when.apply(Q, arguments);
+				/* jshint unused: true */
+				when: function(valueOrPromise, resolve, reject, progress, finalBlock) {
+					var r;
+					if (Q.isPromiseLike(valueOrPromise)) {
+						r = valueOrPromise.then(resolve, reject);
+					}
+					else {
+						var defer = Q.defer();
+						defer.promise.then(resolve, reject);
+						defer.resolve(valueOrPromise);
+						r = defer.promise;
+					}
+					if (typeof(finalBlock) === 'function') {
+						return r.fin(finalBlock);
+					}
+					else {
+						return r;
+					}
 				},
 				all: function() {
 					return Q.all.apply(Q, arguments);
+				},
+				delay: function() {
+					return Q.delay.apply(Q, arguments);
 				}
 			});
 		}
@@ -89,11 +115,11 @@ This is just an abstraction that detects if it's running in client side to retur
 			define(['./extend', 'dojo/Deferred', 'dojo/DeferredList', 'dojo/_base/Deferred'], deferred);
 		} else {
 			//Trying for RequireJS and hopefully every other
-			define(['./extend', 'q'], deferred);
+			define(['./extend', 'kew'], deferred);
 		}
 	} else if (isNode) { //Server side
 		var Q, extend;
-		Q = req('q');
+		Q = req('kew');
 		extend = req('./extend');
 		module.exports = deferred(extend, Q);
 	} else {
