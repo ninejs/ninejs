@@ -74,7 +74,7 @@ var fn = {t:function (e, text, doc) {
 
 },
     _1 = 	function (node) {
-//Here starts a live expression with attribute
+/* Here starts a live expression with attribute */ 
 av = '';
 putValue = context['liveChanges']['val'];
 if (av !== ''){
@@ -86,19 +86,19 @@ if (av !== ''){
 }
 node.setAttribute('data-value',av);
 return node;
-//Here ends the live expression
+/* Here ends the live expression */ 
 
 },
     _2,
     _3,
     _4 = 	function () {
-//Here starts a live expression
+/* Here starts a live expression */ 
 node = e(node,'div',node.ownerDocument);
 av = '';
 av = av + 'liveChanges';
 node.className = av;
 _2 = _1(node);
-//Add trigger events here
+/* Add trigger events here */ 
 _3 = 	function () {
 	var freeze = {},
 	    freezeNode = _2,
@@ -135,7 +135,7 @@ txn = t(node,'',node.ownerDocument);
 putValue = context['liveChanges']['val'];
 txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
 return node;
-//Here ends the live expression
+/* Here ends the live expression */ 
 
 },
     _5,
@@ -146,7 +146,7 @@ return node;
 	    cnt,
 	    ident = 'person',
 	    _0 = 			function () {
-		//Here starts a live expression
+		/* Here starts a live expression */ 
 		node = e(node,'div',node.ownerDocument);
 		txn = t(node,'',node.ownerDocument);
 		putValue = context['person']['name'];
@@ -171,25 +171,25 @@ return node;
 
 		}
 		return node;
-		//Here ends the live expression
+		/* Here ends the live expression */ 
 
 },
 	    _1,
 	    _2,
 	    _3 = 			function () {
-		//Here starts a live expression
+		/* Here starts a live expression */ 
 		node = e(node,'div',node.ownerDocument);
 		txn = t(node,'',node.ownerDocument);
 		putValue = context['person']['gender'];
 		txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
 		return node;
-		//Here ends the live expression
+		/* Here ends the live expression */ 
 
 },
 	    _4,
 	    _5,
 	    _6 = 			function () {
-		//Here starts a live expression
+		/* Here starts a live expression */ 
 		node = e(node,'div',node.ownerDocument);
 		av = '';
 		av = av + 'age';
@@ -198,7 +198,7 @@ return node;
 		putValue = context['person']['age'];
 		txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
 		return node;
-		//Here ends the live expression
+		/* Here ends the live expression */ 
 
 },
 	    _7,
@@ -221,7 +221,7 @@ return node;
 		node.setAttribute('data-key',av);
 		nodes.push(node);
 		_1 = _0();
-		//Add trigger events here
+		/* Add trigger events here */ 
 		_2 = 			function () {
 			var freeze = {},
 			    freezeNode = _1,
@@ -258,7 +258,7 @@ return node;
 		node = nodes.pop();
 		nodes.push(node);
 		_4 = _3();
-		//Add trigger events here
+		/* Add trigger events here */ 
 		_5 = 			function () {
 			var freeze = {},
 			    freezeNode = _4,
@@ -295,7 +295,7 @@ return node;
 		node = nodes.pop();
 		nodes.push(node);
 		_7 = _6();
-		//Add trigger events here
+		/* Add trigger events here */ 
 		_8 = 			function () {
 			var freeze = {},
 			    freezeNode = _7,
@@ -685,7 +685,7 @@ nodes.push(node);
 node = e(node,'div',node.ownerDocument);
 nodes.push(node);
 _5 = _4();
-//Add trigger events here
+/* Add trigger events here */ 
 _6 = 	function () {
 	var freeze = {},
 	    freezeNode = _5,

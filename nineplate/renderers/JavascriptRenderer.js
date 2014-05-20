@@ -191,7 +191,7 @@
 					if (!debugMode) {
 						return '';
 					}
-					return getIndent() + '//' + msg + lineSeparator;
+					return getIndent() + '/* ' + msg + ' */ ' + lineSeparator;
 				};
 				this.toString = function() {
 					return this.render.apply(this, arguments);

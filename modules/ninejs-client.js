@@ -1,4 +1,4 @@
-define(['./Module'], function(Module) {
+define(['./Module'], function (Module) {
 	'use strict';
 	var result = new Module({
 		provides: [

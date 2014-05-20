@@ -71,10 +71,12 @@
 
 				});
 				cb.onComment(function( msg ) {
-					node.children.push({
-						nodeType: 4,
-						nodeValue: msg
-					});
+					if (node && node.children) {
+						node.children.push({
+							nodeType: 4,
+							nodeValue: msg
+						});
+					}
 				});
 				cb.onWarning(function( /*msg*/ ) {
 

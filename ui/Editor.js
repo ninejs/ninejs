@@ -11,7 +11,7 @@
  * @return {ninejs/ui/Editor}   Returns a new Editor.
  * @constructor
  */
-define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/Default', '../core/deferredUtils', '../modernizer', '../core/array', './utils/setClass', '../core/objUtils', '../core/on', './utils/setText', './utils/append'], function(extend, Widget, Properties, defaultSkin, def, modernizer, array, setClass, objUtils, on, setText, append) {
+define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/Default', '../core/deferredUtils', '../modernizer', '../core/array', './utils/setClass', '../core/objUtils', '../core/on', './utils/setText', './utils/append', '../config'], function (extend, Widget, Properties, defaultSkin, def, modernizer, array, setClass, objUtils, on, setText, append, config) {
 	'use strict';
 
 	var NumberTextBox,
@@ -21,96 +21,109 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 		Select,
 		TimeTextBox,
 		ControlBase,
+		numberTextBoxImpl = ((config.ui || {}).Editor || {}).NumberTextBox || 'dijit/form/NumberTextBox',
+		dateTextBoxImpl = ((config.ui || {}).Editor || {}).DateTextBox || 'dijit/form/DateTextBox',
 		ENTER = 13;
 	ControlBase = extend(Properties, {
-		on: function(type, act) {
+		on: function (type, act) {
 			//TODO: possible leak
 			on(this.domNode, type, act);
 		},
-		destroyRecursive: function() {
+		destroyRecursive: function () {
 
 		},
-		startup: function() {
+		startup: function () {
 
 		},
-		focus: function() {
+		focus: function () {
 			this.domNode.focus();
 		},
-		valueSetter: function(v) {
+		valueSetter: function (v) {
 			this.value = v;
 			this.domNode.value = v;
 		},
-		valueGetter: function() {
+		valueGetter: function () {
 			return this.value;
 		},
-		nameSetter: function(v) {
+		nameSetter: function (v) {
 			this.name = v;
 			this.domNode.name = v;
 		}
-	}, function() {
+	}, function () {
 		var self = this;
-		on(this.domNode, 'change', function(){
+		on(this.domNode, 'change', function () {
 			self.set('value', self.domNode.value);
 		});
 		// on(this.domNode, 'blur', function(e){
-		// 	on.emit(self.domNode, 'blur', e);
+		// on.emit(self.domNode, 'blur', e);
 		// });
 	});
-	if (!modernizer.inputtypes.number) {
-		NumberTextBox = require('dijit/form/NumberTextBox');
-	}
-	else {
-		var goodNumber = /^(\+|-)?((\d+(\.\d+)?)|(\.\d+))$/,
-			goodPrefix = /^(\+|-)?((\d*(\.?\d*)?)|(\.\d*))$/;
-		NumberTextBox = extend(function() {
-			this.domNode = window.document.createElement('input');
-			this.domNode.type = 'number';
-			var self = this,
-				previousValue;
-			on(this.domNode, 'input,propertyChange', function() {
-				if ( !goodPrefix.test(this.value) ) {
-					this.value = previousValue;
-				}
-				if (!goodNumber.test(this.value)) {
-					setClass(self.domNode, 'invalid');
-				}
-				else {
-					setClass(self.domNode, '!invalid');
-					previousValue = this.value;
+	function getNumberTextBoxConstructor() {
+		var NumberTextBox;
+		if (!modernizer.inputtypes.number) {
+			NumberTextBox = require(numberTextBoxImpl);
+			if (!NumberTextBox) {
+				throw new Error('Implementation for NumberTextBox: ' + numberTextBoxImpl + ' must be previously loaded.');
+			}
+		}
+		else {
+			var goodNumber = /^(\+|-)?((\d+(\.\d+)?)|(\.\d+))$/,
+				goodPrefix = /^(\+|-)?((\d*(\.?\d*)?)|(\.\d*))$/;
+			NumberTextBox = extend(function () {
+				this.domNode = window.document.createElement('input');
+				this.domNode.type = 'number';
+				var self = this,
+					previousValue;
+				on(this.domNode, 'input,propertyChange', function () {
+					if (!goodPrefix.test(this.value)) {
+						this.value = previousValue;
+					}
+					if (!goodNumber.test(this.value)) {
+						setClass(self.domNode, 'invalid');
+					}
+					else {
+						setClass(self.domNode, '!invalid');
+						previousValue = this.value;
+					}
+				});
+			}, ControlBase, {
+				stepSetter: function (p) {
+					this.domNode.step = p;
 				}
 			});
-		}, ControlBase, {
-			stepSetter: function(p) {
-				this.domNode.step = p;
-			}
-		});
+		}
+		return NumberTextBox;
 	}
+	NumberTextBox = getNumberTextBoxConstructor();
 	if (!modernizer.inputtypes.date) {
-		DateTextBox = require('dijit/form/DateTextBox');
+		DateTextBox = require(dateTextBoxImpl);
+		if (!DateTextBox) {
+			throw new Error('Implementation for DateTextBox: ' + dateTextBoxImpl + ' must be previously loaded.');
+		}
 	}
 	else {
-		DateTextBox = extend(function() {
+		DateTextBox = extend(function () {
 			this.domNode = window.document.createElement('input');
 			this.domNode.type = 'date';
 		}, ControlBase);
 	}
-	CheckBox = extend(function() {
+	CheckBox = extend(function () {
 		this.domNode = window.document.createElement('input');
 		this.domNode.type = 'check';
 		this.domNode.value = 'true';
 	}, ControlBase);
-	TextBox = extend(function() {
+	TextBox = extend(function () {
 		this.domNode = window.document.createElement('input');
 		this.domNode.type = 'text';
 	}, ControlBase);
-	Select = extend(function() {
+	Select = extend(function () {
 		this.domNode = window.document.createElement('select');
 	}, ControlBase, {
-		optionsSetter: function(v) {
+		optionsSetter: function (v) {
 			var node = this.domNode;
 			setText.emptyNode(node);
 			if (v) {
-				array.forEach(v, function(item) {
+				array.forEach(v, function (item) {
 					var key,
 						value,
 						opt;
@@ -136,32 +149,32 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 			}
 		}
 	});
-	TimeTextBox = extend(function() {
+	TimeTextBox = extend(function () {
 		this.domNode = window.document.createElement('input');
 		this.domNode.type = 'time';
 	}, ControlBase);
 
 	return Widget.extend({
 		skin: defaultSkin,
-		_clearDataTypeClasses : function() {
+		_clearDataTypeClasses : function () {
 			var self = this;
-			return def.when(this.show(), function() {
+			return def.when(this.show(), function () {
 				setClass(self.domNode, '!dataType-integer', '!dataType-decimal', '!dataType-date', '!dataType-datetime', '!dataType-boolean', '!dataType-record', '!dataType-alphanumeric', '!dataType-list');
 			});
 		},
-		onUpdatedSkin : extend.after(function() {
+		onUpdatedSkin : extend.after(function () {
 			var self = this;
 			this.own(
-				this.on('blur', function() {
+				this.on('blur', function () {
 					return self.onBlur.apply(self, arguments);
 				})
 			);
-			this.watch('value', function() {
+			this.watch('value', function () {
 				self.emit('change', {});
 			});
 		}),
 		dataType : null,
-		controlClassSetter: function(v) {
+		controlClassSetter: function (v) {
 			if (this.control) {
 				var arg = v.split(' ');
 				arg.unshift(this.control.domNode);
@@ -171,7 +184,7 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 				throw new Error('Please set control\'s dataType property prior to assigning \'controlClass\' property');
 			}
 		},
-		placeholderSetter: function(v) {
+		placeholderSetter: function (v) {
 			this.placeholder = v;
 			if (this.control) {
 				this.control.domNode.placeholder = v;
@@ -180,10 +193,10 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 				throw new Error('Please set control\'s dataType property prior to assigning \'placeholder\' property');
 			}
 		},
-		placeholderGetter: function() {
+		placeholderGetter: function () {
 			return this.placeholder;
 		},
-		nameSetter: function(v) {
+		nameSetter: function (v) {
 			this.name = v;
 			if (this.control) {
 				this.control.set('name', v);
@@ -192,7 +205,7 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 				throw new Error('Please set control\'s dataType property prior to assigning \'name\' property');
 			}
 		},
-		autocompleteSetter: function(v) {
+		autocompleteSetter: function (v) {
 			if (this.control) {
 				this.control.domNode.autocomplete = v;
 			}
@@ -200,7 +213,7 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 				throw new Error('Please set control\'s dataType property prior to assigning \'autocomplete\' property');
 			}
 		},
-		passwordSetter: function(v) {
+		passwordSetter: function (v) {
 			if (this.control) {
 				if (this.get('dataType') === 'alphanumeric') {
 					if (!!v) {
@@ -218,7 +231,7 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 				throw new Error('Please set control\'s dataType property prior to assigning \'password\' property');
 			}
 		},
-		requiredSetter: function(v) {
+		requiredSetter: function (v) {
 			if (this.domNode) {
 				if (!!v) {
 					this.domNode.required = 'required';
@@ -229,7 +242,7 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 			}
 			else {
 				var self = this;
-				on.once('updatedSkin', function() {
+				on.once('updatedSkin', function () {
 					if (!!v) {
 						self.domNode.required = 'required';
 					}
@@ -240,17 +253,17 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 			}
 		},
 
-		onBlur : function() {
+		onBlur : function () {
 
 		},
-		bind: function(target, name){
+		bind: function (target, name){
 			if (target) {
 				var self = this;
-				this.watch('value', function(pname, oldv, newv){
+				this.watch('value', function (pname, oldv, newv){
 					/* jshint unused: true */
 					target.set(name, newv);
 				});
-				target.watch(name, function(pname, oldv, newv) {
+				target.watch(name, function (pname, oldv, newv) {
 					/* jshint unused: true */
 					self.set('value', newv);
 				});
@@ -258,7 +271,7 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 			return this;
 		},
 
-		focus : function() {
+		focus : function () {
 			if (this.control && (typeof(this.control.focus) === 'function')) {
 				this.control.focus();
 			}
@@ -268,7 +281,7 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 		 * "list"
 		 *
 		 */
-		dataTypeSetter : function(val) {
+		dataTypeSetter : function (val) {
 			var self = this,
 				normalKeyDownEventHandler,
 				buildNumberTextBox,
@@ -278,7 +291,7 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 				buildCheckBox,
 				buildTimeTextBox;
 
-			normalKeyDownEventHandler = function(e) {
+			normalKeyDownEventHandler = function (e) {
 				if (e.keyCode === ENTER) {
 					on.emit(this, 'blur', {
 						bubbles : true,
@@ -287,11 +300,11 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 				}
 			};
 
-			buildNumberTextBox = function(places) {
+			buildNumberTextBox = function (places) {
 				var NumberTextBoxControl = this.NumberTextBoxControl || NumberTextBox;
 				var args = {
 						places : places,
-						step: (typeof(places) === 'number')? window.Math.pow(0.1, places).toString() : 'any',
+						step: (typeof(places) === 'number') ? window.Math.pow(0.1, places).toString() : 'any',
 						editor : this,
 						onKeyDown: normalKeyDownEventHandler,
 						intermediateChanges: true
@@ -300,18 +313,18 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 				extend.mixin(args, this.args);
 				var control = new NumberTextBoxControl(args);
 				self.own(
-					on((control.domNode || control), 'blur', function(e) {
+					on((control.domNode || control), 'blur', function (e) {
 						control.editor.emit('blur', e);
 					})
 				);
-				control.watch('value', function(name, old, newv) {
+				control.watch('value', function (name, old, newv) {
 					/* jshint unused: true */
 					self.set('value', newv, true);
 				});
 				return control;
 			};
 
-			buildDateTextBox = function() {
+			buildDateTextBox = function () {
 				var DateTextBoxControl = this.DateTextBoxControl || DateTextBox;
 				var args = {
 						editor : this,
@@ -324,18 +337,18 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 				extend.mixin(args, this.args);
 				var control = new DateTextBoxControl(args);
 				self.own(
-					on((control.domNode || control), 'blur', function(e) {
+					on((control.domNode || control), 'blur', function (e) {
 						control.editor.emit('blur', e);
 					})
 				);
-				control.watch('value', function(name, old, newv) {
+				control.watch('value', function (name, old, newv) {
 					/* jshint unused: true */
 					self.set('value', newv, true);
 				});
 				return control;
 			};
 
-			buildTimeTextBox = function() {
+			buildTimeTextBox = function () {
 				var TimeTextBoxControl = this.TimeTextBoxControl || TimeTextBox;
 				var args = {
 						editor : this,
@@ -352,20 +365,20 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 						control.editor.emit('blur', e);
 					})
 				);
-				control.watch('value', function(name, old, newv) {
+				control.watch('value', function (name, old, newv) {
 					/* jshint unused: true */
 					self.set('value', newv, true);
 				});
 				return control;
 			};
 
-			buildCheckBox = function() {
+			buildCheckBox = function () {
 				var CheckBoxControl = this.CheckBoxControl || CheckBox;
 				var args = {
 						editor : this,
 						nullValue : false,
 
-						onBlur : function(e) {
+						onBlur : function (e) {
 							this.editor.emit('blur', e);
 						}
 					},
@@ -373,25 +386,25 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 				extend.mixin(args, this.args);
 				var control = new CheckBoxControl(args);
 				self.own(
-					on((control.domNode || control), 'blur', function(e) {
+					on((control.domNode || control), 'blur', function (e) {
 						control.editor.emit('blur', e);
 					})
 				);
-				control.watch('checked', function(name, old, newv) {
+				control.watch('checked', function (name, old, newv) {
 					/* jshint unused: true */
 					self.set('value', newv, true);
 				});
 				return control;
 			};
 
-			buildTextBox = function() {
+			buildTextBox = function () {
 				var TextBoxControl = this.TextBoxControl || TextBox;
 				var args = {
 						editor: this,
 						nullValue: '',
 						intermediateChanges: true,
 						onKeyDown : normalKeyDownEventHandler,
-						onBlur : function(e) {
+						onBlur : function (e) {
 							this.editor.emit('blur', e);
 						}
 					},
@@ -399,11 +412,11 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 				extend.mixin(args, this.args);
 				var control = new TextBoxControl(args);
 				self.own(
-					on((control.domNode || control), 'blur', function(e) {
+					on((control.domNode || control), 'blur', function (e) {
 						control.editor.emit('blur', e);
 					})
 				);
-				control.watch('value', function(name, old, newv) {
+				control.watch('value', function (name, old, newv) {
 					/* jshint unused: true */
 					self.set('value', newv, true);
 				});
@@ -416,7 +429,7 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 						editor : this,
 						options : this.get('options'),
 
-						onBlur : function(e) {
+						onBlur : function (e) {
 							this.editor.emit('blur', e);
 						}
 					},
@@ -424,11 +437,11 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 				extend.mixin(args, this.args);
 				var control = new SelectControl(args);
 				self.own(
-					on((control.domNode || control), 'blur', function(e) {
+					on((control.domNode || control), 'blur', function (e) {
 						control.editor.emit('blur', e);
 					})
 				);
-				control.watch('value', function(name, old, newv) {
+				control.watch('value', function (name, old, newv) {
 					/* jshint unused: true */
 					self.set('value', newv, true);
 				});
@@ -441,11 +454,11 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 					this.control.destroyRecursive(false);
 				}
 				this.control = null;
-				def.when(this._clearDataTypeClasses(), function() {
+				def.when(this._clearDataTypeClasses(), function () {
 					setClass(self.domNode, ('dataType-' + val));
 
 					var controlMap = {
-						'integer' : function() {
+						'integer' : function () {
 							return buildNumberTextBox.apply(self, [0]);
 						},
 						'decimal' : buildNumberTextBox,
@@ -474,8 +487,8 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 			}
 		},
 
-		valueSetter : function(val, stopPropagate) {
-			var undef = (function(u){ return u; }());
+		valueSetter : function (val, stopPropagate) {
+			var undef = (function (u){ return u; }());
 			if ((val === null) && this.control && (this.control.nullValue !== undef) && (this.control.nullValue !== null)){
 				val = this.control.nullValue;
 				this.value = val;
@@ -511,7 +524,7 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 			}
 		},
 
-		optionsSetter : function(values) {
+		optionsSetter : function (values) {
 			this.options = values;
 			if (this.get('dataType') === 'list') {
 				this.control.set('options', values);

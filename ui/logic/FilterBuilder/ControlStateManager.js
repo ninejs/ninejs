@@ -1,5 +1,5 @@
 /* jshint strict: false, unused: true */
-define(['dojo/_base/declare', 'dojo/Stateful', 'dojo/_base/lang', 'dojo/_base/array', 'put-selector/put', '../../utils/domUtils'], function(declare, Stateful, lang, array, put, domUtils)
+define(['dojo/_base/declare', 'dojo/Stateful', 'dojo/_base/lang', 'dojo/_base/array', '../../utils/domUtils', '../../utils/setClass'], function(declare, Stateful, lang, array, domUtils, setClass)
 {
 	var ControlStateManager = (declare([Stateful],
 	{
@@ -320,8 +320,8 @@ define(['dojo/_base/declare', 'dojo/Stateful', 'dojo/_base/lang', 'dojo/_base/ar
 
 
 
-				put(filter.domNode, '!state-' + oldValue);
-				put(filter.domNode, '.state-' + newValue);
+				setClass(filter.domNode, '!state-' + oldValue);
+				setClass(filter.domNode, 'state-' + newValue);
 			}
 		}
 	}));

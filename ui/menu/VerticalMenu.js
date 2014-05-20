@@ -1,5 +1,5 @@
 /* jshint strict: false */
-define(['dojo/_base/declare', 'dojo/_base/array', 'dijit/layout/ContentPane', 'dijit/_TemplatedMixin', 'put-selector/put', 'dojo/on', 'dojo/text!./VerticalMenu.html', '../utils/domUtils', '../../css!./skin/VerticalMenu/Default.css'], function(declare, array, ContentPane, TemplatedMixin, put, on, defaultTemplate, domUtils, defaultSkin) {
+define(['dojo/_base/declare', 'dojo/_base/array', 'dijit/layout/ContentPane', 'dijit/_TemplatedMixin', 'dojo/on', 'dojo/text!./VerticalMenu.html', '../utils/domUtils', '../../css!./skin/VerticalMenu/Default.css', '../utils/setClass', '../utils/append', '../utils/setText'], function(declare, array, ContentPane, TemplatedMixin, on, defaultTemplate, domUtils, defaultSkin, setClass, append, setText) {
 	var cssLoaded = false;
 	var VerticalMenu = declare([ContentPane, TemplatedMixin], {
 		template: true,
@@ -16,7 +16,7 @@ define(['dojo/_base/declare', 'dojo/_base/array', 'dijit/layout/ContentPane', 'd
 		_setSelectedItemAttr: function(v) {
 			var found;
 			array.forEach(this.items, function(item) {
-				put(item.node, '!active');
+				setClass(item.node, '!active');
 			});
 
 			if (typeof(v) === 'string'){
@@ -31,16 +31,16 @@ define(['dojo/_base/declare', 'dojo/_base/array', 'dijit/layout/ContentPane', 'd
 			}
 			this.selectedItem = v;
 			if (v) {
-				put(v.node, '.active');
+				setClass(v.node, 'active');
 				if (v.action) {
 					v.action.call(this);
 				}
 			}
 		},
 		addItem: function(label, tooltip, id, action){
-			var liNode = put(this.contentNode, 'li'),
-				aNode = put(liNode, 'a'),
-				span = put(aNode, 'span', label),
+			var liNode = append(this.contentNode, 'li'),
+				aNode = append(liNode, 'a'),
+				span = setText(append(aNode, 'span'), label),
 				r = { node: liNode, anchor: aNode, textNode: span, id: id },
 				self = this;
 

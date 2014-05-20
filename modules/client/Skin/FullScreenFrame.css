@@ -1,6 +1,16 @@
-
-.njsFullScreenFrame > *{display:none;}
-@media print{.njsFullScreenFrame > *{display:none}
-}.njsFullScreenFrame > .active{display:block;}
-@media print{.njsFullScreenFrame > .active{display:block}
+.njsFullScreenFrame > * {
+  display: none;
+}
+@media print {
+  .njsFullScreenFrame > * {
+    display: none;
+  }
+}
+.njsFullScreenFrame > .active {
+  display: block;
+}
+@media print {
+  .njsFullScreenFrame > .active {
+    display: block;
+  }
 }

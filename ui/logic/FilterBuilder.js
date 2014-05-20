@@ -26,7 +26,7 @@
  * @emits valid (valid, invalid)
  * @return {ninejs/ui/logic/FilterBuilder} Returns a FilterBuilder class.
  */
-define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/MultiOperatorSelect', './FilterBuilder/ControlStateManager', './FilterBuilder/OperatorSelect', './FilterBuilder/SummarySelect', './FilterBuilder/ValueSelect', 'dijit/_WidgetBase', 'dijit/_TemplatedMixin', 'dijit/_WidgetsInTemplateMixin', 'dojox/layout/FloatingPane', 'dijit/DropDownMenu', 'dijit/MenuItem', 'dijit/form/DropDownButton', 'dijit/form/CheckBox', 'ninejs/core/logic/Expression', 'dojo/text!./FilterBuilder.html', 'put-selector/put', 'dojo/i18n!./nls/FilterBuilder', 'dojo/dom-construct', 'dojo/_base/lang', 'dojo/_base/xhr', 'dojo/_base/array', 'dojo/json', 'dojo/Evented', 'dojo/dom-style', '../utils/domUtils', 'dijit/Tooltip', 'dijit/Toolbar', 'dijit/ToolbarSeparator', 'dijit/form/Button', 'dojo/dom-geometry', 'dojo/dom-class', 'dojo/query', './FilterBuilder/AdvancedOptionsPanel', 'dijit/popup', 'dijit/Dialog', 'dojo/on', '../../css!../css/FilterBuilder.css', '../../css!dojox/layout/resources/FloatingPane.css!enable', '../../css!dojox/layout/resources/ResizeHandle.css!enable'], function(declare, FieldSelect, MultiOperatorSelect, ControlStateManager, OperatorSelect, SummarySelect, ValueSelect, WidgetBase, TemplatedMixin, WidgetsInTemplateMixin, FloatingPane, DropDownMenu, MenuItem, DropDownButton, CheckBox, Expression, template, put, resources, domConstruct, lang, xhr, array, json, Evented, domStyle, domUtils, Tooltip, Toolbar, ToolbarSeparator, Button, domGeometry, domClass, query, AdvancedOptionsPanel, popup, Dialog, on, filterBuilderCss)
+define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/MultiOperatorSelect', './FilterBuilder/ControlStateManager', './FilterBuilder/OperatorSelect', './FilterBuilder/SummarySelect', './FilterBuilder/ValueSelect', 'dijit/_WidgetBase', 'dijit/_TemplatedMixin', 'dijit/_WidgetsInTemplateMixin', 'dojox/layout/FloatingPane', 'dijit/DropDownMenu', 'dijit/MenuItem', 'dijit/form/DropDownButton', 'dijit/form/CheckBox', 'ninejs/core/logic/Expression', 'dojo/text!./FilterBuilder.html', 'dojo/i18n!./nls/FilterBuilder', 'dojo/dom-construct', 'dojo/_base/lang', 'dojo/_base/xhr', 'dojo/_base/array', 'dojo/json', 'dojo/Evented', 'dojo/dom-style', '../utils/domUtils', 'dijit/Tooltip', 'dijit/Toolbar', 'dijit/ToolbarSeparator', 'dijit/form/Button', 'dojo/dom-geometry', 'dojo/dom-class', 'dojo/query', './FilterBuilder/AdvancedOptionsPanel', 'dijit/popup', 'dijit/Dialog', 'dojo/on', '../../css!../css/FilterBuilder.css', '../utils/setClass', '../utils/append', '../utils/setText', '../../css!dojox/layout/resources/FloatingPane.css!enable', '../../css!dojox/layout/resources/ResizeHandle.css!enable'], function(declare, FieldSelect, MultiOperatorSelect, ControlStateManager, OperatorSelect, SummarySelect, ValueSelect, WidgetBase, TemplatedMixin, WidgetsInTemplateMixin, FloatingPane, DropDownMenu, MenuItem, DropDownButton, CheckBox, Expression, template, resources, domConstruct, lang, xhr, array, json, Evented, domStyle, domUtils, Tooltip, Toolbar, ToolbarSeparator, Button, domGeometry, domClass, query, AdvancedOptionsPanel, popup, Dialog, on, filterBuilderCss, setClass, append, setText)
 {
 	var FilterBuilder, cssInitialized = false;
 
@@ -379,11 +379,11 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 					linkExpressionCombo.set('value', this.operatorValue);
 					var intermediateHolder = domConstruct.create('div');
 					domConstruct.place(intermediateHolder, this.multiExpressionHolderNode);
-					var linkHolder = put(intermediateHolder, 'div');
+					var linkHolder = append(intermediateHolder, 'div');
 					domConstruct.place(linkExpressionCombo.domNode, linkHolder);
 					if (!intermediateToolbarHolder)
 					{
-						intermediateToolbarHolder = put(intermediateHolder, 'div');
+						intermediateToolbarHolder = append(intermediateHolder, 'div');
 						this.multipleToolbarHolder = intermediateToolbarHolder;
 					}
 				}
@@ -441,19 +441,19 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 				var cnt = 0;
 				for (cnt = 0; cnt <= testParent.maxMultipleCssLevels; cnt += 1)
 				{
-					put(this.domNode, ('!weLevel' + (cnt)));
+					setClass(this.domNode, ('!weLevel' + (cnt)));
 				}
 				if (parentCount >= 0)
 				{
 					parentCount -= 1;
 					parentCount = (parentCount % testParent.maxMultipleCssLevels) + 1;
-					put(this.domNode, ('.weLevel' + (parentCount)));
+					setClass(this.domNode, ('weLevel' + (parentCount)));
 				}
 
 				var handleAndOr = function(self) {
 					domUtils.hide(self.singleExpressionHolderNode, false);
 					domUtils.show(self.multiExpressionHolderNode, false, 'table');
-					put(self.domNode, '.multiple');
+					setClass(self.domNode, 'multiple');
 
 
 					self.set('fieldValue', null);
@@ -476,7 +476,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 				var handleOthers = function(self) {
 					domUtils.show(self.singleExpressionHolderNode, false, 'table');
 					domUtils.hide(self.multiExpressionHolderNode, false);
-					put(self.domNode, '!multiple');
+					setClass(self.domNode, '!multiple');
 					self.multipleToolbarHolder = null;
 
 					domConstruct.place(self.negativeButtonNode, self.deleteButtonHolderNode);
@@ -560,14 +560,14 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 		_setAmbiguousAttr: function(val) {
 			this.ambiguous = val;
 			var expression = this.get('expression');
-			if (expression){
+			if (expression) {
 				expression.set('ambiguous', !!val);
 			}
 			if (val) {
-				put(this.domNode, '.njsAmbiguous');
+				setClass(this.domNode, 'njsAmbiguous');
 			}
 			else {
-				put(this.domNode, '!njsAmbiguous');
+				setClass(this.domNode, '!njsAmbiguous');
 			}
 		},
 
@@ -634,8 +634,8 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 			{
 				var summaryValue = this.get('summaryValue'),
 				fieldValue = this.get('fieldValue');
-				put(this.fieldListHolderNode, '!funnelCapable');
-				put(this.fieldListHolderNode, '!funnelSet');
+				setClass(this.fieldListHolderNode, '!funnelCapable');
+				setClass(this.fieldListHolderNode, '!funnelSet');
 				if (summaryValue === 'valueOf')
 				{
 					summaryValue = '';
@@ -650,10 +650,10 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 						return false;
 					});
 					if (fieldObj && fieldObj.dataType === 'record'){
-						put(this.fieldListHolderNode, '.funnelCapable');
+						setClass(this.fieldListHolderNode, '.funnelCapable');
 						var whereExpression = this.get('whereExpression');
-						if (whereExpression){
-							put(this.fieldListHolderNode, '.funnelSet');
+						if (whereExpression) {
+							setClass(this.fieldListHolderNode, 'funnelSet');
 							this.get('whereTooltip').set('label', resources.whereCaps + ':\n' + whereExpression.toString());
 						}
 						else {
@@ -680,7 +680,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 				var negativeTooltip = this.get('negativeButtonTooltip');
 				if (isNegative)
 				{
-					put(this.domNode, '.negative');
+					setClass(this.domNode, 'negative');
 					if (negativeTooltip)
 					{
 						negativeTooltip.set('label', resources.negativeTooltipMessage);
@@ -688,7 +688,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 				}
 				else
 				{
-					put(this.domNode, '!negative');
+					setClass(this.domNode, '!negative');
 					if (negativeTooltip)
 					{
 						negativeTooltip.set('label', resources.positiveTooltipMessage);
@@ -780,13 +780,13 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 					//If I'm alone display me as if I'm root
 					if (!this.parent && ((!this.expression.expressionList) || !(this.expression.expressionList.length)))
 					{
-						put(this.domNode, '.weAlone');
+						setClass(this.domNode, 'weAlone');
 						domConstruct.place(this.addNewExpressionButton.domNode, this.singleExpressionHolderNode.parentElement);
 					}
 					else
 					{
 						//else I'm not alone
-						put(this.domNode, '!weAlone');
+						setClass(this.domNode, '!weAlone');
 						//If I'm root and I have children
 						if ((!this.parent) && ((this.expression.expressionList) && (this.expression.expressionList.length)))
 						{
@@ -854,7 +854,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 				if (this.outputNode)
 				{
 					this.outputNode.innerHTML = '';
-					put(this.outputNode, 'div.FilterBuilderOutput', expressionString);
+					setText(setClass(append(this.outputNode, 'div'), 'FilterBuilderOutput'), expressionString);
 				}
 
 
@@ -1872,13 +1872,13 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 
 			if (value)
 			{
-				put(this.domNode, '!invalid');
-				put(this.domNode, '.valid');
+				setClass(this.domNode, '!invalid');
+				setClass(this.domNode, 'valid');
 			}
 			else
 			{
-				put(this.domNode, '!valid');
-				put(this.domNode, '.invalid');
+				setClass(this.domNode, '!valid');
+				setClass(this.domNode, 'invalid');
 			}
 		},
 
@@ -2121,8 +2121,8 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 					dialog.startup();
 					childFilterBuilder.startup();
 					childFilterBuilder.set('expression', self.get('whereExpression'));
-					var childFilterNode = put(dialog.containerNode, 'div.dijitDialogPaneContentArea.nineFbSubExpressionDialog');
-					var actionBar = put(dialog.containerNode, 'div.dijitDialogPaneActionBar');
+					var childFilterNode = setClass(append(dialog.containerNode, 'div'), 'dijitDialogPaneContentArea', 'nineFbSubExpressionDialog');
+					var actionBar = setClass(append(dialog.containerNode, 'div'), 'dijitDialogPaneActionBar');
 					childFilterBuilder.placeAt(childFilterNode);
 					var clearButton = new Button({ type: 'submit', label: resources.clear, 'class': 'njsFloatLeft', onClick: function() {
 						setWhereExpression(null);
@@ -2132,7 +2132,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 						setWhereExpression(childFilterBuilder.get('expression').clone());
 					}});
 					okButton.placeAt(actionBar);
-					put(actionBar, 'span.njsPad10');
+					setClass(append(actionBar, 'span'), 'njsPad10');
 					var cancelButton = new Button({ type: 'button', label: resources.cancel, onClick: function() {
 						dialog.onCancel();
 					}});
@@ -2154,7 +2154,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 
 				var helpDiv = domConstruct.create('div');
 				domConstruct.place(helpDiv, toolbar.domNode, 'after');
-				put(helpDiv, '.helpNode', resources.helpText);
+				setText(setClass(helpDiv, 'helpNode'), resources.helpText);
 
 				this.set('editMode', this.get('editMode'));
 			}
@@ -2308,19 +2308,19 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 					case 'allPositive':
 						{
 							setAllPositive(expression);
-							put(parent.domNode, '!weCustomNegatives');
+							setClass(parent.domNode, '!weCustomNegatives');
 						}
 						break;
 					case 'allNegative':
 						{
 							setAllPositive(expression);
 							expression.set('isNegative', true);
-							put(parent.domNode, '!weCustomNegatives');
+							setClass(parent.domNode, '!weCustomNegatives');
 						}
 						break;
 					case 'allCustom':
 						{
-							put(parent.domNode, '.weCustomNegatives');
+							setClass(parent.domNode, 'weCustomNegatives');
 						}
 						break;
 					}
@@ -2505,20 +2505,20 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 						var cnt;
 						for (cnt = 0; cnt < parent.maxMultipleCssLevels; cnt += 1)
 						{
-							put(floatPane.domNode, ('!weLevel' + (cnt + 1)));
+							setClass(floatPane.domNode, ('!weLevel' + (cnt + 1)));
 						}
 
 						if (parentCount > 0)
 						{
 							if (canGroup)
 							{
-								put(floatPane.domNode, ('.weLevel') + ((parentCount + 1) % parent.maxMultipleCssLevels));
+								setClass(floatPane.domNode, ('weLevel') + ((parentCount + 1) % parent.maxMultipleCssLevels));
 							}
 							else if (canUnGroup)
 							{
 								if (parentCount > 1)
 								{
-									put(floatPane.domNode, ('.weLevel') + ((parentCount - 1) % parent.maxMultipleCssLevels));
+									setClass(floatPane.domNode, ('weLevel') + ((parentCount - 1) % parent.maxMultipleCssLevels));
 								}
 							}
 						}
@@ -2604,8 +2604,8 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 			{
 				array.forEach(controls, function(item)
 				{
-					put(item.domNode, '!unRestricted');
-					put(item.domNode, '!strict');
+					setClass(item.domNode, '!unRestricted');
+					setClass(item.domNode, '!strict');
 					if (item.expressionListControls && item.expressionListControls.length)
 					{
 						recurseClearEditMode(item.expressionListControls);
@@ -2639,9 +2639,9 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 							parent.preventEditConfigPropagation = true;
 
 							parent.editMode = mode;
-							put(parent.domNode, '!strict');
-							put(parent.domNode, '!unRestricted');
-							put(parent.domNode, '.' + mode);
+							setClass(parent.domNode, '!strict');
+							setClass(parent.domNode, '!unRestricted');
+							setClass(parent.domNode, mode);
 
 							parent._updateExpression();
 
