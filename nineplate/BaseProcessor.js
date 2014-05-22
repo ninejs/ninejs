@@ -7,11 +7,11 @@
 	var isAmd = (typeof(define) !== 'undefined') && define.amd;
 	var isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
 	var isNode = (typeof(window) === 'undefined');
-	var req = (isDojo && isNode)? global.require : require;
-	function manualTrim(str){
+	var req = (isDojo && isNode) ? global.require : require;
+	function manualTrim(str) {
 		str = str.replace(/^\s+/, '');
-		for(var i = str.length - 1; i >= 0; i-= 1){
-			if(/\S/.test(str.charAt(i))){
+		for(var i = str.length - 1; i >= 0; i-= 1) {
+			if(/\S/.test(str.charAt(i))) {
 				str = str.substring(0, i + 1);
 				break;
 			}
@@ -23,36 +23,36 @@
 			TextParseContext;
 
 		XmlNode = extend({
-			nodeType: function() {
+			nodeType: function () {
 				return this.node.nodeType;
 			},
-			value: function() {
+			value: function () {
 				return this.node.value;
 			},
-			nodeValue: function() {
+			nodeValue: function () {
 				return this.node.nodeValue;
 			},
-			getAttributes: function() {
+			getAttributes: function () {
 				var cnt,
 					attributes = this.node.attributes,
 					len = attributes.length,
 					r = [];
-				for (cnt = 0; cnt < len; cnt += 1){
+				for (cnt = 0; cnt < len; cnt += 1) {
 					r.push(new XmlNode(attributes[cnt]));
 				}
 				return r;
 			},
-			getChildNodes: function() {
+			getChildNodes: function () {
 				var cnt,
-					children = isNode? this.node.children : this.node.childNodes,
+					children = isNode ? this.node.children : this.node.childNodes,
 					len = children.length,
 					r = [];
-				for (cnt = 0; cnt < len; cnt += 1){
+				for (cnt = 0; cnt < len; cnt += 1) {
 					r.push(new XmlNode(children[cnt]));
 				}
 				return r;
 			},
-			hasVariableTagName: function() {
+			hasVariableTagName: function () {
 				var attributes = this.getAttributes(),
 					cnt;
 				for (cnt = 0; cnt < attributes.length; cnt += 1) {
@@ -62,7 +62,7 @@
 				}
 				return false;
 			},
-			getVariableTagName: function(callback) {
+			getVariableTagName: function (callback) {
 				var attributes = this.getAttributes(),
 					found,
 					cnt;
@@ -76,30 +76,30 @@
 				}
 				return '';
 			},
-			nodeName: function() {
+			nodeName: function () {
 				return this.node.nodeName;
 			},
-			nodeLocalName: function() {
-				return this.node.localName;
+			nodeLocalName: function () {
+				return this.node.localName || this.node.nodeName;
 			},
-			namespaceUri: function() {
-				return this.node.namespaceURI;
+			namespaceUri: function () {
+				return this.node.namespaceURI || this.node.namespaceUri || '';
 			}
-		}, function(parsedXmlNode) {
+		}, function (parsedXmlNode) {
 			this.node = parsedXmlNode;
 		});
 		TextParseContext = extend({
-			append: function(line) {
+			append: function (line) {
 				this.appendLine();
 				this.r.push(line);
 			},
-			appendLine: function() {
+			appendLine: function () {
 				if (this.lineBuffer.length) {
 					this.r.push('result.push(\'' + this.lineBuffer.join('') + '\');\n');
 					this.lineBuffer = [];
 				}
 			},
-			getText: function() {
+			getText: function () {
 				return this.r.join('');
 			}
 		}, function() {
@@ -114,11 +114,11 @@
 			returns the string's internal trim result or does a manual trim otherwise
 			@param {String} content - the string to be trimmed
 			*/
-			trim: function(content) {
-				if (!content){
+			trim: function (content) {
+				if (!content) {
 					return null;
 				}
-				if (content.trim){
+				if (content.trim) {
 					return content.trim();
 				}
 				else {
@@ -126,18 +126,18 @@
 				}
 
 			},
-			safeFilter: function(content) {
+			safeFilter: function (content) {
 				if (content) {
-					content = content.replace(/(\'|\")/g, function($0, $1) {
+					content = content.replace(/(\'|\")/g, function ($0, $1) {
 						/* jshint unused: true */
 						return '\\' + $1;
-					}).replace(/\n/g, function() {
+					}).replace(/\n/g, function () {
 						return '';
 					});
 				}
 				return content;
 			},
-			getParsedXml: function(text, sync) {
+			getParsedXml: function (text, sync) {
 				var xmlDoc;
 				if (isNode) { //Node.js
 					var parse = xmlParser.parse;

@@ -1,4 +1,4 @@
-(function() {
+(function () {
 	'use strict';
 	var isAmd = (typeof(define) !== 'undefined') && define.amd;
 	var isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
@@ -54,11 +54,11 @@
 					}
 					nodes.push(node);
 				});
-				cb.onEndElementNS(function( /*elem, prefix, uri*/ ) {
+				cb.onEndElementNS(function ( /*elem, prefix, uri*/ ) {
 					nodes.pop();
 					node = nodes[nodes.length - 1];
 				});
-				cb.onCharacters(function(chars) {
+				cb.onCharacters(function (chars) {
 					chars = chars.trim();
 					if (node && chars) {
 						node.children.push({
@@ -67,10 +67,15 @@
 						});
 					}
 				});
-				cb.onCdata(function( /*cdata*/ ) {
-
+				cb.onCdata(function (cdata) {
+					if (node && cdata) {
+						node.children.push({
+							nodeType: 3,
+							nodeValue: cdata
+						});
+					}
 				});
-				cb.onComment(function( msg ) {
+				cb.onComment(function (msg) {
 					if (node && node.children) {
 						node.children.push({
 							nodeType: 4,
@@ -78,10 +83,10 @@
 						});
 					}
 				});
-				cb.onWarning(function( /*msg*/ ) {
+				cb.onWarning(function (/*msg*/) {
 
 				});
-				cb.onError(function(msg) {
+				cb.onError(function (msg) {
 					deferred.reject(new Error(msg));
 				});
 			});
@@ -102,10 +107,10 @@
 		}
 		else if (isAmd) {//RequireJS probably
 			var def = define;
-			def(['./node-xml', 'q'], moduleExport);
+			def(['./node-xml', 'kew'], moduleExport);
 		}
 		else {
-			module.exports = moduleExport(req('./node-xml'), req('q'));
+			module.exports = moduleExport(req('./node-xml'), req('kew'));
 		}
 	}
 })();

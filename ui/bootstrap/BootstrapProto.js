@@ -1,43 +1,43 @@
-define(['../../core/extend', '../../css!./less/bootstrap.css', '../../css!./vresponsive.css', '../../css!./vresponsive-device.css', '../../css!../css/common.css', '../../css!./gridMax.css'], function(extend, bootstrapCss, verticalResponsiveCss, verticalResponiveDeviceCss, commonCss, gridMaxCss) {
+define(['../../core/extend', '../../css!./less/bootstrap.css', '../../css!./vresponsive.css', '../../css!./vresponsive-device.css', '../../css!../css/common.css', '../../css!./gridMax.css'], function(extend, bootstrapCss, verticalResponsiveCss, verticalResponsiveDeviceCss, commonCss, gridMaxCss) {
 	'use strict';
 	var Bootstrap = extend({
 		enable: function(val) {
 			var map = this.map;
 			if (!val) {
 				for (var p in map) {
-					if (map.hasOwnProperty(p)){
+					if (map.hasOwnProperty(p)) {
 						this[map[p]].call(this, true);
 					}
 				}
 			}
 			else {
 				var cnt;
-				for (cnt = 0; cnt < arguments.length; cnt += 1){
-					if (this[map[arguments[cnt]]]){
+				for (cnt = 0; cnt < arguments.length; cnt += 1) {
+					if (this[map[arguments[cnt]]]) {
 						this[map[arguments[cnt]]].call(this, true);
 					}
 				}
 			}
 		},
-		disable: function(val) {
+		disable: function (val) {
 			var map = this.map;
 			if (!val) {
 				for (var p in map) {
-					if (map.hasOwnProperty(p)){
+					if (map.hasOwnProperty(p)) {
 						this[map[p]].call(this);
 					}
 				}
 			}
 			else {
 				var cnt;
-				for (cnt = 0; cnt < arguments.length; cnt += 1){
-					if (this[map[arguments[cnt]]]){
+				for (cnt = 0; cnt < arguments.length; cnt += 1) {
+					if (this[map[arguments[cnt]]]) {
 						this[map[arguments[cnt]]].call(this);
 					}
 				}
 			}
 		},
-		enableCss: function(val) {
+		enableCss: function (val) {
 			if (!this.bootstrapCss) {
 				if (val) {
 					this.bootstrapCss = bootstrapCss.enable();
@@ -52,7 +52,7 @@ define(['../../core/extend', '../../css!./less/bootstrap.css', '../../css!./vres
 				}
 			}
 		},
-		enableCommonCss: function(val) {
+		enableCommonCss: function (val) {
 			if (!this.commonCss) {
 				if (val) {
 					this.commonCss = commonCss.enable();
@@ -67,22 +67,22 @@ define(['../../core/extend', '../../css!./less/bootstrap.css', '../../css!./vres
 				}
 			}
 		},
-		enableVResponsiveDevice: function(val) {
-			if (!this.verticalResponiveDeviceCss) {
+		enableVResponsiveDevice: function (val) {
+			if (!this.verticalResponsiveDeviceCss) {
 				if (val) {
-					this.verticalResponiveDeviceCss = verticalResponiveDeviceCss.enable();
+					this.verticalResponsiveDeviceCss = verticalResponsiveDeviceCss.enable();
 				}
 			}
 			else {
 				if (val) {
-					this.verticalResponiveDeviceCss.enable();
+					this.verticalResponsiveDeviceCss.enable();
 				}
 				else {
-					this.verticalResponiveDeviceCss.disable();
+					this.verticalResponsiveDeviceCss.disable();
 				}
 			}
 		},
-		enableVResponsiveViewPort: function(val) {
+		enableVResponsiveViewPort: function (val) {
 			if (!this.verticalResponsiveCss) {
 				if (val) {
 					this.verticalResponsiveCss = verticalResponsiveCss.enable();
@@ -97,7 +97,7 @@ define(['../../core/extend', '../../css!./less/bootstrap.css', '../../css!./vres
 				}
 			}
 		},
-		enableGridMax: function(val) {
+		enableGridMax: function (val) {
 			if (!this.gridMaxCss) {
 				if (val) {
 					this.gridMaxCss = gridMaxCss.enable();
@@ -112,7 +112,7 @@ define(['../../core/extend', '../../css!./less/bootstrap.css', '../../css!./vres
 				}
 			}
 		}
-	}, function() {
+	}, function () {
 		this.map = {
 			css: 'enableCss',
 			commonCss: 'enableCommonCss',
@@ -121,7 +121,7 @@ define(['../../core/extend', '../../css!./less/bootstrap.css', '../../css!./vres
 			gridMax: 'enableGridMax'
 		};
 		var cnt;
-		for (cnt = 0; cnt < arguments.length; cnt += 1){
+		for (cnt = 0; cnt < arguments.length; cnt += 1) {
 			this.enable(arguments[cnt]);
 		}
 	});

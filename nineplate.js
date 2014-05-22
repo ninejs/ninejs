@@ -19,14 +19,23 @@
 	function moduleExport(requireText, extend, Properties, def, domProcessor, textProcessor) {
 		var Template = extend(Properties, {
 			text: '',
-			toAmd: function(sync) {
-				var preText = 'define([], function() {\n/* jshint -W074 */\n/* globals window: true */\n\'use strict\';\nvar r = ', postText =  ';\nreturn r;\n});\n';
+			toAmd: function (sync) {
+				var preText = 'define([',
+					prePostText = '], function() {\n/* jshint -W074 */\n/* globals window: true */\n\'use strict\';\nvar r = ',
+					postText =  ';\nreturn r;\n});\n';
 				if (isNode && !sync) {
-					return def.when(this.compileDom(), function(value) {
-						return preText + value + postText;
+					return def.when(this.compileDom(), function (fn) {
+						var depsText = fn.amdDependencies.map(function (item) {
+							return '\'' + item + '\'';
+						}).join(',');
+						return preText + depsText + prePostText + fn + postText;
 					});
 				}
-				return preText + this.compileDom(sync) + postText;
+				var fn = this.compileDom(sync);
+				var depsText = fn.amdDependencies.map(function (item) {
+					return '\'' + item + '\'';
+				}).join(',');
+				return preText + depsText + prePostText + fn + postText;
 			},
 			toCommonJs: function() {
 				var preText = '/* jshint -W074 */\n/* globals window: true */\n\'use strict\';\nmodule.exports =', postText = ';';

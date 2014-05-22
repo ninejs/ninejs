@@ -34,7 +34,7 @@ var XMLP = function(strXML) {
     this._clearAttributes();
     this.m_pause = false;
     this.m_preInterruptIState = XMLP._STATE_PROLOG;
-    this.m_namespaceList = new Array();
+    this.m_namespaceStack = new Array();
     this.m_chunkTransitionContinuation = null;
 
 }
@@ -298,43 +298,51 @@ XMLP.prototype._parseNamespacesAndAtts = function (atts){
         }
         return "not used";
     });
-    this.m_namespaceList = this.m_namespaceList.concat(newnamespaces);
+    this.m_namespaceStack.push(newnamespaces);
     return [ filteredatts, newnamespaces.map(function(item){return [item.prefix,item.uri];}) ];
 }
 
 XMLP.prototype._getContextualNamespace = function (prefix){
+	var len = this.m_namespaceStack.length,
+		cnt,
+		len2,
+		cnt2,
+		i,
+		item;
+
     if(prefix !== ''){
-        for(item in this.m_namespaceList){
-            item = this.m_namespaceList[item];
-            if(item.prefix === prefix){
-                return item.uri;
-            }
-        }
+		for (cnt = len - 1; cnt >= 0; cnt -= 1) {
+			item = this.m_namespaceStack[cnt];
+			len2 = item.length;
+			for (cnt2 = 0; cnt2 < len2; cnt2 += 1) {
+				i = item[cnt2];
+				if(i.prefix === prefix){
+					return i.uri;
+				}
+			}
+		}
     }
 
     //no match was found for the prefix so pop off the first non-prefix namespace
-    for(var i = (this.m_namespaceList.length-1); i>= 0; i--){
-        var item = this.m_namespaceList[i];
-        if(item.prefix === ''){
-            return item.uri;
-        }
-    }
+	for (cnt = len - 1; cnt >= 0; cnt -= 1) {
+		item = this.m_namespaceStack[cnt];
+		len2 = item.length;
+		for (cnt2 = 0; cnt2 < len2; cnt2 += 1) {
+			i = item[cnt2];
+			if(i.prefix === ''){
+				return i.uri;
+			}
+		}
+	}
 
     //still nothing, lets just return an empty string
     return '';
 }
 
-XMLP.prototype._removeExpiredNamesapces = function (closingtagname) {
-    //remove the expiring namespaces from the list (you can id them by scopetag)
-    var keeps = [];
-    this.m_namespaceList.map(function (item){
-        if(item.scopetag !== closingtagname){
-            keeps.push(item);
-        }
-    });
-
-    this.m_namespaceList = keeps;
-
+XMLP.prototype._removeExpiredNamespaces = function (closingtagname) {
+	if (this.m_namespaceStack.length) {
+		this.m_namespaceStack.pop();
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -999,7 +1007,7 @@ SaxParser.prototype._parseLoop = function(parser) {
         else if(iEvent == XMLP._ELM_E) {
             nameobject = parser._parsePrefixAndElementName(parser.getName());
             var theuri = parser._getContextualNamespace(nameobject.prefix);
-            parser._removeExpiredNamesapces(parser.getName());
+            parser._removeExpiredNamespaces(parser.getName());
             this._fireEvent(SaxParser.ELM_E, nameobject.name, (nameobject.prefix === '')? null : nameobject.prefix, (theuri === '')? null : theuri);
         }
         else if(iEvent == XMLP._ELM_EMP) {
@@ -1010,7 +1018,7 @@ SaxParser.prototype._parseLoop = function(parser) {
             var theuri = parser._getContextualNamespace(nameobject.prefix);
             this._fireEvent(SaxParser.ELM_B, nameobject.name, theattsandnamespace[0], (nameobject.prefix === '')? null : nameobject.prefix, (theuri === '')? null : theuri ,theattsandnamespace[1], true );
 
-            parser._removeExpiredNamesapces(parser.getName());
+            parser._removeExpiredNamespaces(parser.getName());
             this._fireEvent(SaxParser.ELM_E, nameobject.name, (nameobject.prefix === '')? null : nameobject.prefix, (theuri === '')? null : theuri, true);
             //this._fireEvent(SaxParser.ELM_B, parser.getName(), this.m_parser.m_atts.map(function(item){return { name : item[0], value : item[1], };}) );
             //this._fireEvent(SaxParser.ELM_E, parser.getName());
