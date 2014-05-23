@@ -51,16 +51,16 @@ define(['../../ui/Widget', './Skin/FullScreenFrame', '../../ui/utils/append', '.
 			}
 		},
 		addChild: function(child) {
+			var self = this;
 			function doAddChild(container, child) {
 				if (child.domNode) {
+					child.set('parentContainer', self);
 					child = child.domNode;
 				}
 				append(container, child);
 				return query('> *', container).length - 1;
 			}
-			var self;
 			if ((!child.domNode) && (typeof(child.show) === 'function')) {
-				self = this;
 				return def.when(child.show(), function() {
 					doAddChild(self.containerNode, child);
 				});
