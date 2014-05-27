@@ -4,7 +4,7 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 	window.setTimeout(function () {
 		on(window.document.body, 'click', function (evt) {
 			on.emit(window.document.body, '9jsclosewidgets', { target: null });
-			evt.stopPropagation();
+			//evt.stopPropagation();
 		});
 	}, 0);
 	var Widget = extend({
