@@ -1,33 +1,53 @@
 /* global window */
-define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/deferredUtils', './utils/setClass'], function(extend, Properties, on, def, setClass) {
+define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/deferredUtils', './utils/setClass'], function (extend, Properties, on, def, setClass) {
 	'use strict';
 	window.setTimeout(function () {
-		on(window.document.body, 'click', function (evt) {
+		on(window.document.body, 'click', function (/*evt*/) {
 			on.emit(window.document.body, '9jsclosewidgets', { target: null });
 			//evt.stopPropagation();
 		});
 	}, 0);
 	var Widget = extend({
 		'$njsWidget': true,
-		'$njsEventListeners': {},
-		'$njsEventListenerHandlers': [],
-		destroy: function() { },
-		skinSetter: function(value) {
+		destroy: function () {
+			var cnt,
+				len = this.$njsChildWidgets.length;
+			for (cnt = 0; cnt < len; cnt += 1) {
+				this.$njsChildWidgets[cnt].destroy();
+			}
+			len = this.$njsEventListenerHandlers.length
+			this.remove();
+			for (cnt = 0; cnt < len; cnt += 1) {
+				this.$njsEventListenerHandlers[cnt].remove();
+			}
+		},
+		registerChildWidget: function (w) {
+			this.$njsChildWidgets.push(w);
+		},
+		remove: function () {
+			if (this.domNode && this.domNode.parentNode) {
+				this.emit('removing', {});
+				this.domNode.parentNode.removeChild(this.domNode);
+				return true;
+			}
+			return false;
+		},
+		skinSetter: function (value) {
 			if (typeof(value) === 'string') {
 				return this.loadSkin(value);
 			}
 			var self = this;
 			this.skin = value;
-			return def.when(value, function(sk) {
+			return def.when(value, function (sk) {
 				var skinContract = self.skinContract,
 					p,
 					item;
 				if (skinContract) {
 					for (p in skinContract) {
-						if (skinContract.hasOwnProperty(p)){
+						if (skinContract.hasOwnProperty(p)) {
 							item = skinContract[p];
-							if (item.type === 'function'){
-								if (typeof(sk[p]) !== 'function'){
+							if (item.type === 'function') {
+								if (typeof(sk[p]) !== 'function') {
 									throw new Error('incompatible skins. This skin must have a ' + p + ' function defined');
 								}
 							}
@@ -41,49 +61,49 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 				}
 				self.skin = sk;
 				return sk;
-			}, function(err) {
+			}, function (err) {
 				throw new Error(err);
 			});
 		},
-		classSetter: function(v) {
+		classSetter: function (v) {
 			var arg = v.split(' ');
 			arg.unshift(this.domNode);
 			if (this.domNode) {
 				setClass.apply(null, arg);
 			}
 			else {
-				on.once('updatedSkin', function() {
+				on.once(this, 'updatedSkin', function () {
 					setClass.apply(null, arg);
 				});
 			}
 		},
-		idSetter: function(v) {
+		idSetter: function (v) {
 			if (this.domNode) {
 				this.domNode.id = v;
 			}
 			else {
 				var self = this;
-				on.once(this, 'updatedSkin', function() {
+				on.once(this, 'updatedSkin', function () {
 					self.domNode.id = v;
 				});
 			}
 		},
-		styleSetter: function(v) {
+		styleSetter: function (v) {
 			if (this.domNode) {
 				this.domNode.style = v;
 			}
 			else {
 				var self = this;
-				on.once('updatedSkin', function() {
+				on.once('updatedSkin', function () {
 					self.domNode.style = v;
 				});
 			}
 		},
-		updateSkin: function() {
+		updateSkin: function () {
 			var self = this;
-			return def.when(this.skin, function() {
+			return def.when(this.skin, function () {
 				var cnt, itemSkin, currentSkin = self.currentSkin, skinList = [], toApply;
-				if ((typeof(self.skin) === 'object') && !extend.isArray(self.skin)){
+				if ((typeof(self.skin) === 'object') && !extend.isArray(self.skin)) {
 					skinList.push(self.skin);
 					if (self.skin.applies()){
 						toApply = self.skin;
@@ -98,7 +118,7 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 						skinList.push(itemSkin);
 					}
 				}
-				if (toApply !== currentSkin){
+				if (toApply !== currentSkin) {
 					if (currentSkin) {
 						self.emit('updatingSkin', {});
 						for (cnt = 0; cnt < skinList.length; cnt += 1) {
@@ -106,14 +126,14 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 							itemSkin.disable();
 						}
 					}
-					return def.when(toApply.enable(self), function() {
+					return def.when(toApply.enable(self), function () {
 						self.currentSkin = toApply;
 						self.onUpdatedSkin();
 					});
 				}
 			});
 		},
-		onUpdatedSkin: function() {
+		onUpdatedSkin: function () {
 			var self = this;
 			this.currentSkin.updated(this);
 			setTimeout(function() {
@@ -130,19 +150,19 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 		loadSkin: function(name) {
 			var defer = def.defer();
 			this.set('skin', defer.promise);
-			require([name], function(skin) {
+			require([name], function (skin) {
 				defer.resolve(skin);
 			});
 			return defer.promise;
 		},
-		own: function() {
+		own: function () {
 			var cnt,
 				len = arguments.length;
 			for (cnt = 0; cnt < len; cnt += 1) {
 				this.$njsEventListenerHandlers.push(arguments[cnt]);
 			}
 		},
-		show: function(parentNode) {
+		show: function (parentNode) {
 			var listeners,
 				current,
 				cnt,
@@ -156,7 +176,7 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 				}
 				return self;
 			}
-			if (!this.currentSkin){
+			if (!this.currentSkin) {
 				if (this.waitSkin) {
 					return this.waitSkin;
 				}
@@ -164,15 +184,15 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 					this.waitSkin = def.when(this.updateSkin(), function(/*sk*/) {
 						if (self.domNode) {
 							listeners =  self.$njsEventListeners;
-							for (cnt=0; cnt < self.$njsEventListenerHandlers; cnt += 1){
+							for (cnt = 0; cnt < self.$njsEventListenerHandlers; cnt += 1) {
 								current = self.$njsEventListenerHandlers[cnt];
 								current.remove();
 							}
 							self.$njsEventListenerHandlers = [];
-							for (var p in listeners){
+							for (var p in listeners) {
 								if (listeners.hasOwnProperty(p)) {
 									current = listeners[p];
-									for (cnt=0; cnt < current.length; cnt += 1){
+									for (cnt = 0; cnt < current.length; cnt += 1) {
 										self.$njsEventListenerHandlers.push(on(self.domNode, p, current[cnt]));
 									}
 								}
@@ -189,8 +209,9 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 				return appendIt();
 			}
 		},
-		on: function(type, action, persistEvent) {
-			var r, self = this;
+		on: function (type, action, persistEvent) {
+			var r,
+				self = this;
 			if (!this.$njsEventListeners[type]) {
 				this.$njsEventListeners[type] = [];
 			}
@@ -198,23 +219,29 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 				this.$njsEventListeners[type].push(action);
 			}
 			if (!this.domNode) {
-				this.show();
+				throw new Error('Widget must have a root node prior to attaching events. Try calling widget.show() first.');
 			}
-			r = on(this.domNode, type, function() {
+			r = on(this.domNode, type, function () {
 				action.apply(self, arguments);
 			});
 			if (persistEvent) {
 				this.$njsEventListenerHandlers.push(r);
 			}
+			else {
+				this.own(r);
+			}
 
 			return r;
 		},
-		emit: function(type, data) {
+		emit: function (type, data) {
 			return on.emit(this.domNode, type, data);
 		}
-	}, Properties, function() {
+	}, Properties, function () {
 		this.skin = this.skin || [];
 		this.skinContract = this.skinContract || [];
+		this.$njsEventListeners = {};
+		this.$njsEventListenerHandlers = [];
+		this.$njsChildWidgets = [];
 	});
 	return Widget;
 });

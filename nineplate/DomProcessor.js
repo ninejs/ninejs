@@ -368,7 +368,8 @@
 						mid = amdPrefix + '/' + name,
 						amdModuleVar = amdPathMapping[mid],
 						instanceName,
-						conditionRenderer;
+						conditionRenderer,
+						childWidgetConditionRenderer;
 					enableAmd();
 					if (!amdModuleVar) {
 						amdModuleVar = renderer.getNewVariable();//Here I'm asking renderer and not parentRenderer to avoid a shadowing
@@ -395,6 +396,19 @@
 								.invoke(
 									conditionRenderer.expression('node')
 								)
+						);
+					childWidgetConditionRenderer = conditionRenderer
+													.addCondition(
+														conditionRenderer
+															.expression('context')
+															.member('registerChildWidget')
+													).renderer;
+					childWidgetConditionRenderer
+						.addStatement(
+							childWidgetConditionRenderer
+								.expression('context')
+								.member('registerChildWidget')
+								.invoke()
 						);
 					renderer.addAssignment('node', renderer.expression(instanceName));
 				}
