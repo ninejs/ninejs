@@ -15,7 +15,7 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 			for (cnt = 0; cnt < len; cnt += 1) {
 				this.$njsChildWidgets[cnt].destroy();
 			}
-			len = this.$njsEventListenerHandlers.length
+			len = this.$njsEventListenerHandlers.length;
 			this.remove();
 			for (cnt = 0; cnt < len; cnt += 1) {
 				this.$njsEventListenerHandlers[cnt].remove();
