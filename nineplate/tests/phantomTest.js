@@ -157,6 +157,21 @@
 						});
 					});
 				});
+				it('should render updated live values in attributes after 2nd change', function (done) {
+					nineplate.getTemplate('./liveExpressions/inAttribute01.html', function(template){
+						var data = new Properties({
+							liveChanges: new Properties({
+								val: 0
+							})
+						});
+						var result = template.renderDom(data);
+						data.get('liveChanges').set('val', 1);
+						data.get('liveChanges').set('val', 2);
+						check(done, function() {
+							expect(result.domNode.querySelectorAll('.liveChanges')[0].getAttribute('data-value')).to.equal('2');
+						});
+					});
+				});
 				it('should render updated live values in a loop', function (done) {
 					nineplate.getTemplate('./template.html', function(template){
 						var data = new Properties({

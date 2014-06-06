@@ -203,27 +203,29 @@
 							.addCondition(innerWatch.not(innerWatch.expression('oldValue').equals('newValue').parenthesis())).renderer;
 						innerWatch
 							.addVar('temps', innerWatch.literal({}))
+							.addVar('t')
 							.addVar('p');
 						forIn = innerCondition.addForIn(innerWatch.expression('p'), innerWatch.expression('freeze'));
 						forIn.addAssignment(forIn.expression('temps').element(forIn.raw('p')), forIn.expression('context').element(forIn.raw('p')));
 						forIn.addAssignment(forIn.expression('context').element(forIn.raw('p')), forIn.expression('freeze').element(forIn.raw('p')));
 
-						innerCondition.addAssignment(
-							'freezeNode',
+						innerWatch.addAssignment('t', innerWatch.expression(newFunctionName).invoke());
+						innerWatch.addStatement(
 							innerWatch
 								.expression('freezeNode')
 								.member('parentNode')
 								.member('replaceChild')
 								.invoke(
-									innerWatch.expression(newFunctionName).invoke(),
+									innerWatch.expression('t'),
 									innerWatch.expression('freezeNode')
 								)
 							);
+						innerWatch
+							.addAssignment('freezeNode', innerWatch.expression('t'));
 
 						forIn = innerCondition.addForIn(innerWatch.expression('p'), innerWatch.expression('freeze'));
 						forIn.addAssignment(forIn.expression('context').element(forIn.raw('p')), forIn.expression('temps').element(forIn.raw('p')));
 						
-
 						watchFn.addReturn(watchFn.expression('wfn'));
 
 						renderer.addAssignment(watchVariable, watchFn);
