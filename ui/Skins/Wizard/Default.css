@@ -1,6 +1,2 @@
-.njsWizard .njsTransitionPanelContainer {
-  height: 500px;
-}
-.njsWizard button {
-  border-radius: 10px;
-}
+
+.njsWizard .njsTransitionPanelContainer{height:500px}.njsWizard button{-webkit-border-radius:10px;border-radius:10px}

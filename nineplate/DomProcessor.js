@@ -209,18 +209,18 @@
 						forIn.addAssignment(forIn.expression('temps').element(forIn.raw('p')), forIn.expression('context').element(forIn.raw('p')));
 						forIn.addAssignment(forIn.expression('context').element(forIn.raw('p')), forIn.expression('freeze').element(forIn.raw('p')));
 
-						innerWatch.addAssignment('t', innerWatch.expression(newFunctionName).invoke());
-						innerWatch.addStatement(
-							innerWatch
+						innerCondition.addAssignment('t', innerWatch.expression(newFunctionName).invoke());
+						innerCondition.addStatement(
+							innerCondition
 								.expression('freezeNode')
 								.member('parentNode')
 								.member('replaceChild')
 								.invoke(
-									innerWatch.expression('t'),
-									innerWatch.expression('freezeNode')
+									innerCondition.expression('t'),
+									innerCondition.expression('freezeNode')
 								)
 							);
-						innerWatch
+						innerCondition
 							.addAssignment('freezeNode', innerWatch.expression('t'));
 
 						forIn = innerCondition.addForIn(innerWatch.expression('p'), innerWatch.expression('freeze'));

@@ -1,6 +1,2 @@
-.njsEditor {
-  height: 20px;
-}
-.njsEditor >.invalid {
-  border-color: #ff4500;
-}
+
+.njsEditor{height:20px}.njsEditor >.invalid{border-color:#ff4500}

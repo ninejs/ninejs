@@ -227,6 +227,7 @@ return node;
 			    freezeNode = _1,
 			    wfn = 				function (name,oldValue,newValue) {
 				var temps = {},
+				    t,
 				    p;
 				if (!(oldValue === newValue)){
 					for (p in freeze){
@@ -235,7 +236,9 @@ return node;
 						context[p] = freeze[p];
 
 					}
-					}					freezeNode = freezeNode.parentNode.replaceChild(_0(),freezeNode);
+					}					t = _0();
+					freezeNode.parentNode.replaceChild(t,freezeNode);
+					freezeNode = t;
 					for (p in freeze){
 					if (freeze.hasOwnProperty(p)) {
 						context[p] = temps[p];
@@ -264,6 +267,7 @@ return node;
 			    freezeNode = _4,
 			    wfn = 				function (name,oldValue,newValue) {
 				var temps = {},
+				    t,
 				    p;
 				if (!(oldValue === newValue)){
 					for (p in freeze){
@@ -272,7 +276,9 @@ return node;
 						context[p] = freeze[p];
 
 					}
-					}					freezeNode = freezeNode.parentNode.replaceChild(_3(),freezeNode);
+					}					t = _3();
+					freezeNode.parentNode.replaceChild(t,freezeNode);
+					freezeNode = t;
 					for (p in freeze){
 					if (freeze.hasOwnProperty(p)) {
 						context[p] = temps[p];
@@ -301,6 +307,7 @@ return node;
 			    freezeNode = _7,
 			    wfn = 				function (name,oldValue,newValue) {
 				var temps = {},
+				    t,
 				    p;
 				if (!(oldValue === newValue)){
 					for (p in freeze){
@@ -309,7 +316,9 @@ return node;
 						context[p] = freeze[p];
 
 					}
-					}					freezeNode = freezeNode.parentNode.replaceChild(_6(),freezeNode);
+					}					t = _6();
+					freezeNode.parentNode.replaceChild(t,freezeNode);
+					freezeNode = t;
 					for (p in freeze){
 					if (freeze.hasOwnProperty(p)) {
 						context[p] = temps[p];
@@ -691,6 +700,7 @@ _6 = 	function () {
 	    freezeNode = _5,
 	    wfn = 		function (name,oldValue,newValue) {
 		var temps = {},
+		    t,
 		    p;
 		if (!(oldValue === newValue)){
 			for (p in freeze){
@@ -699,7 +709,9 @@ _6 = 	function () {
 				context[p] = freeze[p];
 
 			}
-			}			freezeNode = freezeNode.parentNode.replaceChild(_4(),freezeNode);
+			}			t = _4();
+			freezeNode.parentNode.replaceChild(t,freezeNode);
+			freezeNode = t;
 			for (p in freeze){
 			if (freeze.hasOwnProperty(p)) {
 				context[p] = temps[p];
