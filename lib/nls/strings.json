@@ -1,0 +1,8 @@
+{
+	"root": {
+		"startingNineJs": "Starting NineJS...",
+		"nineJsStarted": "NineJS Started.",
+		"nineJsBuilt": "ninejs build completed."
+	},
+	"es": true
+}

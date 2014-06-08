@@ -867,7 +867,7 @@ describe('core/logic/Expression', function () {
 			//are loaded relative to the top-level JS file.
 			nodeRequire: require,
 			paths: {
-				'ninejs': __dirname + '/../../../'
+				'ninejs': __dirname + '/../../'
 			}
 		});
 	
