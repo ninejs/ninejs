@@ -164,6 +164,7 @@ define(['../core/extend', '../core/ext/Evented', '../core/ext/Properties', './ha
 				lj,
 				idx,
 				newUrl;
+			evt.newURL = evt.newURL || hash();
 			newUrl = evt.newURL;
 			idx = newUrl.indexOf('#');
 			if (idx >= 0) {
