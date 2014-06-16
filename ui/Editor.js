@@ -24,13 +24,14 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 		numberTextBoxImpl = ((config.ui || {}).Editor || {}).NumberTextBox || 'dijit/form/NumberTextBox',
 		dateTextBoxImpl = ((config.ui || {}).Editor || {}).DateTextBox || 'dijit/form/DateTextBox',
 		ENTER = 13;
-	ControlBase = extend(Properties, {
+	ControlBase = extend(Widget, {
 		on: function (type, act) {
-			//TODO: possible leak
-			on(this.domNode, type, act);
+			this.own(
+				on(this.domNode, type, act)
+			);
 		},
 		destroyRecursive: function () {
-
+			this.destroy();
 		},
 		startup: function () {
 
@@ -51,9 +52,11 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 		}
 	}, function () {
 		var self = this;
-		on(this.domNode, 'change', function () {
-			self.set('value', self.domNode.value);
-		});
+		this.own(
+			on(this.domNode, 'change', function () {
+				self.set('value', self.domNode.value);
+			})
+		);
 		// on(this.domNode, 'blur', function(e){
 		// on.emit(self.domNode, 'blur', e);
 		// });
@@ -451,7 +454,12 @@ define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/
 			if (val && (val !== this.dataType)) {
 
 				if (this.control) {
-					this.control.destroyRecursive(false);
+					if (typeof (this.control.destroy) === 'function') {
+						this.control.destroy();
+					}
+					else if (typeof (this.control.destroyRecursive) === 'function') {
+						this.control.destroyRecursive(false);
+					}
 				}
 				this.control = null;
 				def.when(this._clearDataTypeClasses(), function () {

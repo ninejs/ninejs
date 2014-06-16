@@ -26,20 +26,17 @@
  * @emits valid (valid, invalid)
  * @return {ninejs/ui/logic/FilterBuilder} Returns a FilterBuilder class.
  */
-define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/MultiOperatorSelect', './FilterBuilder/ControlStateManager', './FilterBuilder/OperatorSelect', './FilterBuilder/SummarySelect', './FilterBuilder/ValueSelect', 'dijit/_WidgetBase', 'dijit/_TemplatedMixin', 'dijit/_WidgetsInTemplateMixin', 'dojox/layout/FloatingPane', 'dijit/DropDownMenu', 'dijit/MenuItem', 'dijit/form/DropDownButton', 'dijit/form/CheckBox', 'ninejs/core/logic/Expression', 'dojo/text!./FilterBuilder.html', 'dojo/i18n!./nls/FilterBuilder', 'dojo/dom-construct', 'dojo/_base/lang', 'dojo/_base/xhr', 'dojo/_base/array', 'dojo/json', 'dojo/Evented', 'dojo/dom-style', '../utils/domUtils', 'dijit/Tooltip', 'dijit/Toolbar', 'dijit/ToolbarSeparator', 'dijit/form/Button', 'dojo/dom-geometry', 'dojo/dom-class', 'dojo/query', './FilterBuilder/AdvancedOptionsPanel', 'dijit/popup', 'dijit/Dialog', 'dojo/on', '../../css!../css/FilterBuilder.css', '../utils/setClass', '../utils/append', '../utils/setText', '../../css!dojox/layout/resources/FloatingPane.css!enable', '../../css!dojox/layout/resources/ResizeHandle.css!enable'], function(declare, FieldSelect, MultiOperatorSelect, ControlStateManager, OperatorSelect, SummarySelect, ValueSelect, WidgetBase, TemplatedMixin, WidgetsInTemplateMixin, FloatingPane, DropDownMenu, MenuItem, DropDownButton, CheckBox, Expression, template, resources, domConstruct, lang, xhr, array, json, Evented, domStyle, domUtils, Tooltip, Toolbar, ToolbarSeparator, Button, domGeometry, domClass, query, AdvancedOptionsPanel, popup, Dialog, on, filterBuilderCss, setClass, append, setText)
-{
-	var FilterBuilder, cssInitialized = false;
+define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/MultiOperatorSelect', './FilterBuilder/ControlStateManager', './FilterBuilder/OperatorSelect', './FilterBuilder/SummarySelect', './FilterBuilder/ValueSelect', 'dijit/_WidgetBase', 'dijit/_TemplatedMixin', 'dijit/_WidgetsInTemplateMixin', 'dojox/layout/FloatingPane', 'dijit/DropDownMenu', 'dijit/MenuItem', 'dijit/form/DropDownButton', 'dijit/form/CheckBox', 'ninejs/core/logic/Expression', 'dojo/text!./FilterBuilder.html', 'dojo/i18n!./nls/FilterBuilder', 'dojo/dom-construct', 'dojo/_base/lang', 'dojo/_base/xhr', 'dojo/_base/array', 'dojo/json', 'dojo/Evented', 'dojo/dom-style', '../utils/domUtils', 'dijit/Tooltip', 'dijit/Toolbar', 'dijit/ToolbarSeparator', 'dijit/form/Button', 'dojo/dom-geometry', 'dojo/dom-class', 'dojo/query', './FilterBuilder/AdvancedOptionsPanel', 'dijit/popup', 'dijit/Dialog', 'dojo/on', '../../css!../css/FilterBuilder.css', '../utils/setClass', '../utils/append', '../utils/setText', '../../css!dojox/layout/resources/FloatingPane.css!enable', '../../css!dojox/layout/resources/ResizeHandle.css!enable'], function (declare, FieldSelect, MultiOperatorSelect, ControlStateManager, OperatorSelect, SummarySelect, ValueSelect, WidgetBase, TemplatedMixin, WidgetsInTemplateMixin, FloatingPane, DropDownMenu, MenuItem, DropDownButton, CheckBox, Expression, template, resources, domConstruct, lang, xhr, array, json, Evented, domStyle, domUtils, Tooltip, Toolbar, ToolbarSeparator, Button, domGeometry, domClass, query, AdvancedOptionsPanel, popup, Dialog, on, filterBuilderCss, setClass, append, setText) {
+	var FilterBuilder,
+		cssInitialized = false;
 
 	/*
 	 * Tells whether or not the supplied array of FilterBuilder controls are brothers
 	 */
-	function areAllBrothers(controls)
-	{
-		if (controls.length)
-		{
+	function areAllBrothers (controls) 	{
+		if (controls.length) {
 			var parent = controls[0].parent;
-			return array.every(controls, function(item)
-			{
+			return array.every(controls, function (item) {
 				return item.parent === parent;
 			});
 		}
@@ -52,8 +49,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 	@constructor
 	@exports FilterBuilder
 	*/
-	FilterBuilder = declare([WidgetBase, TemplatedMixin, WidgetsInTemplateMixin, Evented],
-	{
+	FilterBuilder = declare([WidgetBase, TemplatedMixin, WidgetsInTemplateMixin, Evented], {
 		/* Default Controls. You can override if you need */
 		FieldSelect: FieldSelect,
 		MultiOperatorSelect: MultiOperatorSelect,
@@ -1931,31 +1927,25 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 				this.set('whereTooltip', domUtils.addTooltip(this.funnelNode, ''));
 			}
 
-			this.selectedFieldSelect = new this.FieldSelect(
-			{
+			this.selectedFieldSelect = new this.FieldSelect({
 				filterBuilder: this
 			});
 
-			this.selectedOperatorSelect = new this.OperatorSelect(
-			{
+			this.selectedOperatorSelect = new this.OperatorSelect({
 				filterBuilder: this
 			});
 
-			this.selectedSummarySelect = new this.SummarySelect(
-			{
+			this.selectedSummarySelect = new this.SummarySelect({
 				filterBuilder: this
 			});
 
-			this.selectedValueSelect = new this.ValueSelect(
-			{
+			this.selectedValueSelect = new this.ValueSelect({
 				filterBuilder: this
 			});
 
-			this.selectorCheckBox = new CheckBox(
-			{
+			this.selectorCheckBox = new CheckBox({
 				filterBuilder: this,
-				onChange: function()
-				{
+				onChange: function () {
 					this.filterBuilder.set('selected', !! this.get('value'));
 				}
 			});
@@ -1965,9 +1955,8 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 			var addExpressionMenu = new DropDownMenu({ style: 'display: none;', 'class': 'njsAddExpressionButton' });
 			var andExpressionItem = new MenuItem({
 				label: resources.and,
-				onClick: function(){
-					self.emit('newExpression',
-					{
+				onClick: function () {
+					self.emit('newExpression', {
 						target: self,
 						operator: 'and'
 					});
@@ -1977,9 +1966,8 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 
 			var orExpressionItem = new MenuItem({
 				label: resources.or,
-				onClick: function(){
-					self.emit('newExpression',
-					{
+				onClick: function () {
+					self.emit('newExpression', 	{
 						target: self,
 						operator: 'or'
 					});
@@ -1987,8 +1975,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 			});
 			addExpressionMenu.addChild(orExpressionItem);
 
-			this.addNewExpressionButton = addNewExpressionButton = new DropDownButton(
-			{
+			this.addNewExpressionButton = addNewExpressionButton = new DropDownButton({
 				dropDown: addExpressionMenu,
 				filterBuilder: this,
 				showLabel: false,
@@ -1997,67 +1984,56 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 				label: resources.addNewCondition,
 				iconClass: 'weFilterBuilder weIconAdd',
 				style: 'display: none',
-				onClick: function()
-				{
+				onClick: function () {
 
 				}
 			});
 			this.addNewExpressionButton.startup();
 
 
-			if (!this.get('toolbar'))
-			{
+			if (!this.get('toolbar')) {
 				var toolbarNode = this.toolbarNode || this.defaultToolbarNode;
-				var toolbar = new Toolbar(
-				{
+				var toolbar = new Toolbar({
 					'class': 'weFilterBuilder weFilterBuilderToolbar'
 				}, toolbarNode);
-				var undoButton = new Button(
-				{
+				var undoButton = new Button({
 					filterBuilder: this,
 					disabled: true,
 					showLabel: false,
 					label: resources.undo,
 					iconClass: 'dijitEditorIcon weFilterBuilder weIconUndo',
-					onClick: function()
-					{
+					onClick: function () {
 						this.filterBuilder.emit('undo', {});
 					}
 				});
-				var redoButton = new Button(
-				{
+				var redoButton = new Button({
 					filterBuilder: this,
 					disabled: true,
 					showLabel: false,
 					label: resources.redo,
 					iconClass: 'dijitEditorIcon weFilterBuilder weIconRedo',
-					onClick: function()
-					{
+					onClick: function () {
 						this.filterBuilder.emit('redo', {});
 					}
 				});
 
-				var copyButton = new Button(
-				{
+				var copyButton = new Button({
 					filterBuilder: this,
-					//					disabled : true,
+					//disabled : true,
 					showLabel: false,
 					label: resources.copy,
 					iconClass: 'dijitEditorIcon dijitEditorIconCopy',
-					onClick: function()
-					{
+					onClick: function () {
 						this.filterBuilder.emit('copy', {});
 					}
 				});
-				var pasteButton = new Button(
-				{
+				var pasteButton = new Button({
 					filterBuilder: this,
 					disabled: !(this.get('clipboardStrategy') && this.get('clipboardStrategy').hasClipboardData()),
 					showLabel: false,
 					label: resources.paste,
 					iconClass: 'dijitEditorIcon dijitEditorIconPaste',
-					onClick: function()
-					{
+					onClick: function () {
 						this.filterBuilder.emit('paste', {});
 					}
 				});
@@ -2067,22 +2043,20 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 				toolbar.addChild(redoButton);
 				toolbar.addChild(new ToolbarSeparator());
 
-				if (this.get('clipboardStrategy') && this.get('clipboardStrategy').hasClipboard())
-				{
+				if (this.get('clipboardStrategy') && this.get('clipboardStrategy').hasClipboard()) {
 					toolbar.addChild(copyButton);
 					toolbar.addChild(pasteButton);
 					toolbar.addChild(new ToolbarSeparator());
 				}
 
-				var button = new Button(
-				{
+				var button = new Button({
 					label: resources.advanced,
 					iconClass: 'weAdvancedToolbar',
 					filterBuilder: this,
 					showLabel: false,
-					onClick: function() {
+					onClick: function () {
 						var advPanel = new AdvancedOptionsPanel({ filterBuilder: this.filterBuilder });
-						advPanel.on('closebuttonclicked', function() {
+						advPanel.on('closebuttonclicked', function () {
 							popup.close(advPanel);
 						});
 						advPanel.startup();
@@ -2091,13 +2065,13 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 							popup: advPanel,
 							around: this.domNode,
 							orient: ['below-centered', 'above-centered'],
-							onExecute: function(){
+							onExecute: function() {
 
 							},
-							onCancel: function(){
+							onCancel: function() {
 
 							},
-							onClose: function(){
+							onClose: function() {
 
 							}
 						});
@@ -2106,7 +2080,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 
 				toolbar.addChild(button);
 
-				on(this.funnelNode, 'click', function() {
+				on(this.funnelNode, 'click', function () {
 					function setWhereExpression(src) {
 						self.set('whereExpression', src);
 						self._updateExpression();
@@ -2551,8 +2525,8 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 
 		},
 
-		startup: function()
-		{
+		startup: function () {
+			var self = this;
 			this.inherited(arguments);
 
 			if (!cssInitialized) {
@@ -2566,19 +2540,20 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 
 			domConstruct.place(this.selectedOperatorSelect.domNode, this.selectedOperatorSelectNode);
 
-			domConstruct.place(this.selectedValueSelect.domNode, this.selectedValueSelectNode);
+			this.selectedValueSelect.show().then(function () {
+				domConstruct.place(self.selectedValueSelect.domNode, self.selectedValueSelectNode);
 
-			this._updateSummaryValues();
-			this.selectedSummarySelect.set('value', null);
+				self._updateSummaryValues();
+				self.selectedSummarySelect.set('value', null);
 
-			this.set('fieldList', this.get('fieldList'));
-			this.set('expression', null, true /* preventChange Undo State */ );
-			this.selectedValueSelect.set('dataType', 'alphanumeric');
-			this.selectedValueSelect.set('value', null);
+				self.set('fieldList', self.get('fieldList'));
+				self.set('expression', null, true /* preventChange Undo State */ );
+				self.selectedValueSelect.set('dataType', 'alphanumeric');
+				self.selectedValueSelect.set('value', null);
 
-			this.emit('stateChanged',
-			{
-				state: 'start'
+				self.emit('stateChanged', {
+					state: 'start'
+				});
 			});
 		},
 

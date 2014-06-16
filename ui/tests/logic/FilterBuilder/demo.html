@@ -83,7 +83,7 @@
 	require(['ninejs/ui/logic/FilterBuilder',
 		'ninejs/core/logic/Expression',
 		'ninejs/ui/utils/domUtils',
-		'put-selector/put',
+        'ninejs/ui/utils/setText',
 		'dojo/dom',
 		'ninejs/ui/logic/FilterBuilder/DefaultClipboardStrategy',
 		'ninejs/css!dojo/resources/dojo.css!enable',
@@ -91,7 +91,7 @@
 	FilterBuilder,
 	Expression,
 	domUtils,
-	put,
+	setText,
 	dom,
 	DefaultClipboardStrategy) {
 
@@ -283,8 +283,8 @@
 
 		var validNode = dom.byId('validExpressionNode');
 		ebuilder.on('valid', function(data) {
-			domUtils.empty(validNode);
-			put(validNode, '', data.value ? 'yes' : 'no');
+			//domUtils.empty(validNode);
+			setText(validNode, data.value ? 'yes' : 'no');
 		});
 
 

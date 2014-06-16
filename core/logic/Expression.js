@@ -708,7 +708,7 @@ represent it and evaluate it over a collection of data or a service.
 				if (this.get('where')) {
 					r.where = this.get('where').clone();
 				}
-				r.expressionList = arrayMap(this.expressionList, function(item) {
+				r.expressionList = arrayMap(this.expressionList || [], function(item) {
 					return item.clone();
 				});
 
@@ -735,7 +735,7 @@ represent it and evaluate it over a collection of data or a service.
 				if (this.where) {
 					r.where = this.where.toJosn();
 				}
-				r.expressionList = arrayMap(this.expressionList, function(item) {
+				r.expressionList = arrayMap(this.expressionList || [], function(item) {
 					return item.toJson();
 				});
 
