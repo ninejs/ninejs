@@ -1,5 +1,5 @@
 /* global window */
-define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/deferredUtils', './utils/setClass'], function (extend, Properties, on, def, setClass) {
+define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/deferredUtils', './utils/setClass', './utils/append'], function (extend, Properties, on, def, setClass, append) {
 	'use strict';
 	window.setTimeout(function () {
 		on(window.document.body, 'click', function (/*evt*/) {
@@ -7,6 +7,27 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 			//evt.stopPropagation();
 		});
 	}, 0);
+	function createWaitNode (parent) {
+		setClass(parent, 'njsWaiting')
+		return setClass(append(parent, 'div'), 'njsWaitNode');
+	}
+	function destroyWaitNode (parent, node) {
+		setClass(parent, '!njsWaiting');
+		parent.removeChild(node);
+	}
+	var EventHandler = function (owner, collection, action) {
+		this.owner = owner;
+		this.action = action;
+		this.remove = function () {
+			collection.remove(this);
+		}
+		this.stopPropagation = function () {
+			this.bubbles = false;
+			this.cancelled = true;
+		}
+		collection.push(this);
+	};
+
 	var Widget = extend({
 		'$njsWidget': true,
 		/**
@@ -299,14 +320,11 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 			if (!this.$njsEventListeners[type]) {
 				this.$njsEventListeners[type] = [];
 			}
-			if (persistEvent) {
-				this.$njsEventListeners[type].push(action);
-			}
-			if (!this.domNode) {
-				throw new Error('Widget must have a root node prior to attaching events. Try calling widget.show() first.');
-			}
-			r = on(this.domNode, type, function () {
-				action.apply(self, arguments);
+			r = new EventHandler(this, this.$njsEventListeners[type], function (e) {
+				action.apply(this.owner, arguments);
+				if (this.owner.domNode && e.bubbles && (!e.cancelled)) {
+					on.emit(this.owner.domNode, type, e);
+				}
 			});
 			if (persistEvent) {
 				this.$njsEventListenerHandlers.push(r);
@@ -324,7 +342,54 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 		 * @return {undefined}
 		 */
 		emit: function (type, data) {
-			return on.emit(this.domNode, type, data);
+			var method = 'on' + type;
+			if (!this[method]) {
+				this[method] = function (e) {
+					var cnt,
+						arr = this.$njsEventListeners[type] || [],
+						len = arr.length;
+					for (cnt = 0; cnt < len; cnt += 1) {
+						arr[cnt].action.call(arr[cnt], e);
+					}
+				};
+			}
+			this[method].call(this, data);
+		},
+		/**
+		 * Allows for a Widget to display a state while waiting for a promise.
+		 * @param defer {Promise}
+		 * @returns {Promise}
+		 */
+		wait: function (defer) {
+			var d,
+				self = this;
+			if (defer) {
+				if (typeof(defer.then) == 'function') {
+					if (this.domNode) {
+						var waitNode = createWaitNode(self.domNode);
+						return def.when(defer, function () {
+							destroyWaitNode(self.domNode, waitNode);
+						}, function () {
+							destroyWaitNode(self.domNode, waitNode);
+						});
+					}
+					else {
+						return def.when(this.show(), function () {
+							var waitNode = createWaitNode(self.domNode);
+							return def.when(defer, function () {
+								destroyWaitNode(self.domNode, waitNode);
+							}, function () {
+								destroyWaitNode(self.domNode, waitNode);
+							});
+						}, function (err) {
+							throw err;
+						});
+					}
+				}
+			}
+			d = def.defer();
+			d.resolve(true);
+			return d.promise;
 		}
 	}, Properties,
 	/**
