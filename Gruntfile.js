@@ -1,5 +1,5 @@
 /*
- * nineplate grunt configuration file
+ * ninejs grunt configuration file
  */
 function exports(grunt) {
 	'use strict';

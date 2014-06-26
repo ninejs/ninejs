@@ -78,7 +78,7 @@ define(['../core/extend', '../core/ext/Evented', '../core/ext/Properties', './ha
 		},
 		execute: function (args, evt) {
 			function rTrue() { return true; }
-			var initAction = this.action || this.initAction || rTrue,
+			var initAction = this.initAction || rTrue,
 				loadAction = this.loadAction || rTrue,
 				title = this.get('title'),
 				self = this;

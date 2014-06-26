@@ -19,7 +19,10 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 		this.owner = owner;
 		this.action = action;
 		this.remove = function () {
-			collection.remove(this);
+			var index = collection.indexOf(this);
+			if (index >= 0) {
+				collection.splice(index, 1);
+			}
 		}
 		this.stopPropagation = function () {
 			this.bubbles = false;

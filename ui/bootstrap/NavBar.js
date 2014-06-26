@@ -108,7 +108,7 @@ define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./NavBar.h
 			on(window, '9jsRouteChanged', function(evt) {
 				if (typeof(evt.tabKey) !== 'undefined') {
 					self.deactivateItem();
-					if (evt.tabKey !== null) {
+					if ((evt.tabKey !== null) && (self.itemContainer)) {
 						var nodes = self.itemContainer.childNodes,
 							cnt,
 							len = nodes.length,

@@ -46,6 +46,7 @@
 				else {
 					result = this.loaded.root;
 				}
+				result.$njsLocale = locale;
 				return result;
 			},
 			setLocale: function(locale, ignoreChangedEvent, require, load) {
