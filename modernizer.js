@@ -2038,7 +2038,12 @@ More details at https://github.com/Modernizr/Modernizr/issues/312
 			//IE6/7 confuses the form idl attribute and the form content attribute
 			if (document.createAttribute) {
 				attr = document.createAttribute("form");
-				attr.nodeValue = id;
+				if (attr.hasOwnProperty('value')) {
+					attr.value = id;
+				}
+				else {
+					attr.nodeValue = id;
+				}
 				input.setAttributeNode(attr);
 				div.appendChild(form);
 				div.appendChild(input);

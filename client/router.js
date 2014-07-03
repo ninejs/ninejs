@@ -184,9 +184,14 @@ define(['../core/extend', '../core/ext/Evented', '../core/ext/Properties', './ha
 					} else {
 						params = result.slice(1);
 					}
-					current.execute(params, evt);
+					return def.when(current.execute(params, evt), function () {
+						self.emit('9jsRouteChanged', {
+							newURL: newUrl
+						});
+					});
 				}
 			}
+			return null;
 		}
 	}, function () {
 		var self = this;
