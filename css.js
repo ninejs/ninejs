@@ -5,6 +5,8 @@ define(['./core/extend', './css/builder', 'dojo/has', 'dojo/query'], function(ex
 	result = {};
 	var ielt10 = has('ie') && (has('ie') < 10),
 		ielt9 = has('ie') && (has('ie') < 9),
+		isAmd = (typeof(define) !== 'undefined') && define.amd,
+		isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org',
 		ieNode,
 		ieCssText,
 		ieCssUpdating,
@@ -15,12 +17,16 @@ define(['./core/extend', './css/builder', 'dojo/has', 'dojo/query'], function(ex
 			/* jshint unused: true */
 			var self = this;
 			css = css.replace(/url\s*\(\s*['"]?([^'"\)]*)['"]?\s*\)/g, function($0, url){
-				var newUrl = '';
+				var newUrl = '',
+					amdPrefix;
 				if (!(/:/.test(url) || /^\/\//.test(url))){
 					var arrSplit = self.path.split(' => ');
 					var cnt;
 					for (cnt = 0; cnt < arrSplit.length; cnt += 1){
 						var slashSplit = arrSplit[cnt].split('/');
+						if (cnt === 0) {
+							amdPrefix = slashSplit[0];
+						}
 						slashSplit.pop();
 						if (slashSplit.length && cnt > 0){
 							newUrl += '/';
@@ -34,6 +40,18 @@ define(['./core/extend', './css/builder', 'dojo/has', 'dojo/query'], function(ex
 				}
 				else {
 					newUrl = url;
+				}
+				if (isDojo && amdPrefix) {
+					//Tring to find AMD package
+					if (require.packs && require.packs[amdPrefix]) {
+						var amdPackage = require.packs[amdPrefix];
+						var loc = amdPackage.location.split('/');
+						if (loc.length) {
+							loc.pop();
+							loc.push(newUrl);
+							newUrl = loc.join('/');
+						}
+					}
 				}
 				return 'url(\'' + newUrl + '\')';
 			});
