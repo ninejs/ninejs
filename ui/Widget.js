@@ -368,21 +368,22 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 				self = this;
 			if (defer) {
 				if (typeof(defer.then) == 'function') {
+					var w = self.waitNode || self.domNode;
 					if (this.domNode) {
-						var waitNode = createWaitNode(self.domNode);
+						var waitNode = createWaitNode(w);
 						return def.when(defer, function () {
-							destroyWaitNode(self.domNode, waitNode);
+							destroyWaitNode(w, waitNode);
 						}, function () {
-							destroyWaitNode(self.domNode, waitNode);
+							destroyWaitNode(w, waitNode);
 						});
 					}
 					else {
 						return def.when(this.show(), function () {
-							var waitNode = createWaitNode(self.domNode);
+							var waitNode = createWaitNode(w);
 							return def.when(defer, function () {
-								destroyWaitNode(self.domNode, waitNode);
+								destroyWaitNode(w, waitNode);
 							}, function () {
-								destroyWaitNode(self.domNode, waitNode);
+								destroyWaitNode(w, waitNode);
 							});
 						}, function (err) {
 							throw err;

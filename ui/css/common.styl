@@ -62,7 +62,7 @@
 }
 .njsWaiting {
 	&>:not(*.njsWaitNode) {
-		visibility: hidden;
+		display: none;
 	}
 	.njsWaitNode {
 		width: 100% !important;
@@ -70,6 +70,7 @@
 		display: block !important;
 		opacity: 1 !important;
 		position: absolute;
+		background-repeat: no-repeat;
 	}
 }
 .cursor-pointer {
