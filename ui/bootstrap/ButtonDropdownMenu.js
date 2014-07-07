@@ -74,12 +74,12 @@ define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./ButtonDr
 						setText(self.labelNode, item.label);
 					}
 					self.set('value', item.value);
+					var r;
 					if (item.action) {
-						return item.action.apply(item, arguments);
+						r = item.action.apply(item, arguments);
 					}
-					else {
-						setClass(self.domNode, '!open');
-					}
+					setClass(self.domNode, '!open');
+					return r;
 				};
 				on(li, 'mousedown', clickEvent);
 			}
