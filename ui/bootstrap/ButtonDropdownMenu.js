@@ -1,4 +1,4 @@
-define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./ButtonDropdownMenu.html', '../utils/append', '../utils/setClass', '../utils/setText', 'dojo/on', '../../css!./ButtonDropdownMenu.css'], function(extend, Widget, Skin, template, append, setClass, setText, on, css) {
+define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./ButtonDropdownMenu.html', '../utils/append', '../utils/setClass', '../utils/setText', 'dojo/on', '../../css!./ButtonDropdownMenu.css', '../../core/deferredUtils'], function(extend, Widget, Skin, template, append, setClass, setText, on, css, def) {
 	'use strict';
 	function getChildElement(parent, idx) {
 		var cnt, children = parent.childNodes, i = -1;
@@ -14,11 +14,18 @@ define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./ButtonDr
 	}
 	var ButtonDropdownMenu = extend(Widget, {
 		skin: new Skin({ template: template, cssList: [css] }),
+		labelSetter: function (v) {
+			var self = this;
+			this.label = v;
+			def.when(this.domNode, function () {
+				setText(self.labelNode, self.label);
+			});
+		},
 		addItem: function(item, parent, idx) {
 			var undef,
-                li,
-                refNode,
-                self = this;
+				li,
+				refNode,
+				self = this;
 			parent = parent || this.itemsParent;
 			if (idx !== undef){
 				refNode = getChildElement(parent, idx);
@@ -62,19 +69,19 @@ define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./ButtonDr
 					iconNode = setClass(append(a, 'i'), 'icon');
 				}
 				setText(append(a, 'span'), item.label);
-                var clickEvent = function() {
-                    if (self.selectable) {
-                        setText(self.labelNode, item.label);
-                    }
-                    self.set('value', item.value);
-                    if (item.action) {
-                        return item.action.apply(item, arguments);
-                    }
-                    else {
-                        setClass(self.domNode, '!open');
-                    }
-                };
-                on(li, 'mousedown', clickEvent);
+				var clickEvent = function() {
+					if (self.selectable) {
+						setText(self.labelNode, item.label);
+					}
+					self.set('value', item.value);
+					if (item.action) {
+						return item.action.apply(item, arguments);
+					}
+					else {
+						setClass(self.domNode, '!open');
+					}
+				};
+				on(li, 'mousedown', clickEvent);
 			}
 			return { listItem: li, anchor: a, iconNode: iconNode, childrenListNode: childrenUl, item: item };
 		},
@@ -102,7 +109,7 @@ define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./ButtonDr
 	}, function() {
 		extend.mixin(this, {
 			hasIcons: false,
-            value: null
+			value: null
 		});
 	});
 	return ButtonDropdownMenu;

@@ -121,14 +121,10 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 		classSetter: function (v) {
 			var arg = v.split(' ');
 			arg.unshift(this.domNode);
-			if (this.domNode) {
+			var self = this;
+			def.when(this.domNode, function () {
 				setClass.apply(null, arg);
-			}
-			else {
-				on.once(this, 'updatedSkin', function () {
-					setClass.apply(null, arg);
-				});
-			}
+			});
 		},
 		/**
 		 * Sets the given id to the domNoe.
@@ -137,15 +133,10 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 		 * @return {undefined}
 		 */
 		idSetter: function (v) {
-			if (this.domNode) {
-				this.domNode.id = v;
-			}
-			else {
-				var self = this;
-				on.once(this, 'updatedSkin', function () {
-					self.domNode.id = v;
-				});
-			}
+			var self = this;
+			def.when(this.domNode, function () {
+				self.domNode.id = v;
+			});
 		},
 		/**
 		 * Sets the given style to the domNode.
@@ -154,15 +145,10 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 		 * @return {undefined}
 		 */
 		styleSetter: function (v) {
-			if (this.domNode) {
-				this.domNode.style = v;
-			}
-			else {
-				var self = this;
-				on.once('updatedSkin', function () {
-					self.domNode.style = v;
-				});
-			}
+			var self = this;
+			def.when(this.domNode, function () {
+				self.domNode.style = v;
+			});
 		},
 		/**
 		 * If the current skin is a single object (not an array) and it applies (skin.applies() is true) then is cosindered the current option to be applied.
@@ -204,6 +190,10 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 					}
 					return def.when(toApply.enable(self), function () {
 						self.currentSkin = toApply;
+						if (self.$njsShowDefer) {
+							self.$njsShowDefer.resolve(self.domNode);
+							self.$njsShowDefer = null;
+						}
 						self.onUpdatedSkin();
 					});
 				}
@@ -335,7 +325,6 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 			else {
 				this.own(r);
 			}
-
 			return r;
 		},
 		/**
@@ -407,6 +396,8 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 		this.$njsEventListeners = {};
 		this.$njsEventListenerHandlers = [];
 		this.$njsChildWidgets = [];
+		this.$njsShowDefer = def.defer();
+		this.domNode = this.$njsShowDefer.promise;
 	});
 	return Widget;
 });
