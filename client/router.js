@@ -8,6 +8,19 @@ define(['../core/extend', '../core/ext/Evented', '../core/ext/Properties', './ha
 	function nullf() {
 		return null;
 	}
+	function cleanRoute(r) {
+		if (r && r.length && (r.indexOf('#') === 0)) {
+			return r.substr(1);
+		}
+		return r;
+	}
+	function getRoute() {
+		var r = hash();
+		return cleanRoute(r);
+	}
+	function setRoute (route, replace) {
+		return hash(route, replace);
+	}
 	/*
 	* From Dojo Toolkit's router/RouterBase */
 	function convertRouteToRegExp(/* String */ route) {
@@ -129,12 +142,13 @@ define(['../core/extend', '../core/ext/Evented', '../core/ext/Properties', './ha
 			return new Route(options, this);
 		},
 		go: function(/* String */ route, /* Boolean */ replace) {
-			var current = hash();
+			route = cleanRoute(route);
+			var current = getRoute();
 			if (current === route) {
 				this.dispatchRoute({ newURL: route, oldURL: '' });
 			}
 			else {
-				hash(route, replace);
+				setRoute(route, replace);
 			}
 		},
 		addRoute: function(route) {
@@ -164,7 +178,7 @@ define(['../core/extend', '../core/ext/Evented', '../core/ext/Properties', './ha
 				lj,
 				idx,
 				newUrl;
-			evt.newURL = evt.newURL || hash();
+			evt.newURL = evt.newURL || getRoute();
 			newUrl = evt.newURL;
 			idx = newUrl.indexOf('#');
 			if (idx >= 0) {

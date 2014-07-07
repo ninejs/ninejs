@@ -120,9 +120,9 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 		 */
 		classSetter: function (v) {
 			var arg = v.split(' ');
-			arg.unshift(this.domNode);
 			var self = this;
 			def.when(this.domNode, function () {
+				arg.unshift(self.domNode);
 				setClass.apply(null, arg);
 			});
 		},
