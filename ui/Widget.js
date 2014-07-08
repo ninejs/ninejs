@@ -8,7 +8,7 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 		});
 	}, 0);
 	function createWaitNode (parent) {
-		setClass(parent, 'njsWaiting')
+		setClass(parent, 'njsWaiting');
 		return setClass(append(parent, 'div'), 'njsWaitNode');
 	}
 	function destroyWaitNode (parent, node) {
@@ -23,11 +23,11 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 			if (index >= 0) {
 				collection.splice(index, 1);
 			}
-		}
+		};
 		this.stopPropagation = function () {
 			this.bubbles = false;
 			this.cancelled = true;
-		}
+		};
 		collection.push(this);
 	};
 
@@ -308,8 +308,7 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 		 * @throws {Error} If domNode is not defined
 		 */
 		on: function (type, action, persistEvent) {
-			var r,
-				self = this;
+			var r;
 			if (!this.$njsEventListeners[type]) {
 				this.$njsEventListeners[type] = [];
 			}
@@ -356,7 +355,7 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 			var d,
 				self = this;
 			if (defer) {
-				if (typeof(defer.then) == 'function') {
+				if (typeof(defer.then) === 'function') {
 					var w = self.waitNode || self.domNode;
 					if (this.domNode) {
 						var waitNode = createWaitNode(w);

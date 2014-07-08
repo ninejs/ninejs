@@ -66,14 +66,14 @@
 		}
 		else {
 			result.filter = function(arr, fun /*, thisArg */) {
-				"use strict";
+				/* jshint bitwise: false */
 				if (arr === void 0 || arr === null) {
 					throw new TypeError();
 				}
 
 				var t = Object(arr);
 				var len = t.length >>> 0;
-				if (typeof fun !== "function") {
+				if (typeof fun !== 'function') {
 					throw new TypeError();
 				}
 

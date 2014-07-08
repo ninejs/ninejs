@@ -1,8 +1,10 @@
 <div class="btn-group ButtonDropdownMenu ${class}">
-	<a class="btn %{labelClass} dropdown-toggle" href="#" data-ninejs-attach="anchor">
-		<span data-ninejs-attach="labelNode">${label}</span>
-		<span class="caret pull-right"></span>
-	</a>
+	<button type="button" class="btn %{labelClass} dropdown-toggle" data-ninejs-attach="anchor">
+		<span>
+			<span data-ninejs-attach="labelNode">${label}</span>
+			<b class="caret"></b>
+		</span>
+	</button>
 	<ul class="dropdown-menu" data-ninejs-attach="itemsParent" role="menu">
 	</ul>
 </div>

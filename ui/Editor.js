@@ -11,7 +11,7 @@
  * @return {ninejs/ui/Editor}   Returns a new Editor.
  * @constructor
  */
-define(['../core/extend', './Widget', '../core/ext/Properties', './Skins/Editor/Default', '../core/deferredUtils', '../modernizer', '../core/array', './utils/setClass', '../core/objUtils', '../core/on', './utils/setText', './utils/append', '../config'], function (extend, Widget, Properties, defaultSkin, def, modernizer, array, setClass, objUtils, on, setText, append, config) {
+define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferredUtils', '../modernizer', '../core/array', './utils/setClass', '../core/objUtils', '../core/on', './utils/setText', './utils/append', '../config'], function (extend, Widget, defaultSkin, def, modernizer, array, setClass, objUtils, on, setText, append, config) {
 	'use strict';
 
 	var NumberTextBox,

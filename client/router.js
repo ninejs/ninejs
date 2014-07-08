@@ -184,6 +184,11 @@ define(['../core/extend', '../core/ext/Evented', '../core/ext/Properties', './ha
 			if (idx >= 0) {
 				newUrl = newUrl.substr(idx + 1);
 			}
+			function emitChanged () {
+				self.emit('9jsRouteChanged', {
+					newURL: newUrl
+				});
+			}
 			for (cnt = 0; cnt < len; cnt += 1) {
 				current = self.routes[cnt];
 				result = current.routeRegex.exec(newUrl);
@@ -198,11 +203,7 @@ define(['../core/extend', '../core/ext/Evented', '../core/ext/Properties', './ha
 					} else {
 						params = result.slice(1);
 					}
-					return def.when(current.execute(params, evt), function () {
-						self.emit('9jsRouteChanged', {
-							newURL: newUrl
-						});
-					});
+					return def.when(current.execute(params, evt), emitChanged);
 				}
 			}
 			return null;
