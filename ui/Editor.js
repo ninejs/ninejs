@@ -53,7 +53,7 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 	}, function () {
 		var self = this;
 		this.own(
-			on(this.domNode, 'change', function () {
+			on(this, 'change', function () {
 				self.set('value', self.domNode.value);
 			})
 		);
