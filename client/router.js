@@ -1,5 +1,6 @@
 /* global window */
-define(['../core/extend', '../core/ext/Evented', '../core/ext/Properties', './hash', '../core/on', '../core/array', '../core/deferredUtils'], function(extend, Evented, Properties, hash, on, array, def) {
+define(['../core/objUtils',
+	'../core/extend', '../core/ext/Evented', '../core/ext/Properties', './hash', '../core/on', '../core/array', '../core/deferredUtils'], function(objUtils, extend, Evented, Properties, hash, on, array, def) {
 	'use strict';
 	var idMatch = /:(\w[\w\d]*)/g,
 		idReplacement = '([^\\/]+)',
@@ -213,7 +214,22 @@ define(['../core/extend', '../core/ext/Evented', '../core/ext/Properties', './ha
 		this.routes = [];
 		this.startup = function () {
 			this.hashHandler = on(window, 'hashchange', function(evt) {
-				self.dispatchRoute(evt);
+				var e = {
+					bubbles: evt.bubbles,
+					cancelable: evt.cancelable,
+					currentTarget: evt.currentTarget,
+					defaultPrevented: evt.defaultPrevented,
+					eventPhase: evt.eventPhase,
+					explicitOriginalTarget: evt.explicitOriginalTarget,
+					isTrusted: evt.isTrusted,
+					newURL: evt.newURL,
+					oldURL: evt.oldURL,
+					originalTarget: evt.originalTarget,
+					target: evt.target,
+					timeStamp: evt.timeStamp,
+					type: evt.type
+				};
+				self.dispatchRoute(e);
 			});
 		};
 	});

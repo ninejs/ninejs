@@ -396,14 +396,13 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 		this.$njsEventListenerHandlers = [];
 		this.$njsChildWidgets = [];
 		this.$njsShowDefer = def.defer();
-		// this.domNode = this.$njsShowDefer.promise;
 		if (!this.domNode) {
-            this.domNode = this.$njsShowDefer.promise;
-        }
-        else {
-            this.$njsShowDefer.resolve(this.domNode);
-            this.$njsShowDefer = null;
-        }
+			this.domNode = this.$njsShowDefer.promise;
+		}
+		else {
+			this.$njsShowDefer.resolve(this.domNode);
+			this.$njsShowDefer = null;
+		}
 	});
 	return Widget;
 });
