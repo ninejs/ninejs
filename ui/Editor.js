@@ -15,7 +15,9 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 	'use strict';
 
 	var NumberTextBox,
+		numberTextBoxDefer,
 		DateTextBox,
+		dateTextBoxDefer,
 		CheckBox,
 		TextBox,
 		Select,
@@ -64,7 +66,13 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 	function getNumberTextBoxConstructor() {
 		var NumberTextBox;
 		if (!modernizer.inputtypes.number) {
-			NumberTextBox = require(numberTextBoxImpl);
+			numberTextBoxDefer = def.defer();
+			NumberTextBox = numberTextBoxDefer.promise;
+			require([numberTextBoxImpl], function (C) {
+				NumberTextBox = C;
+				numberTextBoxDefer.resolve(C);
+				numberTextBoxDefer = null;
+			});
 			if (!NumberTextBox) {
 				throw new Error('Implementation for NumberTextBox: ' + numberTextBoxImpl + ' must be previously loaded.');
 			}
@@ -99,7 +107,13 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 	}
 	NumberTextBox = getNumberTextBoxConstructor();
 	if (!modernizer.inputtypes.date) {
-		DateTextBox = require(dateTextBoxImpl);
+		dateTextBoxDefer = def.defer();
+		DateTextBox = dateTextBoxDefer.promise;
+		require([dateTextBoxImpl], function (C) {
+			DateTextBox = C;
+			dateTextBoxDefer.resolve(C);
+			dateTextBoxDefer = null;
+		});
 		if (!DateTextBox) {
 			throw new Error('Implementation for DateTextBox: ' + dateTextBoxImpl + ' must be previously loaded.');
 		}
@@ -314,17 +328,19 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 					},
 					self = this;
 				extend.mixin(args, this.args);
-				var control = new NumberTextBoxControl(args);
-				self.own(
-					on((control.domNode || control), 'blur', function (e) {
-						control.editor.emit('blur', e);
-					})
-				);
-				control.watch('value', function (name, old, newv) {
-					/* jshint unused: true */
-					self.set('value', newv, true);
+				return def.when(NumberTextBoxControl, function (NumberTextBoxControl) {
+					var control = new NumberTextBoxControl(args);
+					self.own(
+						on((control.domNode || control), 'blur', function (e) {
+							control.editor.emit('blur', e);
+						})
+					);
+					control.watch('value', function (name, old, newv) {
+						/* jshint unused: true */
+						self.set('value', newv, true);
+					});
+					return control;
 				});
-				return control;
 			};
 
 			buildDateTextBox = function () {
@@ -338,17 +354,19 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 					},
 					self = this;
 				extend.mixin(args, this.args);
-				var control = new DateTextBoxControl(args);
-				self.own(
-					on((control.domNode || control), 'blur', function (e) {
-						control.editor.emit('blur', e);
-					})
-				);
-				control.watch('value', function (name, old, newv) {
-					/* jshint unused: true */
-					self.set('value', newv, true);
+				return def.when(DateTextBoxControl, function (DateTextBoxControl) {
+					var control = new DateTextBoxControl(args);
+					self.own(
+						on((control.domNode || control), 'blur', function (e) {
+							control.editor.emit('blur', e);
+						})
+					);
+					control.watch('value', function (name, old, newv) {
+						/* jshint unused: true */
+						self.set('value', newv, true);
+					});
+					return control;
 				});
-				return control;
 			};
 
 			buildTimeTextBox = function () {
@@ -479,10 +497,12 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 						'list' : buildSelect
 					};
 
-					self.control = controlMap[val].apply(self);
+					def.when(controlMap[val].apply(self), function (ctrl) {
+						self.control = ctrl;
 
-					self.control.startup();
-					append(self.domNode, self.control.domNode);
+						self.control.startup();
+						append(self.domNode, self.control.domNode);
+					});
 				});
 
 				this.dataType = val;
