@@ -426,6 +426,12 @@
 						.append(' + ')
 						.append(expr);
 				};
+				this.minus = function(expr) {
+					return new Expression()
+						.append(this)
+						.append(' - ')
+						.append(expr);
+				};
 				this.member = function(name) {
 					var expression = new Expression(this);
 					expression.append('.');

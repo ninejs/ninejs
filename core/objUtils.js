@@ -98,12 +98,16 @@
 				//hasOwnProperty.call(value, "length") &&
 				((!value.length) || hasOwnProperty.call(value, value.length - 1));
 		}
+		function isNumber(n) {
+			return !isNaN(parseFloat(n)) && isFinite(n);
+		}
 
 		return {
 			deepToString: deepToString,
 			protoClone: protoClone,
 			isFunction: isFunction,
 			isString: isString,
+			isNumber: isNumber,
 			isArray: isArray,
 			isArrayLike: isArrayLike
 		};

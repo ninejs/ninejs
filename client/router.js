@@ -1,6 +1,6 @@
 /* global window */
-define(['../core/objUtils',
-	'../core/extend', '../core/ext/Evented', '../core/ext/Properties', './hash', '../core/on', '../core/array', '../core/deferredUtils'], function(objUtils, extend, Evented, Properties, hash, on, array, def) {
+define(['../core/array',
+	'../core/deferredUtils', '../core/ext/Evented', '../core/ext/Properties', '../core/extend', '../core/on', './hash'], function(array, def, Evented, Properties, extend, on, hash) {
 	'use strict';
 	var idMatch = /:(\w[\w\d]*)/g,
 		idReplacement = '([^\\/]+)',

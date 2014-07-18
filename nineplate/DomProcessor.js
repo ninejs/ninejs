@@ -66,6 +66,9 @@
 					}
 				}
 			}
+			function isAmdExtensionValue(v) {
+				return (v || '').indexOf('amd://') === 0;
+			}
 			/*
 			returns rendered code for the supplied xmlNode
 			@param {XmlNode} template - Nineplate's template object that we want to be compiled.
@@ -74,7 +77,8 @@
 				var attributes,
 					childNodes,
 					TextParseContext,
-					textParseContext;
+					textParseContext,
+					amdInstanceName;
 				function tryNewContext(action) {
 					var tempCtx = { mode: elementContext.mode };
 					action(tempCtx);
@@ -362,16 +366,14 @@
 				}
 				function isAmdExtension(nodeParameter) {
 					var nsUri = ((nodeParameter || xmlNode).namespaceUri() || '');
-					return (nsUri.indexOf('amd://') === 0);
+					return isAmdExtensionValue(nsUri);
 				}
 				function solveAmdExtension() {
 					var amdPrefix = xmlNode.namespaceUri().substr(6),
 						name = xmlNode.nodeLocalName(),
 						mid = amdPrefix + '/' + name,
 						amdModuleVar = amdPathMapping[mid],
-						instanceName,
-						conditionRenderer,
-						childWidgetConditionRenderer;
+						instanceName;
 					enableAmd();
 					if (!amdModuleVar) {
 						amdModuleVar = renderer.getNewVariable();//Here I'm asking renderer and not parentRenderer to avoid a shadowing
@@ -389,30 +391,42 @@
 					instanceName = renderer.getNewVariable();
 					renderer.addVar(instanceName);
 					renderer.addAssignment(instanceName, renderer.createObject(amdModuleVar));
+					renderer.addAssignment('node', renderer.expression(instanceName));
+					return instanceName;
+				}
+				function showNjsWidget(instanceName) {
+					var conditionRenderer,
+						childWidgetConditionRenderer;
 					conditionRenderer = renderer.addCondition(renderer.expression(instanceName).member('$njsWidget')).renderer;
 					conditionRenderer
 						.addStatement(
-							conditionRenderer
-								.expression(instanceName)
-								.member('show')
-								.invoke(
-									conditionRenderer.expression('node')
-								)
+						conditionRenderer
+							.expression(instanceName)
+							.member('show')
+							.invoke(
+								conditionRenderer
+									.expression('nodes')
+									.element(
+										conditionRenderer
+											.expression('nodes')
+											.member('length')
+											.minus(conditionRenderer.literal(1))
+									)
+							)
 						);
 					childWidgetConditionRenderer = conditionRenderer
-													.addCondition(
-														conditionRenderer
-															.expression('context')
-															.member('registerChildWidget')
-													).renderer;
+						.addCondition(
+						conditionRenderer
+							.expression('context')
+							.member('registerChildWidget')
+					).renderer;
 					childWidgetConditionRenderer
 						.addStatement(
-							childWidgetConditionRenderer
-								.expression('context')
-								.member('registerChildWidget')
-								.invoke()
-						);
-					renderer.addAssignment('node', renderer.expression(instanceName));
+						childWidgetConditionRenderer
+							.expression('context')
+							.member('registerChildWidget')
+							.invoke()
+					);
 				}
 				if (!parentNode) {
 					renderer
@@ -448,8 +462,9 @@
 						renderer = pushRenderer(renderer.chunk().renderer);
 						if (isAmdExtension()) {
 							elementContext.mode = 'amdExtension';
-							solveAmdExtension();
+							amdInstanceName = solveAmdExtension();
 							visitChildNodes();
+							showNjsWidget(amdInstanceName);
 							renderer.addAssignment('node', renderer.expression('node').member('domNode'));
 						}
 						else {
@@ -982,13 +997,15 @@
 				}
 			}
 			function processAttribute(xmlNode, attName, elementContext) {
+				var attval;
 				if (isAttachPoint(xmlNode) || attName === 'data-ninejs-tagName') {
 					elementContext.needsDom = true;
 					processAttachPoint(xmlNode);
 				} else {
 					renderer.addAssignment('av', renderer.literal(''));
 //					r += 'av = \'\';\n';
-					processTextFragment(xmlNode.value(), renderer.expression('av'), 'attr', null, null, elementContext);
+					attval = xmlNode.value();
+					processTextFragment(attval, renderer.expression('av'), 'attr', null, null, elementContext);
 					if (elementContext.mode === 'amdExtension') {
 						renderer
 							.addStatement(
@@ -1011,17 +1028,18 @@
 	//						r += 'node.className = av;\n';
 						}
 						else {
-							renderer
-								.addStatement(
+							if (!isAmdExtensionValue(attval)) {
+								renderer
+									.addStatement(
 									renderer
 										.expression('node')
 										.member('setAttribute')
 										.invoke(
-											renderer.literal(attName),
-											renderer.expression('av')
-										)
+										renderer.literal(attName),
+										renderer.expression('av')
+									)
 								);
-	//						r += 'node.setAttribute(\'' + attName + '\', av);\n';
+							}
 						}
 					}
 				}
