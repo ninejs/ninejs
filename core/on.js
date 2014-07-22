@@ -12,13 +12,42 @@ Dojo Toolkit's dojo/on as of jan 2014
 		var window = global;
 		function getSelector() {
 			if (window.jQuery){
-				return window.jQuery;
+				var jQuery = window.jQuery;
+				return {
+					matches: function (node, selector, root) {
+						var r = false,
+							arr = jQuery(root, selector),
+							cnt,
+							len = arr.length;
+						for (cnt = 0; cnt < len; cnt += 1) {
+							if (arr[cnt] === node) {
+								r = true;
+								break;
+							}
+						}
+						return r;
+					}
+				};
 			}
 			else if (window.dojo.query) {
 				return window.dojo.query;
 			}
-			else if (window.document && window.document.body && window.document.body.querySelector) {
-				return window.document.body.querySelector;
+			else if (window.document && window.document.body && window.document.body.querySelectorAll) {
+				return {
+					matches: function (node, selector, root) {
+						var r = false,
+							arr = root.querySelectorAll(selector),
+							cnt,
+							len = arr.length;
+						for (cnt = 0; cnt < len; cnt += 1) {
+							if (arr[cnt] === node) {
+								r = true;
+								break;
+							}
+						}
+						return r;
+					}
+				};
 			}
 			return null;
 		}
@@ -203,7 +232,7 @@ Dojo Toolkit's dojo/on as of jan 2014
 			if (fixAttach && target.attachEvent) {
 				return fixAttach(target, type, listener);
 			}
-			throw new Error('Target must be an event emitter');
+			throw new Error('Target must be an event emitter. Event = on' + type);
 		}
 
 		on.selector = function(selector, eventType, children) {

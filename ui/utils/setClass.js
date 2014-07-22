@@ -1,5 +1,6 @@
-define([], function() {
+define(['../../modernizer'], function (modernizer) {
 	'use strict';
+	var ietrident = modernizer.ietrident;
 	function localTrim() {
 		/* jshint -W040 */
 		return this.replace((/^\s+|\s+$/g),'');
@@ -92,7 +93,7 @@ define([], function() {
 		}
 		return setClass.has(node, clName);
 	}
-	var doSetClass = unkSetClass;
+	var doSetClass = ietrident ? oldSetClass : unkSetClass;
 	var setClass = function(node) {
 		var cnt = 1, clName;
 		while ((clName = arguments[cnt])) {
@@ -101,6 +102,6 @@ define([], function() {
 		}
 		return node;
 	};
-	setClass.has = unkHas;
+	setClass.has = ietrident ? oldSetClass.has : unkHas;
 	return setClass;
 });

@@ -25,6 +25,14 @@ define([], function() {
 			return node;
 		};
 	}
+	append.create = function (node) {
+		return window.document.createElement(node);
+	};
+	append.remove = function (node) {
+		if (node.parentNode) {
+			node.parentNode.removeChild(node);
+		}
+	};
 
 	return append;
 });
