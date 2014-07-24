@@ -99,6 +99,7 @@
 			});
 			var moduleList = [];
 			var moduleSet = {};
+			this.enabledUnits = {};
 			this.addModule = function(m) {
 				var p, currentProvides = [], cnt, self = this;
 				for(cnt = 0; cnt < m.provides.length; cnt += 1) {
@@ -155,7 +156,7 @@
 						if (!moduleSet[current.id].get('enabled')) {
 							var tryModule = m.getModuleDefinition(current.id);
 							if (tryModule) {
-								self.Module.prototype.enable.call(tryModule, getConfigObject(tryModule, config));
+								return self.Module.prototype.enable.call(tryModule, getConfigObject(tryModule, config));
 							}
 						}
 					}
@@ -221,7 +222,17 @@
 						currentModule = moduleList[cnt];
 						currentModule.emit('modulesEnabled', {});
 					}
+				}, function (err) {
+					console.log('Error while enabling some modules');
+					throw err;
 				});
+			};
+			this.initUnit = function (unitId) {
+				if (!this.enabledUnits[unitId]) {
+					var unitConfig = config.units[unitId];
+					this.enabledUnits[unitId] = moduleSet[unitId].init(unitId, unitConfig) || true;
+					return this.enabledUnits[unitId];
+				}
 			};
 			this.build = function() {
 				var cnt,

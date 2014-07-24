@@ -267,6 +267,9 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 				return self;
 			}
 			if (!this.currentSkin) {
+				if (this.domNode && this.domNode.nodeType === 1) {
+					appendIt();
+				}
 				if (this.waitSkin) {
 					return this.waitSkin;
 				}
