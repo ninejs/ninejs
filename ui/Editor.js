@@ -53,10 +53,11 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 			this.domNode.name = v;
 		}
 	}, function () {
-		var self = this;
+		var self = this,
+			valueField = (this.domNode.type === 'checkbox') ? 'checked' : 'value';
 		this.own(
-			on(this, 'change', function () {
-				self.set('value', self.domNode.value);
+			on(this.domNode, 'change', function () {
+				self.set('value', self.domNode[valueField]);
 			})
 		);
 		// on(this.domNode, 'blur', function(e){
@@ -411,7 +412,7 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 						control.editor.emit('blur', e);
 					})
 				);
-				control.watch('checked', function (name, old, newv) {
+				control.watch('value', function (name, old, newv) {
 					/* jshint unused: true */
 					self.set('value', newv, true);
 				});
