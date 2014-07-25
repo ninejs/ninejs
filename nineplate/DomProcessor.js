@@ -487,16 +487,16 @@
 			}
 			var forLoopStack = [];
 			var forLoopVariableStack = [];
-			function processParsedResult(result, target, targetType, arr, idx, elementContext) {
+			function processParsedResult(result, target, targetType, arr, idx, elementContext, compound) {
 				var cnt,
 					fName;
 				if (result.type === 'mixed'){
 					for (cnt=0; cnt < result.content.length; cnt += 1){
-						processParsedResult(result.content[cnt], target, targetType, arr, idx, elementContext);
+						processParsedResult(result.content[cnt], target, targetType, arr, idx, elementContext, true);
 					}
 				}
 				else if (result.type === 'expressionToken'){
-					processExpressionToken(result, target, targetType, elementContext);
+					processExpressionToken(result, target, targetType, elementContext, compound);
 				}
 				else if (result.type === 'any'){
 					renderer
@@ -625,7 +625,7 @@
 					throw new Error('unsupported content type ' + expression.contentType);
 				}
 			}
-			function processExpression(expression, target, targetType, elementContext) {
+			function processExpression(expression, target, targetType, elementContext, compound) {
 				var optimized = expression.optimized || ['String', 'DOM', '9js', 'Dijit'],
 					condition;
 				function putValue(targetType) {
@@ -703,10 +703,20 @@
 						}
 					}
 					if (targetType === 'attr'){
-						var attrCondition = renderer.addCondition(renderer.expression(target).notEquals(renderer.literal('')));
-						attrCondition.renderer.addAssignment(target, renderer.expression(target).op('+', renderer.expression('putValue').or(renderer.literal('')).parenthesis() ));
-						var attrElse = attrCondition.elseDo();
-						attrElse.addAssignment(target, renderer.expression('putValue').or(renderer.literal('')).parenthesis());
+						var attrCondition,
+							attrElse;
+						if (compound) {
+							attrCondition = renderer.addCondition(renderer.expression(target).notEquals(renderer.literal('')));
+							attrCondition.renderer.addAssignment(target, renderer.expression(target).op('+', renderer.expression('putValue').or(renderer.literal('')).parenthesis() ));
+							attrElse = attrCondition.elseDo();
+							attrElse.addAssignment(target, renderer.expression('putValue').or(renderer.literal('')).parenthesis());
+						}
+						else {
+							var attrCondition = renderer.addCondition(renderer.expression(target).notEquals(renderer.raw('undefined')));
+							attrCondition.renderer.addAssignment(target, renderer.expression('putValue'));
+							var attrElse = attrCondition.elseDo();
+							attrElse.addAssignment(target, renderer.literal(''));
+						}
 //						r += target + ' += putValue || "";\n';
 					}
 					else if (targetType === 'text'){
@@ -848,10 +858,10 @@
 					);
 				//return 'attachTemp = r[\'' + xmlNode.value() + '\'];\nif (attachTemp) {\nif ( Object.prototype.toString.call( attachTemp ) === \'[object Array]\' ) {\nattachTemp.push(node);\n}\nelse {\nr[\'' + xmlNode.value() + '\'] = [attachTemp, node];\n}\n}\nelse {\nr[\'' + xmlNode.value() + '\'] = node;\n}\n';
 			}
-			function processExpressionToken(result, target, targetType, elementContext) {
+			function processExpressionToken(result, target, targetType, elementContext, compound) {
 				if (result.modifier === 'live') {
 					if (result.value.type === 'expression'){
-						processLiveExpression(result.value, target, targetType, elementContext);
+						processLiveExpression(result.value, target, targetType, elementContext, compound);
 					}
 					else {
 						console.log('unsupported expression token type: ');
@@ -860,7 +870,7 @@
 				}
 				else {
 					if (result.value.type === 'expression'){
-						processExpression(result.value, target, targetType, elementContext);
+						processExpression(result.value, target, targetType, elementContext, compound);
 					}
 					else {
 						console.log('unsupported expression token type: ');
