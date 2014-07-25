@@ -47,7 +47,7 @@ This is just an abstraction that detects if it's running in client side to retur
 						});
 					}
 					else {
-						return this.when(new DeferredList(arr), function(vals) {
+						return this.when(new DeferredList(this.mapToPromises(arr)), function(vals) {
 							var cnt,
 								len = vals.length,
 								result = [];
