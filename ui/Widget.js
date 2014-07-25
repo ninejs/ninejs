@@ -147,7 +147,7 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 		styleSetter: function (v) {
 			var self = this;
 			def.when(this.domNode, function () {
-				self.domNode.style = v;
+				self.domNode.setAttribute('style', v);
 			});
 		},
 		/**

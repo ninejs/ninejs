@@ -1,5 +1,5 @@
 /* global window */
- /**
+/**
  *
  * @author   Eduardo Burgos
  * @version  0.1
@@ -16,6 +16,7 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 
 	var NumberTextBox,
 		numberTextBoxDefer,
+		timeTextBoxDefer,
 		DateTextBox,
 		dateTextBoxDefer,
 		CheckBox,
@@ -25,6 +26,7 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 		ControlBase,
 		numberTextBoxImpl = ((config.ui || {}).Editor || {}).NumberTextBox || 'dijit/form/NumberTextBox',
 		dateTextBoxImpl = ((config.ui || {}).Editor || {}).DateTextBox || 'dijit/form/DateTextBox',
+		timeTextBoxImpl = ((config.ui || {}).Editor || {}).TimeTextBox || 'dijit/form/TimeTextBox',
 		ENTER = 13;
 	ControlBase = extend(Widget, {
 		on: function (type, act) {
@@ -106,6 +108,27 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 		}
 		return NumberTextBox;
 	}
+	function getTimeTextBoxConstructor() {
+		if (!modernizer.inputtypes.time) {
+			timeTextBoxDefer = def.defer();
+			TimeTextBox = timeTextBoxDefer.promise;
+			require([timeTextBoxImpl], function (C) {
+				TimeTextBox = C;
+				timeTextBoxDefer.resolve(C);
+				timeTextBoxDefer = null;
+			});
+			if (!TimeTextBox) {
+				throw new Error('Implementation for TimeTextBox: ' + timeTextBoxImpl + ' must be previously loaded.');
+			}
+		}
+		else {
+			TimeTextBox = extend(function () {
+				this.domNode = window.document.createElement('input');
+				this.domNode.type = 'time';
+			}, ControlBase);
+		}
+		return TimeTextBox;
+	}
 	NumberTextBox = getNumberTextBoxConstructor();
 	if (!modernizer.inputtypes.date) {
 		dateTextBoxDefer = def.defer();
@@ -127,7 +150,7 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 	}
 	CheckBox = extend(function () {
 		this.domNode = window.document.createElement('input');
-		this.domNode.type = 'checkbox';
+		this.domNode.type = 'check';
 		this.domNode.value = 'true';
 	}, ControlBase);
 	TextBox = extend(function () {
@@ -167,10 +190,7 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 			}
 		}
 	});
-	TimeTextBox = extend(function () {
-		this.domNode = window.document.createElement('input');
-		this.domNode.type = 'time';
-	}, ControlBase);
+	TimeTextBox = getTimeTextBoxConstructor();
 
 	return Widget.extend({
 		skin: defaultSkin,
@@ -381,17 +401,19 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 					},
 					self = this;
 				extend.mixin(args, this.args);
-				var control = new TimeTextBoxControl(args);
-				self.own(
-					on((control.domNode || control), 'blur', function(e) {
-						control.editor.emit('blur', e);
-					})
-				);
-				control.watch('value', function (name, old, newv) {
-					/* jshint unused: true */
-					self.set('value', newv, true);
+				return def.when(TimeTextBoxControl, function (TimeTextBoxControl) {
+					var control = new TimeTextBoxControl(args);
+					self.own(
+						on((control.domNode || control), 'blur', function (e) {
+							control.editor.emit('blur', e);
+						})
+					);
+					control.watch('value', function (name, old, newv) {
+						/* jshint unused: true */
+						self.set('value', newv, true);
+					});
+					return control;
 				});
-				return control;
 			};
 
 			buildCheckBox = function () {
