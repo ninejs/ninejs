@@ -16,7 +16,7 @@ Dojo Toolkit's dojo/on as of jan 2014
 				return {
 					matches: function (node, selector, root) {
 						var r = false,
-							arr = jQuery(root, selector),
+							arr = jQuery(selector, root),
 							cnt,
 							len = arr.length;
 						for (cnt = 0; cnt < len; cnt += 1) {
