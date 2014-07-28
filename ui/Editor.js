@@ -161,13 +161,14 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 		this.domNode = window.document.createElement('select');
 	}, ControlBase, {
 		optionsSetter: function (v) {
-			var node = this.domNode;
+			var node = this.domNode, self = this;
 			setText.emptyNode(node);
 			if (v) {
 				array.forEach(v, function (item) {
 					var key,
 						value,
-						opt;
+						opt,
+						selected;
 					if ((item.key !== undefined) && (item.key !== null)) {
 						key = item.key;
 					}
@@ -186,6 +187,9 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 
 					opt = setText(append(node, 'option'), value);
 					opt.setAttribute('value', key);
+					if (item.selected === true || key === self.get('value')) {
+						opt.setAttribute('selected', 'selected');
+					}
 				});
 			}
 		}
