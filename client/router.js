@@ -116,6 +116,8 @@ define(['../core/array',
 						});
 					});
 				}
+			}, function (err) {
+				throw err;
 			});
 		},
 		initAction: function() {
@@ -190,6 +192,9 @@ define(['../core/array',
 					newURL: newUrl
 				});
 			}
+			function routeActionError(err) {
+				throw err;
+			}
 			for (cnt = 0; cnt < len; cnt += 1) {
 				current = self.routes[cnt];
 				result = current.routeRegex.exec(newUrl);
@@ -204,7 +209,16 @@ define(['../core/array',
 					} else {
 						params = result.slice(1);
 					}
-					return def.when(current.execute(params, evt), emitChanged);
+					try {
+						return def.when(current.execute(params, evt), emitChanged, routeActionError);
+					}
+					catch (err) {
+						console.error(err);
+						if (err.stack) {
+							console.error(err.stack);
+						}
+						throw err;
+					}
 				}
 			}
 			return null;
