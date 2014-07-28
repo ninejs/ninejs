@@ -150,7 +150,7 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 	}
 	CheckBox = extend(function () {
 		this.domNode = window.document.createElement('input');
-		this.domNode.type = 'check';
+		this.domNode.type = 'checkbox';
 		this.domNode.value = 'true';
 	}, ControlBase);
 	TextBox = extend(function () {
