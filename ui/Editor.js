@@ -255,22 +255,12 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 				throw new Error('Please set control\'s dataType property prior to assigning \'autocomplete\' property');
 			}
 		},
-		passwordSetter: function (v) {
+		inputTypeSetter: function (v) {
 			if (this.control) {
-				if (this.get('dataType') === 'alphanumeric') {
-					if (!!v) {
-						this.control.domNode.type = 'password';
-					}
-					else {
-						this.control.domNode.type = 'text';
-					}
-				}
-				else {
-					throw new Error('Can only assign \'password\' property when \'dataType\' = \'alphanumeric\'');
-				}
+				this.control.domNode.type = v;
 			}
 			else {
-				throw new Error('Please set control\'s dataType property prior to assigning \'password\' property');
+				throw new Error('Please set control\'s dataType property prior to assigning \'inputType\' property');
 			}
 		},
 		requiredSetter: function (v) {
