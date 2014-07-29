@@ -284,6 +284,22 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 				});
 			}
 		},
+		minSetter: function(v) {
+			if (this.control) {
+				this.control.domNode.min = v;
+			}
+			else {
+				throw new Error('Please set control\'s dataType property prior to assigning \'min\' property');
+			}
+		},
+		maxSetter: function(v) {
+			if (this.control) {
+				this.control.domNode.max = v;
+			}
+			else {
+				throw new Error('Please set control\'s dataType property prior to assigning \'max\' property');
+			}
+		},
 
 		onBlur : function () {
 
