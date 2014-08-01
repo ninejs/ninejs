@@ -12,7 +12,7 @@ define(['../core/extend', '../core/ext/Properties', '../nineplate', '../core/def
 				this.template = value;
 			}
 			else if (value && value.compileDom) {
-				this.template = value.compileDom();
+				this.template = value.compileDom(true);
 			}
 			else {
 				this.template = value;
@@ -32,7 +32,7 @@ define(['../core/extend', '../core/ext/Properties', '../nineplate', '../core/def
 			if (this.template) {
 				if (typeof(this.template) === 'string') {
 					nTemplate = nineplate.buildTemplate(this.template);
-					this.template = nTemplate.compileDom();
+					this.template = nTemplate.compileDom(true);
 				}
 				var parentNode;
 				var oldNode;

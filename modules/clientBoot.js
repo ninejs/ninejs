@@ -50,6 +50,9 @@ define(['./config', './moduleRegistry', './Module', '../core/extend', '../core/d
 		var defer = deferredUtils.defer();
 		deferredUtils.when(registry.enableModules(), function(val) {
 			defer.resolve(val);
+		}, function (error) {
+			console.log(error);
+			throw new Error(error);
 		});
 		return defer.promise;
 	}, function(error) {

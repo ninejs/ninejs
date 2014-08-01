@@ -250,6 +250,9 @@
 				}
 				return deferredUtils.when(deferredUtils.all(pArray), function() {
 					return true;
+				}, function (error) {
+					console.log(error);
+					throw error;
 				});
 			};
 		},
