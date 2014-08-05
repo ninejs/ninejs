@@ -6,7 +6,7 @@
 		}
 		function appendTest() {
 			/* global window */
-			return (window.document.body.insertAdjacentElement);
+			return window.document.body && (window.document.body.insertAdjacentElement);
 		}
 		function alternateAppend(e, name, doc) {
 			var node = doc.createElement(name);
