@@ -342,6 +342,42 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 				}
 			});
 		},
+		maxlengthSetter: function (v) {
+			this.maxLength = v; /*The uppercase L is not a typo*/
+			var self = this;
+			return def.when(this.control, function () {
+				if (self.control) {
+					self.control.domNode.maxLength = v; /*The uppercase L is not a typo*/
+				}
+				else {
+					throw new Error('Please set control\'s dataType property prior to assigning \'maxlength\' property');
+				}
+			});
+		},
+		titleSetter: function (v) {
+			this.title = v;
+			var self = this;
+			return def.when(this.control, function () {
+				if (self.control) {
+					self.control.domNode.title = v;
+				}
+				else {
+					throw new Error('Please set control\'s dataType property prior to assigning \'title\' property');
+				}
+			});
+		},
+		patternSetter: function (v) {
+			this.pattern = v;
+			var self = this;
+			return def.when(this.control, function () {
+				if (self.control) {
+					self.control.domNode.pattern = v;
+				}
+				else {
+					throw new Error('Please set control\'s dataType property prior to assigning \'pattern\' property');
+				}
+			});
+		},
 
 		onBlur: function () {
 
