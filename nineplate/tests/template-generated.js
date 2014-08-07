@@ -12,7 +12,7 @@ var fn = {t:function (e, text, doc) {
 			return node;
 		},tst:function () {
 			/* global window */
-			return (window.document.body.insertAdjacentElement);
+			return window.document.body && (window.document.body.insertAdjacentElement);
 		},ae:function (e, name, doc) {
 			var node = doc.createElement(name);
 			e.appendChild(node);

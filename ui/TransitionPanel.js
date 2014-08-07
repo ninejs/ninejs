@@ -17,14 +17,14 @@ define(['../core/extend', './utils/setClass', './Widget', '../css!./css/common.c
 			parent.insertBefore(node, ref);
 		}
 	}
-	var transitionClass = 'njsTransition750ms';
-	var defaultTransitionClasses = {
-		active: 'njsTransitionActive',
-		prev: 'njsTransitionPrev',
-		next: 'njsTransitionNext',
-		left: 'njsTransitionLeft',
-		right: 'njsTransitionRight'
-	};
+	var transitionClass = 'njsTransition750ms',
+		defaultTransitionClasses = {
+			active: 'njsTransitionActive',
+			prev: 'njsTransitionPrev',
+			next: 'njsTransitionNext',
+			left: 'njsTransitionLeft',
+			right: 'njsTransitionRight'
+		};
 	var TransitionPanel = extend(Widget, {
 		transitionDuration: 750,
 		transitionClass: transitionClass,
