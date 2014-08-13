@@ -203,11 +203,11 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 				self = this;
 			setText.emptyNode(node);
 			if (v) {
-				array.forEach(v, function (item) {
+				var options = array.map(v, function (item) {
 					var key = getKey(item),
 						value = getValue(item),
 						opt;
-					opt = setText(append(node, 'option'), value);
+					opt = setText(append.create('option'), value);
 					opt.setAttribute('value', key);
 					if (item.selected === true || key === self.get('value')) {
 						opt.setAttribute('selected', 'selected');
@@ -216,6 +216,13 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 					if (item.disabled === true) {
 						opt.setAttribute('disabled', '');
 					}
+					return opt;
+				});
+				array.forEach(options, function (opt) {
+					node.add(opt);
+				});
+				setTimeout(function () {
+					self.domNode.value = self.domNode.value;
 				});
 			}
 		}
