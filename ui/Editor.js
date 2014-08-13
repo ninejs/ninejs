@@ -212,6 +212,10 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 					if (item.selected === true || key === self.get('value')) {
 						opt.setAttribute('selected', 'selected');
 					}
+
+					if (item.disabled === true) {
+						opt.setAttribute('disabled', '');
+					}
 				});
 			}
 		}
