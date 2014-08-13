@@ -113,10 +113,12 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 		if (!modernizer.inputtypes.date) {
 			dateTextBoxDefer = def.defer();
 			DateTextBox = dateTextBoxDefer.promise;
-			require([dateTextBoxImpl], function (C) {
-				DateTextBox = C;
-				dateTextBoxDefer.resolve(C);
-				dateTextBoxDefer = null;
+			setTimeout(function () {
+				require([dateTextBoxImpl], function (C) {
+					DateTextBox = C;
+					dateTextBoxDefer.resolve(C);
+					dateTextBoxDefer = null;
+				});
 			});
 			if (!DateTextBox) {
 				throw new Error('Implementation for DateTextBox: ' + dateTextBoxImpl + ' must be previously loaded.');
@@ -134,10 +136,12 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 		if (!modernizer.inputtypes.time) {
 			timeTextBoxDefer = def.defer();
 			TimeTextBox = timeTextBoxDefer.promise;
-			require([timeTextBoxImpl], function (C) {
-				TimeTextBox = C;
-				timeTextBoxDefer.resolve(C);
-				timeTextBoxDefer = null;
+			setTimeout(function () {
+				require([timeTextBoxImpl], function (C) {
+					TimeTextBox = C;
+					timeTextBoxDefer.resolve(C);
+					timeTextBoxDefer = null;
+				});
 			});
 			if (!TimeTextBox) {
 				throw new Error('Implementation for TimeTextBox: ' + timeTextBoxImpl + ' must be previously loaded.');
@@ -353,7 +357,7 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 				}
 			});
 		},
-		maxlengthSetter: function (v) {
+		maxLengthSetter: function (v) {
 			this.maxLength = v; /*The uppercase L is not a typo*/
 			var self = this;
 			return def.when(this.control, function () {

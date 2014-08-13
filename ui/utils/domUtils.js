@@ -43,13 +43,14 @@ define(['./setClass', './setText', '../../modernizer', '../../core/on', 'dojo/mo
 			}
 
 			var effect = null,
-				d = def.defer();
+				d;
 
 			if (withEffect) {
 				effect = fx.fadeOut;
 			}
 
 			if (effect) {
+				d = def.defer();
 				var fxObj = effect({
 					node: node
 				});
@@ -57,12 +58,12 @@ define(['./setClass', './setText', '../../modernizer', '../../core/on', 'dojo/mo
 					d.resolve();
 				});
 				fxObj.play();
+				def.when(d.promise, function () {
+					domStyle.set(node, 'display', 'none');
+				});
 			} else {
-				d.resolve();
-			}
-			def.when(d.promise, function () {
 				domStyle.set(node, 'display', 'none');
-			});
+			}
 		},
 
 		show: function (control, withEffect, showAttr) {
