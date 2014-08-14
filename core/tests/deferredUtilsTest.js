@@ -55,7 +55,7 @@ describe('core/deferredUtils', function () {
 			var dojorequire;
 
 			global.dojoConfig = {
-				baseUrl : __dirname + '/../../../',
+				baseUrl : __dirname + '/../../',
 				async: 0,
 				has: {
 					'host-node': 1,
@@ -63,10 +63,10 @@ describe('core/deferredUtils', function () {
 				},
 				packages: [{
 						name: 'dojo',
-						location: 'ninejs/node_modules/dojo'
+						location: 'node_modules/dojo'
 					},{
 						name: 'ninejs',
-						location: 'ninejs'
+						location: '.'
 					}]
 				};
 			try {

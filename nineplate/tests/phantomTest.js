@@ -285,34 +285,30 @@
 				//Setting up AMD with RequireJS
 				it('should render a template with an editor widget', function(done) {
 					nineplate.getTemplate('./amdExtensions/editor01.html', function (template) {
-						var compiled = template.compileDom();
-						require(['dijit/form/DateTextBox'], function() {
-							require(compiled.amdDependencies, function() {
-								var result = compiled({
-								});
-								check(done, function() {
-									expect(result.editor.$njsWidget).to.not.equal(undefined);
-								});
+						var compiled = template.compileDom(true);
+						require(compiled.amdDependencies || [], function() {
+							var result = compiled({
+							});
+							check(done, function() {
+								expect(result.editor.$njsWidget).to.not.equal(undefined);
 							});
 						});
 					});
 				});
 				it('should support 2-way binding with an AMD control', function(done) {
 					nineplate.getTemplate('./amdExtensions/editor02.html', function (template) {
-						var compiled = template.compileDom();
-						require(['dijit/form/DateTextBox'], function() {
-							require(compiled.amdDependencies, function() {
-								var data = new Properties(),
-									result = compiled({
-										data: data
-									});
-								check(done, function() {
-									data.set('age', 24);
-									data.set('age', 31);
-									expect(result.editor.get('value')).to.equal(31);
-									result.editor.set('value', 45);
-									expect(data.get('age')).to.equal(45);
+						var compiled = template.compileDom(true);
+						require(compiled.amdDependencies || [], function() {
+							var data = new Properties(),
+								result = compiled({
+									data: data
 								});
+							check(done, function() {
+								data.set('age', 24);
+								data.set('age', 31);
+								expect(result.editor.get('value')).to.equal(31);
+								result.editor.set('value', 45);
+								expect(data.get('age')).to.equal(45);
 							});
 						});
 					});
