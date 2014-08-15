@@ -163,17 +163,17 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 		 */
 		updateSkin: function () {
 			var self = this;
-			return def.when(this.skin, function () {
+			return def.when(this.skin, function (sk) {
 				var cnt, itemSkin, currentSkin = self.currentSkin, skinList = [], toApply;
-				if ((typeof(self.skin) === 'object') && !extend.isArray(self.skin)) {
-					skinList.push(self.skin);
-					if (self.skin.applies()){
-						toApply = self.skin;
+				if ((typeof(sk) === 'object') && !extend.isArray(sk)) {
+					skinList.push(sk);
+					if (sk.applies()){
+						toApply = sk;
 					}
 				}
-				else if (self.skin && self.skin.length) {
-					for (cnt = 0; cnt < self.skin.length; cnt += 1) {
-						itemSkin = self.skin[cnt];
+				else if (sk && sk.length) {
+					for (cnt = 0; cnt < sk.length; cnt += 1) {
+						itemSkin = sk[cnt];
 						if (!toApply && itemSkin.applies()){
 							toApply = itemSkin;
 						}
@@ -194,7 +194,7 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 							self.$njsShowDefer.resolve(self.domNode);
 							self.$njsShowDefer = null;
 						}
-						self.onUpdatedSkin();
+						return self.onUpdatedSkin();
 					});
 				}
 			});

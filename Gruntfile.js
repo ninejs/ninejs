@@ -20,13 +20,18 @@ function exports(grunt) {
 				src: ['nineplate/tests/phantomTest.html']
 			}
 		},
+		jscoverage: {
+			all: {
+				src: testFiles
+			}
+		},
 		mochaTest: {
 			normal: {
 				src: testFiles,
 				options: {
 					reporter: 'spec',
 					globals: [],
-					require: 'coverage'
+					require: 'jscoverage'
 				}
 			},
 			watch: {
@@ -105,11 +110,6 @@ function exports(grunt) {
 				}
 			}
 		},
-		jscoverage: {
-			all: {
-
-			}
-		},
 		stylus:
 		{
 			files: stylusFiles,
@@ -163,55 +163,33 @@ function exports(grunt) {
 		});
 	});
 	grunt.registerMultiTask('jscoverage','copy test coverage instrumentation', function() {
-		var fs = require('fs'),
-			path = require('path');
-		function rmdir(dir) {
-			if (fs.existsSync(dir)) {
-				fs.readdirSync(dir).forEach(function(file) {
-					var realPath = path.resolve(dir, file),
-						stat = fs.statSync(realPath);
-					if (stat.isDirectory()) {
-						rmdir(realPath);
-					}
-					else if (stat.isFile()) {
-						fs.unlinkSync(realPath);
-					}
-				});
-				fs.rmdirSync(dir);
-			}
-		}
 		var done = this.async(),
-			files = this.filesSrc,
-			exclude = (this.options || {}).exclude,
-			queues = [],
-			command = 'jscoverage';
-		if (!fs.existsSync('./coverage')) {
-			fs.mkdirSync('./coverage');
-		}
-
-		files.forEach(function(file) {
-			var childProcess = require('child_process'),
-				defer = Q.defer(),
-				args;
-			queues.push(defer.promise);
-			rmdir(path.resolve('./coverage', file));
-			args = [file, path.resolve('./coverage', file)];
-			if (exclude) {
-				args.push('--exclude=' + exclude);
-			}
-			var mochaPhantom = childProcess.spawn(command, args, { stdio: 'inherit' });
-			mochaPhantom.on('exit', function(/*code*/) {
-				defer.resolve();
-			});
-		});
-		Q.all(queues).then(function() {
+			path = require('path'),
+			Q = require('kew'),
+			childProcess = require('child_process');
+			Q.all(this.filesSrc.map(function (testFile) {
+				var command = path.resolve(__dirname, 'node_modules', 'mocha', 'bin', 'mocha'),
+					args = ['-r', 'jscoverage', '--covignore', 'coverage.ignore', '--covout=html', '--covinject=true', testFile],
+					defer = Q.defer();
+				console.log(command + ' ' + args.join(' '));
+				var mochaCmd = childProcess.spawn(command, args, { stdio: 'inherit' });
+				mochaCmd.on('exit', function (code) {
+					console.log('exit code');
+					console.log(code);
+					defer.resolve();
+				});
+				return defer.promise;
+			})
+		).fail(function (err) {
+			console.log(err);
+		}).then(function () {
 			done();
 		});
 	});
 
 	grunt.registerTask('test', ['mochaTest', 'mocha']);
 	grunt.registerTask('css', ['less', 'ncss', 'stylus']);
-	grunt.registerTask('cover', ['jscoverage', 'mochaTest:cover']);
+	grunt.registerTask('cover', ['jscoverage']);
 	// Default task.
 	grunt.registerTask('default', ['jshint', 'css', 'generateParsers', 'jscoverage', 'test']);
 

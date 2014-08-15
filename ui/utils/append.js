@@ -33,6 +33,26 @@ define([], function() {
 			node.parentNode.removeChild(node);
 		}
 	};
+	append.toIndex = function (parentNode, node, index) {
+		var cur = 0,
+			currentChild;
+		if (typeof(index) === 'undefined') {
+			return append(parentNode, node);
+		}
+		else {
+			currentChild = parentNode.firstChild;
+			while (currentChild && (cur < index)) {
+				currentChild = currentChild.nextSibling;
+				cur += 1;
+			}
+			if (!currentChild) {
+				return append(parentNode, node);
+			}
+			else {
+				parentNode.insertBefore(node, currentChild);
+			}
+		}
+	};
 
 	return append;
 });

@@ -207,32 +207,38 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 				self = this;
 			setText.emptyNode(node);
 			if (v) {
-				var options = array.map(v, function (item) {
+				array.forEach(v, function (item) {
 					var key = getKey(item),
 						value = getValue(item),
 						opt;
-					opt = setText(append.create('option'), value);
+					opt = setText(append(node, 'option'), value);
 					opt.setAttribute('value', key);
 					if (item.selected === true || key === self.get('value')) {
 						opt.setAttribute('selected', 'selected');
 					}
-
-					if (item.disabled === true) {
-						opt.setAttribute('disabled', '');
-					}
-					return opt;
-				});
-				array.forEach(options, function (opt) {
-					node.add(opt);
-				});
-				setTimeout(function () {
-					self.domNode.value = self.domNode.value;
 				});
 			}
 		}
 	});
 	TimeTextBox = getTimeTextBoxConstructor();
 
+	function getControlSetter (propName) {
+		return function (c) {
+			var defer,
+				self = this;
+			if (typeof(c) === 'string') {
+				defer = def.defer();
+				self[propName] = defer.promise;
+				require([c], function (Control) {
+					self[propName] = Control;
+					defer.resolve(Control);
+				});
+			}
+			else {
+				self[propName] = c;
+			}
+		};
+	}
 	return Widget.extend({
 		skin: defaultSkin,
 		_clearDataTypeClasses : function () {
@@ -393,7 +399,12 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 				}
 			});
 		},
-
+		SelectControlSetter: getControlSetter('SelectControl'),
+		TextBoxControlSetter: getControlSetter('TextBoxControl'),
+		CheckBoxControlSetter: getControlSetter('CheckBoxControl'),
+		TimeTextBoxControlSetter: getControlSetter('TimeTextBoxControl'),
+		DateTextBoxControlSetter: getControlSetter('DateTextBoxControl'),
+		NumberTextBoxControlSetter: getControlSetter('NumberTextBoxControl'),
 		onBlur: function () {
 
 		},
@@ -543,18 +554,22 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 					},
 					self = this;
 				extend.mixin(args, this.args);
-				var control = new CheckBoxControl(args);
-				self.own(
-					on((control.domNode || control), 'blur', function (e) {
-						control.editor.emit('blur', e);
-					})
-				);
-				control.watch('value', function (name, old, newv) {
-					/* jshint unused: true */
-					self.set('value', newv, true);
-					control.editor.emit('input', { value: self.get('value')} );
+				return def.when(CheckBoxControl, function (CheckBoxControl) {
+					var control = new CheckBoxControl(args);
+					return def.when(control.show(self.domNode), function () {
+						self.own(
+							on((control.domNode || control), 'blur', function (e) {
+								control.editor.emit('blur', e);
+							})
+						);
+						control.watch('value', function (name, old, newv) {
+							/* jshint unused: true */
+							self.set('value', newv, true);
+							control.editor.emit('input', { value: self.get('value')});
+						});
+						return control;
+					});
 				});
-				return control;
 			};
 
 			buildTextBox = function () {
@@ -570,20 +585,22 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 					},
 					self = this;
 				extend.mixin(args, this.args);
-				var control = new TextBoxControl(args);
-				self.own(
-					on((control.domNode || control), 'blur', function (e) {
-						control.editor.emit('blur', e);
-					}),
-					on((control.domNode || control), 'input', function (e) {
-						control.editor.emit('input', e);
-					})
-				);
-				control.watch('value', function (name, old, newv) {
-					/* jshint unused: true */
-					self.set('value', newv, true);
+				return def.when(TextBoxControl, function (TextBoxControl) {
+					var control = new TextBoxControl(args);
+					self.own(
+						on((control.domNode || control), 'blur', function (e) {
+							control.editor.emit('blur', e);
+						}),
+						on((control.domNode || control), 'input', function (e) {
+							control.editor.emit('input', e);
+						})
+					);
+					control.watch('value', function (name, old, newv) {
+						/* jshint unused: true */
+						self.set('value', newv, true);
+					});
+					return control;
 				});
-				return control;
 			};
 
 			buildSelect = function () {
@@ -601,21 +618,23 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 					},
 					self = this;
 				extend.mixin(args, this.args);
-				var control = new SelectControl(args);
-				return def.when(control.show(this.domNode), function () {
-					self.own(
-						on((control.domNode || control), 'blur', function (e) {
-							control.editor.emit('blur', e);
-						}),
-						on((control.domNode || control), 'input', function (e) {
-							control.editor.emit('input', e);
-						})
-					);
-					control.watch('value', function (name, old, newv) {
-						/* jshint unused: true */
-						self.set('value', newv, true);
+				return def.when(SelectControl, function (SelectControl) {
+					var control = new SelectControl(args);
+					return def.when(control.show(self.domNode), function () {
+						self.own(
+							on((control.domNode || control), 'blur', function (e) {
+								control.editor.emit('blur', e);
+							}),
+							on((control.domNode || control), 'input', function (e) {
+								control.editor.emit('input', e);
+							})
+						);
+						control.watch('value', function (name, old, newv) {
+							/* jshint unused: true */
+							self.set('value', newv, true);
+						});
+						return control;
 					});
-					return control;
 				});
 			};
 
