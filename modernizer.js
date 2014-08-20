@@ -575,13 +575,12 @@ define([], function() {
 				Modernizr['inputtypes'] = (function(props) {
 
 					for (var i = 0, bool, inputElemType, defaultView, len = props.length; i < len; i++) {
-
+						inputElem.value = null;
 						inputElem.setAttribute('type', inputElemType = props[i]);
 						bool = inputElem.type !== 'text';
 
 						if (bool) {
 
-							inputElem.value = smile;
 							inputElem.style.cssText = 'position:absolute;visibility:hidden;';
 
 							if (/^range$/.test(inputElemType) && inputElem.style.WebkitAppearance !== undefined) {
@@ -599,7 +598,10 @@ define([], function() {
 								bool = inputElem.checkValidity && inputElem.checkValidity() === false;
 
 							} else {
-								bool = inputElem.value != smile;
+								if ('date' !== inputElemType) {
+									inputElem.value = smile;
+									bool = inputElem.value != smile;
+								}
 							}
 						}
 
