@@ -454,6 +454,12 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 					});
 				}
 			};
+			function getEventTarget (control) {
+				if (control.domNode && control.domNode.localName) {
+					return control.domNode;
+				}
+				return control;
+			}
 
 			buildNumberTextBox = function (places) {
 				var NumberTextBoxControl = this.NumberTextBoxControl || NumberTextBox;
@@ -469,10 +475,10 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 				return def.when(NumberTextBoxControl, function (NumberTextBoxControl) {
 					var control = new NumberTextBoxControl(args);
 					self.own(
-						on((control.domNode || control), 'blur', function (e) {
+						on(getEventTarget(control), 'blur', function (e) {
 							control.editor.emit('blur', e);
 						}),
-						on((control.domNode || control), 'input', function (e) {
+						on(getEventTarget(control), 'input', function (e) {
 							control.editor.emit('input', e);
 						})
 					);
@@ -498,10 +504,10 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 				return def.when(DateTextBoxControl, function (DateTextBoxControl) {
 					var control = new DateTextBoxControl(args);
 					self.own(
-						on((control.domNode || control), 'blur', function (e) {
+						on(getEventTarget(control), 'blur', function (e) {
 							control.editor.emit('blur', e);
 						}),
-						on((control.domNode || control), 'input', function (e) {
+						on(getEventTarget(control), 'input', function (e) {
 							control.editor.emit('input', e);
 						})
 					);
@@ -527,10 +533,10 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 				return def.when(TimeTextBoxControl, function (TimeTextBoxControl) {
 					var control = new TimeTextBoxControl(args);
 					self.own(
-						on((control.domNode || control), 'blur', function (e) {
+						on(getEventTarget(control), 'blur', function (e) {
 							control.editor.emit('blur', e);
 						}),
-						on((control.domNode || control), 'input', function (e) {
+						on(getEventTarget(control), 'input', function (e) {
 							control.editor.emit('input', e);
 						})
 					);
@@ -558,7 +564,7 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 					var control = new CheckBoxControl(args);
 					return def.when(control.show(self.domNode), function () {
 						self.own(
-							on((control.domNode || control), 'blur', function (e) {
+							on(getEventTarget(control), 'blur', function (e) {
 								control.editor.emit('blur', e);
 							})
 						);
@@ -588,10 +594,10 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 				return def.when(TextBoxControl, function (TextBoxControl) {
 					var control = new TextBoxControl(args);
 					self.own(
-						on((control.domNode || control), 'blur', function (e) {
+						on(getEventTarget(control), 'blur', function (e) {
 							control.editor.emit('blur', e);
 						}),
-						on((control.domNode || control), 'input', function (e) {
+						on(getEventTarget(control), 'input', function (e) {
 							control.editor.emit('input', e);
 						})
 					);
@@ -622,10 +628,10 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 					var control = new SelectControl(args);
 					return def.when(control.show(self.domNode), function () {
 						self.own(
-							on((control.domNode || control), 'blur', function (e) {
+							on(getEventTarget(control), 'blur', function (e) {
 								control.editor.emit('blur', e);
 							}),
-							on((control.domNode || control), 'input', function (e) {
+							on(getEventTarget(control), 'input', function (e) {
 								control.editor.emit('input', e);
 							})
 						);
@@ -669,7 +675,7 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 						self.control = ctrl;
 						controlPromise.resolve(ctrl);
 
-						self.control.startup();
+						(self.control.startup || self.control.show).call(self.control);
 						append(self.domNode, self.control.domNode);
 					});
 				});
