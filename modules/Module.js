@@ -77,7 +77,11 @@
 						})), function () {
 							return def.when(def.all(array.map(self.provides, function (item) {
 								if (!moduleRegistry.enabledUnits[item.id]) {
-									moduleRegistry.enabledUnits[item.id] = self.init(item.id, config[item.id]) || true;
+									var defer = def.defer()
+									moduleRegistry.enabledUnits[item.id] = defer.promise;
+									def.when(self.init(item.id, config[item.id]), function () {
+										defer.resolve(true);
+									});
 									return moduleRegistry.enabledUnits[item.id];
 								}
 								else {
