@@ -20,10 +20,12 @@ describe('core/i18n', function () {
 			var resourceSet = i18n.getResource(path.resolve(__dirname, './test.json')),
 				resource;
 			resource = resourceSet.getResource();
-			resourceSet.setLocale('es-ES');
-			resource = resourceSet.getResource();
-			expect(resource.hi).to.equal('saludos');
-			done();
+			var setLocale = resourceSet.setLocale('es-ES');
+			setLocale.then(function () {
+				resource = resourceSet.getResource();
+				expect(resource.hi).to.equal('saludos');
+				done();
+			});
 		});
 	});
 });

@@ -1,18 +1,28 @@
 /*
  Just a require wrapper
  */
-(function() {
+(function (factory) {
 	'use strict';
-	var isAmd = (typeof(define) !== 'undefined') && define.amd;
+	if (typeof (define) === 'function' && define.amd) {
+		define([], factory);
+	}
+	else if (typeof(exports) === 'object') {
+		module.exports = factory();
+	}
+})(function() {
+	'use strict';
+	var isAmd = (typeof(define) === 'function') && define.amd;
 	var isNode = (typeof(window) === 'undefined');
-	var req = require;
 
 	if (isAmd) { //AMD
-		define([], function() {
+		if (isNode) {
+			return global.require;
+		}
+		else {
 			return require;
-		});
+		}
 	} else if (isNode) { //Server side
-		module.exports = req;
+		module.exports = require;
 	} else {
 		// plain script in a browser
 		throw new Error('Non AMD environments are not supported');

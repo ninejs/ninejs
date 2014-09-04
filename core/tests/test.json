@@ -2,5 +2,6 @@
 	"root": {
 		"hi": "hi"
 	},
-	"es": true
+	"es": true,
+	"es-ES": true
 }

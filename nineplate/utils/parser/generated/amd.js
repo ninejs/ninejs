@@ -6,7 +6,8 @@ yy: {},
 symbols_: {"error":2,"expressions":3,"MIXED":4,"VARTOKEN":5,"LOOPSTARTTOKEN":6,"LOOPENDTOKEN":7,"ANY":8,"ANYCOMMON":9,"_Any":10,"AtSign":11,"WhiteSpace":12,"LT":13,"GT":14,"SL":15,"EQ":16,"_BackSlash":17,"SQUOTE":18,"DQUOTE":19,"RightBraces":20,"_Pipe":21,"_dot":22,"_comma":23,"_LeftBracket":24,"_RightBracket":25,"_LeftParenthesis":26,"_RightParenthesis":27,"_9":28,"_Zero":29,"_NonZero":30,"NameStartChar":31,"_NameChar":32,"ANYNODOLLAR":33,"LeftBraces":34,"ANYNOLEFTBRACES":35,"DollarSign":36,"PercentSign":37,"ANYCHAR":38,"WS":39,"TAGNAME":40,"NameChars":41,"_NameStartChar":42,"_S":43,"_t":44,"_r":45,"_i":46,"_n":47,"_g":48,"_D":49,"_O":50,"_M":51,"_j":52,"_s":53,"For":54,"If":55,"NameChar":56,"NotSQuotedChar":57,"TextChar":58,"NotDQuotedChar":59,"TAGLIST":60,"TAG":61,"TEXT":62,"ATTRIBUTES":63,"ATTRIBUTE":64,"PCDATASQUOTE":65,"PCDATADQUOTE":66,"ATTRIBUTETOKENLISTSQUOTE":67,"PCDATASQUOTEImpl":68,"ATTRIBUTETOKENLISTDQUOTE":69,"PCDATADQUOTEImpl":70,"VARTOKENSTART":71,"LIVETOKENSTART":72,"TOKENEND":73,"String":74,"DOM":75,"Dijit":76,"9js":77,"OPTIMIZER":78,"OPTIMIZERLIST":79,"NODEPATHATTRIBUTE":80,"IDENTIFIER":81,"NODEPATHELEMENT":82,"INTNUMBER":83,"NODEPATH":84,"EXPRESSION":85,"TOKENLIST":86,"FLOATNUMBER":87,"SINGLEQUOTEDSTRING":88,"DOUBLEQUOTEDSTRING":89,"PARAMLIST":90,"NotSQuotedString":91,"NotDQuotedString":92,"NUMERIC":93,"$accept":0,"$end":1},
 terminals_: {2:"error",10:"_Any",11:"AtSign",12:"WhiteSpace",13:"LT",14:"GT",15:"SL",16:"EQ",17:"_BackSlash",18:"SQUOTE",19:"DQUOTE",20:"RightBraces",21:"_Pipe",22:"_dot",23:"_comma",24:"_LeftBracket",25:"_RightBracket",26:"_LeftParenthesis",27:"_RightParenthesis",28:"_9",29:"_Zero",30:"_NonZero",32:"_NameChar",34:"LeftBraces",36:"DollarSign",37:"PercentSign",42:"_NameStartChar",43:"_S",44:"_t",45:"_r",46:"_i",47:"_n",48:"_g",49:"_D",50:"_O",51:"_M",52:"_j",53:"_s",54:"For",55:"If",61:"TAG"},
 productions_: [0,[3,1],[4,1],[4,1],[4,1],[4,1],[4,2],[4,2],[4,2],[4,2],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[9,1],[33,1],[33,1],[35,0],[35,1],[35,1],[35,1],[38,1],[38,2],[38,2],[8,1],[8,2],[39,0],[39,1],[39,2],[40,1],[40,2],[31,1],[31,1],[31,1],[31,1],[31,1],[31,1],[31,1],[31,1],[31,1],[31,1],[31,1],[31,1],[31,1],[31,1],[56,1],[56,1],[56,1],[56,1],[56,1],[56,1],[57,1],[57,2],[59,1],[59,2],[41,2],[41,1],[60,1],[60,2],[60,3],[62,2],[62,1],[58,1],[58,1],[63,0],[63,1],[63,3],[64,7],[64,7],[65,1],[65,1],[68,1],[68,1],[68,2],[68,2],[66,1],[66,1],[70,1],[70,1],[70,2],[70,2],[67,1],[67,1],[67,2],[67,2],[69,1],[69,1],[69,2],[69,2],[71,2],[72,2],[73,1],[74,6],[75,3],[76,5],[77,3],[78,1],[78,1],[78,1],[78,1],[79,1],[79,3],[80,2],[82,1],[82,4],[84,1],[84,1],[84,3],[84,3],[5,3],[5,5],[5,3],[5,5],[6,8],[6,16],[7,5],[7,5],[86,1],[86,1],[86,2],[86,2],[85,1],[85,1],[85,1],[85,4],[85,1],[85,1],[85,3],[85,4],[85,3],[90,1],[90,3],[90,4],[81,1],[88,3],[89,3],[91,1],[91,2],[92,1],[92,2],[83,1],[83,1],[83,2],[87,3],[93,1],[93,1],[93,2],[93,2]],
-performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
+performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */
+/**/) {
 /* this == yyval */
 
 var $0 = $$.length - 1;
@@ -807,7 +808,8 @@ stateStackSize:function stateStackSize() {
         return this.conditionStack.length;
     },
 options: {},
-performAction: function anonymous(yy,yy_,$avoiding_name_collisions,YY_START) {
+performAction: function anonymous(yy,yy_,$avoiding_name_collisions,YY_START
+/**/) {
 
 var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {

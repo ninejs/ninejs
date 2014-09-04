@@ -1,31 +1,21 @@
 /*
 Dojo Toolkit's dojo/request as of jan 2014
 */
-(function() {
+(function (factory) {
 	'use strict';
-	var isAmd = (typeof(define) !== 'undefined') && define.amd;
-	var isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
-	var isNode = (typeof(window) === 'undefined');
 	var req = require;
-
-	if (isAmd) { //AMD
-		if (isDojo) {
-			define(['dojo/request'], function(request) {
-				return request;
-			});
-		}
-		else if (isNode) {
-			define(['request'], function(request) {
-				return request;
-			});
+	if (typeof (define) === 'function' && define.amd) {
+		if (define.amd.vendor === 'dojotoolkit.org') {
+			define(['dojo/request'], factory);
 		}
 		else {
-			throw new Error('Not implemented');
+			define(['request'], factory);
 		}
-	} else if (isNode) { //Server side
-		module.exports = req('request');
-	} else {
-		// plain script in a browser
-		throw new Error('Non AMD environments are not supported');
 	}
-})(this);
+	else if (typeof(exports) === 'object') {
+		module.exports = factory(req('request'));
+	}
+})(function (request) {
+	'use strict';
+	return request;
+});

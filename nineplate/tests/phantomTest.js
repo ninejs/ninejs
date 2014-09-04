@@ -1,4 +1,4 @@
-(function() {
+(function (global) {
 	/* global describe, it, expect, window */
 	'use strict';
 	var isNode = typeof(window) === undefined;

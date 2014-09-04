@@ -817,7 +817,7 @@ represent it and evaluate it over a collection of data or a service.
 	if (isAmd) { //AMD
 		define(['../extend', '../ext/Properties', '../objUtils', '../i18n!./nls/Expression.json'], moduleExport);
 	} else if (isNode) { //Server side
-		module.exports = moduleExport(req('../extend'), req('../ext/Properties'), req('../objUtils'), req('../i18n').getResource(req('path').resolve(__dirname, './nls/Expression.json')));
+		module.exports = moduleExport(req('../extend'), req('../ext/Properties'), req('../objUtils'), req('../i18n').getResource(req('path').resolve(__dirname, './nls/Expression.json'), req));
 	} else {
 		throw new Error('environment not supported');
 	}

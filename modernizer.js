@@ -1,7 +1,14 @@
 /*
 A NineJS custom build of Modernizr
 */
-define([], function() {
+(function (factory) {
+	if (typeof (define) === 'function' && define.amd) {
+		define([], factory);
+	}
+	else if (typeof(exports) === 'object') {
+		module.exports = factory();
+	}
+})(function () {
 	'use strict';
 
 	return (function() {
@@ -684,7 +691,7 @@ define([], function() {
 								typeof frag.cloneNode == 'undefined' ||
 								typeof frag.createDocumentFragment == 'undefined' ||
 								typeof frag.createElement == 'undefined'
-							);
+								);
 						}());
 					} catch (e) {
 						supportsHtml5Styles = true;
@@ -775,14 +782,14 @@ define([], function() {
 					};
 
 					ownerDocument.createDocumentFragment = Function('h,f', 'return function(){' +
-						'var n=f.cloneNode(),c=n.createElement;' +
-						'h.shivMethods&&(' +
-						getElements().join().replace(/\w+/g, function(nodeName) {
-							data.createElem(nodeName);
-							data.frag.createElement(nodeName);
-							return 'c("' + nodeName + '")';
-						}) +
-						');return n}'
+							'var n=f.cloneNode(),c=n.createElement;' +
+							'h.shivMethods&&(' +
+							getElements().join().replace(/\w+/g, function(nodeName) {
+								data.createElem(nodeName);
+								data.frag.createElement(nodeName);
+								return 'c("' + nodeName + '")';
+							}) +
+							');return n}'
 					)(html5, data.frag);
 				}
 
@@ -794,8 +801,8 @@ define([], function() {
 
 					if (html5.shivCSS && !supportsHtml5Styles && !data.hasCSS) {
 						data.hasCSS = !!addStyleSheet(ownerDocument,
-							'article,aside,figcaption,figure,footer,header,hgroup,nav,section{display:block}' +
-							'mark{background:#FF0;color:#000}'
+								'article,aside,figcaption,figure,footer,header,hgroup,nav,section{display:block}' +
+								'mark{background:#FF0;color:#000}'
 						);
 					}
 					if (!supportsUnknownElements) {
@@ -856,7 +863,7 @@ define([], function() {
 
 			docElement.className = docElement.className.replace(/(^|\s)no-js(\s|$)/, '$1$2') +
 
-			(enableClasses ? " mdrn-js mdrn-" + classes.join(" mdrn-") : '');
+				(enableClasses ? " mdrn-js mdrn-" + classes.join(" mdrn-") : '');
 
 			return Modernizr;
 
@@ -1111,7 +1118,7 @@ define([], function() {
 		// https://github.com/NielsLeenheer/html5test/blob/549f6eac866aa861d9649a0707ff2c0157895706/scripts/engine.js#L2083
 
 		Modernizr.addTest('contenteditable',
-			'contentEditable' in document.documentElement);
+				'contentEditable' in document.documentElement);
 		// Test for (experimental) Content Security Policy 1.1 support.
 		//
 		// This feature is still quite experimental, but is available now in Chrome 22.
@@ -1148,11 +1155,11 @@ define([], function() {
 		// By Theodoor van Donge
 		Modernizr.addTest('cors', !!(window.XMLHttpRequest && 'withCredentials' in new XMLHttpRequest()));
 		/*
-    https://developer.mozilla.org/en/CSS/background-position
-    http://www.w3.org/TR/css3-background/#background-position
+		 https://developer.mozilla.org/en/CSS/background-position
+		 http://www.w3.org/TR/css3-background/#background-position
 
-    Example: http://jsfiddle.net/Blink/bBXvt/
-*/
+		 Example: http://jsfiddle.net/Blink/bBXvt/
+		 */
 
 		(function() {
 
@@ -1169,7 +1176,7 @@ define([], function() {
 		// developer.mozilla.org/en/CSS/background-repeat
 
 		// test page: jsbin.com/uzesun/
-		// http://jsfiddle.net/ryanseddon/yMLTQ/6/    
+		// http://jsfiddle.net/ryanseddon/yMLTQ/6/
 
 		(function() {
 
@@ -1235,12 +1242,12 @@ define([], function() {
 			return !!el.style.length;
 		});
 		/*
-	Allan Lei https://github.com/allanlei
+		 Allan Lei https://github.com/allanlei
 
-	Check adapted from https://github.com/brandonaaron/jquery-cssHooks/blob/master/bgpos.js
+		 Check adapted from https://github.com/brandonaaron/jquery-cssHooks/blob/master/bgpos.js
 
-	Test: http://jsfiddle.net/allanlei/R8AYS/
-*/
+		 Test: http://jsfiddle.net/allanlei/R8AYS/
+		 */
 		Modernizr.addTest('bgpositionxy', function() {
 			return Modernizr.testStyles('#modernizr {background-position: 3px 5px;}', function(elem) {
 				var cssStyleDeclaration = window.getComputedStyle ? getComputedStyle(elem, null) : elem.currentStyle;
@@ -1301,24 +1308,24 @@ define([], function() {
 			return !!el.style.length && ((document.documentMode === undefined || document.documentMode > 9));
 		});
 		/* see http://davidnewton.ca/the-current-state-of-hyphenation-on-the-web
-   http://davidnewton.ca/demos/hyphenation/test.html
+		 http://davidnewton.ca/demos/hyphenation/test.html
 
 
-There are three tests:
-   1. csshyphens      - tests hyphens:auto actually adds hyphens to text
-   2. softhyphens     - tests that &shy; does its job
-   3. softhyphensfind - tests that in-browser Find functionality still works correctly with &shy;
+		 There are three tests:
+		 1. csshyphens      - tests hyphens:auto actually adds hyphens to text
+		 2. softhyphens     - tests that &shy; does its job
+		 3. softhyphensfind - tests that in-browser Find functionality still works correctly with &shy;
 
-These tests currently require document.body to be present
+		 These tests currently require document.body to be present
 
-Hyphenation is language specific, sometimes.
-  See for more details: http://code.google.com/p/hyphenator/source/diff?spec=svn975&r=975&format=side&path=/trunk/Hyphenator.js#sc_svn975_313
+		 Hyphenation is language specific, sometimes.
+		 See for more details: http://code.google.com/p/hyphenator/source/diff?spec=svn975&r=975&format=side&path=/trunk/Hyphenator.js#sc_svn975_313
 
-If loading Hyphenator.js via Modernizr.load, be cautious of issue 158: http://code.google.com/p/hyphenator/issues/detail?id=158
+		 If loading Hyphenator.js via Modernizr.load, be cautious of issue 158: http://code.google.com/p/hyphenator/issues/detail?id=158
 
-More details at https://github.com/Modernizr/Modernizr/issues/312
+		 More details at https://github.com/Modernizr/Modernizr/issues/312
 
-*/
+		 */
 
 		(function() {
 
@@ -1480,8 +1487,8 @@ More details at https://github.com/Modernizr/Modernizr/issues/312
 				if (!Modernizr.testAllProps('hyphens')) return false;
 
 				/* Chrome lies about its hyphens support so we need a more robust test
-				crbug.com/107111
-		*/
+				 crbug.com/107111
+				 */
 				try {
 					return test_hyphens_css();
 				} catch (e) {
@@ -1612,7 +1619,7 @@ More details at https://github.com/Modernizr/Modernizr/issues/312
 		Modernizr.addTest('regions', function() {
 
 			/* Get the 'flowFrom' property name available in the browser. Either default or vendor prefixed.
-	If the property name can't be found we'll get Boolean 'false' and fail quickly */
+			 If the property name can't be found we'll get Boolean 'false' and fail quickly */
 			var flowFromProperty = Modernizr.prefixed("flowFrom"),
 				flowIntoProperty = Modernizr.prefixed("flowInto");
 
@@ -1625,13 +1632,13 @@ More details at https://github.com/Modernizr/Modernizr/issues/312
 				content = document.createElement('div'),
 				region = document.createElement('div'),
 
-				/* we create a random, unlikely to be generated flow number to make sure we don't
-	clash with anything more vanilla, like 'flow', or 'article', or 'f1' */
+			/* we create a random, unlikely to be generated flow number to make sure we don't
+			 clash with anything more vanilla, like 'flow', or 'article', or 'f1' */
 				flowName = 'modernizr_flow_for_regions_check';
 
 			/* First create a div with two adjacent divs inside it. The first will be the
-	content, the second will be the region. To be able to distinguish between the two,
-	we'll give the region a particular padding */
+			 content, the second will be the region. To be able to distinguish between the two,
+			 we'll give the region a particular padding */
 			content.innerText = 'M';
 			container.style.cssText = 'top: 150px; left: 150px; padding: 0px;';
 			region.style.cssText = 'width: 50px; height: 50px; padding: 42px;';
@@ -1642,8 +1649,8 @@ More details at https://github.com/Modernizr/Modernizr/issues/312
 			document.documentElement.appendChild(container);
 
 			/* Now compute the bounding client rect, before and after attempting to flow the
-	content div in the region div. If regions are enabled, the after bounding rect
-	should reflect the padding of the region div.*/
+			 content div in the region div. If regions are enabled, the after bounding rect
+			 should reflect the padding of the region div.*/
 			var flowedRect, delta,
 				plainRect = content.getBoundingClientRect();
 
@@ -1671,11 +1678,11 @@ More details at https://github.com/Modernizr/Modernizr/issues/312
 			var bool,
 
 				styles = "#modernizr{overflow: scroll; width: 40px }#" +
-				Modernizr._prefixes
-				.join("scrollbar{width:0px}" + ' #modernizr::')
-				.split('#')
-				.slice(1)
-				.join('#') + "scrollbar{width:0px}";
+					Modernizr._prefixes
+						.join("scrollbar{width:0px}" + ' #modernizr::')
+						.split('#')
+						.slice(1)
+						.join('#') + "scrollbar{width:0px}";
 
 			Modernizr.testStyles(styles, function(node) {
 				bool = 'scrollWidth' in node && node.scrollWidth == 40;
@@ -1776,16 +1783,16 @@ More details at https://github.com/Modernizr/Modernizr/issues/312
 			return bool;
 		});
 		/*
-	Custom protocol handler support
-	http://developers.whatwg.org/timers.html#custom-handlers
+		 Custom protocol handler support
+		 http://developers.whatwg.org/timers.html#custom-handlers
 
-	Added by @benschwarz
-*/
+		 Added by @benschwarz
+		 */
 
 		Modernizr.addTest('customprotocolhandler', function() {
 			return !!navigator.registerProtocolHandler;
 		});
-		// DataView 
+		// DataView
 		// https://developer.mozilla.org/en/JavaScript_typed_arrays/DataView
 		// By Addy Osmani
 		Modernizr.addTest('dataview', (typeof DataView !== 'undefined' && 'getFloat64' in DataView.prototype)); // classList
@@ -2073,14 +2080,14 @@ More details at https://github.com/Modernizr/Modernizr/issues/312
 
 			return !!('placeholder' in (Modernizr.input || document.createElement('input')) &&
 				'placeholder' in (Modernizr.textarea || document.createElement('textarea'))
-			);
+				);
 
 		});
 		// speech input for inputs
 		// by @alrra
 
 
-		// `webkitSpeech` in elem 
+		// `webkitSpeech` in elem
 		// doesn`t work correctly in all versions of Chromium based browsers.
 		//   It can return false even if they have support for speech i.imgur.com/2Y40n.png
 		//  Testing with 'onwebkitspeechchange' seems to fix this problem
@@ -2096,7 +2103,7 @@ More details at https://github.com/Modernizr/Modernizr/issues/312
 			return 'speech' in elem || 'onwebkitspeechchange' in elem;
 		}); // This implementation only tests support for interactive form validation.
 		// To check validation for a specific type or a specific other constraint,
-		// the test can be combined: 
+		// the test can be combined:
 		//    - Modernizr.inputtypes.numer && Modernizr.formvalidation (browser supports rangeOverflow, typeMismatch etc. for type=number)
 		//    - Modernizr.input.required && Modernizr.formvalidation (browser supports valueMissing)
 		//
@@ -2132,13 +2139,13 @@ More details at https://github.com/Modernizr/Modernizr/issues/312
 					e.stopPropagation();
 				};
 
-				// Calling form.submit() doesn't trigger interactive validation, 
+				// Calling form.submit() doesn't trigger interactive validation,
 				// use a submit button instead
 				//older opera browsers need a name attribute
 				form.innerHTML = '<input name="modTest" required><button></button>';
 
 				// FF4 doesn't trigger "invalid" event if form is not in the DOM tree
-				// Chrome throws error if invalid input is not visible when submitting 
+				// Chrome throws error if invalid input is not visible when submitting
 				form.style.position = 'absolute';
 				form.style.top = '-99999em';
 
@@ -2291,7 +2298,7 @@ More details at https://github.com/Modernizr/Modernizr/issues/312
 
 		Modernizr.addTest('olreversed', 'reversed' in document.createElement('ol'));
 		// MathML
-		// http://www.w3.org/Math/ 
+		// http://www.w3.org/Math/
 		// By Addy Osmani
 		// Based on work by Davide (@dpvc) and David (@davidcarlisle)
 		// in https://github.com/mathjax/MathJax/issues/182
@@ -2360,10 +2367,10 @@ More details at https://github.com/Modernizr/Modernizr/issues/312
 		// Notifications
 		// By Theodoor van Donge
 
-		// window.webkitNotifications is only used by Chrome 
+		// window.webkitNotifications is only used by Chrome
 		//	http://www.html5rocks.com/en/tutorials/notifications/quick/
 
-		// window.Notification only exist in the draft specs 
+		// window.Notification only exist in the draft specs
 		//	http://dev.w3.org/2006/webapi/WebNotifications/publish/Notifications.html#idl-if-Notification
 
 		Modernizr.addTest('notification', !!Modernizr.prefixed('Notifications', window)); // https://developer.mozilla.org/en-US/docs/API/Pointer_Lock_API
@@ -2386,7 +2393,7 @@ More details at https://github.com/Modernizr/Modernizr/issues/312
 		});
 
 		// requestAnimationFrame
-		// Offload animation repainting to browser for optimized performance. 
+		// Offload animation repainting to browser for optimized performance.
 		// http://dvcs.w3.org/hg/webperf/raw-file/tip/specs/RequestAnimationFrame/Overview.html
 		// By Addy Osmani
 
@@ -2449,7 +2456,7 @@ More details at https://github.com/Modernizr/Modernizr/issues/312
 		// This test is asynchronous. Watch out.
 
 
-		// in IE7 in HTTPS this can cause a Mixed Content security popup. 
+		// in IE7 in HTTPS this can cause a Mixed Content security popup.
 		//  github.com/Modernizr/Modernizr/issues/362
 		// To avoid that you can create a new iframe and inject this.. perhaps..
 

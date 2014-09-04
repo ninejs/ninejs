@@ -6,8 +6,7 @@
 		req = require,
 		path;
 
-	function moduleExport(extend, Evented, amdText) {
-		var json = global.JSON;
+	function moduleExport(extend, Evented, amdText, def) {
 		function getFile(src, require, load, config) {
 			var obj;
 			if (isAmd) {
@@ -15,6 +14,9 @@
 			}
 			else if (isNode) {
 				obj = req(src);
+				if (load) {
+					load(obj);
+				}
 			}
 			else {
 				throw new Error('environment not yet supported');
@@ -29,8 +31,11 @@
 					pathPart = locale;
 				if (locale && (locale.length > 2)) {
 					shrt = locale.substr(0, 2);
-					this.setLocale(shrt, true, require, load);
-					parent = this.loaded[shrt];
+					if (this.available[shrt]) {
+						if (this.loaded[shrt]) {
+							parent = this.loaded[shrt];
+						}
+					}
 					pathPart = shrt + '/' + locale.substr(3);
 				}
 				locale = locale || 'root';
@@ -40,7 +45,10 @@
 						Constr.prototype = parent;
 						result = new Constr();
 						result.$njsLocale = locale;
-						extend.mixin(result, json.parse(a));
+						if (typeof(a) === 'string') {
+							a = JSON.parse(a);
+						}
+						extend.mixin(result, a);
 						load(result);
 					});
 				}
@@ -51,12 +59,22 @@
 				}
 				return result;
 			},
-			setLocale: function(locale, ignoreChangedEvent, require, load) {
+			setLocale: function(locale, ignoreChangedEvent, req, originalLoad) {
+				var require = req || require;
 				var self = this;
-				if (this.locale !== locale) {
-					if (!this.loaded.root) {
-						this.loaded.root = this.root;
+				var defer = def.defer();
+				function load(val) {
+					if (originalLoad) {
+						defer.promise.then(originalLoad);
 					}
+					defer.resolve(val);
+				}
+				if (this.locale !== locale) {
+					(function (self) {
+						if (!self.loaded.root) {
+							self.loaded.root = self.root;
+						}
+					})(this);
 					if (this.loaded[locale || 'root']) {
 						this.resource = this.loaded[locale || 'root'];
 						this.locale = locale;
@@ -77,9 +95,11 @@
 						});
 					}
 					else if (((locale || '').length > 2) && (this.available[locale.substr(0,2)])) {
-						this.setLocale(locale.substr(0,2), ignoreChangedEvent, require, function (a) {
+						this.setLocale(locale.substr(0,2), ignoreChangedEvent, require).then(function () {
 							self.locale = locale;
-							self.setLocale(locale, ignoreChangedEvent, require, load);
+							self.setLocale(locale, ignoreChangedEvent, require).then(function (val) {
+								load(val);
+							});
 						});
 					}
 					else {
@@ -90,6 +110,7 @@
 				else {
 					load(this.resource);
 				}
+				return defer.promise;
 			},
 			getResource: function() {
 				return this.resource;
@@ -106,7 +127,9 @@
 				root,
 				available = {},
 				current,
-				locale = (config || require.rawConfig || {}).locale || null;
+				locale;
+			require = require || {};
+			locale = (config || require.rawConfig || {}).locale || null;
 			function rest(obj, load) {
 				root = obj.root;
 				for (var p in obj) {
@@ -132,7 +155,9 @@
 				}
 				resourceSet.available = available;
 				resourceSet.setLocale(locale, null, require, function () {
-					load(resourceSet);
+					if (load) {
+						load(resourceSet);
+					}
 				});
 				return resourceSet;
 			}
@@ -142,7 +167,10 @@
 			}
 			else {
 				getFile(src, require, function(obj) {
-					rest(json.parse(obj), load);
+					if (typeof(obj) === 'string') {
+						obj = JSON.parse(obj);
+					}
+					rest(obj, load);
 				}, config);
 			}
 		};
@@ -158,13 +186,13 @@
 
 	if (isAmd) { //AMD
 		if (isDojo) {
-			define(['./extend', './ext/Evented', 'dojo/text'], moduleExport);
+			define(['./extend', './ext/Evented', 'dojo/text', './deferredUtils'], moduleExport);
 		}
 		else {
-			define(['./extend', './ext/Evented', './text'], moduleExport);
+			define(['./extend', './ext/Evented', './text', './deferredUtils'], moduleExport);
 		}
 	} else if (isNode) { //Server side
-		module.exports = moduleExport(req('./extend'), req('./ext/Evented'), {});
+		module.exports = moduleExport(req('./extend'), req('./ext/Evented'), {}, req('./deferredUtils'));
 	} else { //Try to inject in global (hopefully no one does this ever)
 		var i18n = moduleExport(global.ninejs.extend, global.ninejs.ext.Evented, {}, global.ninejs.core.deferredUtils);
 		global.ninejs.extend.mixinRecursive(global, { ninejs: { core: { i18n: i18n } } });

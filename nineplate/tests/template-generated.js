@@ -2,7 +2,8 @@ define([], function() {
 /* jshint -W074 */
 /* globals window: true */
 'use strict';
-var r = function anonymous(context,document) {
+var r = function anonymous(context,document
+/**/) {
 'use strict';
 var fn = {t:function (e, text, doc) {
 			return e.appendChild(doc.createTextNode(text));
