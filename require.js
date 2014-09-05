@@ -27,4 +27,4 @@
 		// plain script in a browser
 		throw new Error('Non AMD environments are not supported');
 	}
-})(this);
+});
