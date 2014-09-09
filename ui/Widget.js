@@ -188,8 +188,8 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 							itemSkin.disable();
 						}
 					}
+					self.currentSkin = toApply;
 					return def.when(toApply.enable(self), function () {
-						self.currentSkin = toApply;
 						if (self.$njsShowDefer) {
 							self.$njsShowDefer.resolve(self.domNode);
 							self.$njsShowDefer = null;
