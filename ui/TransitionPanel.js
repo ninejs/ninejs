@@ -1,4 +1,5 @@
-define(['../core/extend', './utils/setClass', './Widget', '../css!./css/common.css'], function(extend, setClass, Widget, commonCss) {
+define(['../core/deferredUtils',
+	'../core/extend', './utils/setClass', './Widget', '../css!./css/common.css'], function(def, extend, setClass, Widget, commonCss) {
 	'use strict';
 	commonCss.enable();
 	function insertAfter(node, ref) {
@@ -34,17 +35,25 @@ define(['../core/extend', './utils/setClass', './Widget', '../css!./css/common.c
 		leftTransitionClass: defaultTransitionClasses.left,
 		rightTransitionClass: defaultTransitionClasses.right,
 		show: extend.after(function() {
-			setClass(this.domNode, this.transitionClass);
+			var self = this;
+			def.when(this.domNode, function () {
+				setClass(self.domNode, self.transitionClass);
+			});
 		}),
 		activeSetter: function(value) {
+			var self = this;
 			this.active = value;
 			if (value) {
-				setClass(this.domNode, this.activeTransitionClass);
-				this.emit('show', {});
+				def.when(this.domNode, function () {
+					setClass(self.domNode, self.activeTransitionClass);
+					self.emit('show', {});
+				});
 			}
 			else {
-				setClass(this.domNode, '!' + this.activeTransitionClass);
-				this.emit('hide', {});
+				def.when(this.domNode, function () {
+					setClass(self.domNode, '!' + self.activeTransitionClass);
+					self.emit('hide', {});
+				});
 			}
 		},
 		previousPanelSetter: function(value) {

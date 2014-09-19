@@ -236,7 +236,7 @@
 					deferredUtils.when(moduleSet[unitId].init(unitId, unitConfig), function (r) {
 						self.enabledUnits[unitId] = r || true;
 						defer.resolve(r || true);
-					});
+					}, console.error);
 					return this.enabledUnits[unitId].promise;
 				}
 			};

@@ -1,2 +1,2 @@
 
-.njsEditor{height:20px}.njsEditor >.invalid{border-color:#ff4500}
+.njsEditor{height:20px;}.njsEditor >.invalid{border-color:#ff4500}.njsEditor input,.njsEditor select,.njsEditor textarea{width:100%;float:left}

@@ -1,4 +1,5 @@
-define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./NavBar.html', '../../css!./NavBar.css', '../utils/append', '../utils/setText', '../utils/setClass', 'dojo/on'], function(extend, Widget, Skin, template, css, append, setText, setClass, on) {
+define(['../../core/deferredUtils',
+	'../../core/extend', '../Widget', '../Skin', '../../nineplate!./NavBar.html', '../../css!./NavBar.css', '../utils/append', '../utils/setText', '../utils/setClass', 'dojo/on'], function(def, extend, Widget, Skin, template, css, append, setText, setClass, on) {
 	'use strict';
 	var copyClasses = function (fromObj, toNode){
 			var classArray,
@@ -73,8 +74,9 @@ define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./NavBar.h
 			parentNode = parentNode || this.itemContainer;
 			var newItemNode;
 			if (item['$njsWidget']) {
-				item.show(parentNode);
-				newItemNode = item.domNode;
+				newItemNode = def.when(item.show(parentNode), function () {
+					return item.domNode;
+				});
 			}
 			else {
 				if (!item.domNode) {

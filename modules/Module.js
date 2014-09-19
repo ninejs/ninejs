@@ -77,7 +77,7 @@
 						})), function () {
 							return def.when(def.all(array.map(self.provides, function (item) {
 								if (!moduleRegistry.enabledUnits[item.id]) {
-									var defer = def.defer()
+									var defer = def.defer();
 									moduleRegistry.enabledUnits[item.id] = defer.promise;
 									def.when(self.init(item.id, config[item.id]), function () {
 										defer.resolve(true);
