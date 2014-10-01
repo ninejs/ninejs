@@ -237,6 +237,9 @@
 						self.enabledUnits[unitId] = r || true;
 						defer.resolve(r || true);
 					}, console.error);
+					if (this.enabledUnits[unitId] === true) {
+						return true;
+					}
 					return this.enabledUnits[unitId].promise;
 				}
 			};

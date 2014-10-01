@@ -220,7 +220,13 @@ Dojo Toolkit's dojo/on as of jan 2014
 				// check for capture conversions
 				var capture = type in captures,
 					adjustedType = capture ? captures[type] : type;
-				target.addEventListener(adjustedType, listener, capture);
+				try {
+					target.addEventListener(adjustedType, listener, capture);
+				}
+				catch (err) {
+					console.error(err);
+					throw err;
+				}
 				// create and return the signal
 				return {
 					remove: function() {

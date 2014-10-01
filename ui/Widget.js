@@ -189,15 +189,28 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 						}
 					}
 					self.currentSkin = toApply;
-					return def.when(toApply.enable(self), function () {
-						if (self.$njsShowDefer) {
-							self.$njsShowDefer.resolve(self.domNode);
-							self.$njsShowDefer = null;
-						}
-						return self.onUpdatedSkin();
-					});
+					try {
+						return def.when(toApply.enable(self), function () {
+							if (self.$njsShowDefer) {
+								self.$njsShowDefer.resolve(self.domNode);
+								self.$njsShowDefer = null;
+							}
+							try {
+								return self.onUpdatedSkin();
+							}
+							catch (err) {
+								console.error(err);
+							}
+						}, function (err) {
+							console.error(err);
+						});
+					}
+					catch (err) {
+						console.error(err);
+						throw err;
+					}
 				}
-			});
+			}, console.error);
 		},
 		/**
 		 * Calls update over the currentSkin and then emits an 'updatedSkin' event without data.
@@ -266,37 +279,41 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 				}
 				return self;
 			}
+			if (this.waitSkin) {
+				if (parentNode) {
+					return def.when(this.waitSkin, function () {
+						self.waitSkin = null;
+						self.show(parentNode);
+					});
+				}
+				return this.waitSkin;
+			}
 			if (!this.currentSkin) {
 				if (this.domNode && this.domNode.nodeType === 1) {
 					appendIt();
 				}
-				if (this.waitSkin) {
-					return this.waitSkin;
-				}
-				else {
-					this.waitSkin = def.when(this.updateSkin(), function(/*sk*/) {
-						if (self.domNode) {
-							listeners =  self.$njsEventListeners;
-							for (cnt = 0; cnt < self.$njsEventListenerHandlers; cnt += 1) {
-								current = self.$njsEventListenerHandlers[cnt];
-								current.remove();
-							}
-							self.$njsEventListenerHandlers = [];
-							for (var p in listeners) {
-								if (listeners.hasOwnProperty(p)) {
-									current = listeners[p];
-									for (cnt = 0; cnt < current.length; cnt += 1) {
-										self.$njsEventListenerHandlers.push(on(self.domNode, p, current[cnt]));
-									}
+				this.waitSkin = def.when(this.updateSkin(), function(/*sk*/) {
+					if (self.domNode) {
+						listeners =  self.$njsEventListeners;
+						for (cnt = 0; cnt < self.$njsEventListenerHandlers; cnt += 1) {
+							current = self.$njsEventListenerHandlers[cnt];
+							current.remove();
+						}
+						self.$njsEventListenerHandlers = [];
+						for (var p in listeners) {
+							if (listeners.hasOwnProperty(p)) {
+								current = listeners[p];
+								for (cnt = 0; cnt < current.length; cnt += 1) {
+									self.$njsEventListenerHandlers.push(on(self.domNode, p, current[cnt]));
 								}
 							}
 						}
-						var result = appendIt();
-						self.waitSkin = null;
-						return result;
-					});
-					return this.waitSkin;
-				}
+					}
+					var result = appendIt();
+					self.waitSkin = null;
+					return result;
+				}, console.error);
+				return this.waitSkin;
 			}
 			else {
 				return appendIt();

@@ -40,7 +40,7 @@ define(['../core/extend', '../core/ext/Properties', '../nineplate', '../core/def
 					parentNode = widget.domNode.parentNode;
 					oldNode = widget.domNode;
 				}
-				require(this.template.amdDependencies || [], function() {
+				var afterLoadDeps = function () {
 					templateResult = self.template(widget);
 					if (widget.mixinProperties){
 						widget.mixinProperties(templateResult);
@@ -52,7 +52,13 @@ define(['../core/extend', '../core/ext/Properties', '../nineplate', '../core/def
 						parentNode.replaceChild(widget.domNode, oldNode);
 					}
 					defer.resolve(true);
-				});
+				};
+				if (this.template.amdDependencies && this.template.amdDependencies.length) {
+					require(this.template.amdDependencies || [], afterLoadDeps);
+				}
+				else {
+					afterLoadDeps();
+				}
 			}
 			return defer.promise;
 		},

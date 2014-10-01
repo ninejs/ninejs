@@ -8,7 +8,8 @@
  * @classDescription Extends Editor such that it looks like a label until you click on it.
  * @return {ninejs/ui/Editor/LabelEditor}   Returns a new LabelEditor.
  */
-define(['../../core/extend', '../Editor', '../utils/append', '../utils/setText', '../utils/setClass', '../../core/on', '../../css!./LabelEditor.css!enable'], function(extend, Editor, append, setText, setClass, on) {
+define(['../../core/array',
+	'../../core/extend', '../Editor', '../utils/append', '../utils/setText', '../utils/setClass', '../../core/on', '../../css!./LabelEditor.css!enable'], function(array, extend, Editor, append, setText, setClass, on) {
 	'use strict';
 
 	function identity(v) {
@@ -35,6 +36,9 @@ define(['../../core/extend', '../Editor', '../utils/append', '../utils/setText',
 			var self = this;
 			setClass(this.domNode, 'labelEditor');
 			this.labelNode = setClass(append(this.domNode, 'div'), 'njsLabel');
+			array.forEach((this.labelClass || '').split(' '), function (cl) {
+				setClass(self.labelNode, cl);
+			});
 			this.bind(this, 'label');
 			setClass(this.domNode, 'isLabel');
 			this.own(
