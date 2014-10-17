@@ -33,9 +33,6 @@ describe('nineplate :: Nineplate', function () {
 				if (require.cache[require.resolve('dojo/dojo.js')]) {
 					delete require.cache[require.resolve('dojo/dojo.js')];
 				}
-				else {
-					console.log(require.cache);
-				}
 				var res = require('dojo/dojo.js');
 				var dojorequire = global.require;
 				dojorequire(['ninejs/nineplate!ninejs/nineplate/tests/template.html', 'dojo/node!assert'], function (template, assert) {
