@@ -614,9 +614,6 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 
 			buildSelect = function () {
 				var SelectControl = this.SelectControl || Select;
-				if (!this.get('options')) {
-					this.set('options', []);
-				}
 				var args = {
 						editor : this,
 						options : this.get('options'),

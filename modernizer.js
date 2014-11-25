@@ -2315,10 +2315,16 @@ A NineJS custom build of Modernizr
 					.appendChild(document.createTextNode("xx"));
 				mfrac.appendChild(document.createElementNS(ns, "mi"))
 					.appendChild(document.createTextNode("yy"));
-				document.body.appendChild(div);
-				hasMathML = div.offsetHeight > div.offsetWidth;
-				if (div.parentNode) {
-					div.parentNode.removeChild(div);
+				try {
+					document.body.appendChild(div);
+
+					hasMathML = div.offsetHeight > div.offsetWidth;
+					if (div.parentNode) {
+						div.parentNode.removeChild(div);
+					}
+				}
+				catch (e) {
+					hasMathML = false;
 				}
 			}
 			return hasMathML;

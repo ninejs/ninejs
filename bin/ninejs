@@ -30,7 +30,7 @@ function globalRun() {
 			console.log(data.message);
 		});
 	}
-	ninejs.run(argv._);
+	return ninejs.run(argv._);
 }
 localCmd = path.resolve(process.cwd(), 'node_modules', 'ninejs', 'bin', 'ninejs');
 fs.exists(localCmd, function(val) {
