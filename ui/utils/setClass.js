@@ -106,10 +106,8 @@ define(['../../modernizer'], function (modernizer) {
 	/*
 	Arguments: node, delay, class1, class2, class3, ...
 	 */
-	setClass.temporary = function () {
-		var node = arguments[0],
-			delay = arguments[1],
-			len = arguments.length,
+	setClass.temporary = function (node, delay) {
+		var len = arguments.length,
 			cnt,
 			args = arguments;
 		for (cnt = 2; cnt < len; cnt += 1) {
@@ -120,6 +118,6 @@ define(['../../modernizer'], function (modernizer) {
 				setClass(node, '!' + args[cnt]);
 			}
 		}, delay);
-	}
+	};
 	return setClass;
 });

@@ -1,10 +1,13 @@
-define(['./core/extend', './css/builder', 'dojo/has', 'dojo/query'], function(extend, builder, has, query)
-{
+define(['./core/extend', './css/builder'], function(extend, builder) {
 	'use strict';
-	var result;
-	result = {};
-	var ielt10 = has('ie') && (has('ie') < 10),
-		ielt9 = has('ie') && (has('ie') < 9),
+	var result = {},
+		ielt10 = (function () {
+			/* global window */
+			if(window.navigator.appName.indexOf('Internet Explorer') !== -1){
+				return (window.navigator.appVersion.indexOf('MSIE 9') === -1);
+			}
+			return false;
+		})(),
 		isAmd = (typeof(define) !== 'undefined') && define.amd,
 		isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org',
 		ieNode,
@@ -81,11 +84,7 @@ define(['./core/extend', './css/builder', 'dojo/has', 'dojo/query'], function(ex
 							ieNode.removeChild(c);
 							c = ieNode.lastChild;
 						}
-						if (ielt9) {
-							ieNode.styleSheet.cssText = ieCssText;
-						} else {
-							ieNode.appendChild(document.createTextNode(ieCssText));
-						}
+						ieNode.appendChild(document.createTextNode(ieCssText));
 
 						ieCssUpdating = false;
 						ieNode = null;
@@ -104,7 +103,6 @@ define(['./core/extend', './css/builder', 'dojo/has', 'dojo/query'], function(ex
 			/*
 			Taken from Stack overflow question 384286
 			*/
-			/* global window */
 			function isDomElement(o){
 				return (
 					typeof HTMLElement === 'object' ? o instanceof window.HTMLElement : //DOM2
@@ -143,18 +141,18 @@ define(['./core/extend', './css/builder', 'dojo/has', 'dojo/query'], function(ex
 				return result;
 			}
 
-			var searchStyleNodes = query('style[data-ninejs-path="' + this.path + '"]');
+			var searchStyleNode = window.document.querySelector('style[data-ninejs-path="' + this.path + '"]');
 			var styleNode,
 				cnt,
 				found;
-			if (searchStyleNodes.length){
-				styleNode = searchStyleNodes[0];
+			if (searchStyleNode){
+				styleNode = searchStyleNode;
 			}
 			else {
 				styleNode = document.createElement('style');
 				styleNode.type = 'text/css';
 				styleNode.setAttribute('data-ninejs-path', this.path);
-				if (styleNode.styleSheet && (!ielt10 || ielt9))
+				if (styleNode.styleSheet && (!ielt10))
 				{
 					styleNode.styleSheet.cssText = this.data = this.normalizeUrls(cssText);
 				}
@@ -206,8 +204,6 @@ define(['./core/extend', './css/builder', 'dojo/has', 'dojo/query'], function(ex
 			return this.enable().disable();
 		}
 	}, function() {
-
-		/* global window */
 		this.globalWindow = window;
 	});
 
