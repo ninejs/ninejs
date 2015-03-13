@@ -1,7 +1,21 @@
 'use strict';
 var extend = require('../../core/extend');
-var connectUtils = require('connect/lib/utils');
 var crypto = require('crypto');
+
+var parseCacheControl = function(str){
+	var directives = str.split(',')
+		, obj = {};
+
+	for(var i = 0, len = directives.length; i < len; i++) {
+		var parts = directives[i].split('=')
+			, key = parts.shift().trim()
+			, val = parseInt(parts.shift(), 10);
+
+		obj[key] = isNaN(val) ? true : val;
+	}
+
+	return obj;
+};
 
 var CachedResourceMixin = {
 	maxAge: 10 * 86400 * 1000, //10 days
@@ -19,12 +33,16 @@ var CachedResourceMixin = {
 	mustRevalidate: function(req, res) {
 		var headers = res._headers,
 			result = false,
-			cc = connectUtils.parseCacheControl(headers['cache-control'] || ''),
+			cacheControl = headers['cache-control'],
+			cc = parseCacheControl(cacheControl || ''),
 			etagReq = req.get('If-None-Match');
 		if (headers['set-cookie'] || (headers['content-range']) || req.headers.cookie || cc['no-cache'] || cc['no-store'] || cc['private'] || cc['must-revalidate']) { //Taken from connect's staticCache
 			result = true;
 		}
 		if (etagReq && (etagReq !== this.etag)) {
+			result = true;
+		}
+		if (!cacheControl) {
 			result = true;
 		}
 		return result;

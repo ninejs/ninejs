@@ -77,7 +77,7 @@ describe('nineplate :: Nineplate', function () {
 		var nineplate, assert, Q, fs;
 		nineplate = require('../../nineplate');
 		assert = require('assert');
-		Q = require('q');
+		Q = require('kew');
 		fs = require('fs');
 		describe('-> Template Rendering', function() {
 			it('should render a simple template', function(done) {
@@ -110,7 +110,7 @@ describe('nineplate :: Nineplate', function () {
 			it('should compile a simple template', function(done) {
 				nineplate.getTemplate(__dirname + '/template.html', function(template){
 					var r = template.compileDom();
-					Q.when(r, function(value) {
+					Q.resolve(r).then(function(value) {
 						assert(typeof(value) === 'function');
 						done();
 					}, function(error) {
@@ -127,7 +127,7 @@ describe('nineplate :: Nineplate', function () {
 		requirejs = require('requirejs');
 		assert = require('assert');
 		nineplate = require('../../nineplate');
-		Q = require('q');
+		Q = require('kew');
 		fs = require('fs');
 
 		requirejs.config({
@@ -198,7 +198,7 @@ describe('nineplate :: Nineplate', function () {
 			});
 			it('should compile a simple AMD template', function(done) {
 				nineplate.getTemplate(__dirname + '/template.html', function(template){
-					Q.when(template.toAmd(), function(value){
+					Q.resolve(template.toAmd()).then(function(value){
 						fs.writeFileSync(__dirname + '/template-generated.js', value);
 						requirejs(['ninejs/nineplate/tests/template-generated'], function(template) {
 							assert(typeof(template) === 'function');

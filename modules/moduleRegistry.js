@@ -104,7 +104,7 @@
 				var p, currentProvides = [], cnt, self = this;
 				for(cnt = 0; cnt < m.provides.length; cnt += 1) {
 					if (this.providesList[m.provides[cnt].id]) {
-						throw new Error('Duplicate provides. Unable to add ' + p + ' because it\'s already there');
+						throw new Error('Duplicate provides. Unable to add ' + m.provides[cnt].id + ' because it\'s already there');
 					}
 					else {
 						currentProvides[m.provides[cnt].id] = m.provides[cnt];

@@ -3,7 +3,7 @@ var config = require('./config'),
 	extend = require('../core/extend'),
 	path = require('path'),
 	fs = require('fs'),
-	Q = require('q'),
+	Q = require('kew'),
 	registry = require('./moduleRegistry'),
 	//trying to autodiscover modules from the /9js/modules folder
 	njsModulesPath = path.resolve(process.cwd(), config.modulesFolder || '9js/modules'),
@@ -22,7 +22,8 @@ loadModule = function(dir) {
 			if (currentConfigFile.units[id]) {
 				var cfg = {};
 				cfg[id] = currentConfigFile.units[id];
-				extend.mixinRecursive(config, { units: cfg });
+				extend.mixinRecursive(cfg[id], (config.units[id] || {}));
+				config.units[id] = cfg[id];
 			}
 		}
 	}
@@ -66,12 +67,16 @@ if (fs.existsSync(njsModulesPath)) {
 		throw new Error(error);
 	});
 }
-module.exports = Q.when(moduleLoadPromise, function(){
+module.exports = Q.resolve(moduleLoadPromise).then(function(){
 	var defer = Q.defer();
 	process.nextTick(function() {
-		Q.when(registry.enableModules(), function(val) {
-			defer.resolve(val);
-		});
+		Q.resolve(registry.enableModules())
+			.then(function(val) {
+				defer.resolve(val);
+			}, function (err) {
+				console.error(err);
+				defer.reject(val);
+			});
 	});
 	return defer.promise;
 }, function(error) {

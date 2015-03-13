@@ -6,6 +6,7 @@ var Evented = require('../../core/ext/Evented');
 var Endpoint = extend(Properties, Evented, {
 	type: 'endpoint',
 	method: 'get',
+	children: [],
 	handler: function() {}
 });
 

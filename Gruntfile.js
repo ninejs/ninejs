@@ -11,7 +11,7 @@ function exports(grunt) {
 		stylusFiles = [ '**/*.styl', '!node_modules/**', '!ui/bootstrap/extension.styl' ],
 		lessFiles = ['ui/bootstrap/less/bootstrap.less', 'ui/bootstrap/less/responsive.less'],
 		ncssFiles = ['ui/bootstrap/less/bootstrap.ncss', 'ui/bootstrap/less/responsive.ncss'],
-		Q = require('q');
+		Q = require('kew');
 
 	// Project configuration.
 	grunt.initConfig({
