@@ -673,7 +673,9 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 					return def.when(controlMap[val].apply(self), function (ctrl) {
 						var controlPromise = self.control;
 						self.control = ctrl;
-						controlPromise.resolve(ctrl);
+						if (typeof(controlPromise.resolve) === 'function') {
+							controlPromise.resolve(ctrl);
+						}
 
 						(self.control.startup || self.control.show).call(self.control);
 						append(self.domNode, self.control.domNode);
