@@ -56,7 +56,7 @@ This is just an abstraction that detects if it's running in client side to retur
 				},
 				when: function (valueOrPromise, onSuccess, onFailure) {
 					if (isPromise(valueOrPromise)) {
-						return valueOrPromise.then(onSuccess, onFailure);
+						return Promise.resolve(valueOrPromise).then(onSuccess, onFailure);
 					}
 					else {
 						return Promise.resolve(onSuccess(valueOrPromise));
@@ -150,7 +150,15 @@ This is just an abstraction that detects if it's running in client side to retur
 					when: function (valueOrPromise, resolve, reject, progress, finalBlock) {
 						var r;
 						if (Q.isPromiseLike(valueOrPromise)) {
-							r = valueOrPromise.then(resolve, reject);
+							var defer = Q.defer();
+							valueOrPromise.then(function () {
+								var r = resolve.apply(null, arguments);
+								defer.resolve(r);
+							}, function (err) {
+								reject.apply(null, arguments);
+								defer.reject(err);								
+							});
+							r = defer.promise;// valueOrPromise.then(resolve, reject);
 						}
 						else {
 							var defer = Q.defer();
@@ -185,7 +193,7 @@ This is just an abstraction that detects if it's running in client side to retur
 			define(['./extend', 'dojo/Deferred', 'dojo/DeferredList', 'dojo/_base/Deferred'], deferred);
 		} else {
 			//Trying for RequireJS and hopefully every other
-			define(['./extend', 'kew'], deferred);
+			define(['./extend', 'q/q'], deferred);
 		}
 	} else if (isNode) { //Server side
 		var Q, extend;

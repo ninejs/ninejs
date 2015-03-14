@@ -1,4 +1,4 @@
-define(['../../ui/Widget', './Skin/FullScreenFrame', '../../ui/utils/append', '../../ui/utils/setClass', 'dojo/query', '../../core/on', '../../core/deferredUtils'], function(Widget, defaultSkin, append, setClass, query, on, def) {
+define(['../../ui/Widget', './Skin/FullScreenFrame', '../../ui/utils/append', '../../ui/utils/setClass', '../../core/on', '../../core/deferredUtils', '../../core/array'], function(Widget, defaultSkin, append, setClass, on, def, array) {
 	'use strict';
 	function isNumber(n) {
 		return !isNaN(parseFloat(n)) && isFinite(n);
@@ -7,7 +7,7 @@ define(['../../ui/Widget', './Skin/FullScreenFrame', '../../ui/utils/append', '.
 		skin: defaultSkin,
 		selectedSetter: function(idx) {
 			var cnt,
-				arr = query('> *', this.containerNode),
+				arr = array.filter(this.containerNode.childNodes, function (node) { return node.nodeType === 1; /* Element */ }),
 				len = arr.length,
 				target,
 				current;
@@ -58,7 +58,7 @@ define(['../../ui/Widget', './Skin/FullScreenFrame', '../../ui/utils/append', '.
 					child = child.domNode;
 				}
 				append(container, child);
-				return query('> *', container).length - 1;
+				return array.filter(container.childNodes, function (node) { return node.nodeType === 1; /* Element */ }).length - 1;
 			}
 			if ((!child.domNode) && (typeof(child.show) === 'function')) {
 				return def.when(child.show(), function() {

@@ -5,10 +5,10 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	</head>
 	<body>
-		<script src="${jsBase}/dojoConfig.js"> </script>
+		<script src="${jsBase}/requirejs/require.js"> </script>
+		<script src="${jsBase}/requireJsConfig.js"> </script>
 		<script type="text/javascript">
 			${html.body.callbackScript()}
 		</script>
-		<script src="${jsBase}/dojo/dojo.js"> </script>
 	</body>
 </html>

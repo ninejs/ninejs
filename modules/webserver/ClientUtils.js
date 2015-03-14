@@ -118,13 +118,13 @@ var Utils = extend({
 				webServer.add(directory);
 			}
 		}
-		//Adding dojoConfig.js
-		this.dojoConfigEndpoint = new webServer.StaticResource({ type: 'endpoint', contentType: 'application/javascript', route: webServer.jsUrl + '/dojoConfig.js', action: function() {
-				self.dojoConfigHandler.apply(self, arguments);
+		//Adding requireJsConfig.js
+		this.requireJsConfigEndpoint = new webServer.StaticResource({ type: 'endpoint', contentType: 'application/javascript', route: webServer.jsUrl + '/requireJsConfig.js', action: function() {
+				self.requireJsConfigHandler.apply(self, arguments);
 			}
 		});
-		webServer.add(this.dojoConfigEndpoint);
-		this.appCache.cache(this.webServer.baseUrl + this.webServer.jsUrl + '/dojoConfig.js');
+		webServer.add(this.requireJsConfigEndpoint);
+		this.appCache.cache(this.webServer.baseUrl + this.webServer.jsUrl + '/requireJsConfig.js');
 		//Adding manifest.appcache
 		this.cacheEndpoint = new webServer.StaticResource({ type: 'endpoint', contentType: 'text/cache-manifest', route: webServer.baseUrl + '/manifest.appcache', action: function() {
 				self.appCache.handler.apply(self.appCache, arguments);
@@ -157,9 +157,9 @@ var Utils = extend({
 	addPostAction: function(action) {
 		this.postActions.push(action);
 	},
-	dojoConfigHandler: function(req, res) {
+	requireJsConfigHandler: function(req, res) {
 		/* jshint unused: true */
-		var r = ['window.dojoConfig = '],
+		var r = ['window.requireJsConfig = '],
 			result,
 			cfg,
 			packages = this.amdPaths,
@@ -210,11 +210,12 @@ var Utils = extend({
 		cfg.aliases = this.aliases;
 		r.push(JSON.stringify(cfg));
 		r.push(';');
+		r.push('require.config(window.requireJsConfig);');
 		this.postActions.forEach(function(item) {
 			r.push('(' + item.toString() + ').apply();');
 		});
 		result = r.join('');
-		this.dojoConfigEndpoint.applyETag(res, result);
+		this.requireJsConfigEndpoint.applyETag(res, result);
 		res.end(result);
 	}
 }, function() {
@@ -227,10 +228,18 @@ var Utils = extend({
 	this.units = {};
 	this.boot = [];
 	this.postActions = [];
-	var dojoLocation = require.resolve('dojo');
-	if (dojoLocation) {
-		dojoLocation = path.dirname(dojoLocation);
-		this.amdPaths.dojo = dojoLocation;
+	var requireJsLocation = require.resolve('requirejs');
+	if (requireJsLocation) {
+		requireJsLocation = path.dirname(requireJsLocation);
+		this.amdPaths.requirejs = path.resolve(requireJsLocation, '..'); //requirejs path defaults to ./bin
+	}
+	var qLocation = require.resolve('q');
+	if (qLocation) {
+		this.amdPaths.q = path.dirname(qLocation);
+	}
+	var reqwestLocation = require.resolve('reqwest');
+	if (reqwestLocation) {
+		this.amdPaths.reqwest = path.dirname(reqwestLocation);
 	}
 	this.appCache = new CacheManifest();
 });

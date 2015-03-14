@@ -1055,7 +1055,7 @@ A NineJS custom build of Modernizr
 		// Web Audio API
 		// https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/specification.html
 		// By Addy Osmani
-		Modernizr.addTest('webaudio', !!(window.webkitAudioContext || window.AudioContext));
+		Modernizr.addTest('webaudio', !!(window.AudioContext || window.webkitAudioContext));
 
 		// Battery API
 		// https://developer.mozilla.org/en/DOM/window.navigator.mozBattery
@@ -2574,7 +2574,7 @@ A NineJS custom build of Modernizr
 				// we're avoiding using Modernizr._domPrefixes as the prefix capitalization on
 				// these guys are notoriously peculiar.
 				var BlobBuilder = window.MozBlobBuilder || window.WebKitBlobBuilder || window.MSBlobBuilder || window.OBlobBuilder || window.BlobBuilder,
-					URL = window.MozURL || window.webkitURL || window.MSURL || window.OURL || window.URL;
+					URL = window.URL || window.MozURL || window.webkitURL || window.MSURL || window.OURL;
 
 				var data = 'Modernizr',
 					bb = new BlobBuilder();

@@ -19,20 +19,14 @@
 		if (dojoConfig) {
 			extend.mixinRecursive(r, dojoConfig.ninejs || {});
 		}
-		extend.mixinRecursive(global.ninejsConfig || {});
+		extend.mixinRecursive(r, global.ninejsConfig || {});
 		return r;
 	}
 
 	if (isAmd) { //AMD
-		//Testing for dojo toolkit
-		if (isDojo) {
-			define(['./core/extend', 'dojo/_base/config'], moduleExport);
-		} else {
-			//Trying for RequireJS and hopefully every other
-			define(['./core/extend'], moduleExport);
-		}
+		define(['./core/extend', './modules/config'], moduleExport);
 	} else if (isNode) { //Server side
-		module.exports = moduleExport(req('./core/extend'));
+		module.exports = moduleExport(req('./core/extend'), req('./modules/config'));
 	} else {
 		// plain script in a browser
 		throw new Error('Non AMD environments are not supported');

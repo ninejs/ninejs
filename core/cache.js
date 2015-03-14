@@ -4,6 +4,7 @@ Dojo Toolkit's dojo/text as of jan 2014
 (function() {
 	'use strict';
 	var isAmd = (typeof(define) !== 'undefined') && define.amd;
+	var isDojo = isAmd && (define.amd.vendor === 'dojotoolkit.org');
 	var isNode = (typeof(window) === 'undefined');
 	var req = require;
 
@@ -28,9 +29,14 @@ Dojo Toolkit's dojo/text as of jan 2014
 		var getText;
 		if (!isNode) {
 			getText = function(url, sync, load) {
-				request(url, {
-					sync: !! sync
-				}).then(load);
+				if (isDojo) {
+					request(url, {
+						sync: !! sync
+					}).then(load);					
+				}
+				else {
+					request(url).then(load);
+				}
 			};
 		} else {
 			// Path for node.js and rhino, to load from local file system.

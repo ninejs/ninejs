@@ -1,7 +1,6 @@
 'use strict';
 var extend = require('../../core/extend');
 var Properties = require('../../core/ext/Properties');
-var underscore = require('underscore');
 var express = require('express');
 var Endpoint = require('./Endpoint');
 var StaticResource = require('./StaticResource');
@@ -58,6 +57,10 @@ var WebServer = extend(Properties, {
 		});
 	},
 	postCreate: function() {
+		function sortByOrder (a, b) {
+			return (a.order || 0) - (b.order || 0);
+			
+		}
 		var self = this, config = this.config;
 		this.add(new SinglePageContainer({ route: '/', method: 'get' }));
 		this.app.engine('9plate', nineplate.__express);
@@ -78,7 +81,9 @@ var WebServer = extend(Properties, {
 		if (this.config.clientUtils !== false) {
 			this.clientUtils.init(this);
 		}
-		underscore.sortBy(this.phases['static'], function(item) { return item.order || 0; }).forEach(function(item) {
+		var statics = (this.phases['static'] || []).slice(0);
+		statics.sort(sortByOrder);
+		statics.forEach(function(item) {
 			self.app.use(self.baseUrl + item.route, express['static'](item.path, { maxAge: 864000000 }));
 		});
 		if (config.cookies !== false) {
@@ -90,7 +95,9 @@ var WebServer = extend(Properties, {
 		if (config.methodOverride !== false) {
 			this.app.use(methodOverride('_method'));
 		}
-		underscore.sortBy(this.phases.auth, function(item) { return item.order || 0; }).forEach(function(resource) {
+		var auths = (this.phases.auth || []).slice(0);
+		auths.sort(sortByOrder);
+		auths.forEach(function(resource) {
 			if (resource.route) {
 				self.app.use(self.baseUrl + resource.route, function() { return resource.handler.apply(resource, arguments); });
 			}
@@ -98,7 +105,9 @@ var WebServer = extend(Properties, {
 				self.app.use(resource.handler);
 			}
 		});
-		underscore.sortBy(this.phases.utils, function(item) { return item.order || 0; }).forEach(function(resource) {
+		var utils = (this.phases.utils || []).slice(0);
+		utils.sort(sortByOrder);
+		utils.forEach(function(resource) {
 			if (resource.route) {
 				self.app.use(self.baseUrl + resource.route, function() { return resource.handler.apply(resource, arguments); });
 			}
@@ -106,7 +115,9 @@ var WebServer = extend(Properties, {
 				self.app.use(resource.handler);
 			}
 		});
-		underscore.sortBy(this.phases.endpoint, function(item) { return item.order || 0; }).forEach(function(resource) {
+		var endpoints = (this.phases.endpoint || []).slice(0);
+		endpoints.sort(sortByOrder);
+		endpoints.forEach(function(resource) {
 			var args = [self.baseUrl + resource.route];
 			if ((resource.method !== 'get') && (!resource.handleAs)) {
 				resource.handleAs = 'form';

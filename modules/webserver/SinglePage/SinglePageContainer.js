@@ -17,7 +17,7 @@ var SinglePageContainer = NineplateResource.extend({
 			body: {
 				callbackScript: function() {
 					if (this.boot) {
-						return 'window.dojoConfig.callback = function() { require(\'' + this.boot + '\'); };';
+						return 'require.s.contexts._.config.callback = function() { require([\'' + this.boot + '\'], function() {  }); };';
 					}
 					else {
 						return '';

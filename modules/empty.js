@@ -1,4 +1,4 @@
 define([], function() {
 	'use strict';
-	return {};
+	return ((((require || {}).s || {}).contexts || {})._ || {}).config  || {};
 });

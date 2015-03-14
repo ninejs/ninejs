@@ -7,7 +7,6 @@ function exports(grunt) {
 	var jsFiles = ['bin/ninejs', '*.js', '**/*.js', '!node_modules/**', '!out/**', '!nineplate/utils/parser/**/commonjs.js', '!nineplate/utils/parser/**/amd.js', '!nineplate/tests/template-generated.js', '!modernizer.js', '!modules/webserver/jsClientUtils/*'],
 		testFiles = ['**/tests/**/*.js', '!coverage/**', '!**/tests/**/phantom*.js', '!node_modules/**', '!out/**', '!nineplate/tests/template-generated.js'],
 		phantomWatch = ['nineplate/tests/phantomTest.js'],
-		underscore = require('underscore'),
 		stylusFiles = [ '**/*.styl', '!node_modules/**', '!ui/bootstrap/extension.styl' ],
 		lessFiles = ['ui/bootstrap/less/bootstrap.less', 'ui/bootstrap/less/responsive.less'],
 		ncssFiles = ['ui/bootstrap/less/bootstrap.ncss', 'ui/bootstrap/less/responsive.ncss'],
@@ -61,11 +60,11 @@ function exports(grunt) {
 				tasks: ['stylus']
 			},
 			phantom: {
-				files: underscore.union(phantomWatch, jsFiles),
+				files: phantomWatch.slice(0).concat(jsFiles),
 				tasks: ['mocha']
 			},
 			test: {
-				files: underscore.union(testFiles, jsFiles),
+				files: testFiles.slice(0).concat(jsFiles),
 				tasks: ['jshint', 'generateParsers', 'mochaTest:watch', 'mocha']
 			}
 

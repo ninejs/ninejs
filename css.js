@@ -1,4 +1,4 @@
-define(['./core/extend', './css/builder'], function(extend, builder) {
+define(['./core/extend', './css/builder', './request'], function(extend, builder, request) {
 	'use strict';
 	var result = {},
 		ielt10 = (function () {
@@ -14,7 +14,7 @@ define(['./core/extend', './css/builder'], function(extend, builder) {
 		ieCssText,
 		ieCssUpdating,
 		externalCssCache = {};
-
+	
 	var StyleObject = extend({
 		normalizeUrls: function(css) {
 			/* jshint unused: true */
@@ -292,17 +292,24 @@ define(['./core/extend', './css/builder'], function(extend, builder) {
 				{
 					fname = fname + '.css';
 				}
-				if (isDojo)
-				{ //Dojo Toolkit
-					var path = require.toUrl(parts[0]);
+				var path = require.toUrl(parts[0]);
+				if (isDojo) { //Dojo Toolkit
 					require.getText(path, true, function(data)
 					{
 						loadStyle(data, path, require.rawConfig.packages, '', /*require.rawConfig.baseUrl, */ autoEnable, load);
 					});
 				}
-				else
-				{ //requirejs not implemented (yet)
-					load(null);
+				else {
+					request(path).then(function (data) {
+						var packages;
+						if (isDojo) {
+							packages = window.dojoConfig.packages;
+						}
+						else {
+							packages = requirejs.s.contexts._.config.packages;
+						}
+						loadStyle(data, path, packages, '', autoEnable, load);
+					});
 				}
 			}
 		}
