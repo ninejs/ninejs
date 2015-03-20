@@ -672,6 +672,10 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 					};
 					return def.when(controlMap[val].apply(self), function (ctrl) {
 						var controlPromise = self.control;
+						if (self.control && (self.control.startup || self.control.show)) {
+							self.control.destroy();
+							setText.emptyNode(self.domNode);
+						}
 						self.control = ctrl;
 						if (typeof(controlPromise.resolve) === 'function') {
 							controlPromise.resolve(ctrl);

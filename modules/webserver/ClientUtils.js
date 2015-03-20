@@ -87,31 +87,12 @@ var Utils = extend({
 		this.logger = webServer.get('logger');
 		this.webServer = webServer;
 		this.appCache.set('baseUrl', webServer.baseUrl);
-		var files = fs.readdirSync(path.resolve(__dirname, 'jsClientUtils')),
-			p,
+		var p,
 			paths = this.amdPaths,
 			directory,
 			ext,
 			endpoint,
 			self = this;
-		files.forEach(function(fileName) {
-			fileName = path.resolve(__dirname, 'jsClientUtils', fileName);
-			var fileStat = fs.statSync(fileName);
-			//Adding single files
-			if (fileStat.isFile()) {
-				ext = path.extname(fileName);
-				endpoint = new webServer.Endpoint({ path: fileName, route: webServer.jsUrl + '/' + path.basename(fileName), handler: function(req,res) {
-						/* jshint unused: true */
-						res.sendfile(this.path);
-					}
-				});
-				webServer.add(endpoint);
-			}
-			else if (fileStat.isDirectory()) { //Adding directories
-				directory = new webServer.StaticResource({ path: fileName, route: webServer.jsUrl + '/' + path.basename(fileName) });
-				webServer.add(directory);
-			}
-		});
 		for (p in paths) {
 			if (paths.hasOwnProperty(p)) {
 				directory = new webServer.StaticResource({ path: paths[p], route: webServer.jsUrl + '/' + p });

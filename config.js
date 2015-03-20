@@ -14,17 +14,27 @@
 	 config module
 	 @exports config
 	 */
-	function moduleExport(extend, dojoConfig) {
-		var r = {};
+	function moduleExport(extend, moduleConfig, dojoConfig) {
+		var r;
 		if (dojoConfig) {
-			extend.mixinRecursive(r, dojoConfig.ninejs || {});
+			r = dojoConfig;
 		}
-		extend.mixinRecursive(r, global.ninejsConfig || {});
+		else {
+			r = {};
+		}
+		r.ninejs = r.ninejs || {};
+		extend.mixinRecursive(r.ninejs, global.ninejsConfig || {});
+		extend.mixinRecursive(r.ninejs, moduleConfig || {});
 		return r;
 	}
 
 	if (isAmd) { //AMD
-		define(['./core/extend', './modules/config'], moduleExport);
+		if (isDojo) {
+			define(['./core/extend', './modules/config', 'dojo/_base/config'], moduleExport);
+		}
+		else {
+			define(['./core/extend', './modules/config'], moduleExport);
+		}
 	} else if (isNode) { //Server side
 		module.exports = moduleExport(req('./core/extend'), req('./modules/config'));
 	} else {

@@ -294,7 +294,7 @@ define(['./core/extend', './css/builder', './request'], function(extend, builder
 				}
 				var path = require.toUrl(parts[0]);
 				if (isDojo) { //Dojo Toolkit
-					require.getText(path, true, function(data)
+					require.getText(path, false, function(data)
 					{
 						loadStyle(data, path, require.rawConfig.packages, '', /*require.rawConfig.baseUrl, */ autoEnable, load);
 					});

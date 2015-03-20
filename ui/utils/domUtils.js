@@ -107,6 +107,10 @@ define(['./setClass', './setText', '../../modernizer', '../../core/on', 'dojo/mo
 			}
 			r.enter = onFn(control, mouse.enter, enter);
 			r.leave = onFn(control, mouse.leave, leave);
+			r.remove = function () {
+				this.enter.remove();
+				this.leave.remove();
+			}
 
 			return r;
 		},
