@@ -90,8 +90,6 @@ var Utils = extend({
 		var p,
 			paths = this.amdPaths,
 			directory,
-			ext,
-			endpoint,
 			self = this;
 		for (p in paths) {
 			if (paths.hasOwnProperty(p)) {

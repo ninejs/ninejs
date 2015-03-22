@@ -60,7 +60,7 @@ define(['../../ui/Widget', './Skin/FullScreenFrame', '../../ui/utils/append', '.
 				append(container, child);
 				return array.filter(container.childNodes, function (node) { return node.nodeType === 1; /* Element */ }).length - 1;
 			}
-			if ((!child.domNode) && (typeof(child.show) === 'function')) {
+			if (((!child.domNode) || (typeof(child.domNode.nodeType) === 'undefined')) && (typeof(child.show) === 'function')) {
 				return def.when(child.show(), function() {
 					doAddChild(self.containerNode, child);
 				});

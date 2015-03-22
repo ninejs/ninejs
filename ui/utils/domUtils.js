@@ -110,7 +110,7 @@ define(['./setClass', './setText', '../../modernizer', '../../core/on', 'dojo/mo
 			r.remove = function () {
 				this.enter.remove();
 				this.leave.remove();
-			}
+			};
 
 			return r;
 		},

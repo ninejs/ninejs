@@ -8,8 +8,14 @@
 		}
 		.active {
 			display: block;
+            &.tableFrame {
+                display: table;
+            }
 			@media print {
 				display: block;
+                &.tableFrame {
+                    display: table;
+                }
 			}
 		}
 	}

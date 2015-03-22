@@ -301,6 +301,7 @@ define(['./core/extend', './css/builder', './request'], function(extend, builder
 				}
 				else {
 					request(path).then(function (data) {
+						/* global requirejs */
 						var packages;
 						if (isDojo) {
 							packages = window.dojoConfig.packages;

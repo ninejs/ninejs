@@ -66,18 +66,24 @@ var WebServer = extend(Properties, {
 		this.app.engine('9plate', nineplate.__express);
 		this.app.enable('view cache', true);
 
-		if (config.env === 'development') {
-			this.app.use(morgan('dev'));
-		}
-		if (config.favicon !== false) {
-			this.app.use(favicon(config.favicon || path.resolve(__dirname, 'ninejs.ico')));
-		}
-		if (config.compress !== false) {
-			this.app.use(compression({ filter: function(req, res) {
-				/* jshint unused: true */
-				return (/json|text|javascript|cache-manifest/).test(res.getHeader('Content-Type'));
-			}}));
-		}
+		(function checkLogger() {
+			if (config.env === 'development') {
+				this.app.use(morgan('dev'));
+			}
+		})();
+		(function checkFavicon () {
+			if (config.favicon !== false) {
+				this.app.use(favicon(config.favicon || path.resolve(__dirname, 'ninejs.ico')));
+			}
+		})();
+		(function checkCompression () {
+			if (config.compress !== false) {
+				this.app.use(compression({ filter: function(req, res) {
+					/* jshint unused: true */
+					return (/json|text|javascript|cache-manifest/).test(res.getHeader('Content-Type'));
+				}}));
+			}
+		})();
 		if (this.config.clientUtils !== false) {
 			this.clientUtils.init(this);
 		}
@@ -86,12 +92,17 @@ var WebServer = extend(Properties, {
 		statics.forEach(function(item) {
 			self.app.use(self.baseUrl + item.route, express['static'](item.path, { maxAge: 864000000 }));
 		});
-		if (config.cookies !== false) {
-			this.app.use(cookieParser(config.cookieSecret || '@H98s$%2-==4m'));
-		}
-		if (config.session !== false) {
-			this.app.use(expressSession(config.session || { cookie: {maxAge: 1000000 }, resave: false, saveUninitialized: false, secret: '@H98s$%2-==4m' }));
-		}
+		(function checkCookies () {
+			if (config.cookies !== false) {
+				this.app.use(cookieParser(config.cookieSecret || '@H98s$%2-==4m'));
+			}
+		})();
+
+		(function checkSession () {
+			if (config.session !== false) {
+				this.app.use(expressSession(config.session || { cookie: {maxAge: 1000000 }, resave: false, saveUninitialized: false, secret: '@H98s$%2-==4m' }));
+			}
+		})();
 		if (config.methodOverride !== false) {
 			this.app.use(methodOverride('_method'));
 		}
@@ -122,21 +133,25 @@ var WebServer = extend(Properties, {
 			if ((resource.method !== 'get') && (!resource.handleAs)) {
 				resource.handleAs = 'form';
 			}
-			switch (resource.handleAs) {
-				case 'json':
-					args.push(bodyParser.json(resource.parserOptions || {}));
-					break;
-				case 'text':
-					args.push(bodyParser.text(resource.parserOptions || {}));
-					break;
-				case 'form':
-					args.push(bodyParser.urlencoded(resource.parserOptions || { extended: true }));
-					break;
-				case 'raw':
-				default:
-					args.push(bodyParser.raw(resource.parserOptions || {}));
-					break;
-			}
+			(function selectBodyParser () {
+				switch (resource.handleAs) {
+					case 'json':
+						args.push(bodyParser.json(resource.parserOptions || {}));
+						break;
+					case 'text':
+						args.push(bodyParser.text(resource.parserOptions || {}));
+						break;
+					case 'form':
+						args.push(bodyParser.urlencoded(resource.parserOptions || { extended: true }));
+						break;
+					case 'raw':
+						args.push(bodyParser.raw(resource.parserOptions || {}));
+						break;
+					default:
+						args.push(bodyParser.raw(resource.parserOptions || {}));
+						break;
+				}
+			})();
 			if (typeof(resource.validate) === 'function') {
 				args.push(function (req, res, next) {
 					var r = resource.validate.call(resource, req, res);

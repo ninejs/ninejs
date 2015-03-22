@@ -75,7 +75,7 @@ module.exports = Q.resolve(moduleLoadPromise).then(function(){
 				defer.resolve(val);
 			}, function (err) {
 				console.error(err);
-				defer.reject(val);
+				defer.reject(err);
 			});
 	});
 	return defer.promise;

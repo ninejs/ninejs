@@ -3,13 +3,13 @@ var extend = require('../../core/extend');
 var crypto = require('crypto');
 
 var parseCacheControl = function(str){
-	var directives = str.split(',')
-		, obj = {};
+	var directives = str.split(','),
+		obj = {};
 
-	for(var i = 0, len = directives.length; i < len; i++) {
-		var parts = directives[i].split('=')
-			, key = parts.shift().trim()
-			, val = parseInt(parts.shift(), 10);
+	for(var i = 0, len = directives.length; i < len; i += 1) {
+		var parts = directives[i].split('='),
+			key = parts.shift().trim(),
+			val = parseInt(parts.shift(), 10);
 
 		obj[key] = isNaN(val) ? true : val;
 	}
@@ -31,12 +31,15 @@ var CachedResourceMixin = {
 		res.set('ETag', this.etag);
 	},
 	mustRevalidate: function(req, res) {
+		function checkCacheControl (headers, cookie, cc) {
+			return headers['set-cookie'] || (headers['content-range']) || cookie || cc['no-cache'] || cc['no-store'] || cc['private'] || cc['must-revalidate'];
+		}
 		var headers = res._headers,
 			result = false,
 			cacheControl = headers['cache-control'],
 			cc = parseCacheControl(cacheControl || ''),
 			etagReq = req.get('If-None-Match');
-		if (headers['set-cookie'] || (headers['content-range']) || req.headers.cookie || cc['no-cache'] || cc['no-store'] || cc['private'] || cc['must-revalidate']) { //Taken from connect's staticCache
+		if (checkCacheControl(headers, req.headers.cookie, cc)) { //Taken from connect's staticCache
 			result = true;
 		}
 		if (etagReq && (etagReq !== this.etag)) {

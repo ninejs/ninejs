@@ -11,13 +11,13 @@ Dojo Toolkit's dojo/request as of jan 2014
 			define(['dojo/request'], factory);
 		}
 		else {
-			define(['reqwest/reqwest', './core/objUtils'], factory);
+			define(['reqwest/reqwest'], factory);
 		}
 	}
 	else if (typeof(exports) === 'object') {
 		module.exports = factory(req('request'));
 	}
-})(function (request, objUtils) {
+})(function (request) {
 	'use strict';
 	var isAmd = typeof (define) === 'function' && define.amd,
 		isDojo = isAmd && (define.amd.vendor === 'dojotoolkit.org');
