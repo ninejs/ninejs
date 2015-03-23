@@ -858,6 +858,30 @@
 					);
 				//return 'attachTemp = r[\'' + xmlNode.value() + '\'];\nif (attachTemp) {\nif ( Object.prototype.toString.call( attachTemp ) === \'[object Array]\' ) {\nattachTemp.push(node);\n}\nelse {\nr[\'' + xmlNode.value() + '\'] = [attachTemp, node];\n}\n}\nelse {\nr[\'' + xmlNode.value() + '\'] = node;\n}\n';
 			}
+			function isOnEvent(xmlNode) {
+				return (/^data-ninejs-on-/).test(xmlNode.nodeName());
+			}
+			function processOnEvent(xmlNode) {
+				var eventName = xmlNode.nodeName().substr('data-ninejs-on-'.length),
+					methodName = xmlNode.value(),
+					eventRenderer = renderer.newFunction();
+				eventRenderer.addStatement(
+					eventRenderer
+						.expression('context')
+						.member(methodName)
+						.member('apply')
+						.invoke(
+							eventRenderer.expression('context'),
+							eventRenderer.expression('arguments')
+						)
+				);
+				renderer.addStatement(
+					renderer
+						.expression('node')
+						.member('addEventListener')
+						.invoke(renderer.literal(eventName), eventRenderer)
+				);
+			}
 			function processExpressionToken(result, target, targetType, elementContext, compound) {
 				if (result.modifier === 'live') {
 					if (result.value.type === 'expression'){
@@ -1011,6 +1035,9 @@
 				if (isAttachPoint(xmlNode) || attName === 'data-ninejs-tagName') {
 					elementContext.needsDom = true;
 					processAttachPoint(xmlNode);
+				} else if (isOnEvent(xmlNode)) {
+					elementContext.needsDom = true;
+					processOnEvent(xmlNode);
 				} else {
 					renderer.addAssignment('av', renderer.literal(''));
 //					r += 'av = \'\';\n';

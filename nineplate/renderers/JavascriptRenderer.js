@@ -30,7 +30,7 @@
 				varNameFilter;
 			varNameFilter = function(n) {
 				if ((!variables.hasOwnProperty(n)) && (!parameters.hasOwnProperty(n))) {
-					if (n === 'this') {
+					if ((n === 'this') || (n === 'arguments')) {
 						return n;
 					}
 					else if (parentContext) {

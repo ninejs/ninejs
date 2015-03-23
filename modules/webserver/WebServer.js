@@ -66,24 +66,24 @@ var WebServer = extend(Properties, {
 		this.app.engine('9plate', nineplate.__express);
 		this.app.enable('view cache', true);
 
-		(function checkLogger() {
+		(function checkLogger(self) {
 			if (config.env === 'development') {
-				this.app.use(morgan('dev'));
+				self.app.use(morgan('dev'));
 			}
-		})();
-		(function checkFavicon () {
+		})(this);
+		(function checkFavicon (self) {
 			if (config.favicon !== false) {
-				this.app.use(favicon(config.favicon || path.resolve(__dirname, 'ninejs.ico')));
+				self.app.use(favicon(config.favicon || path.resolve(__dirname, 'ninejs.ico')));
 			}
-		})();
-		(function checkCompression () {
+		})(this);
+		(function checkCompression (self) {
 			if (config.compress !== false) {
-				this.app.use(compression({ filter: function(req, res) {
+				self.app.use(compression({ filter: function(req, res) {
 					/* jshint unused: true */
 					return (/json|text|javascript|cache-manifest/).test(res.getHeader('Content-Type'));
 				}}));
 			}
-		})();
+		})(this);
 		if (this.config.clientUtils !== false) {
 			this.clientUtils.init(this);
 		}
@@ -92,17 +92,17 @@ var WebServer = extend(Properties, {
 		statics.forEach(function(item) {
 			self.app.use(self.baseUrl + item.route, express['static'](item.path, { maxAge: 864000000 }));
 		});
-		(function checkCookies () {
+		(function checkCookies (self) {
 			if (config.cookies !== false) {
-				this.app.use(cookieParser(config.cookieSecret || '@H98s$%2-==4m'));
+				self.app.use(cookieParser(config.cookieSecret || '@H98s$%2-==4m'));
 			}
-		})();
+		})(this);
 
-		(function checkSession () {
+		(function checkSession (self) {
 			if (config.session !== false) {
-				this.app.use(expressSession(config.session || { cookie: {maxAge: 1000000 }, resave: false, saveUninitialized: false, secret: '@H98s$%2-==4m' }));
+				self.app.use(expressSession(config.session || { cookie: {maxAge: 1000000 }, resave: false, saveUninitialized: false, secret: '@H98s$%2-==4m' }));
 			}
-		})();
+		})(this);
 		if (config.methodOverride !== false) {
 			this.app.use(methodOverride('_method'));
 		}
