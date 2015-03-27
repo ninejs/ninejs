@@ -15,6 +15,7 @@ var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var methodOverride = require('method-override');
 var bodyParser = require('body-parser');
+var busboy = require('connect-busboy');
 var path = require('path');
 var WebServer = extend(Properties, {
 	Endpoint: Endpoint,
@@ -146,6 +147,9 @@ var WebServer = extend(Properties, {
 						break;
 					case 'raw':
 						args.push(bodyParser.raw(resource.parserOptions || {}));
+						break;
+					case 'busboy':
+						args.push(busboy(resource.parserOptions || { upload: true }));
 						break;
 					default:
 						args.push(bodyParser.raw(resource.parserOptions || {}));

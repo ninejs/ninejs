@@ -21,6 +21,29 @@ define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./ButtonDr
 				setText(self.labelNode, self.label);
 			});
 		},
+		clearItems: function () {
+			var self = this;
+			(this.items || []).forEach(function (item) {
+				self.removeItem(item);
+			});
+			while (this.items.length) {
+				this.items.pop();
+			}
+		},
+		removeItem: function (item) {
+			var children = item.item.children || [],
+				evt = item.event,
+				self = this;
+			if (evt) {
+				evt.remove();
+			}
+			if (children.length) {
+				children.forEach(function (child) {
+					self.removeItem(child);
+				});
+			}
+			append.remove(item.listItem);
+		},
 		addItem: function(item, parent, idx) {
 			var undef,
 				li,
@@ -56,7 +79,7 @@ define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./ButtonDr
 					self.addItem(current, childrenUl);
 				}
 			}
-			var a, iconNode, childrenUl;
+			var a, iconNode, childrenUl, evt;
 			if (item.type === 'divider') {
 				setClass(li, 'divider');
 			}
@@ -81,9 +104,13 @@ define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./ButtonDr
 					setClass(self.domNode, '!open');
 					return r;
 				};
-				on(li, 'mousedown', clickEvent);
+				evt = on(li, 'mousedown', clickEvent);
 			}
-			return { listItem: li, anchor: a, iconNode: iconNode, childrenListNode: childrenUl, item: item };
+			var obj = { listItem: li, anchor: a, iconNode: iconNode, childrenListNode: childrenUl, item: item, event: evt };
+			if (parent === this.itemsParent) {
+				this.items.push(obj);
+			}
+			return obj;
 		},
 		updateSkin: extend.after(function() {
 			var anchor = this.anchor, self = this;
@@ -109,7 +136,8 @@ define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./ButtonDr
 	}, function() {
 		extend.mixin(this, {
 			hasIcons: false,
-			value: null
+			value: null,
+			items: []
 		});
 	});
 	return ButtonDropdownMenu;

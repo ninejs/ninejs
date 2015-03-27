@@ -300,7 +300,7 @@ define(['./core/extend', './css/builder', './request'], function(extend, builder
 					});
 				}
 				else {
-					request(path).then(function (data) {
+					request.get(path, { type: 'html' }).then(function (data) {
 						/* global requirejs */
 						var packages;
 						if (isDojo) {
