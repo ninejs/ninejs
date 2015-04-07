@@ -149,7 +149,7 @@ This is just an abstraction that detects if it's running in client side to retur
 					/* jshint unused: true */
 					when: function (valueOrPromise, resolve, reject, progress, finalBlock) {
 						var r;
-						if (Q.isPromiseLike(valueOrPromise)) {
+						if (Q.isPromiseAlike(valueOrPromise)) {
 							var defer = Q.defer();
 							valueOrPromise.then(function () {
 								var r = resolve.apply(null, arguments);

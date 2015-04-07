@@ -302,6 +302,9 @@ define(['./core/extend', './css/builder', './request'], function(extend, builder
 				else {
 					request.get(path, { type: 'html' }).then(function (data) {
 						/* global requirejs */
+						if ((typeof(window) !== 'undefined') && (data instanceof window.XMLHttpRequest)) { //Sometimes reqwest returns xhr object when response is empty
+							data = data.responseText;
+						}
 						var packages;
 						if (isDojo) {
 							packages = window.dojoConfig.packages;

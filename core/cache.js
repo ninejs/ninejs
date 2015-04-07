@@ -35,7 +35,7 @@ Dojo Toolkit's dojo/text as of jan 2014
 					}).then(load);					
 				}
 				else {
-					request(url).then(load);
+					request({ url: url, type: 'html' }).then(load);
 				}
 			};
 		} else {
@@ -47,7 +47,8 @@ Dojo Toolkit's dojo/text as of jan 2014
 				getText = function(url, sync, load) {
 					if ((url.indexOf('http:') === 0) || (url.indexOf('https:') === 0)) {
 						request(url, {
-							sync: !! sync
+							sync: !! sync,
+							type: 'html'
 						}).then(load);
 					}
 					else {

@@ -1,6 +1,8 @@
-define([], function() {
+define(['../request'], function (request) {
 	'use strict';
 
+	var isAmd = (typeof(define) !== 'undefined') && define.amd,
+		isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
 	function resolveUrl(url, path, prefixes, baseUrl, toBase64) {
 		function attachBaseUrl(baseUrl, r) {
 			if (baseUrl) {
@@ -126,8 +128,7 @@ define([], function() {
 
 				var realUrl = resolveUrl(url, realPath, prefixes, baseUrl, toBase64);
 
-				require.getText(realUrl, true, function(childData)
-				{
+				function loadHandler (childData) {
 					var childOptions = {};
 					for (var p in options) {
 						if (options.hasOwnProperty(p)) {
@@ -139,8 +140,13 @@ define([], function() {
 						var child = result;
 						r.children.push(child);
 					});
-				});
-				return '';
+				}
+				if (isDojo) { //Dojo Toolkit
+					require.getText(path, false, loadHandler);
+				}
+				else {
+					request.get(path, { type: 'html' }).then(loadHandler);
+				}
 			});
 			r.css = data;
 

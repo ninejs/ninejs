@@ -44,6 +44,7 @@ var grammar = {
 			['s', 'return "_s"'],
 			['[a-zA-Z\\:\\_]', 'return "_NameStartChar"'],
 			['[a-zA-Z\\:\\_\\-\\.0-9]', 'return "_NameChar"'],
+			['[\\á\\é\\í\\ó\\ú\\ñ\\Á\\É\\Í\\Ó\\Ú\\Ñ]', 'return "_SpecialChar"'],
 			['.+', 'return "_Any"']
 		]
 	},
@@ -65,6 +66,7 @@ var grammar = {
 			['LOOPENDTOKEN MIXED', 'if ($2.type === "mixed") { $2.content.unshift($1); $$ = $2; } else { $$ = {type: "mixed", content: [$1, $2]} }']
 		],
 		'ANYCOMMON' : [
+			['_SpecialChar', '$$ = $1'],
 			['_Any', '$$ = $1'],
 			['AtSign', '$$ = $1'],
 			['WhiteSpace', '$$ = $1'],
@@ -163,13 +165,14 @@ var grammar = {
 			['TextChar', '$$ = $1']
 		],
 		'TextChar': [
+			['_SpecialChar', '$$ = $1'],
 			['NameChar', '$$ = $1'],
 			['WhiteSpace', '$$ = $1']
 		],
 		'ATTRIBUTES': [
 			['', '$$ = []'],
 			['ATTRIBUTE', '$$ = [$1]'],
-			['ATTRIBUTE WS ATTRIBUTES', 'var r = $3; r.shift($1); $$ = r']
+			['ATTRIBUTE WS ATTRIBUTES', 'var r = $3; r.unshift($1); $$ = r']
 		],
 		'ATTRIBUTE': [
 			['TAGNAME WS EQ WS SQUOTE PCDATASQUOTE SQUOTE', '$$ = {name: $1, value: $6}'],
@@ -198,14 +201,14 @@ var grammar = {
 		'ATTRIBUTETOKENLISTSQUOTE': [
 			['VARTOKEN', '$$ = [$1]'],
 			['PCDATASQUOTEImpl', '$$ = [{ type: "text", value: $1 }]'],
-			['VARTOKEN ATTRIBUTETOKENLISTSQUOTE', 'var r = $2; r.shift($1); $$ = r'],
-			['PCDATASQUOTEImpl ATTRIBUTETOKENLISTSQUOTE', 'var r = $2; r.shift($1); $$ = r']
+			['VARTOKEN ATTRIBUTETOKENLISTSQUOTE', 'var r = $2; r.unshift($1); $$ = r'],
+			['PCDATASQUOTEImpl ATTRIBUTETOKENLISTSQUOTE', 'var r = $2; r.unshift($1); $$ = r']
 		],
 		'ATTRIBUTETOKENLISTDQUOTE': [
 			['VARTOKEN', '$$ = [$1]'],
 			['PCDATADQUOTEImpl', '$$ = [{ type: "text", value: $1 }]'],
-			['VARTOKEN ATTRIBUTETOKENLISTDQUOTE', 'var r = $2; r.shift($1); $$ = r'],
-			['PCDATADQUOTEImpl ATTRIBUTETOKENLISTDQUOTE', 'var r = $2; r.shift($1); $$ = r']
+			['VARTOKEN ATTRIBUTETOKENLISTDQUOTE', 'var r = $2; r.unshift($1); $$ = r'],
+			['PCDATADQUOTEImpl ATTRIBUTETOKENLISTDQUOTE', 'var r = $2; r.unshift($1); $$ = r']
 		],
 		'VARTOKENSTART': [
 			['DollarSign LeftBraces', '$$ = $1 + $2']
@@ -269,8 +272,8 @@ var grammar = {
 		'TOKENLIST': [
 			['VARTOKEN', '$$ = [$1]'],
 			['TEXT', '$$ = [{ type: "text", value: $1}]'],
-			['VARTOKEN TOKENLIST', 'var r = $2; r.shift($1); $$ = r'],
-			['TEXT TOKENLIST', 'var r = $2; r.shift($1); $$ = r']
+			['VARTOKEN TOKENLIST', 'var r = $2; r.unshift($1); $$ = r'],
+			['TEXT TOKENLIST', 'var r = $2; r.unshift($1); $$ = r']
 		],
 		'EXPRESSION': [
 			['FLOATNUMBER', '$$ = { type: "expression", contentType: "literal", content: $1 }'],
@@ -285,9 +288,9 @@ var grammar = {
 			['EXPRESSION _LeftParenthesis _RightParenthesis', '$$ = { type: "expression", contentType: "functionCall", content: $1, arguments: [] }']
 		],
 		'PARAMLIST': [
-			['EXPRESSION', '$$ = [$1]'],
-			['EXPRESSION _comma PARAMLIST', 'var r = $3; r.shift($1); $$ = r'],
-			['EXPRESSION _comma WS PARAMLIST', 'var r = $4; r.shift($1); $$ = r']
+			['EXPRESSION', '$$ = [$1];'],
+			['EXPRESSION _comma PARAMLIST', 'var r = $3; r.unshift($1); $$ = r;'],
+			['EXPRESSION _comma WS PARAMLIST', 'var r = $4; r.unshift($1); $$ = r;']
 		],
 		'IDENTIFIER': [
 			['TAGNAME', '$$ = $1']

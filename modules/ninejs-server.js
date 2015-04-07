@@ -77,8 +77,8 @@ var NineJs = extend(Module, {
 		logger: {}
 	});
 	provide.features['node.js'] = process.version.substr(1);//stripping out the 'v'
-	//Testing for harmony (ES6). The only thing I could figure out that changes in an ES6 environment is the global.Proxy variable.
-	if ((typeof(global) !== 'undefined') && (global.Proxy)) {
+	//Testing for harmony (ES6). The only thing I could figure out that changes in an ES6 environment is the global.Map variable.
+	if ((typeof(global) !== 'undefined') && (typeof(global.Map) === 'function')) {
 		provide.features['harmony'] = true;
 	}
 }));
