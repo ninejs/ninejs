@@ -142,10 +142,10 @@ define(['../request'], function (request) {
 					});
 				}
 				if (isDojo) { //Dojo Toolkit
-					require.getText(path, false, loadHandler);
+					require.getText(realUrl, true, loadHandler);
 				}
 				else {
-					request.get(path, { type: 'html' }).then(loadHandler);
+					request.get(realUrl, { type: 'html' }).then(loadHandler);
 				}
 			});
 			r.css = data;
