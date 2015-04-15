@@ -742,7 +742,7 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 //					else if (dataType === 'boolean') {
 //						self.control.set('checked', !!val);
 //					}
-					else if (dataType == "date" && Object.prototype.toString.call(val) === '[object Date]') {
+					else if (dataType === 'date' && Object.prototype.toString.call(val) === '[object Date]') {
 						self.control.set('value', toHTML5Date(val));
 					}
 					else {
