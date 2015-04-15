@@ -107,6 +107,20 @@ var WebServer = extend(Properties, {
 		if (config.methodOverride !== false) {
 			this.app.use(methodOverride('_method'));
 		}
+		if (config.crossDomain) {
+			var crossdomain = require('crossdomain');
+			var xml;
+			if (typeof(config.crossDomain) === 'object') {
+				xml = crossdomain(config.crossDomain);
+			}
+			else {
+				xml = crossdomain({ domain: '*' });
+			}
+			this.app.use('/crossdomain.xml', function (req, res) {
+				res.set('Content-Type', 'application/xml; charset=utf-8');
+				res.status(200).send(xml);
+			});
+		}
 		var auths = (this.phases.auth || []).slice(0);
 		auths.sort(sortByOrder);
 		auths.forEach(function(resource) {

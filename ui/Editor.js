@@ -24,9 +24,9 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 		Select,
 		TimeTextBox,
 		ControlBase,
-		numberTextBoxImpl = ((config.ui || {}).Editor || {}).NumberTextBox || 'dijit/form/NumberTextBox',
-		dateTextBoxImpl = ((config.ui || {}).Editor || {}).DateTextBox || 'dijit/form/DateTextBox',
-		timeTextBoxImpl = ((config.ui || {}).Editor || {}).TimeTextBox || 'dijit/form/TimeTextBox',
+		numberTextBoxImpl = (((config.ninejs || {}).ui || {}).Editor || {}).NumberTextBox || 'dijit/form/NumberTextBox',
+		dateTextBoxImpl = (((config.ninejs || {}).ui || {}).Editor || {}).DateTextBox || 'dijit/form/DateTextBox',
+		timeTextBoxImpl = (((config.ninejs || {}).ui || {}).Editor || {}).TimeTextBox || 'dijit/form/TimeTextBox',
 		ENTER = 13;
 	ControlBase = extend(Widget, {
 		on: function (type, act) {
