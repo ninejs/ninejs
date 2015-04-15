@@ -242,6 +242,15 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 			}
 		};
 	}
+
+	function toHTML5Date(date) {
+		var year = date.getFullYear(), 
+			month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1, 
+			day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
+			formated = year + "-" + month + "-" + day;
+		return formated;
+	}
+
 	return Widget.extend({
 		skin: defaultSkin,
 		_clearDataTypeClasses : function () {
@@ -733,6 +742,9 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 //					else if (dataType === 'boolean') {
 //						self.control.set('checked', !!val);
 //					}
+					else if (dataType === 'date' && Object.prototype.toString.call(val) === '[object Date]') {
+						self.control.set('value', toHTML5Date(val));
+					}
 					else {
 						self.control.set('value', val);
 					}
