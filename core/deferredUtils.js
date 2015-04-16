@@ -76,6 +76,43 @@ This is just an abstraction that detects if it's running in client side to retur
 							resolve(true);
 						}, ms);
 					});
+				},
+				/*
+				Receives list of:
+				{
+					promise: value or Promise,
+					action: Function
+				}
+				wait for the promises and it's actions in the specified order
+				returns a promise that gets resolved when all is resolved
+				 */
+				series: function (taskList) {
+					var t,
+						currentPromise,
+						result = this.defer(),
+						self = this;
+					currentPromise = result.promise;
+					taskList.forEach(function (cur) {
+						var defer = self.defer();
+						t = cur.promise;
+						if (typeof(t) === 'function') {
+							t = t();
+						}
+						if (!isPromise(t)) {
+							t = self.when(t, function (t) {
+								return t;
+							});
+						}
+						t.then(function () {
+							defer.resolve(true);
+						}, function (err) {
+							defer.reject(err);
+						});
+						currentPromise = self.all([currentPromise, defer.promise]).then(cur.action || function () {});
+					});
+					result.resolve(true);
+
+					return currentPromise;
 				}
 			});
 		}

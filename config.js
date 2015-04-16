@@ -19,8 +19,8 @@
 		if (dojoConfig) {
 			r = dojoConfig;
 		}
-		else if (window.requirejs) {
-			r = window.requirejs.s.contexts._.config;
+		else if (global.requirejs) {
+			r = global.requirejs.s.contexts._.config;
 		}
 		else {
 			r = {};

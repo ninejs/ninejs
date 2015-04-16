@@ -117,6 +117,7 @@ var WebServer = extend(Properties, {
 				xml = crossdomain({ domain: '*' });
 			}
 			this.app.use('/crossdomain.xml', function (req, res) {
+				/* jshint unused: true */
 				res.set('Content-Type', 'application/xml; charset=utf-8');
 				res.status(200).send(xml);
 			});
@@ -149,24 +150,25 @@ var WebServer = extend(Properties, {
 				resource.handleAs = 'form';
 			}
 			(function selectBodyParser () {
+				var parserOptions = resource.parserOptions || {};
 				switch (resource.handleAs) {
 					case 'json':
-						args.push(bodyParser.json(resource.parserOptions || {}));
+						args.push(bodyParser.json(parserOptions));
 						break;
 					case 'text':
-						args.push(bodyParser.text(resource.parserOptions || {}));
+						args.push(bodyParser.text(parserOptions));
 						break;
 					case 'form':
 						args.push(bodyParser.urlencoded(resource.parserOptions || { extended: true }));
 						break;
 					case 'raw':
-						args.push(bodyParser.raw(resource.parserOptions || {}));
+						args.push(bodyParser.raw(parserOptions));
 						break;
 					case 'busboy':
 						args.push(busboy(resource.parserOptions || { upload: true }));
 						break;
 					default:
-						args.push(bodyParser.raw(resource.parserOptions || {}));
+						args.push(bodyParser.raw(parserOptions));
 						break;
 				}
 			})();

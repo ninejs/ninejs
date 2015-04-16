@@ -49,6 +49,87 @@ describe('core/deferredUtils', function () {
 			});
 			def3.resolve(3);
 		});
+		it('should handle series', function (done) {
+			var defList,
+				def1 = deferredUtils.defer(),
+				def2 = deferredUtils.defer(),
+				def3 = deferredUtils.defer(),
+				def4 = deferredUtils.defer(),
+				t = [];
+			defList = [ {
+				promise: def1.promise,
+				action: function () {
+					t.push(1);
+				}
+			}, {
+				promise: def2.promise,
+				action: function () {
+					t.push(2);
+				}
+			}, {
+				promise: def3.promise,
+				action: function () {
+					t.push(3);
+				}
+			}, {
+				promise: def4.promise,
+				action: function () {
+					t.push(4);
+				}
+			}, {
+				promise: 5,
+				action: function () {
+					t.push(5);
+				}
+			}, {
+				promise: function () {
+					return 6;
+				},
+				action: function () {
+					t.push(6);
+				}
+			}, {
+				promise: function () {
+
+				},
+				action: function () {
+					t.push(7);
+				}
+			}, {
+				promise: function () {
+					var defer = deferredUtils.defer();
+					defer.resolve(true);
+					return defer.promise;
+				},
+				action: function () {
+					t.push(8);
+				}
+			}, {
+				promise: function () {
+					var defer = deferredUtils.defer();
+					setTimeout(function () {
+						defer.resolve(true);
+					}, 15);
+					return defer.promise;
+				},
+				action: function () {
+					t.push(9);
+				}
+			}];
+			deferredUtils.series(defList).then(function () {
+				check(done, function () {
+					expect(t).to.deep.equal([1,2,3,4,5,6,7,8,9]);
+				});
+			});
+			setTimeout(function () {
+				def3.resolve(3);
+				def1.resolve(1);
+			}, 50);
+			setTimeout(function () {
+				def4.resolve(4);
+				def2.resolve(2);
+			}, 100);
+		});
 	});
 	describe('-> With Dojo Toolkit in Node.js', function () {
 		describe('Testing', function () {
