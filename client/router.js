@@ -145,6 +145,7 @@ define(['../core/array',
 			return new Route(options, this);
 		},
 		go: function(/* String */ route, /* Boolean */ replace) {
+			this.emit('9jsRouteChanging', { route: route, replace: replace });
 			route = cleanRoute(route);
 			var current = getRoute();
 			if (current === route) {
