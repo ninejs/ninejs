@@ -1,4 +1,4 @@
-define(['./core/extend', './css/builder', './request'], function(extend, builder, request) {
+define(['./core/extend', './core/deferredUtils', './css/builder', './request'], function(extend, def, builder, request) {
 	'use strict';
 	var result = {},
 		ielt10 = (function () {
@@ -257,6 +257,21 @@ define(['./core/extend', './css/builder', './request'], function(extend, builder
 	}
 
 	result.style = buildStyleObject;
+
+	result.loadFromString = function (css, uniqueId) {
+		var packages;
+		if (isDojo) {
+			packages = window.dojoConfig.packages;
+		}
+		else {
+			packages = requirejs.s.contexts._.config.packages;
+		}
+		var defer = def.defer();
+		loadStyle(css, uniqueId, packages, '', true, function (styleObj) {
+			defer.resolve(styleObj);
+		});
+		return defer.promise;
+	};
 
 	result.load = function(id, require, load)
 	{
