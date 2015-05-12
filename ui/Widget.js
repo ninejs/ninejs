@@ -376,10 +376,10 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 				self = this;
 			if (defer) {
 				if (typeof(defer.then) === 'function') {
-					var w = self.waitNode || self.domNode;
 					if (this.domNode) {
-						return def.when(this.domNode, function (){
-							var waitNode = createWaitNode(w);
+						return def.when(this.domNode, function() {
+							var w = self.waitNode || self.domNode,
+								waitNode = createWaitNode(w);
 							return def.when(defer, function () {
 								destroyWaitNode(w, waitNode);
 							}, function () {
@@ -389,6 +389,7 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 					}
 					else {
 						return def.when(this.show(), function () {
+							var w = self.waitNode || self.domNode;
 							var waitNode = createWaitNode(w);
 							return def.when(defer, function () {
 								destroyWaitNode(w, waitNode);
