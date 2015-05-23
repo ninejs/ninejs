@@ -1,0 +1,86 @@
+#!/usr/bin/env node
+'use strict';
+var nineplate = require('../nineplate'),
+	argv = require('optimist').argv,
+	fs = require('fs'),
+	path = require('path');
+function generate (text, args) {
+	var template = nineplate.buildTemplate(text);
+	if (args.target === 'amd') {
+		return template.toAmd();
+	}
+	else if (args.target === 'commonjs') {
+		return template.toCommonJs();
+	}
+	else if (args.target === 'text') {
+		return template.compileText();
+	}
+}
+var realPath = path.resolve(argv._[0]);
+function getFilter () {
+	if (argv.pattern) {
+		var pattern = new RegExp(argv.pattern);
+		return function (fname) {
+			return pattern.test(fname);
+		};
+	}
+	else {
+		return function (fname) {
+			return path.extname(fname) === '.html';
+		};
+	}
+}
+var filter = getFilter();
+var watched = {};
+(function solve (realPath) {
+	fs.stat(realPath, function (err, stat) {
+		if (err) {
+			console.error(err);
+			process.exit(1);
+		}
+		else {
+			if (stat.isDirectory()) {
+				fs.readdir(realPath, function (err, files) {
+					if (err) {
+						console.error(err);
+						process.exit(1);
+					}
+					else {
+						files.map(function (f) { return path.resolve(realPath, f); }).forEach(solve);
+					}
+				});
+			}
+			else {
+				if (filter(realPath)) {
+					if (argv.watch && !watched[realPath]) {
+						watched[realPath] = true;
+						fs.watchFile(realPath, function () {
+							solve(realPath);
+						});
+					}
+					fs.readFile(realPath, { encoding: 'utf8' }, function (err, text) {
+						if (err) {
+							console.error(err);
+							process.exit(1);
+						}
+						else {
+							generate(text, {target: argv.target || 'amd'}).then(function (text) {
+								var extension = argv.extension || '9plate.js';
+								var newPath = path.resolve(path.dirname(realPath), path.basename(realPath, path.extname(realPath)) + '.' + extension);
+								if (argv.v || argv.watch) {
+									console.log('Generating ' + newPath);
+								}
+								fs.writeFile(newPath, text, function (err) {
+									if (err) {
+										console.log(err);
+										process.exit(1);
+									}
+								});
+							});
+						}
+					});
+				}
+			}
+		}
+	});
+})(realPath);
