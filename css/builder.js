@@ -14,6 +14,7 @@
 	'use strict';
 	var isAmd = (typeof(define) !== 'undefined') && define.amd,
 		isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org',
+		isNode = (typeof(window) === 'undefined'),
 		req = (isDojo && isNode)? global.require : require;
 
 	function resolveUrl(url, path, prefixes, baseUrl, toBase64) {
