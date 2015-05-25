@@ -4,11 +4,11 @@
 		isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org',
 		isNode = (typeof(window) === 'undefined'),
 		req = (isDojo && isNode)? global.require : require;
-	if (isNode) {
-		module.exports = factory(req('../request'));
-	}
-	else if (isAmd) {
+	if (isAmd) {
 		define(['../request'], factory);
+	}
+	else if (isNode) {
+		module.exports = factory(req('../request'));
 	}
 })(function (request) {
 	'use strict';

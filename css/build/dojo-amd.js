@@ -4,11 +4,11 @@
 		isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org',
 		isNode = (typeof(window) === 'undefined'),
 		req = (isDojo && isNode)? global.require : require;
-	if (isNode) {
-		module.exports = factory(req('../builder'), req('fs'));
-	}
-	else if (isDojo) {
+	if (isDojo) {
 		define(['../builder', 'dojo/node!fs'], factory);
+	}
+	else if (isNode) {
+		module.exports = factory(req('../builder'), req('fs'));
 	}
 	else if (isAmd) {
 		define(['../builder', 'fs'], factory);
