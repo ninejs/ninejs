@@ -13,7 +13,8 @@
 })(function (request) {
 	'use strict';
 	var isAmd = (typeof(define) !== 'undefined') && define.amd,
-		isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
+		isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org',
+		req = (isDojo && isNode)? global.require : require;
 
 	function resolveUrl(url, path, prefixes, baseUrl, toBase64) {
 		function attachBaseUrl(baseUrl, r) {
@@ -88,10 +89,16 @@
 	var fs, pathModule;
 	function convertToBase64Url(url, path) {
 		if (!fs || !pathModule){
-			require(['dojo/node!fs', 'dojo/node!path'], function(f,p) {
-				fs = f;
-				pathModule = p;
-			});
+			if (isDojo) {
+				require(['dojo/node!fs', 'dojo/node!path'], function (f, p) {
+					fs = f;
+					pathModule = p;
+				});
+			}
+			else {
+				fs = req('fs');
+				pathModule = req('path');
+			}
 		}
 		var sizeLimit = 30000;
 		var mimeTypes = {'.gif': 'image/gif', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.svg': 'image/svg+xml'};
