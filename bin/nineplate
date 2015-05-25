@@ -1,19 +1,29 @@
 #!/usr/bin/env node
 'use strict';
 var nineplate = require('../nineplate'),
+	cssBuilder = require('../css/build/dojo-amd'),
 	argv = require('optimist').argv,
 	fs = require('fs'),
-	path = require('path');
+	path = require('path'),
+	def = require('../core/deferredUtils');
 function generate (text, args) {
-	var template = nineplate.buildTemplate(text);
-	if (args.target === 'amd') {
-		return template.toAmd();
+	if (args.sourceExtension === '.css') {
+		var fn = cssBuilder.buildAppender(text, args.sourceName + '_' + Math.random(), args.sourcePath, args.cssPrefixes || {}, path.dirname(args.sourcePath), {}, true);
+		var defer = def.defer();
+		defer.resolve(fn);
+		return defer.promise;
 	}
-	else if (args.target === 'commonjs') {
-		return template.toCommonJs();
-	}
-	else if (args.target === 'text') {
-		return template.compileText();
+	else {
+		var template = nineplate.buildTemplate(text);
+		if (args.target === 'amd') {
+			return template.toAmd();
+		}
+		else if (args.target === 'commonjs') {
+			return template.toCommonJs();
+		}
+		else if (args.target === 'text') {
+			return template.compileText();
+		}
 	}
 }
 var realPath = path.resolve(argv._[0]);
@@ -25,9 +35,16 @@ function getFilter () {
 		};
 	}
 	else {
-		return function (fname) {
-			return path.extname(fname) === '.html';
-		};
+		if (argv.css) {
+			return function (fname) {
+				return (path.extname(fname) === '.html') || (path.extname(fname) === '.css');
+			};
+		}
+		else {
+			return function (fname) {
+				return path.extname(fname) === '.html';
+			};
+		}
 	}
 }
 var filter = getFilter();
@@ -64,8 +81,10 @@ var watched = {};
 							process.exit(1);
 						}
 						else {
-							generate(text, {target: argv.target || 'amd'}).then(function (text) {
-								var extension = argv.extension || '9plate.js';
+							var fileExtension = path.extname(realPath);
+							generate(text, {target: argv.target || 'amd', sourcePath: realPath, sourceExtension: fileExtension, sourceName: path.basename(realPath) }).then(function (text) {
+								var defaultExt = (fileExtension === '.css')? 'css.js' : '9plate.js';
+								var extension = argv.extension || defaultExt;
 								var newPath = path.resolve(path.dirname(realPath), path.basename(realPath, path.extname(realPath)) + '.' + extension);
 								if (argv.v || argv.watch) {
 									console.log('Generating ' + newPath);

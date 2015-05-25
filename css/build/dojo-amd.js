@@ -1,5 +1,21 @@
-define(['dojo/json', '../builder', 'dojo/node!fs'], function (json, builder, fs) {
+(function (factory) {
 	'use strict';
+	var isAmd = (typeof(define) !== 'undefined') && define.amd,
+		isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org',
+		isNode = (typeof(window) === 'undefined'),
+		req = (isDojo && isNode)? global.require : require;
+	if (isNode) {
+		module.exports = factory(req('../builder'), req('fs'));
+	}
+	else if (isDojo) {
+		define(['../builder', 'dojo/node!fs'], factory);
+	}
+	else if (isAmd) {
+		define(['../builder', 'fs'], factory);
+	}
+})(function (builder, fs) {
+	'use strict';
+	var thisModuleMid = 'ninejs/css';
 
 	function deepToString(obj, quotes) {
 		quotes = quotes || '\'';
@@ -52,6 +68,44 @@ define(['dojo/json', '../builder', 'dojo/node!fs'], function (json, builder, fs)
 		}
 		return result;
 	}
+	function buildAppender (text, name, src, packages, baseUrl, noWrap) {
+		/* jshint evil: true */
+		var cssText = text;
+		var functionBody = 'define([\'' + thisModuleMid + '\'], function(style) {\n';
+		var cssResult;
+
+		builder.processCss(cssText, name, src, packages, baseUrl, { toBase64: true }/* toBase64 */, function(result) {
+			if (!result.children) {
+				delete result.children;
+			}
+			cssResult = result;
+		});
+
+		function replaceQuotes(obj) {
+			var cnt;
+			obj.data = JSON.stringify(obj.data);
+			if (obj.data) {
+				if (/^\"/.test(obj.data) && /\"$/.test(obj.data)) { //strip double quotes
+					obj.data = obj.data.substr(1, obj.data.length - 2);
+				}
+			}
+			if (obj.children) {
+				for (cnt=0; cnt < obj.children.length; cnt += 1){
+					replaceQuotes(obj.children[cnt]);
+				}
+			}
+		}
+		replaceQuotes(cssResult);
+
+		functionBody += 'var result = ' + deepToString(cssResult, '\"') + ';';
+		functionBody += '\nreturn style.style(result);\n});';
+		if (noWrap) {
+			return functionBody;
+		}
+		else {
+			return new Function(functionBody);
+		}
+	}
 	return {
 		start: function (
 			mid,
@@ -71,7 +125,6 @@ define(['dojo/json', '../builder', 'dojo/node!fs'], function (json, builder, fs)
 				throw new Error('text resource (' + moduleInfo.url + ') missing');
 			}
 
-			var thisModuleMid = 'ninejs/css';
 			var theMid = moduleInfo.mid;
 			var module = bc.amdResources[theMid];
 			if (!module) {
@@ -91,41 +144,9 @@ define(['dojo/json', '../builder', 'dojo/node!fs'], function (json, builder, fs)
 							}
 							return text;
 						},
-						buildAppender: function () {
-							/* jshint evil: true */
-							var cssText = this.getText();
-							var functionBody = 'define([\'' + thisModuleMid + '\'], function(style) {\n';
-							var cssResult;
-
-							builder.processCss(cssText, moduleInfo.mid, this.module.src, require.rawConfig.packages, require.baseUrl, { toBase64: true }/* toBase64 */, function(result) {
-								if (!result.children) {
-									delete result.children;
-								}
-								cssResult = result;
-							});
-
-							function replaceQuotes(obj) {
-								var cnt;
-								obj.data = json.stringify(obj.data);
-								if (obj.data) {
-									if (/^\"/.test(obj.data) && /\"$/.test(obj.data)) { //strip double quotes
-										obj.data = obj.data.substr(1, obj.data.length - 2);
-									}
-								}
-								if (obj.children) {
-									for (cnt=0; cnt < obj.children.length; cnt += 1){
-										replaceQuotes(obj.children[cnt]);
-									}
-								}
-							}
-							replaceQuotes(cssResult);
-
-							functionBody += 'var result = ' + deepToString(cssResult, '\"') + ';';
-							functionBody += '\nreturn style.style(result);\n});';
-							return new Function(functionBody);
-						},
+						buildAppender: buildAppender,
 						internStrings: function () {
-							return [this.mid, this.buildAppender()];
+							return [this.mid, this.buildAppender(this.getText(), moduleInfo.mid, this.module.src, require.rawConfig.packages, require.baseUrl)];
 						}
 					};
 					result.push(module);
@@ -138,6 +159,7 @@ define(['dojo/json', '../builder', 'dojo/node!fs'], function (json, builder, fs)
 			else {
 				return [];
 			}
-		}
+		},
+		buildAppender: buildAppender
 	};
 });

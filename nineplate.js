@@ -111,7 +111,6 @@
 				});
 			},
 			load: function(name, req, onLoad, config) {
-				var self = this;
 				if (isDojo && require.cache[/*this.mid + '!' + */name]) {
 					require([/*this.mid + '!' + */name], function(templateModule) {
 						onLoad(templateModule);
@@ -119,7 +118,7 @@
 				}
 				else {
 					var loadText = function(val) {
-						onLoad(self.buildTemplate(val));
+						onLoad(new Nineplate().buildTemplate(val));
 					};
 					requireText.load(name, req, loadText, config);
 				}

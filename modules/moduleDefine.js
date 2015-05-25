@@ -1,16 +1,15 @@
 (function () {
 	'use strict';
 	var isAmd = (typeof(define) !== 'undefined') && define.amd;
-	var isNode = (typeof(window) === 'undefined');
 	var req = require;
 	(function (factory) {
 		if (isAmd) {
-			define(['ninejs/core/extend', 'ninejs/modules/Module', 'ninejs/core/deferredUtils'], factory);
+			define(['../core/extend', '../modules/Module'], factory);
 		}
 		else {
-			module.exports = factory(req('ninejs/core/extend'), req('ninejs/modules/Module'), req('ninejs/core/deferredUtils'));
+			module.exports = factory(req('../core/extend'), req('../modules/Module'));
 		}
-	})(function (extend, Module, def) {
+	})(function (extend, Module) {
 		return function (consumes, callback) {
 			consumes = (consumes || []).map(function (item) {
 				if (typeof(item) === 'string') {

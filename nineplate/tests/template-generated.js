@@ -6,19 +6,27 @@ var r = function anonymous(context,document
 /**/) {
 'use strict';
 var fn = {t:function (e, text, doc) {
-			return e.appendChild(doc.createTextNode(text));
-		},e:function (e, name, doc) {
-			var node = doc.createElement(name);
-			e.insertAdjacentElement('beforeEnd', node);
-			return node;
-		},tst:function () {
-			/* global window */
-			return window.document.body && (window.document.body.insertAdjacentElement);
-		},ae:function (e, name, doc) {
-			var node = doc.createElement(name);
-			e.appendChild(node);
-			return node;
-		}},
+            _$jscmd("nineplate/utils/functions.js", "line", 5);
+            return e.appendChild(doc.createTextNode(text));
+        },e:function (e, name, doc) {
+            _$jscmd("nineplate/utils/functions.js", "line", 17);
+            var node = doc.createElement(name);
+            _$jscmd("nineplate/utils/functions.js", "line", 18);
+            e.insertAdjacentElement("beforeEnd", node);
+            _$jscmd("nineplate/utils/functions.js", "line", 19);
+            return node;
+        },tst:function () {
+            _$jscmd("nineplate/utils/functions.js", "line", 9);
+            /* global window */
+            return _$jscmd("nineplate/utils/functions.js", "cond", "9_10_20", window.document.body) && _$jscmd("nineplate/utils/functions.js", "cond", "9_34_44", window.document.body.insertAdjacentElement);
+        },ae:function (e, name, doc) {
+            _$jscmd("nineplate/utils/functions.js", "line", 12);
+            var node = doc.createElement(name);
+            _$jscmd("nineplate/utils/functions.js", "line", 13);
+            e.appendChild(node);
+            _$jscmd("nineplate/utils/functions.js", "line", 14);
+            return node;
+        }},
     r = {},
     nodes = [],
     node,

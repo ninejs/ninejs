@@ -1,8 +1,20 @@
-define(['../request'], function (request) {
+(function (factory) {
 	'use strict';
-
+	var isAmd = (typeof(define) !== 'undefined') && define.amd,
+		isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org',
+		isNode = (typeof(window) === 'undefined'),
+		req = (isDojo && isNode)? global.require : require;
+	if (isNode) {
+		module.exports = factory(req('../request'));
+	}
+	else if (isAmd) {
+		define(['../request'], factory);
+	}
+})(function (request) {
+	'use strict';
 	var isAmd = (typeof(define) !== 'undefined') && define.amd,
 		isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
+
 	function resolveUrl(url, path, prefixes, baseUrl, toBase64) {
 		function attachBaseUrl(baseUrl, r) {
 			if (baseUrl) {

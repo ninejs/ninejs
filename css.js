@@ -264,7 +264,7 @@ define(['./core/extend', './core/deferredUtils', './css/builder', './request'], 
 			packages = window.dojoConfig.packages;
 		}
 		else {
-			packages = requirejs.s.contexts._.config.packages;
+			packages = window.requirejs.s.contexts._.config.packages;
 		}
 		var defer = def.defer();
 		loadStyle(css, uniqueId, packages, '', true, function (styleObj) {
@@ -316,7 +316,6 @@ define(['./core/extend', './core/deferredUtils', './css/builder', './request'], 
 				}
 				else {
 					request.get(path, { type: 'html' }).then(function (data) {
-						/* global requirejs */
 						if ((typeof(window) !== 'undefined') && (data instanceof window.XMLHttpRequest)) { //Sometimes reqwest returns xhr object when response is empty
 							data = data.responseText;
 						}
@@ -325,7 +324,7 @@ define(['./core/extend', './core/deferredUtils', './css/builder', './request'], 
 							packages = window.dojoConfig.packages;
 						}
 						else {
-							packages = requirejs.s.contexts._.config.packages;
+							packages = window.requirejs.s.contexts._.config.packages;
 						}
 						loadStyle(data, path, packages, '', autoEnable, load);
 					});
