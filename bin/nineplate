@@ -8,7 +8,7 @@ var nineplate = require('../nineplate'),
 	def = require('../core/deferredUtils');
 function generate (text, args) {
 	if (args.sourceExtension === '.css') {
-		var fn = cssBuilder.buildAppender(text, args.sourceName + '_' + Math.random(), args.sourcePath, args.cssPrefixes || {}, path.dirname(args.sourcePath), {}, true);
+		var fn = cssBuilder.buildAppender(text, path.relative(args.baseUrl || '', args.sourcePath).split('\\').join('/'), args.sourcePath, args.cssPrefixes || {}, path.dirname(args.sourcePath), {}, true);
 		var defer = def.defer();
 		defer.resolve(fn);
 		return defer.promise;
@@ -82,7 +82,7 @@ var watched = {};
 						}
 						else {
 							var fileExtension = path.extname(realPath);
-							generate(text, {target: argv.target || 'amd', sourcePath: realPath, sourceExtension: fileExtension, sourceName: path.basename(realPath) }).then(function (text) {
+							generate(text, {target: argv.target || 'amd', sourcePath: realPath, sourceExtension: fileExtension, sourceName: path.basename(realPath), baseUrl: argv.baseUrl }).then(function (text) {
 								var defaultExt = (fileExtension === '.css')? 'css.js' : '9plate.js';
 								var extension = argv.extension || defaultExt;
 								var newPath = path.resolve(path.dirname(realPath), path.basename(realPath, path.extname(realPath)) + '.' + extension);

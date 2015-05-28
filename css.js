@@ -311,7 +311,7 @@ define(['./core/extend', './core/deferredUtils', './css/builder', './request'], 
 				if (isDojo) { //Dojo Toolkit
 					require.getText(path, false, function(data)
 					{
-						loadStyle(data, path, require.rawConfig.packages, '', /*require.rawConfig.baseUrl, */ autoEnable, load);
+						loadStyle(data, path, require.rawConfig.packages, require.rawConfig.baseUrl, autoEnable, load);
 					});
 				}
 				else {

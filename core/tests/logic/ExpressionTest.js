@@ -867,8 +867,8 @@ describe('core/logic/Expression', function () {
 			//are loaded relative to the top-level JS file.
 			nodeRequire: require,
 			paths: {
-				'ninejs': __dirname + '/../../',
-				'reqwest': __dirname + '/../../node_modules/reqwest'
+				'ninejs': __dirname + '/../../../',
+				'reqwest': __dirname + '/../../../node_modules/reqwest'
 			}
 		});
 	

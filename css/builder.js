@@ -52,13 +52,13 @@
 			r = url;
 		}
 		else {
-			var pathSplit = path.split('/'), urlSplit = url.split('/');
+			var pathSplit = path.split(/\/|\\/), urlSplit = url.split('/');
 			pathSplit.pop(); //stripping the file name
-			while (urlSplit[0] && urlSplit[0] === '..'){
+			while (pathSplit.length && urlSplit[0] && (urlSplit[0] === '..')){
 				pathSplit.pop();
 				urlSplit.shift();
 			}
-			while (urlSplit[0] && urlSplit[0] === '.'){
+			while (pathSplit.length && urlSplit[0] && (urlSplit[0] === '.')){
 				urlSplit.shift();
 			}
 			url = urlSplit.join('/');
@@ -89,6 +89,13 @@
 	}
 	var fs, pathModule;
 	function convertToBase64Url(url, path) {
+		if (/^data:/.test(url)){
+			return url;
+		}
+		var suffixIdx = url.indexOf('?');
+		if (suffixIdx >= 0) {
+			url = url.substr(0, suffixIdx);
+		}
 		if (!fs || !pathModule){
 			if (isDojo) {
 				require(['dojo/node!fs', 'dojo/node!path'], function (f, p) {
@@ -102,7 +109,15 @@
 			}
 		}
 		var sizeLimit = 30000;
-		var mimeTypes = {'.gif': 'image/gif', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.svg': 'image/svg+xml'};
+		var mimeTypes = {
+			'.gif': 'image/gif',
+			'.png': 'image/png',
+			'.jpg': 'image/jpeg',
+			'.jpeg': 'image/jpeg',
+			'.svg': 'image/svg+xml',
+			'.woff': 'application/x-font-woff',
+			'.ttf': 'font/opentype'
+		};
 		var extension = pathModule.extname(url);
 
 		if (mimeTypes[extension]){
@@ -122,14 +137,19 @@
 		return null;
 	}
 
-	function embedUrls(data, path, prefixes, baseUrl) {
+	function embedUrls(data, path, prefixes, baseUrl, toBase64) {
 		var r = data;
 		/* jshint unused: true */
 		r = r.replace(/url\s*\(\s*['"]?([^'"\)]*)['"]?\s*\)/g, function($0, url){
 			var newUrl = resolveUrl(url, path, prefixes, baseUrl);
-			var embedded = convertToBase64Url(newUrl, path);
-			if (embedded) {
-				url = embedded;
+			if (toBase64) {
+				var embedded = convertToBase64Url(newUrl, path);
+				if (embedded) {
+					url = embedded;
+				}
+			}
+			else {
+				url = newUrl;
 			}
 			return 'url(\'' + url + '\')';
 		});
@@ -177,9 +197,9 @@
 		}
 		var toBase64 = !!options.toBase64;
 
-		if (toBase64) {
-			data = embedUrls(data, realPath, prefixes, baseUrl);
-		}
+		data = embedUrls(data, realPath, prefixes, baseUrl, toBase64);
+
+		path = path.split('\\').join('/');
 		options.path = path;
 		if (options.parentPath){
 			options.path = options.parentPath + ' => ' + options.path;
