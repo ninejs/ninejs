@@ -15,7 +15,8 @@
 	}
 })(function (builder, fs) {
 	'use strict';
-	var thisModuleMid = 'ninejs/css';
+	var thisModuleMid = 'ninejs/css',
+		configMid = 'ninejs/config';
 
 	function deepToString(obj, quotes) {
 		quotes = quotes || '\'';
@@ -71,7 +72,7 @@
 	function buildAppender (text, name, src, packages, baseUrl, noWrap) {
 		/* jshint evil: true */
 		var cssText = text;
-		var functionBody = 'define([\'' + thisModuleMid + '\'], function(style) {\n';
+		var functionBody = 'define([\'' + thisModuleMid + '\', \'' + configMid + '\'], function(style, config) {\n';
 		var cssResult;
 
 		builder.processCss(cssText, name, src, packages, baseUrl, { toBase64: true }/* toBase64 */, function(result) {
@@ -97,7 +98,8 @@
 		}
 		replaceQuotes(cssResult);
 
-		functionBody += 'var result = ' + deepToString(cssResult, '\"') + ';';
+		functionBody += 'var result = ' + deepToString(cssResult, '\"') + ';\n';
+		functionBody += 'if (config.applicationUrl) { result.path = config.applicationUrl + result.path; }\n';
 		functionBody += '\nreturn style.style(result);\n});';
 		if (noWrap) {
 			return functionBody;
