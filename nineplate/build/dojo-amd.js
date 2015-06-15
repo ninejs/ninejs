@@ -47,6 +47,7 @@ define(['../../nineplate', 'dojo/node!fs'], function (nineplate, fs) {
 							}
 							catch (error) {
 								console.error('ninejs/nineplate: Error while compiling template ' + moduleInfo.mid);
+								console.log('ninejs/nineplate: Error while compiling template ' + moduleInfo.mid);
 								throw error;
 							}
 						}

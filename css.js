@@ -290,8 +290,18 @@ define(['./core/extend', './core/deferredUtils', './css/builder', './request'], 
 		}
 		var isDojo = (define.amd && define.amd.vendor === 'dojotoolkit.org');
 
-		if (isDojo && require.cache[/*this.mid + '!' + */parts[0]]) {
-			require([/*this.mid + '!' + */parts[0]], function(styleModule) {
+		var name;
+		if (require.cache) {
+			if (require.cache[(parts[0] + '.ncss')]) {
+				name = (parts[0] + '.ncss');
+			}
+			else {
+				name = parts[0];
+			}
+		}
+
+		if (isDojo && require.cache[name]) {
+			require([name], function(styleModule) {
 				if (autoEnable){
 					styleModule.enable();
 				}

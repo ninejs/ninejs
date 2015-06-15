@@ -14,11 +14,17 @@ module.exports = function(grunt)
 		//If debugging, uncomment this line and set options.debug = true
 		Jison.print = function() {};
 		Parser = Jison.Parser;
-		var parser = new Parser(grammar, { 'backtrack_lexer': true });
-		var parserSource = parser.generateCommonJSModule();
+		var options = {
+			type: 'slr',
+			moduleType: 'commonjs',
+			moduleName: 'jsonparse'
+		};
+		var gen = new Jison.Generator(grammar, options);
+		var parserSource = gen.generate();
 		grunt.file.write(__dirname + '/../generated/commonjs.js', parserSource);
-		var gen = new Jison.Generator(grammar);
-		parserSource = gen.generateAMDModule();
+		options.moduleType = 'amd';
+		gen = new Jison.Generator(grammar, options);
+		parserSource = gen.generate();
 		grunt.file.write(__dirname + '/../generated/amd.js', parserSource);
 		done();
 	});

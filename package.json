@@ -40,7 +40,7 @@
     "grunt-mocha-test": "*",
     "grunt-njs-css": "*",
     "grunt-simple-mocha": "*",
-    "jison": "*",
+    "jison": "^0.4.15",
     "jscoverage": "^0.5.6",
     "less": "*",
     "mocha": "^1.21.4",
