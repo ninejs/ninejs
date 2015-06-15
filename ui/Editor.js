@@ -212,10 +212,14 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 					var key = getKey(item),
 						value = getValue(item),
 						opt;
+
 					opt = append.create('option');
-					if (key !== '') {
-						opt.setAttribute('value', key);
+					opt.setAttribute('value', key);
+
+					if (item.disabled === true) {
+						opt.setAttribute('disabled', 'disabled');
 					}
+
 					if (item.selected === true || key === self.get('value')) {
 						opt.setAttribute('selected', 'selected');
 					}
