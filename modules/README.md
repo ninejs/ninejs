@@ -6,7 +6,7 @@ Contains modules used to build basic ninejs features.
 
     var moduleDefine = require('ninejs/modules/moduleDefine');
     moduleDefine(['dependency1Name', 'dependency2Name', { id: 'ninejs', version: '0.1.0', features: { harmony: true } }], function (unitDefine) {
-        unitDefine({ id: 'mySuperModule', version: '1.0.0' }, function (dependency1, dependency2, dependency2) {
+        return unitDefine({ id: 'mySuperModule', version: '1.0.0' }, function (config, dependency1, dependency2, dependency2) {
             ///
             return unitObj; //whatever you return here is your unit and could be used as a dependency for other units
         });

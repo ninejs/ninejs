@@ -98,7 +98,22 @@
 		}
 		replaceQuotes(cssResult);
 
+		var data = cssResult.data,
+			result = [],
+			idx;
+		while (data.length > 200) {
+			idx = 199;
+			while (data[idx] === '\\') {
+				idx += 1;
+			}
+			result.push(data.substr(0,idx + 1));
+			data = data.substr(idx + 1);
+		}
+		result.push(data);
+		delete cssResult.data;
+		data = '\"' + result.join('\" + \n \"') + '\"';
 		functionBody += 'var result = ' + deepToString(cssResult, '\"') + ';\n';
+		functionBody += 'result.data = ' + data + '; \n';
 		functionBody += 'if (config.applicationUrl) { result.path = config.applicationUrl + result.path; }\n';
 		functionBody += '\nreturn style.style(result);\n});';
 		if (noWrap) {

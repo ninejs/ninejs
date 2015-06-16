@@ -17,6 +17,7 @@ This is just an abstraction that detects if it's running in client side to retur
 	}
 	function deferred(extend, Q, DeferredList, baseDeferred) {
 		var props = {
+			isPromise: isPromise
 		};
 		if (nativePromise) {
 			extend.mixin(props, {

@@ -4,12 +4,12 @@
 	var req = require;
 	(function (factory) {
 		if (isAmd) {
-			define(['../core/extend', '../modules/Module'], factory);
+			define(['../core/extend', './Module', '../core/deferredUtils'], factory);
 		}
 		else {
-			module.exports = factory(req('../core/extend'), req('../modules/Module'));
+			module.exports = factory(req('../core/extend'), req('./Module'), req('../core/deferredUtils'));
 		}
-	})(function (extend, Module) {
+	})(function (extend, Module, def) {
 		return function (consumes, callback) {
 			consumes = (consumes || []).map(function (item) {
 				if (typeof(item) === 'string') {
@@ -57,7 +57,21 @@
 					this.consumes.forEach(function (item) {
 						args.push(self.getUnit(item.id));
 					});
-					return provideMap[name].apply(null, args);
+					var unitObj = provideMap[name].apply(null, args);
+					if (unitObj) {
+						if (def.isPromise(unitObj.init)) {
+							return unitObj.init;
+						}
+						else if (typeof(unitObj.init) === 'function') {
+							return def.when(unitObj.init());
+						}
+						else {
+							return unitObj;
+						}
+					}
+					else {
+						return unitObj;
+					}
 				}
 			};
 			callback(provide);
