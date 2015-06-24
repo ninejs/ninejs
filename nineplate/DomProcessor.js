@@ -55,6 +55,9 @@
 				if (isNode && !sync) {
 					return def.when(parsedXml, function(value) {
 						return processParsedXml(new XmlNode(value), null, {});
+					}, function (error) {
+//						console.log(text);
+						throw error;
 					});
 				}
 				else {
@@ -108,10 +111,14 @@
 						processTextFragment(nodeValue, target, targetType, null, null, elementContext);
 					});
 				}
+				function notSkipped (at) {
+					return !at.skip;
+				}
+
 				function visitChildNodes() {
 					var cnt,
 						chunk;
-					attributes = xmlNode.getAttributes();
+					attributes = xmlNode.getAttributes().filter(notSkipped);
 					for (cnt = 0; cnt < attributes.length; cnt += 1) {
 						nodeAct(attributes[cnt], xmlNode);
 					}
@@ -132,7 +139,7 @@
 						}
 						textParseContext.appendLine();
 						
-						attributes = xmlNode.getAttributes();
+						attributes = xmlNode.getAttributes().filter(notSkipped);
 						for (cnt = 0; cnt < attributes.length; cnt += 1) {
 							nodeAct(attributes[cnt], xmlNode);
 						}
@@ -712,7 +719,7 @@
 							attrElse.addAssignment(target, renderer.expression('putValue').or(renderer.literal('')).parenthesis());
 						}
 						else {
-							var attrCondition = renderer.addCondition(renderer.expression(target).notEquals(renderer.raw('undefined')));
+							var attrCondition = renderer.addCondition(renderer.expression('putValue').notEquals(renderer.raw('undefined')));
 							attrCondition.renderer.addAssignment(target, renderer.expression('putValue'));
 							var attrElse = attrCondition.elseDo();
 							attrElse.addAssignment(target, renderer.literal(''));
@@ -882,6 +889,50 @@
 						.invoke(renderer.literal(eventName), eventRenderer)
 				);
 			}
+			function isAmdPlugin(xmlNode) {
+				return ((xmlNode.namespaceUri() || '').indexOf('amd://') === 0) && (xmlNode.nodeName().indexOf('__') < 0);
+			}
+			function processAmdPlugin(xmlNode) {
+				var namespaceUri = xmlNode.namespaceUri(),
+					amdPrefix = namespaceUri.substr(6),
+					moduleName = xmlNode.nodeName(),
+					mid = amdPrefix + '/' + moduleName,
+					amdModuleVar = amdPathMapping[mid];
+				enableAmd();
+				if (!amdModuleVar) {
+					amdModuleVar = renderer.getNewVariable();//Here I'm asking renderer and not parentRenderer to avoid a shadowing
+					amdPathMapping[mid] = amdModuleVar;
+					parentRenderer
+						.addVar(
+							amdModuleVar,
+							parentRenderer
+								.expression('require')
+								.invoke(
+							parentRenderer.literal(mid)
+						)
+					);
+				}
+
+				var options = {};
+				//searching for options
+				var attributes = xmlNode.parentNode().getAttributes().filter(function (at) {
+					return at.namespaceUri() === namespaceUri && (at.nodeName().indexOf((moduleName + '__')) === 0);
+				}).forEach(function (at) {
+					options[at.nodeName().substr((moduleName + '__').length)] = at.value();
+					at.skip = true;
+				});
+
+				renderer.addStatement(
+					renderer
+					.expression(amdModuleVar)
+					.invoke(
+						renderer.expression('node'),
+						renderer.expression('context'),
+						renderer.literal(xmlNode.value()),
+						renderer.raw(JSON.stringify(options))
+					)
+				);
+			}
 			function processExpressionToken(result, target, targetType, elementContext, compound) {
 				if (result.modifier === 'live') {
 					if (result.value.type === 'expression'){
@@ -1038,6 +1089,9 @@
 				} else if (isOnEvent(xmlNode)) {
 					elementContext.needsDom = true;
 					processOnEvent(xmlNode);
+				} else if (isAmdPlugin(xmlNode)) {
+					elementContext.needsDom = true;
+					processAmdPlugin(xmlNode);
 				} else {
 					renderer.addAssignment('av', renderer.literal(''));
 //					r += 'av = \'\';\n';
@@ -1118,6 +1172,8 @@
 					result = renderer.getFunction();
 					assignDependencies(result);
 					return result;
+				}, function (error) {
+					throw error;
 				});
 			}
 			renderer = popRenderer();

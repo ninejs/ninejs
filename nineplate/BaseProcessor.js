@@ -84,6 +84,9 @@
 			},
 			namespaceUri: function () {
 				return this.node.namespaceURI || this.node.namespaceUri || '';
+			},
+			parentNode: function () {
+				return new XmlNode(this.node.parentNode);
 			}
 		}, function (parsedXmlNode) {
 			this.node = parsedXmlNode;

@@ -921,7 +921,7 @@ SaxParser.prototype._fireError = function(strMsg) {
     this.m_bErr = true;
 
     if(this.m_hndErr && this.m_hndErr.onError) {
-        this.m_hndErr.onError(this.m_strErrMsg);
+        this.m_hndErr.onError(this.m_strErrMsg, this);
     }
 }
 

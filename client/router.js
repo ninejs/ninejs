@@ -145,9 +145,9 @@ define(['../core/array',
 			return new Route(options, this);
 		},
 		go: function(/* String */ route, /* Boolean */ replace) {
-			this.emit('9jsRouteChanging', { route: route, replace: replace });
-			route = cleanRoute(route);
 			var current = getRoute();
+			route = cleanRoute(route);
+			this.emit('9jsRouteChanging', { route: route, oldRoute: current, replace: replace });
 			if (current === route) {
 				this.dispatchRoute({ newURL: route, oldURL: '' });
 			}
@@ -190,7 +190,7 @@ define(['../core/array',
 			}
 			function emitChanged () {
 				self.emit('9jsRouteChanged', {
-					newURL: newUrl
+					route: newUrl
 				});
 			}
 			function routeActionError(err) {

@@ -29,6 +29,8 @@
 							return '\'' + item + '\'';
 						}).join(',');
 						return preText + depsText + prePostText + fn + postText;
+					}, function (err) {
+						throw err;
 					});
 				}
 				var fn = this.compileDom(sync);
@@ -64,6 +66,8 @@
 						result = def.when(result, function(val) {
 							self.compiledDomVersion = val;
 							return val;
+						}, function (err) {
+							throw err;
 						});
 					}
 				}
