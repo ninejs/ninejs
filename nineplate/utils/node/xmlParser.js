@@ -117,7 +117,7 @@
 					if (parser) {
 						err.line = parser.getLineNumber();
 						err.column = parser.getColumnNumber();
-						err.xml = parser.m_parser.m_xml;
+						err.xml = parser['m_parser']['m_xml'];
 					}
 					deferred.reject(err);
 				});

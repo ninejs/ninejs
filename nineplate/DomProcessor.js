@@ -915,7 +915,7 @@
 
 				var options = {};
 				//searching for options
-				var attributes = xmlNode.parentNode().getAttributes().filter(function (at) {
+				xmlNode.parentNode().getAttributes().filter(function (at) {
 					return at.namespaceUri() === namespaceUri && (at.nodeName().indexOf((moduleName + '__')) === 0);
 				}).forEach(function (at) {
 					options[at.nodeName().substr((moduleName + '__').length)] = at.value();
