@@ -9,8 +9,6 @@
 		module.exports = factory.apply(null, ['../../core/on', '../utils/setClass', '../../core/objUtils'].map(req));
 	}
 })(function (on, setClass, objUtils) {
-	'use strict';
-	/* global window */
 	return function (node, context, value, options) {
 		var classes = (value || '').split(/,| /).filter(function (s) {
 			return s;
@@ -20,7 +18,7 @@
 			target = [function () { return node; }];
 		}
 		else {
-			target = target.split(/,| /).filter(function (s) {
+			target = target.split(/,/).filter(function (s) {
 				return s;
 			}).map(function (t) {
 				if (t[0] === '#') {
@@ -28,7 +26,7 @@
 						return Array.prototype.slice.call(window.document.getElementById(t.substr(1)), 0);
 					};
 				}
-				else if (t[0] === '.') {
+				else if ((t.indexOf('.') >= 0) || (t.indexOf(' ') >= 0)) {
 					return function () {
 						return Array.prototype.slice.call(context.domNode.querySelectorAll(t), 0);
 					};
@@ -52,26 +50,29 @@
 				setClass(t, '~' + c);
 			});
 		};
-		var handler = on(node, 'click', function (e) {
-			target.reduce(function (previous, f) {
-				var t = f(),
-					cnt,
-					len;
-				if (objUtils.isArray(t)) {
-					len = t.length;
-					for (cnt = 0; cnt < len; cnt += 1) {
-						previous.push(t[cnt]);
+		(options.event || 'click').split(',').map(function (eventName) {
+			return on(node, eventName, function (e) {
+				target.reduce(function (previous, f) {
+					var t = f(),
+						cnt,
+						len;
+					if (objUtils.isArray(t)) {
+						len = t.length;
+						for (cnt = 0; cnt < len; cnt += 1) {
+							previous.push(t[cnt]);
+						}
 					}
-				}
-				else {
-					previous.push(t);
-				}
-				return previous;
-			}, []).forEach(setClasses);
-			e.stopPropagation();
+					else {
+						previous.push(t);
+					}
+					return previous;
+				}, []).forEach(setClasses);
+				e.stopPropagation();
+			});
+		}).forEach(function (handler) {
+			if (context.own) {
+				context.own(handler);
+			}
 		});
-		if (context.own) {
-			context.own(handler);
-		}
 	};
 });
