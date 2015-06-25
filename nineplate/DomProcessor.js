@@ -112,7 +112,7 @@
 					});
 				}
 				function notSkipped (at) {
-					return !at.skip;
+					return !at.get('skip');
 				}
 
 				function visitChildNodes() {
@@ -120,7 +120,9 @@
 						chunk;
 					attributes = xmlNode.getAttributes().filter(notSkipped);
 					for (cnt = 0; cnt < attributes.length; cnt += 1) {
-						nodeAct(attributes[cnt], xmlNode);
+						if (!attributes[cnt].get('skip')) {
+							nodeAct(attributes[cnt], xmlNode);
+						}
 					}
 					childNodes = xmlNode.getChildNodes();
 					chunk = renderer.chunk();
@@ -432,7 +434,7 @@
 						childWidgetConditionRenderer
 							.expression('context')
 							.member('registerChildWidget')
-							.invoke()
+							.invoke(childWidgetConditionRenderer.expression('node'))
 					);
 				}
 				if (!parentNode) {
@@ -889,6 +891,37 @@
 						.invoke(renderer.literal(eventName), eventRenderer)
 				);
 			}
+			function isSubscribeEvent(xmlNode) {
+				return (/^data-ninejs-subscribe-/).test(xmlNode.nodeName());
+			}
+			function processSubscribeEvent(xmlNode) {
+				var eventName = xmlNode.nodeName().substr('data-ninejs-subscribe-'.length),
+					methodName = xmlNode.value(),
+					eventRenderer = renderer.newFunction(),
+					subsFunction = renderer.newFunction(),
+					subsFunctionName = renderer.getNewVariable();
+				subsFunction.addParameter('node');
+				eventRenderer.addReturn(
+					eventRenderer
+						.expression('context')
+						.element(eventRenderer.literal(methodName))
+						.invoke(
+						eventRenderer.expression('node'),
+						eventRenderer.expression('context')
+					)
+				);
+				subsFunction.addStatement(
+					renderer
+						.expression('context')
+						.member('subscribe')
+						.invoke(subsFunction.literal(eventName), eventRenderer)
+				);
+				renderer.addVar(subsFunctionName, subsFunction);
+				renderer.addStatement(
+					renderer.expression(subsFunctionName).invoke(renderer.expression('node'))
+				);
+
+			}
 			function isAmdPlugin(xmlNode) {
 				return ((xmlNode.namespaceUri() || '').indexOf('amd://') === 0) && (xmlNode.nodeName().indexOf('__') < 0);
 			}
@@ -919,7 +952,7 @@
 					return at.namespaceUri() === namespaceUri && (at.nodeName().indexOf((moduleName + '__')) === 0);
 				}).forEach(function (at) {
 					options[at.nodeName().substr((moduleName + '__').length)] = at.value();
-					at.skip = true;
+					at.set('skip', true);
 				});
 
 				renderer.addStatement(
@@ -1092,6 +1125,9 @@
 				} else if (isAmdPlugin(xmlNode)) {
 					elementContext.needsDom = true;
 					processAmdPlugin(xmlNode);
+				} else if (isSubscribeEvent(xmlNode)) {
+					elementContext.needsDom = true;
+					processSubscribeEvent(xmlNode);
 				} else {
 					renderer.addAssignment('av', renderer.literal(''));
 //					r += 'av = \'\';\n';

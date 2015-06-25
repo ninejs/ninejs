@@ -87,6 +87,12 @@
 			},
 			parentNode: function () {
 				return new XmlNode(this.node.parentNode);
+			},
+			set: function (n, v) {
+				this.node[n] = v;
+			},
+			get: function (n) {
+				return this.node[n];
 			}
 		}, function (parsedXmlNode) {
 			this.node = parsedXmlNode;

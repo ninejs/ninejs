@@ -366,8 +366,30 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 			}
 			this[method].call(this, data);
 		},
+		subscribe: function (type, action) {
+			if (!this.$njsCollect[type]) {
+				this.$njsCollect[type] = [];
+			}
+			this.$njsCollect[type].push(action);
+		},
+		collect: function (type, data) {
+			return (this.$njsCollect[type] || []).reduce(function (previous, current) {
+				var t = current();
+				if (typeof(t) !== 'undefined') {
+					if (objUtils.isArray(t)) {
+						t.forEach(function (item) {
+							previous.push(t);
+						});
+					}
+					else {
+						previous.push(t);
+					}
+				}
+				return previous;
+			}, []);
+		},
 		/**
-		 * Allows for a Widget to display a state while waiting for a promise.
+		 * Allows a Widget to display a state while waiting for a promise.
 		 * @param defer {Promise}
 		 * @returns {Promise}
 		 */
@@ -417,6 +439,7 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 		this.skinContract = this.skinContract || [];
 		this.$njsEventListeners = {};
 		this.$njsEventListenerHandlers = [];
+		this.$njsCollect = {};
 		this.$njsChildWidgets = [];
 		this.$njsShowDefer = def.defer();
 		if (!this.domNode) {
