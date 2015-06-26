@@ -7,13 +7,21 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 			//evt.stopPropagation();
 		});
 	}, 0);
-	function createWaitNode (parent) {
-		setClass(parent, 'njsWaiting');
-		return setClass(append(parent, 'div'), 'njsWaitNode');
+	function createWaitNode (parent, self) {
+		if (!self.waiting) {
+			self.waiting = true;
+			setClass(parent, 'njsWaiting');
+			return setClass(append(parent, 'div'), 'njsWaitNode');
+		}
 	}
-	function destroyWaitNode (parent, node) {
-		setClass(parent, '!njsWaiting');
-		parent.removeChild(node);
+	function destroyWaitNode (parent, node, self) {
+		if (self.waiting) {
+			setClass(parent, '!njsWaiting');
+			delete self.waiting;
+		}
+		if (node) {
+			parent.removeChild(node);
+		}
 	}
 	var EventHandler = function (owner, collection, action) {
 		this.owner = owner;
@@ -401,22 +409,22 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 					if (this.domNode) {
 						return def.when(this.domNode, function() {
 							var w = self.waitNode || self.domNode,
-								waitNode = createWaitNode(w);
+								waitNode = createWaitNode(w, self);
 							return def.when(defer, function () {
-								destroyWaitNode(w, waitNode);
+								destroyWaitNode(w, waitNode, self);
 							}, function () {
-								destroyWaitNode(w, waitNode);
+								destroyWaitNode(w, waitNode, self);
 							});
 						});
 					}
 					else {
 						return def.when(this.show(), function () {
 							var w = self.waitNode || self.domNode;
-							var waitNode = createWaitNode(w);
+							var waitNode = createWaitNode(w, self);
 							return def.when(defer, function () {
-								destroyWaitNode(w, waitNode);
+								destroyWaitNode(w, waitNode, self);
 							}, function () {
-								destroyWaitNode(w, waitNode);
+								destroyWaitNode(w, waitNode, self);
 							});
 						}, function (err) {
 							throw err;
