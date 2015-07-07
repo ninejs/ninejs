@@ -109,6 +109,13 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 		}
 		return NumberTextBox;
 	}
+	function toHTML5Date(date) {
+		var year = date.getFullYear(),
+			month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1,
+			day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
+			formated = year + '-' + month + '-' + day;
+		return formated;
+	}
 	function getDateTextBoxConstructor () {
 		var DateTextBox;
 		if (!modernizer.inputtypes.date) {
@@ -129,7 +136,18 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 			DateTextBox = extend(function () {
 				this.domNode = window.document.createElement('input');
 				this.domNode.type = 'date';
-			}, ControlBase);
+			}, ControlBase, {
+				valueSetter: function (val) {
+					if (Object.prototype.toString.call(val) === '[object Date]') {
+						this.value = val;
+						this.domNode.value = toHTML5Date(val);
+					}
+					else {
+						this.value = new Date(val);
+						this.domNode.value = val;
+					}
+				}
+			});
 		}
 		return DateTextBox;
 	}
@@ -246,14 +264,6 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 				self[propName] = c;
 			}
 		};
-	}
-
-	function toHTML5Date(date) {
-		var year = date.getFullYear(), 
-			month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1, 
-			day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
-			formated = year + '-' + month + '-' + day;
-		return formated;
 	}
 
 	return Widget.extend({
