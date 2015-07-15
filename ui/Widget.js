@@ -1,5 +1,5 @@
 /* global window */
-define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/deferredUtils', './utils/setClass', './utils/append'], function (extend, Properties, on, def, setClass, append) {
+define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/deferredUtils', './utils/setClass', './utils/append', '../core/objUtils'], function (extend, Properties, on, def, setClass, append, objUtils) {
 	'use strict';
 	window.setTimeout(function () {
 		on(window.document.body, 'click', function (/*evt*/) {
@@ -382,11 +382,11 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 		},
 		collect: function (type, data) {
 			return (this.$njsCollect[type] || []).reduce(function (previous, current) {
-				var t = current();
+				var t = current(data);
 				if (typeof(t) !== 'undefined') {
 					if (objUtils.isArray(t)) {
 						t.forEach(function (item) {
-							previous.push(t);
+							previous.push(item);
 						});
 					}
 					else {

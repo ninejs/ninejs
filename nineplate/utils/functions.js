@@ -13,8 +13,18 @@
 			e.appendChild(node);
 			return node;
 		}
+		function alternateAppendNs(e, name, ns, doc) {
+			var node = doc.createElementNS(ns, name);
+			e.appendChild(node);
+			return node;
+		}
 		function appendElement(e, name, doc) {
 			var node = doc.createElement(name);
+			e.insertAdjacentElement('beforeEnd', node);
+			return node;
+		}
+		function appendElementNs(e, name, ns, doc) {
+			var node = doc.createElementNS(ns, name);
 			e.insertAdjacentElement('beforeEnd', node);
 			return node;
 		}
@@ -22,8 +32,10 @@
 		return {
 			t : appendText,
 			e: appendElement,
+			ens: appendElementNs,
 			tst: appendTest,
-			ae: alternateAppend
+			ae: alternateAppend,
+			aens: alternateAppendNs
 		};
 	}
 

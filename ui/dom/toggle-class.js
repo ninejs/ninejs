@@ -9,6 +9,8 @@
 		module.exports = factory.apply(null, ['../../core/on', '../utils/setClass', '../../core/objUtils'].map(req));
 	}
 })(function (on, setClass, objUtils) {
+	'use strict';
+	/* global window */
 	return function (node, context, value, options) {
 		var classes = (value || '').split(/,| /).filter(function (s) {
 			return s;

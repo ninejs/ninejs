@@ -452,6 +452,7 @@
 						.addVar('ctxTemp')
 						.addVar('y')
 						.addVar('e', '(' + renderer.varName('fn') + '.tst()?' + renderer.varName('fn') + '.e:' + renderer.varName('fn') + '.ae)')
+						.addVar('ens', '(' + renderer.varName('fn') + '.tst()?' + renderer.varName('fn') + '.ens:' + renderer.varName('fn') + '.aens)')
 						.addVar('a', renderer.varName('fn') + '.a')
 						.addVar('t', renderer.varName('fn') + '.t')
 						.addVar('av')
@@ -1086,31 +1087,61 @@
 				}
 				else {
 					if (isRoot) {
-						renderer
-							.addAssignment(
+						if (xmlNode.namespaceUri()) {
+							renderer
+								.addAssignment(
+								'node',
+								renderer
+									.expression('document')
+									.member('createElementNS')
+									.invoke(
+									renderer.literal(xmlNode.namespaceUri()),
+									renderer.literal(xmlNode.nodeName())
+								)
+							);
+						}
+						else {
+							renderer
+								.addAssignment(
 								'node',
 								renderer
 									.expression('document')
 									.member('createElement')
 									.invoke(
-										renderer.literal(xmlNode.nodeName())
-									)
+									renderer.literal(xmlNode.nodeName())
+								)
 							);
+						}
 //						r += 'node = document.createElement(\'' + xmlNode.nodeName() + '\');\n';
 					}
 					else {
-						renderer
-							.addAssignment(
+						if (xmlNode.namespaceUri()) {
+							renderer
+								.addAssignment(
+								'node',
+								renderer
+									.expression('ens')
+									.invoke(
+									renderer.expression('node'),
+									renderer.literal(xmlNode.nodeName()),
+									renderer.literal(xmlNode.namespaceUri()),
+									renderer.expression('node').member('ownerDocument')
+								)
+							);
+						}
+						else {
+							renderer
+								.addAssignment(
 								'node',
 								renderer
 									.expression('e')
 									.invoke(
-										renderer.expression('node'),
-										renderer.literal(xmlNode.nodeName()),
-										renderer.expression('node').member('ownerDocument')
-									)
+									renderer.expression('node'),
+									renderer.literal(xmlNode.nodeName()),
+									renderer.expression('node').member('ownerDocument')
+								)
 							);
-//						r += 'node = e(node, \'' + xmlNode.nodeName() + '\', node.ownerDocument);\n';
+						}
 					}
 				}
 			}
@@ -1146,7 +1177,7 @@
 							);
 					}
 					else {
-						if (attName === 'class') {
+						if ((attName === 'class') && (!xmlNode.parentNode() || !xmlNode.parentNode().namespaceUri())) {
 							renderer
 								.addAssignment(
 									renderer.expression('node').member('className'),

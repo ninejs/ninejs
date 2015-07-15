@@ -86,7 +86,12 @@
 				return this.node.namespaceURI || this.node.namespaceUri || '';
 			},
 			parentNode: function () {
-				return new XmlNode(this.node.parentNode);
+				if (!this.node.parentNode) {
+					return null;
+				}
+				else {
+					return new XmlNode(this.node.parentNode);
+				}
 			},
 			set: function (n, v) {
 				this.node[n] = v;
