@@ -11,11 +11,19 @@ var fn = {t:function (e, text, doc) {
 			var node = doc.createElement(name);
 			e.insertAdjacentElement('beforeEnd', node);
 			return node;
+		},ens:function (e, name, ns, doc) {
+			var node = doc.createElementNS(ns, name);
+			e.insertAdjacentElement('beforeEnd', node);
+			return node;
 		},tst:function () {
 			/* global window */
 			return window.document.body && (window.document.body.insertAdjacentElement);
 		},ae:function (e, name, doc) {
 			var node = doc.createElement(name);
+			e.appendChild(node);
+			return node;
+		},aens:function (e, name, ns, doc) {
+			var node = doc.createElementNS(ns, name);
 			e.appendChild(node);
 			return node;
 		}},
@@ -30,6 +38,8 @@ var fn = {t:function (e, text, doc) {
     ctxTemp,
     y,
     e = (fn.tst()?fn.e:fn.ae),
+    ens = (fn.tst()?fn.ens:fn.aens),
+    aens = fn.aens,
     a = fn.a,
     t = fn.t,
     av,
@@ -78,7 +88,7 @@ var fn = {t:function (e, text, doc) {
 /* Here starts a live expression with attribute */ 
 av = '';
 putValue = context['liveChanges']['val'];
-if (av !== undefined){
+if (putValue !== undefined){
 	av = putValue;
 
 } else {
@@ -212,7 +222,7 @@ return node;
 		node = e(node,'div',node.ownerDocument);
 		av = '';
 		putValue = context['person']['name'];
-		if (av !== undefined){
+		if (putValue !== undefined){
 			av = putValue;
 
 		} else {
@@ -351,7 +361,7 @@ if (!document){
 
 }
 putValue = context['tagName'];
-if (x !== undefined){
+if (putValue !== undefined){
 	x = putValue;
 
 } else {
@@ -362,7 +372,7 @@ node = document.createElement((putValue) || 'div');
 nodes.push(node);
 av = '';
 putValue = context['class'];
-if (av !== undefined){
+if (putValue !== undefined){
 	av = putValue;
 
 } else {
@@ -622,12 +632,12 @@ node = nodes.pop();
 txn = t(node,'',node.ownerDocument);
 _0.call(this,context);
 nodes.push(node);
-node = e(node,'hi',node.ownerDocument);
+node = ens(node,'hi','http://eduardoburgos.com/',node.ownerDocument);
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'Hello';
 node = nodes.pop();
 nodes.push(node);
-node = e(node,'hi',node.ownerDocument);
+node = ens(node,'hi','http://eduardoburgos.com/',node.ownerDocument);
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'Hi there!';
 node = nodes.pop();

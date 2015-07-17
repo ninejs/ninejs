@@ -453,6 +453,7 @@
 						.addVar('y')
 						.addVar('e', '(' + renderer.varName('fn') + '.tst()?' + renderer.varName('fn') + '.e:' + renderer.varName('fn') + '.ae)')
 						.addVar('ens', '(' + renderer.varName('fn') + '.tst()?' + renderer.varName('fn') + '.ens:' + renderer.varName('fn') + '.aens)')
+						.addVar('aens', renderer.varName('fn') + '.aens')
 						.addVar('a', renderer.varName('fn') + '.a')
 						.addVar('t', renderer.varName('fn') + '.t')
 						.addVar('av')
@@ -987,6 +988,14 @@
 					}
 				}
 			}
+			function getAppendStrategy(xmlNode) {
+				if (xmlNode.namespaceUri() === 'http://www.w3.org/2000/svg') {
+					return 'aens';
+				}
+				else {
+					return 'ens';
+				}
+			}
 			//MUST return Renderer::Expression
 			function solveFunctionCall(expression, inFunctionCall){
 				var arr = expression['arguments'];
@@ -1120,7 +1129,7 @@
 								.addAssignment(
 								'node',
 								renderer
-									.expression('ens')
+									.expression(getAppendStrategy(xmlNode))
 									.invoke(
 									renderer.expression('node'),
 									renderer.literal(xmlNode.nodeName()),
