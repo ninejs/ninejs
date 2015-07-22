@@ -171,7 +171,7 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 		 */
 		updateSkin: function () {
 			var self = this;
-			return def.when(this.skin, function (sk) {
+			function doUpdateSkin(sk) {
 				var cnt, itemSkin, currentSkin = self.currentSkin, skinList = [], toApply;
 				if ((typeof(sk) === 'object') && !extend.isArray(sk)) {
 					skinList.push(sk);
@@ -218,7 +218,13 @@ define(['../core/extend', '../core/ext/Properties', '../core/on', '../core/defer
 						throw err;
 					}
 				}
-			}, console.error);
+			}
+			if (def.isPromise(this.skin)) {
+				return def.when(this.skin, doUpdateSkin, console.error);
+			}
+			else {
+				return doUpdateSkin(this.skin);
+			}
 		},
 		/**
 		 * Calls update over the currentSkin and then emits an 'updatedSkin' event without data.
