@@ -101,6 +101,9 @@
 		function isNumber(n) {
 			return !isNaN(parseFloat(n)) && isFinite(n);
 		}
+		function isDate(date) {
+			return (date instanceof Date) && (!isNaN(date.valueOf()));
+		}
 
 		return {
 			deepToString: deepToString,
@@ -108,6 +111,7 @@
 			isFunction: isFunction,
 			isString: isString,
 			isNumber: isNumber,
+			isDate: isDate,
 			isArray: isArray,
 			isArrayLike: isArrayLike
 		};

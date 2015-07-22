@@ -143,7 +143,12 @@
 						this[name] = value;
 						result = this;
 					}
-					if (old !== newValue) {
+					if (objUtils.isDate(old) && objUtils.isDate(newValue)) {
+						if (old.getTime() !== newValue.getTime()) {
+							emitToWatchList(this, name, old, newValue);
+						}
+					}
+					else if (old !== newValue) {
 						emitToWatchList(this, name, old, newValue);
 					}
 				}

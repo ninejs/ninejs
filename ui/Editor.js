@@ -677,7 +677,6 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 						this.control.destroyRecursive(false);
 					}
 				}
-				this.control = def.defer();
 				var p = def.when(this._clearDataTypeClasses(), function () {
 					setClass(self.domNode, ('dataType-' + val));
 
@@ -701,8 +700,9 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 							setText.emptyNode(self.domNode);
 						}
 						self.control = ctrl;
-						if (typeof(controlPromise.resolve) === 'function') {
-							controlPromise.resolve(ctrl);
+						if (def.isPromise(controlPromise)) {
+							self.controlDefer.resolve(ctrl);
+							self.controlDefer = null;
 						}
 
 						(self.control.startup || self.control.show).call(self.control);
@@ -737,7 +737,7 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 				}
 				this.value = val;
 			}
-			return def.when(this.control, function () {
+			var setter = function () {
 				if (!stopPropagate) {
 					var dataType = self.get('dataType'), implied;
 					//special case for number values
@@ -758,7 +758,13 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 						self.control.set('value', val);
 					}
 				}
-			});
+			};
+			if (def.isPromise(this.control)) {
+				return def.when(this.control, setter);
+			}
+			else {
+				setter(this.control);
+			}
 		},
 
 		optionsSetter : function (values) {
@@ -772,6 +778,7 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 			});
 		}
 	}, function () {
-		this.control = def.defer();
+		this.controlDefer = def.defer();
+		this.control = this.controlDefer.promise;
 	});
 });
