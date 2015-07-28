@@ -29,6 +29,10 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 		dateTextBoxImpl = editorConfig.DateTextBox || 'dijit/form/DateTextBox',
 		timeTextBoxImpl = editorConfig.TimeTextBox || 'dijit/form/TimeTextBox',
 		ENTER = 13;
+	var pad = '00';
+	function padTime(str) {
+		return pad.substring(0, pad.length - str.length) + str;
+	}
 	ControlBase = extend(Widget, {
 		on: function (type, act) {
 			this.own(
@@ -45,6 +49,10 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 			this.domNode.focus();
 		},
 		valueSetter: function (v) {
+			if (v && (this.domNode.type === 'time')) {
+				var d = new Date(v);
+				v = padTime('' + d.getHours()) + ':' + padTime('' + d.getMinutes()) + ':' + padTime('' + d.getSeconds());
+			}
 			this.value = v;
 			this.domNode.value = v;
 		},
