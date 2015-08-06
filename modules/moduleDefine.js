@@ -63,7 +63,11 @@
 							return unitObj.init;
 						}
 						else if (typeof(unitObj.init) === 'function') {
-							return def.when(unitObj.init());
+							return def.when(unitObj.init(), function (r) {
+								return r;
+							}, function (err) {
+								throw new Error(err);
+							});
 						}
 						else {
 							return unitObj;
