@@ -33,6 +33,24 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 	function padTime(str) {
 		return pad.substring(0, pad.length - str.length) + str;
 	}
+	/**
+	 * Parse a time in nearly any format
+	 * @param {string} time - Anything like 1 p, 13, 1:05 p.m., etc.
+	 * @returns {Date} - Date object for the current date and time set to parsed time
+	 */
+	function parseTime(time) {
+		var b = time.match(/\d+/g);
+
+		// return undefined if no matches
+		if (!b) return;
+
+		var d = new Date();
+		d.setHours(b[0]>12? b[0] : b[0]%12 + (/p/i.test(time)? 12 : 0), // hours
+			/\d/.test(b[1])? b[1] : 0,     // minutes
+			/\d/.test(b[2])? b[2] : 0);    // seconds
+		return d;
+	}
+
 	ControlBase = extend(Widget, {
 		on: function (type, act) {
 			this.own(
@@ -51,6 +69,9 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 		valueSetter: function (v) {
 			if (v && (this.domNode.type === 'time')) {
 				var d = new Date(v);
+				if (isNaN(d.valueOf())) {
+					d = parseTime(v);
+				}
 				v = padTime('' + d.getHours()) + ':' + padTime('' + d.getMinutes()) + ':' + padTime('' + d.getSeconds());
 			}
 			this.value = v;

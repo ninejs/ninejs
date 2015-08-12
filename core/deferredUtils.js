@@ -39,7 +39,7 @@ This is just an abstraction that detects if it's running in client side to retur
 				},
 				defer: function () {
 					if (arguments.length) {
-						Promise.resolve.apply(Promise, arguments);
+						return Promise.resolve.apply(Promise, arguments);
 					}
 					else {
 						var pResolve,
