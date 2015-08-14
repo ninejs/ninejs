@@ -45,7 +45,7 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 		if (!b) return;
 
 		var d = new Date();
-		d.setHours(b[0]>12? b[0] : b[0]%12 + (/p/i.test(time)? 12 : 0), // hours
+		d.setHours(b[0]>=12? b[0] : b[0]%12 + (/p/i.test(time)? 12 : 0), // hours
 			/\d/.test(b[1])? b[1] : 0,     // minutes
 			/\d/.test(b[2])? b[2] : 0);    // seconds
 		return d;
