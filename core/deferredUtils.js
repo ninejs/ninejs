@@ -28,12 +28,7 @@ This is just an abstraction that detects if it's running in client side to retur
 						result = [];
 					for (cnt = 0; cnt < len; cnt += 1) {
 						current = arr[cnt];
-						if (isPromise(current)) {
-							result.push(current);
-						}
-						else {
-							result.push(Promise.resolve(current));
-						}
+						result.push(Promise.resolve(current));
 					}
 					return result;
 				},

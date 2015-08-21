@@ -81,6 +81,8 @@
 									moduleRegistry.enabledUnits[item.id] = defer.promise;
 									def.when(self.init(item.id, config[item.id]), function () {
 										defer.resolve(true);
+									}, function (err) {
+										defer.reject(err);
 									});
 									return moduleRegistry.enabledUnits[item.id];
 								}
