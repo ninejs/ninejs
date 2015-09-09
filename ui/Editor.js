@@ -139,9 +139,9 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 		return NumberTextBox;
 	}
 	function toHTML5Date(date) {
-		var year = date.getFullYear(),
-			month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1,
-			day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
+		var year = date.getUTCFullYear(),
+			month = date.getUTCMonth() + 1 < 10 ? '0' + (date.getUTCMonth() + 1) : date.getUTCMonth() + 1,
+			day = date.getUTCDate() < 10 ? '0' + date.getUTCDate() : date.getUTCDate(),
 			formated = year + '-' + month + '-' + day;
 		return formated;
 	}
