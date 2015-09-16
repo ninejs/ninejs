@@ -140,7 +140,7 @@
 	function embedUrls(data, path, prefixes, baseUrl, toBase64) {
 		var r = data;
 		/* jshint unused: true */
-		r = r.replace(/url\s*\(\s*['"]?([^'"\)]*)['"]?\s*\)/g, function($0, url){
+		r = r.replace(/(embed)?url\s*\(\s*['"]?([^'"\)]*)['"]?\s*\)/g, function($0, $1, url){
 			var newUrl = resolveUrl(url, path, prefixes, baseUrl);
 			if (toBase64) {
 				var embedded = convertToBase64Url(newUrl, path);

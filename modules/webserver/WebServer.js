@@ -27,6 +27,7 @@ var WebServer = extend(Properties, {
 		this.baseUrl = config.baseUrl || '';
 		this.jsUrl = config.jsUrl || '/js';
 		this.port = config.port;
+		this.ip = config.ip || undefined;
 		this.app = express();
 	},
 	/*
@@ -190,7 +191,12 @@ var WebServer = extend(Properties, {
 			});
 			self.app[resource.method || 'get'].apply(self.app, args);
 		});
-		this.app.listen(this.port);
+		if (this.ip) {
+			this.app.listen(this.port, this.ip);
+		}
+		else {
+			this.app.listen (this.port);
+		}
 	},
 	clientSetup: function(action) {
 		if (action) {
