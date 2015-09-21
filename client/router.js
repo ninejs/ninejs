@@ -3,7 +3,7 @@ define(['../core/array',
 	'../core/deferredUtils', '../core/ext/Evented', '../core/ext/Properties', '../core/extend', '../core/on', './hash'], function(array, def, Evented, Properties, extend, on, hash) {
 	'use strict';
 	var idMatch = /:(\w[\w\d]*)/g,
-		idReplacement = '([^\\/]+)',
+		idReplacement = '([^\\/\\&]+)',
 		globMatch = /\*(\w[\w\d]*)/,
 		globReplacement = '(.+)';
 	function nullf() {
