@@ -1,68 +1,82 @@
-/*
-Dojo Toolkit's dojo/request as of jan 2014
-*/
-(function (factory) {
-	'use strict';
-	var req = require,
-		isAmd = typeof (define) === 'function' && define.amd,
-		isDojo = isAmd && (define.amd.vendor === 'dojotoolkit.org');
-	if (isAmd) {
-		if (isDojo) {
-			define(['dojo/request'], factory);
-		}
-		else {
-			define(['reqwest/reqwest'], factory);
-		}
-	}
-	else if (typeof(exports) === 'object') {
-		module.exports = factory(req('request'));
-	}
-})(function (request) {
-	'use strict';
-	var isAmd = typeof (define) === 'function' && define.amd,
-		isDojo = isAmd && (define.amd.vendor === 'dojotoolkit.org');
-	if (isDojo) {
-		return request;
-	}
-	else {
-		var fn = function () {
-			return request.apply(request, arguments);
-		};
-		var verb = function (v, args) {
-			var obj;
-			if (typeof(args[0]) === 'object') {
-				obj = args[0];
-			}
-			else if (typeof(args[1]) === 'object') {
-				obj = args[1];
-				if (typeof(args[0]) === 'string') {
-					obj.url = args[0];
-					args.splice(0,1);
-				}
-			}
-			if (obj) {
-				obj.method = v;
-				if (obj.handleAs) {
-					obj.type = obj.handleAs;
-				}
-			}
-			return fn.apply(null, args);
-		};
-		fn.get = function () {
-			return verb('get', Array.prototype.slice.call(arguments, 0));
-		};
-		fn.post = function () {
-			return verb('post', Array.prototype.slice.call(arguments, 0));
-		};
-		fn.put = function () {
-			return verb('put', Array.prototype.slice.call(arguments, 0));
-		};
-		fn.del = function () {
-			return verb('delete', Array.prototype.slice.call(arguments, 0));
-		};
-		fn.patch = function () {
-			return verb('patch', Array.prototype.slice.call(arguments, 0));
-		};
-		return fn;
-	}
+(function (deps, factory) {
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === 'function' && define.amd) {
+        define(deps, factory);
+    }
+})(["require", "exports", "reqwest/reqwest"], function (require, exports) {
+    var req = require, isAmd = typeof (define) === 'function' && define.amd, isDojo = isAmd && (define.amd.vendor === 'dojotoolkit.org');
+    var request;
+    if (isAmd) {
+        request = require('reqwest/reqwest');
+    }
+    else if (typeof (exports) === 'object') {
+        request = req('request');
+    }
+    function fn() {
+        return request.apply(request, arguments);
+    }
+    exports.default = fn;
+    var verb = function (v, args) {
+        var obj;
+        if (typeof (args[0]) === 'object') {
+            obj = args[0];
+        }
+        else if (typeof (args[1]) === 'object') {
+            obj = args[1];
+            if (typeof (args[0]) === 'string') {
+                obj.url = args[0];
+                args.splice(0, 1);
+            }
+        }
+        if (obj) {
+            obj.method = v;
+            if (obj.handleAs) {
+                obj.type = obj.handleAs;
+            }
+        }
+        return fn.apply(null, args);
+    };
+    function get() {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i - 0] = arguments[_i];
+        }
+        return verb('get', args);
+    }
+    exports.get = get;
+    function post() {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i - 0] = arguments[_i];
+        }
+        return verb('post', args);
+    }
+    exports.post = post;
+    function put() {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i - 0] = arguments[_i];
+        }
+        return verb('put', args);
+    }
+    exports.put = put;
+    function del() {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i - 0] = arguments[_i];
+        }
+        return verb('delete', args);
+    }
+    exports.del = del;
+    function patch() {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i - 0] = arguments[_i];
+        }
+        return verb('patch', args);
+    }
+    exports.patch = patch;
 });
+//# sourceMappingURL=request.js.map

@@ -10,8 +10,10 @@ function exports(grunt) {
 		stylusFiles = [ '**/*.styl', '!node_modules/**', '!ui/bootstrap/extension.styl' ],
 		lessFiles = ['ui/bootstrap/less/bootstrap.less', 'ui/bootstrap/less/responsive.less'],
 		ncssFiles = ['ui/bootstrap/less/bootstrap.ncss', 'ui/bootstrap/less/responsive.ncss'],
+		tsfiles = ['**/*.ts', '!**/*.d.ts', '!node_modules/**/*.ts'],
 		Q = require('kew');
 
+	require('load-grunt-tasks')(grunt);
 	// Project configuration.
 	grunt.initConfig({
 		mocha: { //Phantomjs
@@ -19,18 +21,12 @@ function exports(grunt) {
 				src: ['nineplate/tests/phantomTest.html']
 			}
 		},
-		jscoverage: {
-			all: {
-				src: testFiles
-			}
-		},
 		mochaTest: {
 			normal: {
 				src: testFiles,
 				options: {
 					reporter: 'spec',
-					globals: [],
-					require: 'jscoverage'
+					globals: []
 				}
 			},
 			watch: {
@@ -39,21 +35,16 @@ function exports(grunt) {
 					reporter: 'spec',
 					globals: []
 				}
-			},
-			cover: {
-				src: testFiles,
-				options: {
-					reporter: 'html-cov',
-					quiet: true,
-					captureFile: 'coverage.html',
-					globals: []
-				}
 			}
 		},
 		watch: {
-			jshint : {
-				files : jsFiles,
-				tasks : 'jshint'
+			//jshint : {
+			//	files : jsFiles,
+			//	tasks : 'jshint'
+			//},
+			ts: {
+				files : tsfiles,
+				tasks : 'ts'
 			},
 			stylus: {
 				files: stylusFiles,
@@ -62,11 +53,12 @@ function exports(grunt) {
 			phantom: {
 				files: phantomWatch.slice(0).concat(jsFiles),
 				tasks: ['mocha']
-			},
-			test: {
-				files: testFiles.slice(0).concat(jsFiles),
-				tasks: ['jshint', 'generateParsers', 'mochaTest:watch', 'mocha']
 			}
+			//,
+			//test: {
+			//	files: testFiles.slice(0).concat(jsFiles),
+			//	tasks: ['generateParsers', 'mochaTest:watch', 'mocha']
+			//}
 
 		},
 		jshint: {
@@ -81,8 +73,6 @@ function exports(grunt) {
 				plusplus : true,
 				maxdepth : 8,
 				maxcomplexity : 10,
-				strict : true,
-				quotmark : 'single',
 				regexp : true,
 				unused : 'strict',
 				curly : true,
@@ -130,6 +120,55 @@ function exports(grunt) {
 		{
 			files: ncssFiles,
 			options: {}
+		},
+		ts: {
+			default : {
+				src: tsfiles,
+				options: {
+					compiler: './node_modules/typescript/bin/tsc',
+					comments: false,
+					declaration: true,
+					noImplicitAny: true,
+					module: 'umd',
+					target: 'es5',
+					experimentalAsyncFunctions: true,
+					isolatedModules: true
+				}
+			}
+		},
+		tsd: {
+
+		},
+		dts_bundle: {
+			build: {
+				options: {
+					name: 'ninejs',
+					main: '9js.d.ts',
+					exclude: function (n, external) {
+						return /*external || (n.indexOf('typings/') >= 0) ||*/ (n.indexOf('node_modules') >= 0);
+					},
+					prefix: '',
+					externals: false,
+					referenceExternals: true,
+					verbose: false,
+					removeSource: false
+				}
+			}
+		},
+		globaltsd: {
+			options: {
+				target: __dirname + '/9js.ts',
+				baseDir: __dirname,
+				exclude: [
+					'ninejs.d.ts',
+					'9js.d.ts',
+					'typings',
+					'node_modules'
+				],
+				references: [
+					'./typings/node/node.d.ts'
+				]
+			}
 		}
 	});
 
@@ -137,7 +176,8 @@ function exports(grunt) {
 	grunt.loadNpmTasks('grunt-mocha-test');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.task.loadTasks('nineplate/utils/parser/gruntTasks');
+	grunt.loadNpmTasks('grunt-globaltsd');
+	grunt.task.loadTasks('grunt');
 	grunt.registerMultiTask('mocha','run Phantomjs tests with Mocha', function() {
 		var done = this.async(),
 			files = this.filesSrc,
@@ -161,36 +201,27 @@ function exports(grunt) {
 			done();
 		});
 	});
-	grunt.registerMultiTask('jscoverage','copy test coverage instrumentation', function() {
+	grunt.registerTask('tsd','Install TypeScript definitions', function() {
 		var done = this.async(),
+			command = 'node',
 			path = require('path'),
-			Q = require('kew'),
-			childProcess = require('child_process');
-			Q.all(this.filesSrc.map(function (testFile) {
-				var command = path.resolve(__dirname, 'node_modules', 'mocha', 'bin', 'mocha'),
-					args = ['-r', 'jscoverage', '--covignore', 'coverage.ignore', '--covout=html', '--covinject=true', testFile],
-					defer = Q.defer();
-				console.log(command + ' ' + args.join(' '));
-				var mochaCmd = childProcess.spawn(command, args, { stdio: 'inherit' });
-				mochaCmd.on('exit', function (code) {
-					console.log('exit code');
-					console.log(code);
-					defer.resolve();
-				});
-				return defer.promise;
-			})
-		).fail(function (err) {
-			console.log(err);
-		}).then(function () {
+			cliPath = path.resolve(__dirname, 'node_modules', 'tsd', 'build', 'cli.js');
+
+		var childProcess = require('child_process'),
+			defer = Q.defer();
+		var tsdProcess = childProcess.spawn(command, [cliPath, 'install'], { stdio: 'inherit' });
+		tsdProcess.on('exit', function(/*code*/) {
+			defer.resolve();
+		});
+		defer.promise.then(function () {
 			done();
 		});
 	});
 
-	grunt.registerTask('test', ['mochaTest', 'mocha']);
+	grunt.registerTask('test', ['mochaTest:normal', 'mocha']);
 	grunt.registerTask('css', ['less', 'ncss', 'stylus']);
-	grunt.registerTask('cover', ['jscoverage']);
 	// Default task.
-	grunt.registerTask('default', ['jshint', 'css', 'generateParsers', 'jscoverage', 'test']);
+	grunt.registerTask('default', ['tsd', 'globaltsd', 'ts', 'dts_bundle', 'css', 'generateParsers', 'test']);
 
 }
 

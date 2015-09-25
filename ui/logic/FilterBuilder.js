@@ -2137,7 +2137,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 
 			var self = this;
 
-			this.on('newExpression', function(data)
+			this.coreOn('newExpression', function(data)
 			{
 				var parent = self.get('parent');
 				if (parent)
@@ -2150,7 +2150,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 				}
 			});
 
-			this.on('check', function(data)
+			this.coreOn('check', function(data)
 			{
 				var value = data.value;
 
@@ -2164,7 +2164,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 				this._updateExpression();
 			});
 
-			this.on('checked', function(data)
+			this.coreOn('checked', function(data)
 			{
 				//TODO implement
 				var parent = self;
@@ -2197,7 +2197,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 
 			});
 
-			this.on('copy', lang.hitch(this, function(data)
+			this.coreOn('copy', lang.hitch(this, function(data)
 			{
 				if (this.parent)
 				{
@@ -2225,7 +2225,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 				}
 			}));
 
-			this.on('paste', lang.hitch(this, function(data)
+			this.coreOn('paste', lang.hitch(this, function(data)
 			{
 				if (this.parent)
 				{
@@ -2249,7 +2249,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 				}
 			}));
 
-			this.on('changeBooleanConfig', function(data)
+			this.coreOn('changeBooleanConfig', function(data)
 			{
 				var mode = data.mode,
 					parent, setAllPositive;
@@ -2307,7 +2307,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 				}
 			});
 
-			this.on('showMultiplePane', function(data) {
+			this.coreOn('showMultiplePane', function(data) {
 				var self = this;
 				function getFloatPane() {
 					if (!self.get('floatPane'))
@@ -2505,7 +2505,7 @@ define(['dojo/_base/declare', './FilterBuilder/FieldSelect', './FilterBuilder/Mu
 				}
 			});
 
-			this.on('hideMultiplePane', function(data)
+			this.coreOn('hideMultiplePane', function(data)
 			{
 				if (this.parent)
 				{

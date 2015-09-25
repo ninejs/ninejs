@@ -1,4 +1,11 @@
-define([], function() {
-	'use strict';
-	return ((((require || {}).s || {}).contexts || {})._ || {}).config  || {};
+(function (deps, factory) {
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === 'function' && define.amd) {
+        define(deps, factory);
+    }
+})(["require", "exports"], function (require, exports) {
+    exports.default = ((((require || {}).s || {}).contexts || {})._ || {}).config || {};
 });
+//# sourceMappingURL=empty.js.map

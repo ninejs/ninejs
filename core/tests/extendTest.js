@@ -1,7 +1,7 @@
 'use strict';
 
 var extend, assert;
-extend = require('../extend');
+extend = require('../extend').default;
 assert = require('assert');
 
 /* global describe, it */

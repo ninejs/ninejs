@@ -17,3 +17,6 @@ node_modules
 /coverage.html
 .idea
 covreporter.html
+.tscache/
+typings/
+tscommand-*.*

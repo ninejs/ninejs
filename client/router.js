@@ -1,252 +1,288 @@
-/* global window */
-define(['../core/array',
-	'../core/deferredUtils', '../core/ext/Evented', '../core/ext/Properties', '../core/extend', '../core/on', './hash'], function(array, def, Evented, Properties, extend, on, hash) {
-	'use strict';
-	var idMatch = /:(\w[\w\d]*)/g,
-		idReplacement = '([^\\/\\&]+)',
-		globMatch = /\*(\w[\w\d]*)/,
-		globReplacement = '(.+)';
-	function nullf() {
-		return null;
-	}
-	function cleanRoute(r) {
-		if (r && r.length && (r.indexOf('#') === 0)) {
-			return r.substr(1);
-		}
-		return r;
-	}
-	function getRoute() {
-		var r = hash();
-		return cleanRoute(r);
-	}
-	function setRoute (route, replace) {
-		return hash(route, replace);
-	}
-	/*
-	* From Dojo Toolkit's router/RouterBase */
-	function convertRouteToRegExp(/* String */ route) {
-		// Sub in based on IDs and globs
-		route = route.replace(idMatch, idReplacement);
-		route = route.replace(globMatch, globReplacement);
-		// Make sure it's an exact match
-		route = '^' + route + '$';
-
-		return new RegExp(route);
-	}
-	function getParameterNames(/* String */ route) {
-		var parameterNames = [],
-			match;
-
-		idMatch.lastIndex = 0;
-
-		while ((match = idMatch.exec(route)) !== null) {
-			parameterNames.push(match[1]);
-		}
-		if ((match = globMatch.exec(route)) !== null) {
-			parameterNames.push(match[1]);
-		}
-
-		return parameterNames.length > 0 ? parameterNames : null;
-	}
-	function prepareArguments(route, action) {
-		var options = {};
-		if (typeof(route) === 'object') {
-			options = route;
-		}
-		else {
-			options.action = action;
-			options.route = route;
-		}
-		return options;
-	}
-	/**
-	* {
-	* 	action: Function,
-	*	loadAction: Function,
-	*	title: String or Function,
-	*	emitArguments: Object or Function
-	* }
-	*/
-	var Route = extend(Properties, {
-		remove: function () {
-			this.parentRouter.removeRoute(this);
-		},
-		addRoute: function () {
-			return this.parentRouter.addRoute.apply(this.parentRouter, arguments);
-		},
-		removeRoute: function () {
-			return this.parentRouter.removeRoute.apply(this.parentRouter, arguments);
-		},
-		register: function () {
-			var options = prepareArguments.apply(null, arguments);
-			options.route = this.route + options.route;
-			return new Route(options, this);
-		},
-		titleGetter: function () {
-			if ((typeof(this.title) === 'undefined') && this.parentRouter) {
-				return (this.parentRouter.get || nullf).call(this.parentRouter, 'title');
-			}
-			else {
-				return this.title;
-			}
-		},
-		execute: function (args, evt) {
-			function rTrue() { return true; }
-			var initAction = this.initAction || rTrue,
-				loadAction = this.loadAction || rTrue,
-				title = this.get('title'),
-				self = this;
-			return def.when(initAction.call(this, args, evt), function(result) {
-				if (result !== false) { //if result is false it means stop propagation
-					if (typeof(title) === 'string') {
-						window.document.title = title;
-					}
-					else if (typeof(title) === 'function') {
-						def.when(title(args, evt), function(t) {
-							window.document.title = t;
-						});
-					}
-					return def.when(loadAction(args, evt), function() {
-						var emitArgs = self.emitArguments;
-						if (typeof(emitArgs) === 'function') {
-							emitArgs = emitArgs(args, evt);
-						}
-						return def.when(emitArgs, function(emitArgs) {
-							on.emit(window, '9jsRouteChanged', emitArgs || {});
-						});
-					});
-				}
-			}, function (err) {
-				throw err;
-			});
-		},
-		initAction: function() {
-			var self = this,
-				args = arguments;
-			if (this.parentRouter && this.parentRouter.initAction) {
-				return def.when(this.parentRouter.initAction.apply(this.parentRouter, arguments), function() {
-					return self.action.apply(self, args);
-				});
-			}
-			else {
-				return self.action.apply(self, args);
-			}
-		}
-	}, function(/* Object */ options, /* Router */ router) {
-		extend.mixin(this, options);
-		this.routeRegex = convertRouteToRegExp(options.route);
-		this.parameterNames = getParameterNames(options.route);
-		this.parentRouter = router;
-		this.parentRouter.addRoute(this);
-	});
-	var Router = extend(Evented, {
-		register: function (/*route, action*/) {
-			var options = prepareArguments.apply(null, arguments);
-			return new Route(options, this);
-		},
-		go: function(/* String */ route, /* Boolean */ replace) {
-			var current = getRoute();
-			route = cleanRoute(route);
-			this.emit('9jsRouteChanging', { route: route, oldRoute: current, replace: replace });
-			if (current === route) {
-				this.dispatchRoute({ newURL: route, oldURL: '' });
-			}
-			else {
-				setRoute(route, replace);
-			}
-		},
-		addRoute: function(route) {
-			this.routes.push(route);
-		},
-		removeRoute: function(route) {
-			var idx = array.indexOf(this.routes, route);
-			if (idx >= 0) {
-				this.routes.splice(idx, 1);
-			}
-		},
-		destroy: function() {
-			array.forEach(this.routes, function(item) {
-				item.remove();
-			});
-			this.hashHandler.remove();
-		},
-		dispatchRoute: function(evt) {
-			var self = this,
-				len = self.routes.length,
-				cnt,
-				current,
-				result,
-				params,
-				parameterNames,
-				j,
-				lj,
-				idx,
-				newUrl;
-			evt.newURL = evt.newURL || getRoute();
-			newUrl = evt.newURL;
-			idx = newUrl.indexOf('#');
-			if (idx >= 0) {
-				newUrl = newUrl.substr(idx + 1);
-			}
-			function emitChanged () {
-				self.emit('9jsRouteChanged', {
-					route: newUrl
-				});
-			}
-			function routeActionError(err) {
-				throw err;
-			}
-			for (cnt = 0; cnt < len; cnt += 1) {
-				current = self.routes[cnt];
-				result = current.routeRegex.exec(newUrl);
-				if (result) {
-					if (current.parameterNames) {
-						parameterNames = current.parameterNames;
-						params = {};
-
-						for (j=0, lj=parameterNames.length; j < lj; j += 1){
-							params[parameterNames[j]] = result[j+1];
-						}
-					} else {
-						params = result.slice(1);
-					}
-					try {
-						return def.when(current.execute(params, evt), emitChanged, routeActionError);
-					}
-					catch (err) {
-						console.error(err);
-						if (err.stack) {
-							console.error(err.stack);
-						}
-						throw err;
-					}
-				}
-			}
-			return null;
-		}
-	}, function () {
-		var self = this;
-		this.routes = [];
-		this.startup = function () {
-			this.hashHandler = on(window, 'hashchange', function(evt) {
-				var e = {
-					bubbles: evt.bubbles,
-					cancelable: evt.cancelable,
-					currentTarget: evt.currentTarget,
-					defaultPrevented: evt.defaultPrevented,
-					eventPhase: evt.eventPhase,
-					explicitOriginalTarget: evt.explicitOriginalTarget,
-					isTrusted: evt.isTrusted,
-					newURL: evt.newURL,
-					oldURL: evt.oldURL,
-					originalTarget: evt.originalTarget,
-					target: evt.target,
-					timeStamp: evt.timeStamp,
-					type: evt.type
-				};
-				self.dispatchRoute(e);
-			});
-		};
-	});
-	return new Router();
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+(function (deps, factory) {
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === 'function' && define.amd) {
+        define(deps, factory);
+    }
+})(["require", "exports", '../core/deferredUtils', '../core/ext/Evented', '../core/ext/Properties', './hash', '../core/on'], function (require, exports) {
+    var deferredUtils_1 = require('../core/deferredUtils');
+    var Evented_1 = require('../core/ext/Evented');
+    var Properties_1 = require('../core/ext/Properties');
+    var hash_1 = require('./hash');
+    var on_1 = require('../core/on');
+    var idMatch = /:(\w[\w\d]*)/g, idReplacement = '([^\\/]+)', globMatch = /\*(\w[\w\d]*)/, globReplacement = '(.+)';
+    function nullf() {
+        return null;
+    }
+    function cleanRoute(r) {
+        if (r && r.length && (r.indexOf('#') === 0)) {
+            return r.substr(1);
+        }
+        return r;
+    }
+    function getRoute() {
+        var r = hash_1.default();
+        return cleanRoute(r);
+    }
+    function setRoute(route, replace) {
+        return hash_1.default(route, replace);
+    }
+    function convertRouteToRegExp(route) {
+        route = route.replace(idMatch, idReplacement);
+        route = route.replace(globMatch, globReplacement);
+        route = '^' + route + '$';
+        return new RegExp(route);
+    }
+    function getParameterNames(route) {
+        var parameterNames = [], match;
+        idMatch.lastIndex = 0;
+        while ((match = idMatch.exec(route)) !== null) {
+            parameterNames.push(match[1]);
+        }
+        if ((match = globMatch.exec(route)) !== null) {
+            parameterNames.push(match[1]);
+        }
+        return parameterNames.length > 0 ? parameterNames : null;
+    }
+    function prepareArguments(route, action) {
+        if (typeof (route) === 'object') {
+            return route;
+        }
+        else {
+            return {
+                action: action,
+                route: route
+            };
+        }
+    }
+    var Router = (function (_super) {
+        __extends(Router, _super);
+        function Router() {
+            _super.call(this);
+            this.routes = [];
+        }
+        Router.prototype.on = function (type, listener) {
+            return Evented_1.default.on.apply(this, arguments);
+        };
+        Router.prototype.emit = function () {
+            var arglist = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                arglist[_i - 0] = arguments[_i];
+            }
+            return Evented_1.default.emit.apply(this, arguments);
+        };
+        Router.prototype.register = function (route, action) {
+            var options = prepareArguments(route, action);
+            return new Route(options, this);
+        };
+        Router.prototype.go = function (route, replace) {
+            var current = getRoute();
+            route = cleanRoute(route);
+            this.emit('9jsRouteChanging', { route: route, oldRoute: current, replace: replace });
+            if (current === route) {
+                this.dispatchRoute({ newURL: route, oldURL: '' });
+            }
+            else {
+                setRoute(route, replace);
+            }
+        };
+        Router.prototype.addRoute = function (route) {
+            var self = this;
+            this.routes.push(route);
+            return route;
+        };
+        Router.prototype.removeRoute = function (route) {
+            var idx = this.routes.indexOf(route);
+            if (idx >= 0) {
+                this.routes.splice(idx, 1);
+            }
+            return undefined;
+        };
+        Router.prototype.destroy = function () {
+            this.routes.forEach(function (item) {
+                item.remove();
+            });
+            this.hashHandler.remove();
+        };
+        Router.prototype.dispatchRoute = function (evt) {
+            var self = this, len = self.routes.length, cnt, current, result, params, parameterNames, j, lj, idx, newUrl;
+            evt.newURL = evt.newURL || getRoute();
+            newUrl = evt.newURL;
+            idx = newUrl.indexOf('#');
+            if (idx >= 0) {
+                newUrl = newUrl.substr(idx + 1);
+            }
+            function emitChanged() {
+                self.emit('9jsRouteChanged', {
+                    route: newUrl
+                });
+            }
+            function routeActionError(err) {
+                throw err;
+            }
+            for (cnt = 0; cnt < len; cnt += 1) {
+                current = self.routes[cnt];
+                result = current.routeRegex.exec(newUrl);
+                if (result) {
+                    if (current.parameterNames) {
+                        parameterNames = current.parameterNames;
+                        params = {};
+                        for (j = 0, lj = parameterNames.length; j < lj; j += 1) {
+                            params[parameterNames[j]] = result[j + 1];
+                        }
+                    }
+                    else {
+                        params = result.slice(1);
+                    }
+                    try {
+                        return deferredUtils_1.when(current.execute(params, evt), emitChanged, routeActionError);
+                    }
+                    catch (err) {
+                        console.error(err);
+                        if (err.stack) {
+                            console.error(err.stack);
+                        }
+                        throw err;
+                    }
+                }
+            }
+            return null;
+        };
+        Router.prototype.startup = function () {
+            var self = this;
+            this.hashHandler = on_1.default(window, 'hashchange', function (evt) {
+                var e = {
+                    bubbles: evt.bubbles,
+                    cancelable: evt.cancelable,
+                    currentTarget: evt.currentTarget,
+                    defaultPrevented: evt.defaultPrevented,
+                    eventPhase: evt.eventPhase,
+                    explicitOriginalTarget: evt.explicitOriginalTarget,
+                    isTrusted: evt.isTrusted,
+                    newURL: evt.newURL,
+                    oldURL: evt.oldURL,
+                    originalTarget: evt.originalTarget,
+                    target: evt.target,
+                    timeStamp: evt.timeStamp,
+                    type: evt.type
+                };
+                self.dispatchRoute(e);
+            });
+        };
+        return Router;
+    })(Properties_1.default);
+    exports.Router = Router;
+    var Route = (function (_super) {
+        __extends(Route, _super);
+        function Route(options, router) {
+            _super.call(this);
+            Properties_1.default.mixin(options).call(this);
+            this.routeRegex = convertRouteToRegExp(options.route);
+            this.parameterNames = getParameterNames(options.route);
+            this.parentRouter = router;
+            this.parentRouter.addRoute(this);
+        }
+        Route.prototype.remove = function () {
+            return this.parentRouter.removeRoute(this);
+        };
+        Route.prototype.addRoute = function () {
+            return this.parentRouter.addRoute.apply(this.parentRouter, arguments);
+        };
+        Route.prototype.removeRoute = function () {
+            return this.parentRouter.removeRoute.apply(this.parentRouter, arguments);
+        };
+        Route.prototype.register = function () {
+            var options = prepareArguments.apply(null, arguments);
+            options.route = this.route + options.route;
+            return new Route(options, this);
+        };
+        Route.prototype.titleGetter = function () {
+            if ((typeof (this.title) === 'undefined') && this.parentRouter) {
+                return (this.parentRouter.get || nullf).call(this.parentRouter, 'title');
+            }
+            else {
+                return this.title;
+            }
+        };
+        Route.prototype.execute = function (args, evt) {
+            function rTrue() { return true; }
+            var initAction = this.initAction || rTrue, loadAction = this.loadAction || rTrue, title = this.get('title'), self = this;
+            return deferredUtils_1.when(initAction.call(this, args, evt), function (result) {
+                if (result !== false) {
+                    if (typeof (title) === 'string') {
+                        window.document.title = title;
+                    }
+                    else if (typeof (title) === 'function') {
+                        deferredUtils_1.when(title(args, evt), function (t) {
+                            window.document.title = t;
+                        });
+                    }
+                    return deferredUtils_1.when(loadAction(args, evt), function (_) {
+                        var emitArgs = self.emitArguments;
+                        if (typeof (emitArgs) === 'function') {
+                            emitArgs = emitArgs(args, evt);
+                        }
+                        return deferredUtils_1.when(emitArgs, function (emitArgs) {
+                            return on_1.default.emit(window, '9jsRouteChanged', emitArgs || {});
+                        });
+                    });
+                }
+            }, function (err) {
+                throw err;
+            });
+        };
+        Route.prototype.initAction = function () {
+            var self = this, args = arguments;
+            if (this.parentRouter && this.parentRouter.initAction) {
+                return deferredUtils_1.when(this.parentRouter.initAction.apply(this.parentRouter, arguments), function () {
+                    return self.action.apply(self, args);
+                });
+            }
+            else {
+                return this.action.apply(self, args);
+            }
+        };
+        return Route;
+    })(Properties_1.default);
+    exports.Route = Route;
+    var router = new Router();
+    function on(type, listener) {
+        return router.on(type, listener);
+    }
+    exports.on = on;
+    function emit() {
+        var arglist = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            arglist[_i - 0] = arguments[_i];
+        }
+        return router.emit.apply(router, arglist);
+    }
+    exports.emit = emit;
+    function register(route, action) {
+        return router.register(route, action);
+    }
+    exports.register = register;
+    function go(route, replace) {
+        return router.go(route, replace);
+    }
+    exports.go = go;
+    function addRoute(route) {
+        return router.addRoute(route);
+    }
+    exports.addRoute = addRoute;
+    function removeRoute(route) {
+        return router.removeRoute(route);
+    }
+    exports.removeRoute = removeRoute;
+    function startup() {
+        router.startup();
+    }
+    exports.startup = startup;
 });
+//# sourceMappingURL=router.js.map

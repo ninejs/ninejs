@@ -1,6 +1,6 @@
 'use strict';
 
-var Expression = require('../../logic/Expression'),
+var Expression = require('../../logic/Expression').default,
 	objUtils = require('../../objUtils'),
 	expect = require('chai').expect;
 function check(done, f) {
@@ -874,6 +874,7 @@ describe('core/logic/Expression', function () {
 	
 		it('should load and evaluate', function (done) {
 			requirejs(['ninejs/core/logic/Expression'], function (Expression) {
+				Expression = Expression.default;
 				var e = new Expression();
 				e.fromJson({
 					sourceSummary: 'countOf',

@@ -1,86 +1,99 @@
-(function () {
-	'use strict';
-	var isAmd = (typeof(define) !== 'undefined') && define.amd;
-	var req = require;
-	(function (factory) {
-		if (isAmd) {
-			define(['../core/extend', './Module', '../core/deferredUtils'], factory);
-		}
-		else {
-			module.exports = factory(req('../core/extend'), req('./Module'), req('../core/deferredUtils'));
-		}
-	})(function (extend, Module, def) {
-		return function (consumes, callback) {
-			consumes = (consumes || []).map(function (item) {
-				if (typeof(item) === 'string') {
-					item = {
-						id: item
-					};
-				}
-				if (!item.version) {
-					item.version = '*';
-				}
-				return item;
-			});
-			var ThisModule = extend(Module, {
-				consumes: consumes,
-				provides: [],
-				init: extend.after(function () {
-					return this.doInit.apply(this, arguments);
-				})
-			});
-			var provideMap = {},
-				provideInstances = {};
-			var provide = function (item, callback) {
-				if (typeof(item) === 'string') {
-					item = {
-						id: item
-					};
-				}
-				ThisModule.prototype.provides.push(item);
-				provideMap[item.id] = function () {
-					if (typeof(provideInstances[item.id]) === 'undefined') {
-						provideInstances[item.id] = callback.apply(null, arguments);
-					}
-					return provideInstances[item.id];
-				};
-			};
-			ThisModule.prototype.getProvides = function (name) {
-				if (typeof(provideMap[name]) !== 'undefined') {
-					return provideInstances[name];
-				}
-			};
-			ThisModule.prototype.doInit = function (name, config) {
-				if (typeof(provideMap[name]) !== 'undefined') {
-					var args = [config],
-						self = this;
-					this.consumes.forEach(function (item) {
-						args.push(self.getUnit(item.id));
-					});
-					var unitObj = provideMap[name].apply(null, args);
-					if (unitObj) {
-						if (def.isPromise(unitObj.init)) {
-							return unitObj.init;
-						}
-						else if (typeof(unitObj.init) === 'function') {
-							return def.when(unitObj.init(), function (r) {
-								return r;
-							}, function (err) {
-								throw new Error(err);
-							});
-						}
-						else {
-							return unitObj;
-						}
-					}
-					else {
-						return unitObj;
-					}
-				}
-			};
-			callback(provide);
-			var result = new ThisModule();
-			return result;
-		};
-	});
-})();
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+(function (deps, factory) {
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === 'function' && define.amd) {
+        define(deps, factory);
+    }
+})(["require", "exports", './Module', '../core/deferredUtils'], function (require, exports) {
+    var Module_1 = require('./Module');
+    var deferredUtils_1 = require('../core/deferredUtils');
+    function define(consumes, callback) {
+        consumes = (consumes || []).map(function (item) {
+            if (typeof (item) === 'string') {
+                item = {
+                    id: item
+                };
+            }
+            if (!item.version) {
+                item.version = '*';
+            }
+            return item;
+        });
+        var ThisModule = (function (_super) {
+            __extends(ThisModule, _super);
+            function ThisModule() {
+                _super.call(this);
+                this.consumes = consumes;
+            }
+            ThisModule.prototype.doInit = function (name, config) {
+                if (typeof (provideMap[name]) !== 'undefined') {
+                    var args = [config], self = this;
+                    this.consumes.forEach(function (item) {
+                        args.push(self.getUnit(item.id));
+                    });
+                    var unitObj = provideMap[name].apply(null, args);
+                    if (unitObj) {
+                        if (deferredUtils_1.isPromise(unitObj.init)) {
+                            return unitObj.init;
+                        }
+                        else if (typeof (unitObj.init) === 'function') {
+                            return deferredUtils_1.when(unitObj.init(), function (d) {
+                                return d;
+                            }, function (err) {
+                                throw new Error(err);
+                            });
+                        }
+                        else {
+                            return unitObj;
+                        }
+                    }
+                    else {
+                        return unitObj;
+                    }
+                }
+            };
+            ThisModule.prototype.getProvides = function (name) {
+                if (typeof (provideMap[name]) !== 'undefined') {
+                    return provideInstances[name];
+                }
+            };
+            ThisModule.prototype.init = function () {
+                Module_1.default.prototype.init.call(this);
+                return this.doInit.apply(this, arguments);
+            };
+            return ThisModule;
+        })(Module_1.default);
+        ThisModule.prototype.provides = [];
+        var provideMap = {}, provideInstances = {};
+        var provide = function (item, callback) {
+            if (typeof (item) === 'string') {
+                item = {
+                    id: item
+                };
+            }
+            ThisModule.prototype.provides.push(item);
+            provideMap[item.id] = function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                if (typeof (provideInstances[item.id]) === 'undefined') {
+                    provideInstances[item.id] = callback.apply(null, args);
+                }
+                return provideInstances[item.id];
+            };
+        };
+        callback(provide);
+        var result = new ThisModule();
+        return result;
+    }
+    exports.define = define;
+    ;
+});
+//# sourceMappingURL=moduleDefine.js.map

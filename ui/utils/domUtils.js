@@ -1,153 +1,96 @@
-define(['./setClass', './setText', '../../modernizer', '../../core/on', 'dojo/mouse', 'dojo/dom-style', 'dijit/Tooltip', '../../core/extend', 'dojo/_base/fx', '../../core/deferredUtils', '../../css!../css/common.css'], function (setClass, setText, has, on, mouse, domStyle, Tooltip, extend, fx, def, commonCss) {
-	'use strict';
-	/* global window */
-	commonCss.enable();
-	has.add('scopedCss', function(){
-		var r = false, document = window.document;
-		if (document) {
-			var style = document.createElement('style');
-			if (style.scoped) {
-				r = true;
-			}
-		}
-		return r;
-	}, true);
-
-	function elementMouseOver(e) {
-		setClass(e.currentTarget, 'dijitHover');
-	}
-
-	function elementMouseOut(e) {
-		setClass(e.currentTarget, '!dijitHover');
-	}
-
-	var DomUtils = extend({
-		isHidden: function (control) {
-			if (control.domNode) {
-				return domStyle.get(control.domNode, 'display') === 'none';
-			} else {
-				return domStyle.get(control, 'display') === 'none';
-			}
-		},
-		isShown: function (control) {
-			if (control.domNode) {
-				return domStyle.get(control.domNode, 'display') === 'block';
-			} else {
-				return domStyle.get(control, 'display') === 'block';
-			}
-		},
-		hide: function (control, withEffect) {
-			var node = control;
-			if (control.domNode) {
-				node = control.domNode;
-			}
-
-			var effect = null,
-				d;
-
-			if (withEffect) {
-				effect = fx.fadeOut;
-			}
-
-			if (effect) {
-				d = def.defer();
-				var fxObj = effect({
-					node: node
-				});
-				fxObj.on('End', function () {
-					d.resolve();
-				});
-				fxObj.play();
-				def.when(d.promise, function () {
-					domStyle.set(node, 'display', 'none');
-				});
-			} else {
-				domStyle.set(node, 'display', 'none');
-			}
-		},
-
-		show: function (control, withEffect, showAttr) {
-			if (!showAttr) {
-				showAttr = 'block';
-			}
-			var node = control;
-			if (control.domNode) {
-				node = control.domNode;
-			}
-
-			if (withEffect) {
-				var effect = fx.fadeIn;
-
-				var fxObj = effect({
-					node: node
-				});
-				fxObj.on('Begin', function () {
-					domStyle.set(node, 'display', showAttr);
-				});
-				fxObj.play();
-			} else {
-				domStyle.set(node, 'display', showAttr);
-				domStyle.set(node, 'opacity', '1');
-			}
-		},
-
-		empty: function (node) {
-			setText.emptyNode(node);
-		},
-
-		setText: setText,
-
-		enableHovering: function (control, enter, leave, options) {
-			enter = enter || elementMouseOver;
-			leave = leave || (elementMouseOut || enter);
-			var onFn = on,
-				r = {};
-			if (options && options.pausable) {
-				onFn = on.pausable;
-			}
-			r.enter = onFn(control, mouse.enter, enter);
-			r.leave = onFn(control, mouse.leave, leave);
-			r.remove = function () {
-				this.enter.remove();
-				this.leave.remove();
-			};
-
-			return r;
-		},
-
-		/*
-		parameters:
-		control: String containing Id of node
-					or DOM Node
-					or Dijit widget
-		label: String
-		position: Array of Strings containing one of (before | after | above | below)
-		delay: int milliseconds, defaults to 400
-		*/
-		addTooltip: function (control, label, position, delay) {
-			var node = control,
-				config;
-			if (typeof(control) === 'string') {
-				node = window.document.getElementById(control);
-			}
-			else if (control.domNode) {
-				node = control.domNode;
-			}
-
-			config = {
-				connectId: [node],
-				label: label
-			};
-			if (position) {
-				config.position = position;
-			}
-			if (delay) {
-				config.delay = delay;
-			}
-
-			return new Tooltip(config);
-		}
-	});
-
-	return new DomUtils();
+/// <amd-dependency path="../../css!../css/common.css" />
+(function (deps, factory) {
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === 'function' && define.amd) {
+        define(deps, factory);
+    }
+})(["require", "exports", "../../css!../css/common.css", './setClass', './setText', './append', '../../modernizer', '../../core/on'], function (require, exports) {
+    var setClass_1 = require('./setClass');
+    var setText_1 = require('./setText');
+    var append_1 = require('./append');
+    var modernizer_1 = require('../../modernizer');
+    var on_1 = require('../../core/on');
+    var commonCss = require('../../css!../css/common.css');
+    commonCss.enable();
+    modernizer_1.default.add('scopedCss', function () {
+        var r = false, document = window.document;
+        if (document) {
+            var style = document.createElement('style');
+            if (style.scoped) {
+                r = true;
+            }
+        }
+        return r;
+    });
+    function elementMouseOver(e) {
+        setClass_1.default(e.currentTarget, 'dijitHover', 'njsHover');
+    }
+    function elementMouseOut(e) {
+        setClass_1.default(e.currentTarget, '!dijitHover', '!njsHover');
+    }
+    function isHidden(control) {
+        if (control.domNode) {
+            return control.domNode.style.display === 'none';
+        }
+        else {
+            return control.style.display === 'none';
+        }
+    }
+    exports.isHidden = isHidden;
+    function isShown(control) {
+        if (control.domNode) {
+            return control.domNode.style.display === 'block';
+        }
+        else {
+            return control.style.display === 'block';
+        }
+    }
+    exports.isShown = isShown;
+    function hide(control) {
+        var node = control;
+        if (control.domNode) {
+            node = control.domNode;
+        }
+        node.style.display = 'none';
+    }
+    exports.hide = hide;
+    function show(control, showAttr) {
+        if (!showAttr) {
+            showAttr = 'block';
+        }
+        var node = control;
+        if (control.domNode) {
+            node = control.domNode;
+        }
+        node.style.display = showAttr;
+        node.style.opacity = 1;
+    }
+    exports.show = show;
+    function empty(node) {
+        exports.setText.emptyNode(node);
+    }
+    exports.empty = empty;
+    function enableHovering(control, enter, leave, options) {
+        enter = enter || elementMouseOver;
+        leave = leave || (elementMouseOut || enter);
+        var onFn = on_1.default, r = {};
+        if (options && options.pausable) {
+            onFn = on_1.default.pausable;
+        }
+        r.enter = onFn(control, 'mouseover', enter);
+        r.leave = onFn(control, 'mouseout', leave);
+        r.remove = function () {
+            var self = this;
+            self.enter.remove();
+            self.leave.remove();
+        };
+        return r;
+    }
+    exports.enableHovering = enableHovering;
+    exports.setText = setText_1.default;
+    exports.setClass = setClass_1.default;
+    exports.append = append_1.default;
 });
+//# sourceMappingURL=domUtils.js.map

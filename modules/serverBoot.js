@@ -1,85 +1,93 @@
-'use strict';
-var config = require('./config'),
-	extend = require('../core/extend'),
-	path = require('path'),
-	fs = require('fs'),
-	Q = require('kew'),
-	registry = require('./moduleRegistry'),
-	//trying to autodiscover modules from the /9js/modules folder
-	njsModulesPath = path.resolve(process.cwd(), config.modulesFolder || '9js/modules'),
-	loadModule,
-	onDemandModules = {
-		'ninejs': './ninejs-server',
-		'webserver': './webserver/module'
-	};
-registry.set('onDemandModules', onDemandModules);
-loadModule = function(dir) {
-	function loadConfigFromUnit(id, config, currentConfigFile) {
-		if (currentConfigFile) {
-			if (!currentConfigFile.units) {
-				currentConfigFile.units = {};
-			}
-			if (currentConfigFile.units[id]) {
-				var cfg = {};
-				cfg[id] = currentConfigFile.units[id];
-				extend.mixinRecursive(cfg[id], (config.units[id] || {}));
-				config.units[id] = cfg[id];
-			}
-		}
-	}
-	var currentModule = require(path.resolve(dir, 'module')), currentConfigPath = path.resolve(dir, '9js.config.json'), currentConfigFile, cnt, id;
-	currentModule.loadedFrom = path.resolve(dir, 'module');
-	if (currentConfigPath) {
-		currentConfigFile = require(currentConfigPath);
-		for (cnt = 0; cnt < currentModule.provides.length; cnt += 1) {
-			id = currentModule.provides[cnt].id;
-			loadConfigFromUnit(id, config, currentConfigFile);
-		}
-		for (cnt = 0; cnt < currentModule.consumes.length; cnt += 1) {
-			id = currentModule.consumes[cnt].id;
-			loadConfigFromUnit(id, config, currentConfigFile);
-		}
-	}
-	registry.addModule(currentModule);
-};
-if (config.modules) {
-	var cnt, currentModule;
-	for (cnt = 0; cnt < config.modules.length; cnt += 1) {
-		currentModule = require(config.modules[cnt]);
-		currentModule.loadedFrom(config.modules[cnt]);
-		registry.addModule(currentModule);
-	}
-}
-var moduleLoadPromise = {};
-if (fs.existsSync(njsModulesPath)) {
-	moduleLoadPromise = Q.nfcall(fs.readdir, njsModulesPath).then(function(files) {
-		return Q.all(files.map(function(dir) {
-			var dirpath = path.resolve(njsModulesPath, dir);
-			return Q.nfcall(fs.stat, dirpath).then(function(stat) {
-				if (stat.isDirectory()){
-					loadModule(dirpath);
-				}
-			}, function(error) {
-				throw new Error(error);
-			});
-		}));
-	}, function(error) {
-		throw new Error(error);
-	});
-}
-module.exports = Q.resolve(moduleLoadPromise).then(function(){
-	var defer = Q.defer();
-	process.nextTick(function() {
-		Q.resolve(registry.enableModules())
-			.then(function(val) {
-				defer.resolve(val);
-			}, function (err) {
-				console.error(err);
-				defer.reject(err);
-			});
-	});
-	return defer.promise;
-}, function(error) {
-	console.log(error);
-	throw new Error(error);
+/// <reference path="../typings/tsd.d.ts" />
+(function (deps, factory) {
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === 'function' && define.amd) {
+        define(deps, factory);
+    }
+})(["require", "exports", './config', '../core/extend', 'path', 'fs', '../core/deferredUtils', './moduleRegistry'], function (require, exports) {
+    var config_1 = require('./config');
+    var extend_1 = require('../core/extend');
+    var path = require('path');
+    var fs = require('fs');
+    var deferredUtils_1 = require('../core/deferredUtils');
+    var moduleRegistry_1 = require('./moduleRegistry');
+    var njsModulesPath = path.resolve(process.cwd(), config_1.default.modulesFolder || '9js/modules'), onDemandModules = {
+        'ninejs': './ninejs-server',
+        'webserver': './webserver/module'
+    };
+    moduleRegistry_1.moduleRegistry.set('onDemandModules', onDemandModules);
+    function loadModule(dir) {
+        function loadConfigFromUnit(id, config, currentConfigFile) {
+            if (currentConfigFile) {
+                if (!currentConfigFile.units) {
+                    currentConfigFile.units = {};
+                }
+                if (currentConfigFile.units[id]) {
+                    var cfg = {};
+                    cfg[id] = currentConfigFile.units[id];
+                    extend_1.default.mixinRecursive(cfg[id], (config.units[id] || {}));
+                    config.units[id] = cfg[id];
+                }
+            }
+        }
+        var currentModule = require(path.resolve(dir, 'module')), currentConfigPath = path.resolve(dir, '9js.config.json'), currentConfigFile, cnt, id;
+        currentModule.loadedFrom = path.resolve(dir, 'module');
+        if (currentConfigPath) {
+            currentConfigFile = require(currentConfigPath);
+            for (cnt = 0; cnt < currentModule.provides.length; cnt += 1) {
+                id = currentModule.provides[cnt].id;
+                loadConfigFromUnit(id, config_1.default, currentConfigFile);
+            }
+            for (cnt = 0; cnt < currentModule.consumes.length; cnt += 1) {
+                id = currentModule.consumes[cnt].id;
+                loadConfigFromUnit(id, config_1.default, currentConfigFile);
+            }
+        }
+        moduleRegistry_1.moduleRegistry.addModule(currentModule);
+    }
+    if (config_1.default.modules) {
+        var cnt, currentModule;
+        for (cnt = 0; cnt < config_1.default.modules.length; cnt += 1) {
+            currentModule = require(config_1.default.modules[cnt]);
+            currentModule.loadedFrom(config_1.default.modules[cnt]);
+            moduleRegistry_1.moduleRegistry.addModule(currentModule);
+        }
+    }
+    var moduleLoadPromise = {};
+    if (fs.existsSync(njsModulesPath)) {
+        moduleLoadPromise = deferredUtils_1.nfcall(fs.readdir, njsModulesPath).then(function (files) {
+            return deferredUtils_1.all(files.map(function (dir) {
+                var dirpath = path.resolve(njsModulesPath, dir);
+                return deferredUtils_1.nfcall(fs.stat, dirpath).then(function (stat) {
+                    if (stat.isDirectory()) {
+                        loadModule(dirpath);
+                    }
+                }, function (error) {
+                    throw new Error(error);
+                });
+            }));
+        }, function (error) {
+            throw new Error(error);
+        });
+    }
+    exports.default = deferredUtils_1.defer(moduleLoadPromise).promise.then(function () {
+        var _defer = deferredUtils_1.defer();
+        process.nextTick(function () {
+            deferredUtils_1.defer(moduleRegistry_1.moduleRegistry.enableModules()).promise
+                .then(function (val) {
+                _defer.resolve(val);
+            }, function (err) {
+                console.error(err);
+                _defer.reject(err);
+            });
+        });
+        return _defer.promise;
+    }, function (error) {
+        console.log(error);
+        console.log(error.stack);
+        throw new Error(error);
+    });
 });
+//# sourceMappingURL=serverBoot.js.map

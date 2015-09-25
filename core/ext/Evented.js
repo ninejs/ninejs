@@ -1,52 +1,37 @@
-/** 
-@module ninejs/core/ext/Evented 
-@author Eduardo Burgos <eburgos@gmail.com>
-*/
-(function() {
-	'use strict';
-	var isAmd = (typeof(define) !== 'undefined') && define.amd,
-		isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org',
-		isNode = (typeof(window) === 'undefined'),
-		req = (isDojo && isNode)? global.require : require;
-
-	function evented(on, aspect) {
-		var after = aspect.after;
-		return {
-			on: function(type, listener){
-				return on.parse(this, type, listener, function(target, type){
-					return after(target, 'on' + type, listener, true);
-				});
-			},
-			emit: function(/*type, event*/){
-				var args = [this];
-				args.push.apply(args, arguments);
-				return on.emit.apply(on, args);
-			}
-		};
-	}
-
-	if (isAmd) { //AMD
-		if (isNode) {
-			if (isDojo) {
-				define(['dojo/node!events'], function(events) {
-					return events.EventEmitter;
-				});
-			}
-			else {
-				define(['events'], function(events) {
-					return events.EventEmitter;
-				});
-			}
-		}
-		else {
-			define(['../on', '../aspect'], evented);
-		}
-	} else if (isNode) { //Server side
-		//If it's node then Evented is the same as EventEmitter
-		var Evented = req('events').EventEmitter;
-		module.exports = Evented;
-	} else {
-		// plain script in a browser
-		throw new Error('Non AMD environments are not supported');
-	}
-})();
+(function (deps, factory) {
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === 'function' && define.amd) {
+        define(deps, factory);
+    }
+})(["require", "exports", '../on'], function (require, exports) {
+    var on_1 = require('../on');
+    var isAmd = (typeof (define) !== 'undefined') && define.amd, isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org', isNode = (typeof (window) === 'undefined'), req = (isDojo && isNode) ? global.require : require;
+    var result;
+    if (isNode) {
+        result = require('events').EventEmitter.prototype;
+    }
+    else {
+        var on = require('../on'), aspect = require('../aspect');
+        var after = aspect.after;
+        result = {
+            on: function (type, listener) {
+                return on_1.default.parse(this, type, listener, function (target, type) {
+                    return after(target, 'on' + type, listener, true);
+                });
+            },
+            emit: function () {
+                var arglist = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    arglist[_i - 0] = arguments[_i];
+                }
+                var args = [this];
+                args.push.apply(args, arglist);
+                return on_1.default.emit.apply(on, args);
+            }
+        };
+    }
+    exports.default = result;
+});
+//# sourceMappingURL=Evented.js.map
