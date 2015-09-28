@@ -692,6 +692,10 @@ define(['../core/extend', './Widget', './Skins/Editor/Default', '../core/deferre
 							/* jshint unused: true */
 							self.set('value', newv, true);
 						});
+						control.on('change', function () {
+							self.set('value', control.get('value'), true);
+							self.emit('change', {});
+						});
 						return control;
 					});
 				});

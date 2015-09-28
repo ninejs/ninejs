@@ -51,7 +51,7 @@ represent it and evaluate it over a collection of data or a service.
 		};
 	}
 	else {
-		arrayReduce = function(arr, callback, initial) {
+		arrayReduce = function (arr, callback, initial) {
 			var cnt = 0,
 				len = arr.length;
 			if (initial === undefined) {
@@ -252,6 +252,20 @@ represent it and evaluate it over a collection of data or a service.
 					}
 				}
 			};
+		function flatten(arr) {
+			var r = [];
+			arr.forEach(function (i) {
+				if (isArray(i)) {
+					flatten(i).forEach(function (ch) {
+						r.push(ch);
+					});
+				}
+				else {
+					r.push(i);
+				}
+			});
+			return r;
+		}
 		function toDateString(/*Date*/ dateObject, /*__Options?*/ options){
 			// summary:
 			//		Format a Date object as a string according a subset of the ISO-8601 standard
@@ -487,56 +501,86 @@ represent it and evaluate it over a collection of data or a service.
 							len = fields.length,
 							inRecordContext = true,
 							r = [],
-							t,
 							current,
 							possibleValues = [data],
-							filter,
-							linearize = function(arr, fldName) {
+							linearize = function(arr, fields, fieldIndex, recordContextStack) {
 								var r = [],
 									cnt,
-									len = arr.length,
-									current;
-								for (cnt = 0; cnt < len; cnt += 1) {
-									if (arr[cnt]) {
-										current = arr[cnt][fldName];
-										if (isArray(current)) {
-											r.push.apply(r, current);
+									len,
+									fieldName,
+									val;
+								while ((fieldIndex < recordContextStack.length) && (fields[fieldIndex] === recordContextStack[fieldIndex].name)) {
+									arr = [recordContextStack[fieldIndex].value];
+									fieldIndex += 1;
+								}
+								len = arr.length;
+								fieldName = fields[fieldIndex];
+								if (fieldIndex < (fields.length - 1)) {
+									arr.map(function (item) {
+										return item[fieldName];
+									}).forEach(function (item) {
+										if (isArray(item)) {
+											item.forEach(function (i) {
+												recordContextStack.push({ name: fieldName, value: i });
+												linearize([i], fields, fieldIndex + 1, recordContextStack).forEach(function (i) {
+													r.push(i);
+												});
+												recordContextStack.pop();
+											});
 										}
 										else {
-											r.push(current);
+											//NTODO: Not implemented yet, fields that are a composition rather than an array.
+										}
+
+									});
+								}
+								else {
+									for (cnt = 0; cnt < len; cnt += 1) {
+										if (where) {
+											val = arr[cnt][fieldName];
+											if (isArray(val)) {
+												val.forEach(function (v) {
+													recordContextStack.push({ name: fieldName, value: v });
+													if (where.evaluate(data, recordContextStack)) {
+														r.push(v);
+													}
+													recordContextStack.pop();
+												})
+											}
+											else {
+												if (where.evaluate(data, recordContextStack)) {
+													r.push(val);
+												}
+											}
+										}
+										else {
+											r.push(arr[cnt][fieldName]);
 										}
 									}
 								}
+								//for (cnt = 0; cnt < len; cnt += 1) {
+								//	if (arr[cnt]) {
+								//		current = arr[cnt][fldName];
+								//		if (isArray(current)) {
+								//			r.push.apply(r, current);
+								//		}
+								//		else {
+								//			r.push(current);
+								//		}
+								//	}
+								//}
 								return r;
 							};
-						if (where) {
-							filter = function(arr, recordContextStack) {
-								var cnt,
-									len = arr.length,
-									r = [];
-								for (cnt = 0; cnt < len; cnt += 1) {
-									if (where.evaluate(data, recordContextStack)) {
-										r.push(arr[cnt]);
-									}
-								}
-								return r;
-							};
-						}
-						else {
-							filter = function(arr) {
-								return arr;
-							};
-						}
-						for (cnt = 0; cnt < len; cnt += 1) {
-							if (inRecordContext && (recordContextStack.length > cnt) && (recordContextStack[cnt].key === fields[cnt])) {
-								possibleValues = [recordContextStack[cnt].value];
-							}
-							else {
-								inRecordContext = false;
-								t = [];
-								possibleValues = linearize(possibleValues, fields[cnt]);
-							}
-						}
+						possibleValues = linearize(possibleValues, fields, 0, recordContextStack);
+						//for (cnt = 0; cnt < len; cnt += 1) {
+						//	if (inRecordContext && (recordContextStack.length > cnt) && (recordContextStack[cnt].key === fields[cnt])) {
+						//		possibleValues = [recordContextStack[cnt].value];
+						//	}
+						//	else {
+						//		inRecordContext = false;
+						//		possibleValues = linearize(possibleValues, fields[cnt]);
+						//	}
+						//}
 						len = possibleValues.length;
 						for (cnt = 0; cnt < len; cnt += 1) {
 							current = possibleValues[cnt];
@@ -549,7 +593,7 @@ represent it and evaluate it over a collection of data or a service.
 								}
 							}
 						}
-						return filter(r);
+						return r;
 					}
 				};
 			},
