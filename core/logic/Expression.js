@@ -80,7 +80,7 @@ represent it and evaluate it over a collection of data or a service.
 		},
 		'equals':{
 			name: 'equals',
-			'operator': function(a,b) { return a === b; }
+			'operator': function(a,b) { return a == b; }
 		},
 		'notEquals':{
 			name: 'notEquals',
