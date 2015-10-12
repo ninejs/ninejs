@@ -5,10 +5,13 @@
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", 'fs'], function (require, exports) {
+})(["require", "exports"], function (require, exports) {
     /// <reference path="../../../typings/node/node.d.ts" />
-    var fs = require('fs');
+    var fs;
     function load(name, req, onLoad) {
+        if (!fs) {
+            fs = require('fs');
+        }
         if (req.toUrl) {
             name = req.toUrl(name);
         }

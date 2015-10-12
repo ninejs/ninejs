@@ -770,7 +770,7 @@ describe('core/logic/Expression', function () {
 					expect(e.evaluate(data)).to.equal(false);
 				});
 			});
-			it('should summarize some with a where clause'/*, function (done) {
+			it('should summarize some with a where clause', function (done) {
 				var e = new Expression();
 				e.fromJson({
 					sourceSummary: 'some',
@@ -802,7 +802,106 @@ describe('core/logic/Expression', function () {
 				check(done, function() {
 					expect(e.evaluate(data)).to.equal(true);
 				});
-			}*/);
+			});
+		});
+		it('should summarize some with a where clause 2', function (done) {
+			var e = new Expression();
+			e.fromJson({
+				sourceSummary: 'countOf',
+				sourceField: 'people',
+				operator: 'equals',
+				target: 1,
+				where: {
+					sourceField: 'people/name',
+					operator: 'equals',
+					target: 'Eduardo'
+				}
+			});
+			var data = {
+				people: [
+					{
+						name: 'Amanda',
+						age: 1
+					},
+					{
+						name: 'Eduardo',
+						age: 30
+					},
+					{
+						name: 'Julio',
+						age: 32
+					}
+				]
+			};
+			check(done, function() {
+				expect(e.evaluate(data)).to.equal(true);
+			});
+		});
+		it('should summarize some with a where clause 3', function (done) {
+			var e = new Expression();
+			e.fromJson({
+				sourceSummary: 'sumOf',
+				sourceField: 'people/age',
+				operator: 'equals',
+				target: 62,
+				where: {
+					sourceField: 'people/name',
+					operator: 'notEquals',
+					target: 'Amanda'
+				}
+			});
+			var data = {
+				people: [
+					{
+						name: 'Amanda',
+						age: 1
+					},
+					{
+						name: 'Eduardo',
+						age: 30
+					},
+					{
+						name: 'Julio',
+						age: 32
+					}
+				]
+			};
+			check(done, function() {
+				expect(e.evaluate(data)).to.equal(true);
+			});
+		});
+		it('should summarize some with a where clause 4', function (done) {
+			var e = new Expression();
+			e.fromJson({
+				sourceSummary: 'sumOf',
+				sourceField: 'people/age',
+				operator: 'equals',
+				target: 0,
+				where: {
+					sourceField: 'people/name',
+					operator: 'equals',
+					target: 'Jose'
+				}
+			});
+			var data = {
+				people: [
+					{
+						name: 'Amanda',
+						age: 1
+					},
+					{
+						name: 'Eduardo',
+						age: 30
+					},
+					{
+						name: 'Julio',
+						age: 32
+					}
+				]
+			};
+			check(done, function() {
+				expect(e.evaluate(data)).to.equal(true);
+			});
 		});
 		it('should accept a custom operator', function (done) {
 			var e = new Expression();

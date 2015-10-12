@@ -1446,7 +1446,7 @@
                 Modernizr['webgl'] = new Boolean(true);
             }
             for (var i = -1, len = exts.length; ++i < len;) {
-                Modernizr['webgl]'][exts[i]] = true;
+                Modernizr['webgl'][exts[i]] = true;
             }
             if (_window.TEST && _window.TEST.audvid) {
                 _window.TEST.audvid.push('webgl');
@@ -1520,6 +1520,6 @@
         Modernizr.add('dom-addeventlistener', !Modernizr('ietrident') && !!document.addEventListener);
         Modernizr.add('touch', 'ontouchstart' in document || window.navigator.msMaxTouchPoints > 0);
         return Modernizr;
-    })(this);
+    })((typeof (window) !== 'undefined') ? window : this);
 });
 //# sourceMappingURL=modernizer.js.map

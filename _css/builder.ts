@@ -145,7 +145,7 @@ function embedUrls(data: string, path: string, prefixes: AMDPrefixesType[], base
 	var r = data;
 	/* jshint unused: true */
 	r = r.replace(/(embed)?url\s*\(\s*['"]?([^'"\)]*)['"]?\s*\)/g, function($0: string, ...matches: string[]){
-		var url = matches[0];
+		var url = matches[1];
 		var newUrl = resolveUrl(url, path, prefixes, baseUrl, false);
 		if (toBase64) {
 			var embedded = convertToBase64Url(newUrl, path);

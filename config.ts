@@ -12,7 +12,7 @@ var isNode = (typeof(window) === 'undefined');
 var req = (isDojo && isNode) ? global.require : require;
 var dojoConfig: any;
 if (isDojo) {
-	dojoConfig = require('dojo/_base/config');
+	dojoConfig = req('dojo/_base/config');
 }
 /**
  config module

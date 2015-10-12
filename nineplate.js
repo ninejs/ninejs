@@ -18,7 +18,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var _textProcessor = require('./_nineplate/textProcessor');
     require('./_nineplate/utils/node/text');
     var requireText, req = require;
-    var isNode = typeof (window) !== 'undefined', isAmd = (typeof (define) !== 'undefined') && (define.amd), isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
+    var isNode = typeof (window) === 'undefined', isAmd = (typeof (define) !== 'undefined') && (define.amd), isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
     if ((typeof (window) === 'undefined') && (!isDojo)) {
         requireText = req('./_nineplate/utils/node/text');
     }

@@ -56,7 +56,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         },
         'equals': {
             name: 'equals',
-            'operator': function (a, b) { return a === b; }
+            'operator': function (a, b) { return a == b; }
         },
         'notEquals': {
             name: 'notEquals',
@@ -384,46 +384,58 @@ var __extends = (this && this.__extends) || function (d, b) {
                     return src;
                 }
                 else {
-                    var fields = src.split('/'), cnt, len = fields.length, inRecordContext = true, r = [], current, possibleValues = [data], filter, linearize = function (arr, fldName) {
-                        var r = [], cnt, len = arr.length, current;
-                        for (cnt = 0; cnt < len; cnt += 1) {
-                            if (arr[cnt]) {
-                                current = arr[cnt][fldName];
-                                if (objUtils_1.isArray(current)) {
-                                    r.push.apply(r, current);
+                    var fields = src.split('/'), cnt, len = fields.length, r = [], current, possibleValues = [data], linearize = function (arr, fields, fieldIndex, recordContextStack) {
+                        var r = [], cnt, len, fieldName, val;
+                        while ((fieldIndex < recordContextStack.length) && (fields[fieldIndex] === recordContextStack[fieldIndex].name)) {
+                            arr = [recordContextStack[fieldIndex].value];
+                            fieldIndex += 1;
+                        }
+                        len = arr.length;
+                        fieldName = fields[fieldIndex];
+                        if (fieldIndex < (fields.length - 1)) {
+                            arr.map(function (item) {
+                                return item[fieldName];
+                            }).forEach(function (item) {
+                                if (objUtils_1.isArray(item)) {
+                                    item.forEach(function (i) {
+                                        recordContextStack.push({ name: fieldName, value: i });
+                                        linearize([i], fields, fieldIndex + 1, recordContextStack).forEach(function (i) {
+                                            r.push(i);
+                                        });
+                                        recordContextStack.pop();
+                                    });
                                 }
                                 else {
-                                    r.push(current);
+                                }
+                            });
+                        }
+                        else {
+                            for (cnt = 0; cnt < len; cnt += 1) {
+                                if (where) {
+                                    val = arr[cnt][fieldName];
+                                    if (objUtils_1.isArray(val)) {
+                                        val.forEach(function (v) {
+                                            recordContextStack.push({ name: fieldName, value: v });
+                                            if (where.evaluate(data, recordContextStack)) {
+                                                r.push(v);
+                                            }
+                                            recordContextStack.pop();
+                                        });
+                                    }
+                                    else {
+                                        if (where.evaluate(data, recordContextStack)) {
+                                            r.push(val);
+                                        }
+                                    }
+                                }
+                                else {
+                                    r.push(arr[cnt][fieldName]);
                                 }
                             }
                         }
                         return r;
                     };
-                    if (where) {
-                        filter = function (arr, recordContextStack) {
-                            var cnt, len = arr.length, r = [];
-                            for (cnt = 0; cnt < len; cnt += 1) {
-                                if (where.evaluate(arr[cnt], recordContextStack)) {
-                                    r.push(arr[cnt]);
-                                }
-                            }
-                            return r;
-                        };
-                    }
-                    else {
-                        filter = function (arr, recordContextStack) {
-                            return arr;
-                        };
-                    }
-                    for (cnt = 0; cnt < len; cnt += 1) {
-                        if (inRecordContext && (recordContextStack.length > cnt) && (recordContextStack[cnt].key === fields[cnt])) {
-                            possibleValues = [recordContextStack[cnt].value];
-                        }
-                        else {
-                            inRecordContext = false;
-                            possibleValues = linearize(possibleValues, fields[cnt]);
-                        }
-                    }
+                    possibleValues = linearize(possibleValues, fields, 0, recordContextStack);
                     len = possibleValues.length;
                     for (cnt = 0; cnt < len; cnt += 1) {
                         current = possibleValues[cnt];
@@ -436,7 +448,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                             }
                         }
                     }
-                    return filter(r);
+                    return r;
                 }
             };
         };

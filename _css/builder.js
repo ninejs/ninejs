@@ -123,7 +123,7 @@
             for (var _i = 1; _i < arguments.length; _i++) {
                 matches[_i - 1] = arguments[_i];
             }
-            var url = matches[0];
+            var url = matches[1];
             var newUrl = resolveUrl(url, path, prefixes, baseUrl, false);
             if (toBase64) {
                 var embedded = convertToBase64Url(newUrl, path);

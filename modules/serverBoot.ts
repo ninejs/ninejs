@@ -28,7 +28,7 @@ function loadModule (dir: string) {
 			}
 		}
 	}
-	var currentModule = require(path.resolve(dir, 'module')),
+	var currentModule = require(path.resolve(dir, 'module')).default,
 		currentConfigPath = path.resolve(dir, '9js.config.json'),
 		currentConfigFile: any,
 		cnt: number,

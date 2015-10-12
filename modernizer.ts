@@ -15,6 +15,7 @@ export interface ModernizerType {
 }
 declare var WebGLRenderingContext: any;
 declare var DocumentTouch: any;
+declare var window: any;
 export default (function(window: any) {
 
 
@@ -2550,7 +2551,7 @@ export default (function(window: any) {
 
 
 		for (var i = -1, len = exts.length; ++i < len;) {
-			Modernizr['webgl]'][exts[i]] = true;
+			Modernizr['webgl'][exts[i]] = true;
 		}
 
 		// hack for addressing modernizr testsuite failures. sorry.
@@ -2683,4 +2684,4 @@ export default (function(window: any) {
 	Modernizr.add('touch', 'ontouchstart' in document || window.navigator.msMaxTouchPoints > 0);
 
 	return Modernizr;
-})(this);
+})((typeof(window) !== 'undefined')? window : this);

@@ -8,7 +8,10 @@ var isNode = typeof(window) === 'undefined',
 	isAmd = (typeof(define) !== 'undefined') && (define.amd),
 	isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
 var fs: any;
-if (isAmd && isDojo) {
+if (!isNode) {
+	fs = null;
+}
+else if (isAmd && isDojo) {
 	fs = require.nodeRequire('fs');
 }
 else {

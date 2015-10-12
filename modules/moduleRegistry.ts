@@ -129,6 +129,9 @@ export class ModuleRegistry extends Properties {
 				currentProvides: { [ name: string ]: any } = {},
 				cnt: number,
 				self = this;
+			if ((!m.provides) && (m.default)) {
+				m = m.default;
+			}
 			for (cnt = 0; cnt < m.provides.length; cnt += 1) {
 				if (this.providesList[m.provides[cnt].id]) {
 					throw new Error('Duplicate provides. Unable to add ' + m.provides[cnt].id + ' because it\'s already there');
@@ -226,7 +229,7 @@ export class ModuleRegistry extends Properties {
 						onDemand: any;
 					//Scanning for on-demand modules
 					if (onDemandModules[current.id] && !this.hasProvide(current.id)) {
-						onDemand = req(onDemandModules[current.id]);
+						onDemand = req(onDemandModules[current.id]).default;
 						this.addModule(onDemand);
 					}
 				}

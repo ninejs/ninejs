@@ -13,7 +13,7 @@ import './_nineplate/utils/node/text';
 
 var requireText: any,
 	req = require;
-var isNode = typeof(window) !== 'undefined',
+var isNode = typeof(window) === 'undefined',
 	isAmd = (typeof(define) !== 'undefined') && (define.amd),
 	isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
 if ((typeof(window) === 'undefined') && (!isDojo)) {

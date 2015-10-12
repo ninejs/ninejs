@@ -3,8 +3,6 @@
 /// <reference path="typings/node/node.d.ts" />
 
 declare module 'ninejs' {
-    export import _css = require('ninejs/_css');
-    export import _nineplate = require('ninejs/_nineplate');
     export import client = require('ninejs/client');
     export import config = require('ninejs/config');
     export import core = require('ninejs/core');
@@ -14,19 +12,8 @@ declare module 'ninejs' {
     export import nineplate = require('ninejs/nineplate');
     export import request = require('ninejs/request');
     export import ui = require('ninejs/ui');
-}
-
-declare module 'ninejs/_css' {
-    export import builder = require('ninejs/_css/builder');
-    export import styleEnable = require('ninejs/_css/styleEnable');
-}
-
-declare module 'ninejs/_nineplate' {
-    export import baseProcessor = require('ninejs/_nineplate/baseProcessor');
-    export import domProcessor = require('ninejs/_nineplate/domProcessor');
-    export import renderers = require('ninejs/_nineplate/renderers');
-    export import textProcessor = require('ninejs/_nineplate/textProcessor');
-    export import utils = require('ninejs/_nineplate/utils');
+    export import _css = require('ninejs/_css');
+    export import _nineplate = require('ninejs/_nineplate');
 }
 
 declare module 'ninejs/client' {
@@ -40,7 +27,6 @@ declare module 'ninejs/config' {
 }
 
 declare module 'ninejs/core' {
-    export import _common = require('ninejs/core/_common');
     export import array = require('ninejs/core/array');
     export import aspect = require('ninejs/core/aspect');
     export import bluebird = require('ninejs/core/bluebird');
@@ -52,6 +38,7 @@ declare module 'ninejs/core' {
     export import objUtils = require('ninejs/core/objUtils');
     export import on = require('ninejs/core/on');
     export import text = require('ninejs/core/text');
+    export import _common = require('ninejs/core/_common');
 }
 
 declare module 'ninejs/css' {
@@ -103,11 +90,11 @@ declare module 'ninejs/modernizer' {
 }
 
 declare module 'ninejs/modules' {
-    export import Module = require('ninejs/modules/Module');
     export import client = require('ninejs/modules/client');
     export import clientBoot = require('ninejs/modules/clientBoot');
     export import config = require('ninejs/modules/config');
     export import empty = require('ninejs/modules/empty');
+    export import Module = require('ninejs/modules/Module');
     export import moduleDefine = require('ninejs/modules/moduleDefine');
     export import moduleRegistry = require('ninejs/modules/moduleRegistry');
     export import ninejsClient = require('ninejs/modules/ninejs-client');
@@ -154,102 +141,24 @@ declare module 'ninejs/request' {
 }
 
 declare module 'ninejs/ui' {
+    export import bootstrap = require('ninejs/ui/bootstrap');
     export import Skin = require('ninejs/ui/Skin');
     export import Skins = require('ninejs/ui/Skins');
-    export import Widget = require('ninejs/ui/Widget');
-    export import bootstrap = require('ninejs/ui/bootstrap');
     export import utils = require('ninejs/ui/utils');
+    export import Widget = require('ninejs/ui/Widget');
 }
 
-declare module 'ninejs/_css/builder' {
-    export interface AMDPrefixesType {
-        name: string;
-        location: string;
-    }
-    export interface ProcessedCssType {
-        path: string;
-        data: string;
-        children: ProcessedCssType[];
-    }
-    export interface ProcessCssOptionsType {
-        path?: string;
-        parentPath?: string;
-        toBase64?: boolean;
-        [name: string]: any;
-    }
-    export interface ProcessCssImportType {
-        children: ProcessedCssType[];
-        css: string;
-    }
-    export function processCss(data: string, path: string, realPath: string, prefixes: AMDPrefixesType[], baseUrl: string, options: ProcessCssOptionsType, callback: (t: ProcessedCssType) => void): void;
+declare module 'ninejs/_css' {
+    export import builder = require('ninejs/_css/builder');
+    export import styleEnable = require('ninejs/_css/styleEnable');
 }
 
-declare module 'ninejs/_css/styleEnable' {
-    export function load(...args: any[]): any;
-}
-
-declare module 'ninejs/_nineplate/baseProcessor' {
-    import { InternalNode } from 'ninejs/_nineplate/utils/node/xmlParser';
-    export class XmlNode {
-        node: InternalNode;
-        nodeType(): number;
-        value(): any;
-        nodeValue(): any;
-        getAttributes(): XmlNode[];
-        getChildNodes(): XmlNode[];
-        hasVariableTagName(): boolean;
-        getVariableTagName(callback: (v: string) => void): void;
-        nodeName(): string;
-        nodeLocalName(): string;
-        namespaceUri(): string;
-        parentNode(): XmlNode;
-        set(n: string, v: any): void;
-        get(n: string): any;
-        constructor(parsedXmlNode: InternalNode);
-    }
-    export class TextParseContext {
-        r: string[];
-        lineBuffer: string[];
-        ignoreComments: boolean;
-        append(line: string): void;
-        appendLine(): void;
-        getText(): string;
-        constructor();
-    }
-    export function trim(content: any): string;
-    export function safeFilter(content: string): string;
-    export function getParsedXml(text: string, sync: boolean): any;
-    export interface ExpressionToken {
-        content: any;
-        contentType: string;
-        type: string;
-        identifier: string;
-        value: any;
-        modifier: string;
-        optimized: string[];
-        arguments: ExpressionToken[];
-    }
-    export interface ParserType {
-        parse: (content: string) => ExpressionToken;
-    }
-    export { InternalNode } from 'ninejs/_nineplate/utils/node/xmlParser';
-}
-
-declare module 'ninejs/_nineplate/domProcessor' {
-    export function compileDom(template: string, sync: boolean, options: any): any;
-}
-
-declare module 'ninejs/_nineplate/renderers' {
-    export import JavascriptRenderer = require('ninejs/_nineplate/renderers/JavascriptRenderer');
-}
-
-declare module 'ninejs/_nineplate/textProcessor' {
-    export function compileText(template: string, sync: boolean): any;
-}
-
-declare module 'ninejs/_nineplate/utils' {
-    export import functions = require('ninejs/_nineplate/utils/functions');
-    export import node = require('ninejs/_nineplate/utils/node');
+declare module 'ninejs/_nineplate' {
+    export import baseProcessor = require('ninejs/_nineplate/baseProcessor');
+    export import domProcessor = require('ninejs/_nineplate/domProcessor');
+    export import renderers = require('ninejs/_nineplate/renderers');
+    export import textProcessor = require('ninejs/_nineplate/textProcessor');
+    export import utils = require('ninejs/_nineplate/utils');
 }
 
 declare module 'ninejs/client/hash' {
@@ -314,38 +223,6 @@ declare module 'ninejs/client/router' {
     export function addRoute(route: Route): Route;
     export function removeRoute(route: Route): any;
     export function startup(): void;
-}
-
-declare module 'ninejs/core/_common' {
-    export interface DecoratorFunction {
-        (fn: Function): any;
-        $$ninejsType: string;
-        method: Function;
-    }
-    export interface Extendable {
-        (fn: Function): any;
-        extend: (...rest: any[]) => any;
-    }
-    export interface Extend {
-        (...rest: any[]): {
-            new (...rest: any[]): any;
-        };
-        registerDecorator: (name: string, dec: (original: Function, current: Function) => any) => void;
-        after: Function;
-        before: Function;
-        around: Function;
-        isArray: (obj: any) => boolean;
-        mixin: (obj: any, target: any) => void;
-        mixinRecursive: (obj: any, target: any) => void;
-        postConstruct: (construct: Function) => any;
-        decorators: {
-            [decoratorName: string]: {
-                (fn: Function): any;
-                $$ninejsType: string;
-                method: Function;
-            };
-        };
-    }
 }
 
 declare module 'ninejs/core/array' {
@@ -507,6 +384,63 @@ declare module 'ninejs/core/text' {
     export function load(id: string, require: any, load: (data: any) => void, config: any): void;
 }
 
+declare module 'ninejs/core/_common' {
+    export interface DecoratorFunction {
+        (fn: Function): any;
+        $$ninejsType: string;
+        method: Function;
+    }
+    export interface Extendable {
+        (fn: Function): any;
+        extend: (...rest: any[]) => any;
+    }
+    export interface Extend {
+        (...rest: any[]): {
+            new (...rest: any[]): any;
+        };
+        registerDecorator: (name: string, dec: (original: Function, current: Function) => any) => void;
+        after: Function;
+        before: Function;
+        around: Function;
+        isArray: (obj: any) => boolean;
+        mixin: (obj: any, target: any) => void;
+        mixinRecursive: (obj: any, target: any) => void;
+        postConstruct: (construct: Function) => any;
+        decorators: {
+            [decoratorName: string]: {
+                (fn: Function): any;
+                $$ninejsType: string;
+                method: Function;
+            };
+        };
+    }
+}
+
+declare module 'ninejs/modules/client' {
+    export import container = require('ninejs/modules/client/container');
+    export import FullScreenFrame = require('ninejs/modules/client/FullScreenFrame');
+    export import router = require('ninejs/modules/client/router');
+    export import singlePageContainer = require('ninejs/modules/client/singlePageContainer');
+    export import Skin = require('ninejs/modules/client/Skin');
+}
+
+declare module 'ninejs/modules/clientBoot' {
+    import { PromiseType } from 'ninejs/core/deferredUtils';
+    export { PromiseType };
+    var _default: PromiseType;
+    export default _default;
+}
+
+declare module 'ninejs/modules/config' {
+    var config: any;
+    export default config;
+}
+
+declare module 'ninejs/modules/empty' {
+    var _default: any;
+    export default _default;
+}
+
 declare module 'ninejs/modules/Module' {
     import Properties from 'ninejs/core/ext/Properties';
     import { PromiseType } from 'ninejs/core/deferredUtils';
@@ -529,31 +463,6 @@ declare module 'ninejs/modules/Module' {
         constructor(args?: any);
     }
     export default Module;
-}
-
-declare module 'ninejs/modules/client' {
-    export import FullScreenFrame = require('ninejs/modules/client/FullScreenFrame');
-    export import Skin = require('ninejs/modules/client/Skin');
-    export import container = require('ninejs/modules/client/container');
-    export import router = require('ninejs/modules/client/router');
-    export import singlePageContainer = require('ninejs/modules/client/singlePageContainer');
-}
-
-declare module 'ninejs/modules/clientBoot' {
-    import { PromiseType } from 'ninejs/core/deferredUtils';
-    export { PromiseType };
-    var _default: PromiseType;
-    export default _default;
-}
-
-declare module 'ninejs/modules/config' {
-    var config: any;
-    export default config;
-}
-
-declare module 'ninejs/modules/empty' {
-    var _default: any;
-    export default _default;
 }
 
 declare module 'ninejs/modules/moduleDefine' {
@@ -591,6 +500,16 @@ declare module 'ninejs/modules/ninejs-client' {
 
 declare module 'ninejs/modules/ninejs-server' {
     import Module from 'ninejs/modules/Module';
+    export class NineJs extends Module {
+        logger: {
+            [name: string]: Logger;
+        };
+        config: any;
+        configGetter(): any;
+        loggerGetter(name: string): Logger;
+        init(name: string, config: any): void;
+        constructor(args: any);
+    }
     var result: Module;
     export default result;
     export interface LoggerStream {
@@ -640,11 +559,11 @@ declare module 'ninejs/modules/serverBoot' {
 declare module 'ninejs/modules/webserver' {
     export import ClientUtils = require('ninejs/modules/webserver/ClientUtils');
     export import Endpoint = require('ninejs/modules/webserver/Endpoint');
+    export import module = require('ninejs/modules/webserver/module');
     export import NineplateResource = require('ninejs/modules/webserver/NineplateResource');
     export import SinglePage = require('ninejs/modules/webserver/SinglePage');
     export import StaticResource = require('ninejs/modules/webserver/StaticResource');
     export import WebServer = require('ninejs/modules/webserver/WebServer');
-    export import module = require('ninejs/modules/webserver/module');
 }
 
 declare module 'ninejs/core/ext/Properties' {
@@ -679,6 +598,18 @@ declare module 'ninejs/core/ext/Properties' {
     }
 }
 
+declare module 'ninejs/_nineplate/domProcessor' {
+    export function compileDom(template: string, sync: boolean, options: any): any;
+}
+
+declare module 'ninejs/_nineplate/textProcessor' {
+    export function compileText(template: string, sync: boolean): any;
+}
+
+declare module 'ninejs/ui/bootstrap' {
+    export import bootstrap = require('ninejs/ui/bootstrap/bootstrap');
+}
+
 declare module 'ninejs/ui/Skin' {
     import Properties from 'ninejs/core/ext/Properties';
     import { ResultFunction } from 'ninejs/nineplate';
@@ -703,6 +634,13 @@ declare module 'ninejs/ui/Skin' {
 declare module 'ninejs/ui/Skins' {
     export import Editor = require('ninejs/ui/Skins/Editor');
     export import Wizard = require('ninejs/ui/Skins/Wizard');
+}
+
+declare module 'ninejs/ui/utils' {
+    export import append = require('ninejs/ui/utils/append');
+    export import domUtils = require('ninejs/ui/utils/domUtils');
+    export import setClass = require('ninejs/ui/utils/setClass');
+    export import setText = require('ninejs/ui/utils/setText');
 }
 
 declare module 'ninejs/ui/Widget' {
@@ -755,159 +693,87 @@ declare module 'ninejs/ui/Widget' {
     export default Widget;
 }
 
-declare module 'ninejs/ui/bootstrap' {
-    export import bootstrap = require('ninejs/ui/bootstrap/bootstrap');
-}
-
-declare module 'ninejs/ui/utils' {
-    export import append = require('ninejs/ui/utils/append');
-    export import domUtils = require('ninejs/ui/utils/domUtils');
-    export import setClass = require('ninejs/ui/utils/setClass');
-    export import setText = require('ninejs/ui/utils/setText');
-}
-
-declare module 'ninejs/_nineplate/utils/node/xmlParser' {
-    export class XmlParserError extends Error {
-        line: number;
-        column: number;
-        xml: string;
+declare module 'ninejs/_css/builder' {
+    export interface AMDPrefixesType {
+        name: string;
+        location: string;
     }
-    export interface InternalNode {
-        nodeType: number;
-        prefix?: string;
-        name?: string;
-        nodeName?: string;
-        localName?: string;
-        parentNode?: InternalNode;
-        namespaces?: string[];
-        namespaceURI?: string;
-        namespaceUri?: string;
-        nodeValue?: any;
-        value?: any;
-        children?: InternalNode[];
-        childNodes?: InternalNode[];
-        attributes?: InternalNode[];
+    export interface ProcessedCssType {
+        path: string;
+        data: string;
+        children: ProcessedCssType[];
+    }
+    export interface ProcessCssOptionsType {
+        path?: string;
+        parentPath?: string;
+        toBase64?: boolean;
         [name: string]: any;
     }
-    export function parse(text: string, sync: boolean): any;
+    export interface ProcessCssImportType {
+        children: ProcessedCssType[];
+        css: string;
+    }
+    export function processCss(data: string, path: string, realPath: string, prefixes: AMDPrefixesType[], baseUrl: string, options: ProcessCssOptionsType, callback: (t: ProcessedCssType) => void): void;
 }
 
-declare module 'ninejs/_nineplate/renderers/JavascriptRenderer' {
-    export class VarContext {
-        varNameFilter: (n: string) => string;
-        getNewVariable: () => string;
-        addVar: (name: string, value: any) => void;
-        addGlobal: (name: string) => void;
-        getVariables: () => string[];
-        getParameters: () => string[];
-        addParameter: (name: string) => void;
-        constructor(parentContext?: VarContext, debugMode?: boolean);
-    }
-    export class Expression {
-        append: (t: any) => Expression;
-        parenthesis: () => Expression;
-        noParenthesis: () => Expression;
-        op: (operator: string, expr: any) => Expression;
-        equals: (expr: any) => Expression;
-        notEquals: (expr: any) => Expression;
-        or: (expr: any) => Expression;
-        and: (expr: any) => Expression;
-        iif: (trueExpr: any, falseExpr: any) => Expression;
-        lessThan: (expr: any) => Expression;
-        plus: (expr: any) => Expression;
-        minus: (expr: any) => Expression;
-        member: (name: any) => Expression;
-        element: (expr: any) => Expression;
-        invoke: (...args: any[]) => Expression;
-        render: () => string;
-        toString: () => string;
-        constructor(expr: any, parenthesis: boolean, renderer: JavascriptRenderer);
-    }
-    export class Chunk {
-        renderer: JavascriptRenderer;
-        clear: () => void;
-        render: () => string;
-        constructor(parent: JavascriptRenderer);
-    }
-    export class Condition {
-        renderer: JavascriptRenderer;
-        elseIf: (expr: any) => JavascriptRenderer;
-        elseDo: () => JavascriptRenderer;
-        render: () => string;
-        constructor(expr: any, parent: JavascriptRenderer);
-    }
-    export class ForLoop {
-        renderer: JavascriptRenderer;
-        render: () => string;
-        constructor(init: any, cond: any, iter: any, parent: JavascriptRenderer);
-    }
-    export class ForIn {
-        renderer: JavascriptRenderer;
-        render: () => string;
-        constructor(propName: string, expr: any, parent: JavascriptRenderer);
-    }
-    export class JsArray {
-        add: (expr: any) => JsArray;
-        render: () => string;
-        toString: () => string;
-        constructor(init?: any[]);
-    }
-    export class JavascriptRenderer {
-        addAssignment: (vName: any, expr: any) => JavascriptRenderer;
-        addCondition: (expr: any) => Condition;
-        addDebugger: () => JavascriptRenderer;
-        addFor: (init: any, cond: any, iter: any) => JavascriptRenderer;
-        addForIn: (propName: any, expr: any) => JavascriptRenderer;
-        addGlobal: (name: string) => JavascriptRenderer;
-        addParameter: (name: string) => JavascriptRenderer;
-        addReturn: (expr: any) => JavascriptRenderer;
-        addStatement: (stmt: any) => JavascriptRenderer;
-        addVar: (name: string, value?: any) => JavascriptRenderer;
-        append: (stmt: any) => JavascriptRenderer;
-        array: (init: any[]) => JsArray;
-        chunk: () => Chunk;
-        clear: () => JavascriptRenderer;
-        comment: (msg: string, prepend?: boolean) => void;
-        context: VarContext;
-        convertToFunctionCall: (parameters: string[]) => string;
-        createObject: (expr: any) => Expression;
-        debugMode: boolean;
-        expression: (expr: any) => Expression;
-        getFunction: () => Function;
-        getIndent: () => string;
-        getNewVariable: () => string;
-        getParentRenderer: () => JavascriptRenderer;
-        indent: number;
-        init: () => JavascriptRenderer;
-        innerFunction: (name: string) => JavascriptRenderer;
-        literal: (expr: any) => string;
-        lineSeparator: string;
-        newAssignment: (vName: string, expr: any) => Expression;
-        newFunction: (pars: any[]) => JavascriptRenderer;
-        not: (expr: any) => string;
-        renderBody: () => string;
-        renderFunction: () => string;
-        raw: (expr: any) => Expression;
-        render: () => string;
-        toString: () => string;
-        varName: (n: string) => string;
-        constructor(debugMode?: boolean, context?: VarContext, parentContext?: VarContext, indent?: number, parentRenderer?: JavascriptRenderer);
-    }
+declare module 'ninejs/_css/styleEnable' {
+    export function load(...args: any[]): any;
 }
 
-declare module 'ninejs/_nineplate/utils/functions' {
-    export var t: (e: HTMLElement, text: string, doc: HTMLDocument) => Node;
-    export var tst: () => (position: string, insertedElement: Element) => Element;
-    export var ae: (e: HTMLElement, name: string, doc: HTMLDocument) => HTMLElement;
-    export var aens: (e: HTMLElement, name: string, ns: string, doc: HTMLDocument) => Element;
-    export var e: (e: HTMLElement, name: string, doc: HTMLDocument) => HTMLElement;
-    export var ens: (e: HTMLElement, name: string, ns: string, doc: HTMLDocument) => Element;
+declare module 'ninejs/_nineplate/baseProcessor' {
+    import { InternalNode } from 'ninejs/_nineplate/utils/node/xmlParser';
+    export class XmlNode {
+        node: InternalNode;
+        nodeType(): number;
+        value(): any;
+        nodeValue(): any;
+        getAttributes(): XmlNode[];
+        getChildNodes(): XmlNode[];
+        hasVariableTagName(): boolean;
+        getVariableTagName(callback: (v: string) => void): void;
+        nodeName(): string;
+        nodeLocalName(): string;
+        namespaceUri(): string;
+        parentNode(): XmlNode;
+        set(n: string, v: any): void;
+        get(n: string): any;
+        constructor(parsedXmlNode: InternalNode);
+    }
+    export class TextParseContext {
+        r: string[];
+        lineBuffer: string[];
+        ignoreComments: boolean;
+        append(line: string): void;
+        appendLine(): void;
+        getText(): string;
+        constructor();
+    }
+    export function trim(content: any): string;
+    export function safeFilter(content: string): string;
+    export function getParsedXml(text: string, sync: boolean): any;
+    export interface ExpressionToken {
+        content: any;
+        contentType: string;
+        type: string;
+        identifier: string;
+        value: any;
+        modifier: string;
+        optimized: string[];
+        arguments: ExpressionToken[];
+    }
+    export interface ParserType {
+        parse: (content: string) => ExpressionToken;
+    }
+    export { InternalNode } from 'ninejs/_nineplate/utils/node/xmlParser';
 }
 
-declare module 'ninejs/_nineplate/utils/node' {
-    export import nodeXml = require('ninejs/_nineplate/utils/node/node-xml');
-    export import text = require('ninejs/_nineplate/utils/node/text');
-    export import xmlParser = require('ninejs/_nineplate/utils/node/xmlParser');
+declare module 'ninejs/_nineplate/renderers' {
+    export import JavascriptRenderer = require('ninejs/_nineplate/renderers/JavascriptRenderer');
+}
+
+declare module 'ninejs/_nineplate/utils' {
+    export import functions = require('ninejs/_nineplate/utils/functions');
+    export import node = require('ninejs/_nineplate/utils/node');
 }
 
 declare module 'ninejs/core/ext/Evented' {
@@ -950,6 +816,10 @@ declare module 'ninejs/core/logic/Expression' {
         action?: (data: any) => any;
         postAction?: (values: any[], side: string, fn: (val: any) => boolean) => boolean;
     }
+    export interface RecordContext {
+        name: string;
+        value: any;
+    }
     class Expression extends Properties {
         constructor(args: any);
         operator: string;
@@ -971,12 +841,12 @@ declare module 'ninejs/core/logic/Expression' {
         sourceValueGetter(): any;
         targetValueGetter(): any;
         toString(): any;
-        _buildGetterFunction(src: string): (data: any, recordContextStack: any[], where: Expression) => any;
+        _buildGetterFunction(src: string): (data: any, recordContextStack: RecordContext[], where: Expression) => any;
         sourceFieldSetter(src: string): void;
         targetFieldSetter(src: string): void;
         ambiguousSetter(val: boolean): void;
-        filter(arr: any[], recordContextStack: any[]): any[];
-        evaluate(data: any, recordContextStack?: any[]): boolean;
+        filter(arr: any[], recordContextStack?: RecordContext[]): any[];
+        evaluate(data: any, recordContextStack?: RecordContext[]): boolean;
         involvedSourcesGetter(): string[];
         reset(): void;
         clone(): Expression;
@@ -989,6 +859,12 @@ declare module 'ninejs/core/logic/Expression' {
     export default Expression;
 }
 
+declare module 'ninejs/modules/client/container' {
+    import Module from 'ninejs/modules/Module';
+    var result: Module;
+    export default result;
+}
+
 declare module 'ninejs/modules/client/FullScreenFrame' {
     import Widget from 'ninejs/ui/Widget';
     class FullScreenFrame extends Widget {
@@ -999,16 +875,6 @@ declare module 'ninejs/modules/client/FullScreenFrame' {
     export default FullScreenFrame;
 }
 
-declare module 'ninejs/modules/client/Skin' {
-    export import FullScreenFrame = require('ninejs/modules/client/Skin/FullScreenFrame');
-}
-
-declare module 'ninejs/modules/client/container' {
-    import Module from 'ninejs/modules/Module';
-    var result: Module;
-    export default result;
-}
-
 declare module 'ninejs/modules/client/router' {
     import Module from 'ninejs/modules/Module';
     var result: Module;
@@ -1017,6 +883,10 @@ declare module 'ninejs/modules/client/router' {
 
 declare module 'ninejs/modules/client/singlePageContainer' {
     
+}
+
+declare module 'ninejs/modules/client/Skin' {
+    export import FullScreenFrame = require('ninejs/modules/client/Skin/FullScreenFrame');
 }
 
 declare module 'ninejs/modules/webserver/ClientUtils' {
@@ -1097,6 +967,12 @@ declare module 'ninejs/modules/webserver/Endpoint' {
     }
     export { Endpoint };
     export default Endpoint;
+}
+
+declare module 'ninejs/modules/webserver/module' {
+    import Module from 'ninejs/modules/Module';
+    var result: Module;
+    export default result;
 }
 
 declare module 'ninejs/modules/webserver/NineplateResource' {
@@ -1278,20 +1154,6 @@ declare module 'ninejs/modules/webserver/WebServer' {
     }
 }
 
-declare module 'ninejs/modules/webserver/module' {
-    import Module from 'ninejs/modules/Module';
-    var result: Module;
-    export default result;
-}
-
-declare module 'ninejs/ui/Skins/Editor' {
-    export import Default = require('ninejs/ui/Skins/Editor/Default');
-}
-
-declare module 'ninejs/ui/Skins/Wizard' {
-    export import Default = require('ninejs/ui/Skins/Wizard/Default');
-}
-
 declare module 'ninejs/ui/bootstrap/bootstrap' {
     import { StyleInstance } from 'ninejs/css';
     export class BootstrapProto {
@@ -1314,6 +1176,14 @@ declare module 'ninejs/ui/bootstrap/bootstrap' {
     }
     var bootstrap: BootstrapProto;
     export default bootstrap;
+}
+
+declare module 'ninejs/ui/Skins/Editor' {
+    export import Default = require('ninejs/ui/Skins/Editor/Default');
+}
+
+declare module 'ninejs/ui/Skins/Wizard' {
+    export import Default = require('ninejs/ui/Skins/Wizard/Default');
 }
 
 declare module 'ninejs/ui/utils/append' {
@@ -1363,12 +1233,148 @@ declare module 'ninejs/ui/utils/setText' {
     export default setText;
 }
 
-declare module 'ninejs/_nineplate/utils/node/node-xml' {
-    export var SaxParser: any;
+declare module 'ninejs/_nineplate/utils/node/xmlParser' {
+    export class XmlParserError extends Error {
+        line: number;
+        column: number;
+        xml: string;
+    }
+    export interface InternalNode {
+        nodeType: number;
+        prefix?: string;
+        name?: string;
+        nodeName?: string;
+        localName?: string;
+        parentNode?: InternalNode;
+        namespaces?: string[];
+        namespaceURI?: string;
+        namespaceUri?: string;
+        nodeValue?: any;
+        value?: any;
+        children?: InternalNode[];
+        childNodes?: InternalNode[];
+        attributes?: InternalNode[];
+        [name: string]: any;
+    }
+    export function parse(text: string, sync: boolean): any;
 }
 
-declare module 'ninejs/_nineplate/utils/node/text' {
-    export function load(name: string, req: any, onLoad: Function): void;
+declare module 'ninejs/_nineplate/renderers/JavascriptRenderer' {
+    export class VarContext {
+        varNameFilter: (n: string) => string;
+        getNewVariable: () => string;
+        addVar: (name: string, value: any) => void;
+        addGlobal: (name: string) => void;
+        getVariables: () => string[];
+        getParameters: () => string[];
+        addParameter: (name: string) => void;
+        constructor(parentContext?: VarContext, debugMode?: boolean);
+    }
+    export class Expression {
+        append: (t: any) => Expression;
+        parenthesis: () => Expression;
+        noParenthesis: () => Expression;
+        op: (operator: string, expr: any) => Expression;
+        equals: (expr: any) => Expression;
+        notEquals: (expr: any) => Expression;
+        or: (expr: any) => Expression;
+        and: (expr: any) => Expression;
+        iif: (trueExpr: any, falseExpr: any) => Expression;
+        lessThan: (expr: any) => Expression;
+        plus: (expr: any) => Expression;
+        minus: (expr: any) => Expression;
+        member: (name: any) => Expression;
+        element: (expr: any) => Expression;
+        invoke: (...args: any[]) => Expression;
+        render: () => string;
+        toString: () => string;
+        constructor(expr: any, parenthesis: boolean, renderer: JavascriptRenderer);
+    }
+    export class Chunk {
+        renderer: JavascriptRenderer;
+        clear: () => void;
+        render: () => string;
+        constructor(parent: JavascriptRenderer);
+    }
+    export class Condition {
+        renderer: JavascriptRenderer;
+        elseIf: (expr: any) => JavascriptRenderer;
+        elseDo: () => JavascriptRenderer;
+        render: () => string;
+        constructor(expr: any, parent: JavascriptRenderer);
+    }
+    export class ForLoop {
+        renderer: JavascriptRenderer;
+        render: () => string;
+        constructor(init: any, cond: any, iter: any, parent: JavascriptRenderer);
+    }
+    export class ForIn {
+        renderer: JavascriptRenderer;
+        render: () => string;
+        constructor(propName: string, expr: any, parent: JavascriptRenderer);
+    }
+    export class JsArray {
+        add: (expr: any) => JsArray;
+        render: () => string;
+        toString: () => string;
+        constructor(init?: any[]);
+    }
+    export class JavascriptRenderer {
+        addAssignment: (vName: any, expr: any) => JavascriptRenderer;
+        addCondition: (expr: any) => Condition;
+        addDebugger: () => JavascriptRenderer;
+        addFor: (init: any, cond: any, iter: any) => JavascriptRenderer;
+        addForIn: (propName: any, expr: any) => JavascriptRenderer;
+        addGlobal: (name: string) => JavascriptRenderer;
+        addParameter: (name: string) => JavascriptRenderer;
+        addReturn: (expr: any) => JavascriptRenderer;
+        addStatement: (stmt: any) => JavascriptRenderer;
+        addVar: (name: string, value?: any) => JavascriptRenderer;
+        append: (stmt: any) => JavascriptRenderer;
+        array: (init: any[]) => JsArray;
+        chunk: () => Chunk;
+        clear: () => JavascriptRenderer;
+        comment: (msg: string, prepend?: boolean) => void;
+        context: VarContext;
+        convertToFunctionCall: (parameters: string[]) => string;
+        createObject: (expr: any) => Expression;
+        debugMode: boolean;
+        expression: (expr: any) => Expression;
+        getFunction: () => Function;
+        getIndent: () => string;
+        getNewVariable: () => string;
+        getParentRenderer: () => JavascriptRenderer;
+        indent: number;
+        init: () => JavascriptRenderer;
+        innerFunction: (name: string) => JavascriptRenderer;
+        literal: (expr: any) => string;
+        lineSeparator: string;
+        newAssignment: (vName: string, expr: any) => Expression;
+        newFunction: (pars: any[]) => JavascriptRenderer;
+        not: (expr: any) => string;
+        renderBody: () => string;
+        renderFunction: () => string;
+        raw: (expr: any) => Expression;
+        render: () => string;
+        toString: () => string;
+        varName: (n: string) => string;
+        constructor(debugMode?: boolean, context?: VarContext, parentContext?: VarContext, indent?: number, parentRenderer?: JavascriptRenderer);
+    }
+}
+
+declare module 'ninejs/_nineplate/utils/functions' {
+    export var t: (e: HTMLElement, text: string, doc: HTMLDocument) => Node;
+    export var tst: () => (position: string, insertedElement: Element) => Element;
+    export var ae: (e: HTMLElement, name: string, doc: HTMLDocument) => HTMLElement;
+    export var aens: (e: HTMLElement, name: string, ns: string, doc: HTMLDocument) => Element;
+    export var e: (e: HTMLElement, name: string, doc: HTMLDocument) => HTMLElement;
+    export var ens: (e: HTMLElement, name: string, ns: string, doc: HTMLDocument) => Element;
+}
+
+declare module 'ninejs/_nineplate/utils/node' {
+    export import nodeXml = require('ninejs/_nineplate/utils/node/node-xml');
+    export import text = require('ninejs/_nineplate/utils/node/text');
+    export import xmlParser = require('ninejs/_nineplate/utils/node/xmlParser');
 }
 
 declare module 'ninejs/modules/client/Skin/FullScreenFrame' {
@@ -1397,5 +1403,13 @@ declare module 'ninejs/ui/Skins/Wizard/Default' {
     import Skin from 'ninejs/ui/Skin';
     var _default: Skin;
     export default _default;
+}
+
+declare module 'ninejs/_nineplate/utils/node/node-xml' {
+    export var SaxParser: any;
+}
+
+declare module 'ninejs/_nineplate/utils/node/text' {
+    export function load(name: string, req: any, onLoad: Function): void;
 }
 

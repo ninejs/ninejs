@@ -38,7 +38,7 @@ describe('nineplate :: Nineplate', function () {
 				}
 				var res = require('dojo/dojo.js');
 				var dojorequire = global.require;
-				dojorequire(['ninejs/nineplate!ninejs/nineplate/tests/template.html', 'dojo/node!assert'], function (template, assert) {
+				dojorequire(['ninejs/nineplate!ninejs/_nineplate/tests/template.html', 'dojo/node!assert'], function (template, assert) {
 					var result = template.renderText({
 						title: 'The title',
 						'class': 'container',
@@ -146,7 +146,7 @@ describe('nineplate :: Nineplate', function () {
 			var expect = require('chai').expect;
 			it('should render a simple template', function (done) {
 
-				requirejs(['ninejs/nineplate!ninejs/nineplate/tests/template.html'], function (template) {
+				requirejs(['ninejs/nineplate!ninejs/_nineplate/tests/template.html'], function (template) {
 					var result = template.renderText({
 						title: 'The title',
 						'class': 'container',
@@ -174,7 +174,7 @@ describe('nineplate :: Nineplate', function () {
 
 			});
 			it('should render with a numeric dataType in an object', function (done) {
-				requirejs(['ninejs/nineplate!ninejs/nineplate/tests/template.html'], function (template) {
+				requirejs(['ninejs/nineplate!ninejs/_nineplate/tests/template.html'], function (template) {
 					var result = template.renderText({
 						title: 'The title',
 						'class': 'container',
@@ -203,7 +203,7 @@ describe('nineplate :: Nineplate', function () {
 				nineplate.getTemplate(__dirname + '/template.html', function(template){
 					Q.resolve(template.toAmd()).then(function(value){
 						fs.writeFileSync(__dirname + '/template-generated.js', value);
-						requirejs(['ninejs/nineplate/tests/template-generated'], function(template) {
+						requirejs(['ninejs/_nineplate/tests/template-generated'], function(template) {
 							assert(typeof(template) === 'function');
 							done();
 						});

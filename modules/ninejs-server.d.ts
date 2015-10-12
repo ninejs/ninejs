@@ -1,6 +1,16 @@
 /// <reference path="../typings/node/node.d.ts" />
 /// <reference path="../typings/bunyan/bunyan.d.ts" />
 import Module from './Module';
+export declare class NineJs extends Module {
+    logger: {
+        [name: string]: Logger;
+    };
+    config: any;
+    configGetter(): any;
+    loggerGetter(name: string): Logger;
+    init(name: string, config: any): void;
+    constructor(args: any);
+}
 declare var result: Module;
 export default result;
 export interface LoggerStream {

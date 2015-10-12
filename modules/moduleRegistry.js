@@ -116,6 +116,9 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.enabledUnits = {};
             this.addModule = function (m) {
                 var p, currentProvides = {}, cnt, self = this;
+                if ((!m.provides) && (m.default)) {
+                    m = m.default;
+                }
                 for (cnt = 0; cnt < m.provides.length; cnt += 1) {
                     if (this.providesList[m.provides[cnt].id]) {
                         throw new Error('Duplicate provides. Unable to add ' + m.provides[cnt].id + ' because it\'s already there');
@@ -203,7 +206,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     if (!this.providesList[current.id]) {
                         var onDemandModules = this.get('onDemandModules') || {}, onDemand;
                         if (onDemandModules[current.id] && !this.hasProvide(current.id)) {
-                            onDemand = req(onDemandModules[current.id]);
+                            onDemand = req(onDemandModules[current.id]).default;
                             this.addModule(onDemand);
                         }
                     }

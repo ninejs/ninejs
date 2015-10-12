@@ -14,7 +14,6 @@ import { getResource } from '../i18n';
 import { map as arrayMap } from '../array';
 
 declare var define: any;
-
 var locale: any,
 	req = require,
 	isAmd = (typeof(define) !== 'undefined' && define.amd),
@@ -67,7 +66,7 @@ var initialOperatorList: { [ name: string ]: Operator } = {
 	},
 	'equals':{
 		name: 'equals',
-		'operator': function(a,b) { return a === b; }
+		'operator': function(a,b) { return a == b; }
 	},
 	'notEquals':{
 		name: 'notEquals',
@@ -294,17 +293,10 @@ function toDateString(dateObj: Date, options?: DateStringOptions){
 	return formattedDate.join('T'); // String
 }
 
-// var getValueFromSlashes = function(data, src) {
-// 	var context = data;
-// 	while (src.indexOf('/') >= 0) {
-// 		//Assuming left part actually is an array
-// 		var arrayName = src.substring(0, src.indexOf('/'));
-// 		src = src.substring(src.indexOf('/') + 1);
-// 		context = context[arrayName];
-// 	}
-// 	return context[src];
-// };
-
+export interface RecordContext {
+	name: string;
+	value: any;
+}
 /**
 @constructor
 */
@@ -496,63 +488,76 @@ class Expression extends Properties {
 	}
 
 	_buildGetterFunction (src: string) {
-		return function(data: any, recordContextStack: any[], where: Expression): any {
+		return function(data: any, recordContextStack: RecordContext[], where: Expression): any {
 			if (data == null) {
 				return src;
 			} else {
 				var fields = src.split('/'),
 					cnt: number,
 					len = fields.length,
-					inRecordContext = true,
 					r: any[] = [],
 					current: any,
 					possibleValues = [data],
-					filter: (arr: any[], recordContextStack?: any[]) => any[],
-					linearize = function(arr: any[], fldName: string) {
+					linearize = function(arr: any[], fields: string[], fieldIndex: number, recordContextStack: RecordContext[]) {
 						var r: any[] = [],
 							cnt: number,
-							len = arr.length,
-							current: any;
-						for (cnt = 0; cnt < len; cnt += 1) {
-							if (arr[cnt]) {
-								current = arr[cnt][fldName];
-								if (isArray(current)) {
-									r.push.apply(r, current);
+							len: number,
+							fieldName: string,
+							val: any;
+						while ((fieldIndex < recordContextStack.length) && (fields[fieldIndex] === recordContextStack[fieldIndex].name)) {
+							arr = [recordContextStack[fieldIndex].value];
+							fieldIndex += 1;
+						}
+						len = arr.length;
+						fieldName = fields[fieldIndex];
+						if (fieldIndex < (fields.length - 1)) {
+							arr.map(function (item) {
+								return item[fieldName];
+							}).forEach(function (item) {
+								if (isArray(item)) {
+									item.forEach(function (i: any) {
+										recordContextStack.push({ name: fieldName, value: i });
+										linearize([i], fields, fieldIndex + 1, recordContextStack).forEach(function (i) {
+											r.push(i);
+										});
+										recordContextStack.pop();
+									});
+
 								}
 								else {
-									r.push(current);
+									//NTODO: Not implemented yet, fields that are a composition rather than an array.
+								}
+							});
+						}
+						else {
+							for (cnt = 0; cnt < len; cnt += 1) {
+								if (where) {
+									val = arr[cnt][fieldName];
+									if (isArray(val)) {
+										val.forEach(function (v: any) {
+											recordContextStack.push({name: fieldName, value: v});
+											if (where.evaluate(data, recordContextStack)) {
+												r.push(v);
+											}
+											recordContextStack.pop();
+										})
+									}
+									else {
+										if (where.evaluate(data, recordContextStack)) {
+											r.push(val);
+										}
+									}
+								}
+								else {
+									r.push(arr[cnt][fieldName]);
 								}
 							}
 						}
 						return r;
 					};
-				if (where) {
-					filter = function(arr, recordContextStack) {
-						var cnt: number,
-							len = arr.length,
-							r: any[] = [];
-						for (cnt = 0; cnt < len; cnt += 1) {
-							if (where.evaluate(arr[cnt], recordContextStack)) {
-								r.push(arr[cnt]);
-							}
-						}
-						return r;
-					};
-				}
-				else {
-					filter = function(arr, recordContextStack) {
-						return arr;
-					};
-				}
-				for (cnt = 0; cnt < len; cnt += 1) {
-					if (inRecordContext && (recordContextStack.length > cnt) && (recordContextStack[cnt].key === fields[cnt])) {
-						possibleValues = [recordContextStack[cnt].value];
-					}
-					else {
-						inRecordContext = false;
-						possibleValues = linearize(possibleValues, fields[cnt]);
-					}
-				}
+
+				possibleValues = linearize(possibleValues, fields, 0, recordContextStack);
+
 				len = possibleValues.length;
 				for (cnt = 0; cnt < len; cnt += 1) {
 					current = possibleValues[cnt];
@@ -565,7 +570,7 @@ class Expression extends Properties {
 						}
 					}
 				}
-				return filter(r);
+				return r;
 			}
 		};
 	}
@@ -580,7 +585,7 @@ class Expression extends Properties {
 	ambiguousSetter (val: boolean) {
 		this.ambiguous = val;
 	}
-	filter (arr: any[], recordContextStack: any[]) {
+	filter (arr: any[], recordContextStack?: RecordContext[]) {
 		var cnt: number,
 			len = (arr || []).length,
 			r: any[] = [];
@@ -591,7 +596,7 @@ class Expression extends Properties {
 		}
 		return r;
 	}
-	evaluate (data: any, recordContextStack?: any[]) {
+	evaluate (data: any, recordContextStack?: RecordContext[]) {
 		var r: boolean,
 			lval: any,
 			lsummary: Summary,

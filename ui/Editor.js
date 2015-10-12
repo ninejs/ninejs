@@ -453,6 +453,10 @@ var __extends = (this && this.__extends) || function (d, b) {
                 control.watch('value', function (name, old, newv) {
                     self.set('value', newv, true);
                 });
+                control.on('change', function () {
+                    self.set('value', control.get('value'), true);
+                    self.emit('change', {});
+                });
                 return control;
             });
         });

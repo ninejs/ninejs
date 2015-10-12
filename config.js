@@ -14,7 +14,7 @@
     var req = (isDojo && isNode) ? global.require : require;
     var dojoConfig;
     if (isDojo) {
-        dojoConfig = require('dojo/_base/config');
+        dojoConfig = req('dojo/_base/config');
     }
     var r;
     if (dojoConfig) {

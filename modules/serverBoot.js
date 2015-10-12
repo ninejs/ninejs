@@ -32,7 +32,7 @@
                 }
             }
         }
-        var currentModule = require(path.resolve(dir, 'module')), currentConfigPath = path.resolve(dir, '9js.config.json'), currentConfigFile, cnt, id;
+        var currentModule = require(path.resolve(dir, 'module')).default, currentConfigPath = path.resolve(dir, '9js.config.json'), currentConfigFile, cnt, id;
         currentModule.loadedFrom = path.resolve(dir, 'module');
         if (currentConfigPath) {
             currentConfigFile = require(currentConfigPath);

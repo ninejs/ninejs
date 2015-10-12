@@ -1,7 +1,11 @@
 /// <reference path="../../../typings/node/node.d.ts" />
-import fs = require('fs');
+declare var require: any;
+let fs: any;
 
 export function load(name: string, req: any, onLoad: Function/*, config*/) {
+	if (!fs) {
+		fs = require('fs');
+	}
 	if (req.toUrl) {
 		name = req.toUrl(name);
 	}

@@ -11,6 +11,10 @@ export interface Summary {
     action?: (data: any) => any;
     postAction?: (values: any[], side: string, fn: (val: any) => boolean) => boolean;
 }
+export interface RecordContext {
+    name: string;
+    value: any;
+}
 declare class Expression extends Properties {
     constructor(args: any);
     operator: string;
@@ -32,12 +36,12 @@ declare class Expression extends Properties {
     sourceValueGetter(): any;
     targetValueGetter(): any;
     toString(): any;
-    _buildGetterFunction(src: string): (data: any, recordContextStack: any[], where: Expression) => any;
+    _buildGetterFunction(src: string): (data: any, recordContextStack: RecordContext[], where: Expression) => any;
     sourceFieldSetter(src: string): void;
     targetFieldSetter(src: string): void;
     ambiguousSetter(val: boolean): void;
-    filter(arr: any[], recordContextStack: any[]): any[];
-    evaluate(data: any, recordContextStack?: any[]): boolean;
+    filter(arr: any[], recordContextStack?: RecordContext[]): any[];
+    evaluate(data: any, recordContextStack?: RecordContext[]): boolean;
     involvedSourcesGetter(): string[];
     reset(): void;
     clone(): Expression;

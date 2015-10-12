@@ -9,7 +9,7 @@ import bunyan = require('bunyan');
 var njs = require('../lib/ninejs');
 var packageJson = require('../package.json');
 
-class NineJs extends Module {
+export class NineJs extends Module {
 	logger: { [ name: string ]: Logger };
 	config: any;
 	configGetter () {
