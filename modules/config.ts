@@ -15,14 +15,21 @@ declare var define:{
 };
 declare var require: any;
 declare var process: any;
+declare var global: any;
 
 var isAmd = (typeof(define) !== 'undefined') && define.amd;
 var isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
 var isNode = (typeof(window) === 'undefined');
 var req = require;
 var dojoConfig: any;
+let _global: any = ((typeof(global) !== 'undefined') ? global : window) || {};
 if (isDojo) {
-	dojoConfig = require('dojo/_base/config');
+	if (!isNode) {
+		dojoConfig = _global.dojoConfig || {};
+	}
+	else {
+		dojoConfig = require('dojo/_base/config');
+	}
 }
 function mixin(src: any, target: any) {
 	if (!src) {

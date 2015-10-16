@@ -13,21 +13,30 @@
     var isNode = (typeof (window) === 'undefined');
     var req = (isDojo && isNode) ? global.require : require;
     var dojoConfig;
+    var _global = ((typeof (global) !== 'undefined') ? global : window) || {};
     if (isDojo) {
-        dojoConfig = req('dojo/_base/config');
+        if (!isNode) {
+            dojoConfig = _global.dojoConfig || {};
+        }
+        else {
+            dojoConfig = req('dojo/_base/config');
+        }
     }
     var r;
+    if (isNode) {
+        _global = window;
+    }
     if (dojoConfig) {
         r = dojoConfig;
     }
-    else if (global.requirejs) {
-        r = global.requirejs.s.contexts._.config;
+    else if (_global.requirejs) {
+        r = _global.requirejs.s.contexts._.config;
     }
     else {
         r = {};
     }
     r.ninejs = r.ninejs || {};
-    extend.mixinRecursive(r.ninejs, global.ninejsConfig || {});
+    extend.mixinRecursive(r.ninejs, _global.ninejsConfig || {});
     extend.mixinRecursive(r.ninejs, moduleConfig || {});
     exports.default = r;
 });

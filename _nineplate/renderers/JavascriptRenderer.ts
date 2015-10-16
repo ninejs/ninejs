@@ -379,6 +379,7 @@ export class JavascriptRenderer {
 	addParameter: (name: string) => JavascriptRenderer;
 	addReturn: (expr: any) => JavascriptRenderer;
 	addStatement: (stmt: any) => JavascriptRenderer;
+	addStatementAtBeginning: (stmt: any) => JavascriptRenderer;
 	addVar: (name: string, value?: any) => JavascriptRenderer;
 	append: (stmt: any) => JavascriptRenderer;
 	array: (init: any[]) => JsArray;
@@ -567,6 +568,10 @@ export class JavascriptRenderer {
 		};
 		this.addStatement = function (stmt: any) {
 			statements.push(new Statement(stmt));
+			return this;
+		};
+		this.addStatementAtBeginning = function (stmt: any) {
+			statements.unshift(new Statement(stmt));
 			return this;
 		};
 		this.append = function (stmt: any) {

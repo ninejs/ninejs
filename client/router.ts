@@ -285,7 +285,7 @@ export class Route extends Properties implements RouterBase {
 	parameterNames: string[]
 	constructor (options: RouteOptions, router: RouterBase) {
 		super();
-		Properties.mixin(options).call(this);
+		Properties.mixin(this).call(null, options);
 		this.routeRegex = convertRouteToRegExp(options.route);
 		this.parameterNames = getParameterNames(options.route);
 		this.parentRouter = router;

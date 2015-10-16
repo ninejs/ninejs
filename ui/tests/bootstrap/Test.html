@@ -38,6 +38,7 @@
 	require(['ninejs/ui/bootstrap/ButtonDropdownMenu', 'ninejs/ui/bootstrap/Dropdown', 'ninejs/ui/bootstrap/NavBar', 'ninejs/ui/bootstrap/bootstrap'], function(
 		ButtonDropdownMenu, Dropdown, NavBar, bootstrap
 	) {
+		bootstrap = bootstrap.default;
 		bootstrap.enable('css');
 		var menu = new ButtonDropdownMenu({ label: 'Options', 'labelClass': 'btn-info' }).show('buttondropdown');
 

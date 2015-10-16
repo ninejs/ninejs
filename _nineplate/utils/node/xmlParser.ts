@@ -64,23 +64,24 @@ export function parse (text: string, sync: boolean): any {
 				nodeType: 1,
 				parentNode: parentNode,
 				children: [],
-				attributes: attrs.map(function (item: { 0: string, 1: string }): InternalNode {
-					var nodeName = item[0],
-						ns: string = null,
-						idx = nodeName.indexOf(':');
-					if (idx >= 0) {
-						ns = getAttributeNS(node, nodeName.substr(0, idx));
-						nodeName = nodeName.substr(idx + 1);
-					}
-					return {
-						nodeName: nodeName,
-						parentNode: node,
-						value: item[1],
-						nodeType: 2,
-						namespaceUri: ns
-					};
-				})
+				attributes: []
 			};
+			node.attributes = attrs.map(function (item: { 0: string, 1: string }): InternalNode {
+				var nodeName = item[0],
+					ns: string = null,
+					idx = nodeName.indexOf(':');
+				if (idx >= 0) {
+					ns = getAttributeNS(node, nodeName.substr(0, idx));
+					nodeName = nodeName.substr(idx + 1);
+				}
+				return {
+					nodeName: nodeName,
+					parentNode: node,
+					value: item[1],
+					nodeType: 2,
+					namespaceUri: ns
+				};
+			});
 			if (!rootNode) {
 				rootNode = node;
 			} else {

@@ -26,6 +26,7 @@
 	require(['ninejs/core/extend'], function(
 		extend
 	) {
+		extend = extend.default;
 		var MyClass = extend('MyClass', {
 			a: 1,
 			add: function(x) {

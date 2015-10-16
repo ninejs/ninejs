@@ -5,8 +5,10 @@
     else if (typeof define === 'function' && define.amd) {
         define(deps, factory);
     }
-})(["require", "exports", './client', './config', './core', './css', './modernizer', './modules', './nineplate', './request', './ui', './_css', './_nineplate'], function (require, exports) {
+})(["require", "exports", './_css', './_nineplate', './client', './config', './core', './css', './modernizer', './modules', './nineplate', './request', './ui'], function (require, exports) {
     /// <reference path="./typings/node/node.d.ts" />
+    exports._css = require('./_css');
+    exports._nineplate = require('./_nineplate');
     exports.client = require('./client');
     exports.config = require('./config');
     exports.core = require('./core');
@@ -16,7 +18,5 @@
     exports.nineplate = require('./nineplate');
     exports.request = require('./request');
     exports.ui = require('./ui');
-    exports._css = require('./_css');
-    exports._nineplate = require('./_nineplate');
 });
 //# sourceMappingURL=9js.js.map

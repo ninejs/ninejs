@@ -19,7 +19,6 @@ var __extends = (this && this.__extends) || function (d, b) {
         __extends(Skin, _super);
         function Skin() {
             _super.apply(this, arguments);
-            this.cssList = [];
             this.enabled = false;
         }
         Skin.prototype.applies = function () {
@@ -88,6 +87,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         return Skin;
     })(Properties_1.default);
+    Skin.prototype.cssList = [];
     exports.default = Skin;
 });
 //# sourceMappingURL=Skin.js.map

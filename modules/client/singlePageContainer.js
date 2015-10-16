@@ -10,7 +10,7 @@
     var FullScreenFrame_1 = require('./FullScreenFrame');
     var bootstrap_1 = require('../../ui/bootstrap/bootstrap');
     bootstrap_1.default.enable('vresponsiveViewPort');
-    var result = moduleDefine_1.define(['ninejs', 'container'], function (provide) {
+    exports.default = moduleDefine_1.define(['ninejs', 'container'], function (provide) {
         provide('singlePageContainer', function (config, ninejs, containerModule) {
             var container = new FullScreenFrame_1.default({});
             container.show(window.document.body);

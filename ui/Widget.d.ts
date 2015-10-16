@@ -24,6 +24,7 @@ declare class Widget extends Properties {
     };
     waitNode: HTMLElement;
     waitSkin: any;
+    static extend(...args: any[]): any;
     destroy(): void;
     registerChildWidget(w: Widget): void;
     remove(): boolean;

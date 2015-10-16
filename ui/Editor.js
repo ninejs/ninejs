@@ -257,7 +257,10 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             function getValue(item) {
                 var value;
-                if (isValue(item.value)) {
+                if (isValue(item.label)) {
+                    value = item.label;
+                }
+                else if (isValue(item.value)) {
                     value = item.value;
                 }
                 else {

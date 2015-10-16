@@ -114,7 +114,7 @@
 		data = '\"' + result.join('\" + \n \"') + '\"';
 		functionBody += 'var result = ' + deepToString(cssResult, '\"') + ';\n';
 		functionBody += 'result.data = ' + data + '; \n';
-		functionBody += 'if (config.applicationUrl) { result.path = config.applicationUrl + result.path; }\n';
+		functionBody += 'if (config.default.applicationUrl) { result.path = config.default.applicationUrl + result.path; }\n';
 		functionBody += '\nreturn style.style(result);\n});';
 		if (noWrap) {
 			return functionBody;

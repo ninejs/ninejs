@@ -18,6 +18,7 @@
     else {
         parser = require('./utils/parser/amd');
     }
+    var svgNamespace = 'http://www.w3.org/2000/svg';
     var TargetType;
     (function (TargetType) {
         TargetType[TargetType["Attr"] = 0] = "Attr";
@@ -288,7 +289,7 @@
                 return isAmdExtensionValue(nsUri);
             }
             function solveAmdExtension() {
-                var amdPrefix = xmlNode.namespaceUri().substr(6), name = xmlNode.nodeLocalName(), mid = amdPrefix + '/' + name, amdModuleVar = amdPathMapping[mid], instanceName;
+                var amdPrefix = xmlNode.namespaceUri().substr(6), name = xmlNode.nodeLocalName(), mid = amdPrefix + '/' + name, amdModuleVar = amdPathMapping[mid], instanceName, defaultCondition;
                 enableAmd();
                 if (!amdModuleVar) {
                     amdModuleVar = renderer.getNewVariable();
@@ -297,6 +298,10 @@
                         .addVar(amdModuleVar, parentRenderer
                         .expression('require')
                         .invoke(parentRenderer.literal(mid)));
+                    var chunk = new JavascriptRenderer_1.Chunk(parentRenderer);
+                    defaultCondition = chunk.renderer.addCondition(renderer.expression(amdModuleVar).member('default'));
+                    defaultCondition.renderer.addAssignment(amdModuleVar, renderer.expression(amdModuleVar).member('default'));
+                    parentRenderer.addStatementAtBeginning(chunk);
                 }
                 instanceName = renderer.getNewVariable();
                 renderer.addVar(instanceName);
@@ -734,7 +739,7 @@
             }
         }
         function getAppendStrategy(xmlNode) {
-            if (xmlNode.namespaceUri() === 'http://www.w3.org/2000/svg') {
+            if (xmlNode.namespaceUri() === svgNamespace) {
                 return 'aens';
             }
             else {

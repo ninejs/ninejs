@@ -58,6 +58,14 @@ var __extends = (this && this.__extends) || function (d, b) {
                 this.$njsShowDefer = null;
             }
         }
+        Widget.extend = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            args.unshift(this);
+            return extend_1.default.apply(null, args);
+        };
         Widget.prototype.destroy = function () {
             var cnt, len = this.$njsChildWidgets.length;
             for (cnt = 0; cnt < len; cnt += 1) {
@@ -244,13 +252,13 @@ var __extends = (this && this.__extends) || function (d, b) {
                 if (this.domNode && this.domNode.nodeType === 1) {
                     appendIt();
                 }
+                for (cnt = 0; cnt < self.$njsEventListenerHandlers.length; cnt += 1) {
+                    self.$njsEventListenerHandlers[cnt].remove();
+                }
+                self.$njsEventListenerHandlers = [];
                 this.waitSkin = deferredUtils_1.when(this.updateSkin(), function () {
                     if (self.domNode) {
                         listeners = self.$njsEventListeners;
-                        for (cnt = 0; cnt < self.$njsEventListenerHandlers.length; cnt += 1) {
-                            self.$njsEventListenerHandlers[cnt].remove();
-                        }
-                        self.$njsEventListenerHandlers = [];
                         for (var p in listeners) {
                             if (listeners.hasOwnProperty(p)) {
                                 current = listeners[p];

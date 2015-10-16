@@ -182,7 +182,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         __extends(Route, _super);
         function Route(options, router) {
             _super.call(this);
-            Properties_1.default.mixin(options).call(this);
+            Properties_1.default.mixin(this).call(null, options);
             this.routeRegex = convertRouteToRegExp(options.route);
             this.parameterNames = getParameterNames(options.route);
             this.parentRouter = router;

@@ -52,6 +52,9 @@ require(moduleArray, function() {
 	extend.mixinRecursive(clientConfig.units, allUnitsCfg);
 	for (cnt = 0; cnt < arguments.length; cnt += 1) {
 		current = arguments[cnt];
+		if (current.default) {
+			current = current.default;
+		}
 		Module.prototype.enable.call(current, clientConfig.units);
 	}
 	moduleLoadPromise.resolve(true);

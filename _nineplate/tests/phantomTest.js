@@ -18,6 +18,7 @@
 		}
 	}
 	function tst(nineplate, Properties) {
+		Properties = Properties.default;
 		describe('Nineplate in a headless WebKit (PhantomJS)', function () {
 			describe('-> DOM Rendering', function() {
 				it('should render a simple template', function(done) {

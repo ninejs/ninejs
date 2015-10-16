@@ -27,6 +27,7 @@
 	require(['ninejs/ui/dojo/Panel', 'ninejs/ui/Skin', 'ninejs/core/extend', 'dojo/_base/declare', 'ninejs/nineplate', 'ninejs/css!dijit/themes/claro/claro.css!enable', 'dojo/domReady!'], function(
 		Panel, Skin, extend, declare, nineplate
 	) {
+		extend = extend.default;
 		var templateString = '<div><div><div>TEST</div></div></div>';
 		var template = nineplate.buildTemplate(templateString).compileDom();
 		var skin = new Skin({template: template});

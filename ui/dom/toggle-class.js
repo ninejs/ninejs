@@ -11,6 +11,8 @@
 })(function (on, setClass, objUtils) {
 	'use strict';
 	/* global window */
+	on = on.default;
+	setClass = setClass.default;
 	return function (node, context, value, options) {
 		var classes = (value || '').split(/,| /).filter(function (s) {
 			return s;

@@ -22,6 +22,7 @@
 		<div id="listEditor"></div>
 		<script type='text/javascript'>
 			require(['ninejs/ui/Editor'], function(Editor) {
+				Editor = Editor.default;
 				setTimeout(function() {
 					var textEditor = new Editor({ dataType: 'alphanumeric' }),
 						numberEditor = new Editor({ dataType: 'integer' }),

@@ -17,6 +17,7 @@ extend allows your to build classes in an OOP style. It is heavily inspired in [
 ```javascript
 define(['ninejs/core/extend'], function(extend) {
 	'use strict';
+	extend = extend.default;
 	var MyClass = extend();
 	var obj = new MyClass();
 });
@@ -27,6 +28,7 @@ Of course, there is no fun in just creating an empty class. Lets create one that
 ```javascript
 define(['ninejs/core/extend'], function(extend) {
 	'use strict';
+	extend = extend.default;
 	var MyClass = extend({
 		prop1: 'test ',
 		action: function(val) {
@@ -48,7 +50,7 @@ ninejs/core/extend works in AMD environments as well as Node.js cjs because it d
 
 ```javascript
 'use strict';
-var extend = require('ninejs/core/extend');
+var extend = require('ninejs/core/extend').default;
 var MyClass = extend({
 	prop1: 'test ',
 	action: function(val) {
@@ -67,6 +69,7 @@ With extend you may also use other functions (even ones not created with extend)
 ```javascript
 define(['ninejs/core/extend'], function(extend) {
 	'use strict';
+	extend = extend.default;
 	function Type1() {
 		this.myVar = 3;
 	}
@@ -94,6 +97,7 @@ Lets say you want to extend a class in a way that you provide custom behaviour a
 ```javascript
 define(['ninejs/core/extend'], function(extend) {
 	'use strict';
+	extend = extend.default;
 	var SuperClass = extend({
 		x: 3,
 		update: function() {

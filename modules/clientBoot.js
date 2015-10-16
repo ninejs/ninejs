@@ -43,6 +43,9 @@
         extend_1.default.mixinRecursive(config_1.default.units, allUnitsCfg);
         for (cnt = 0; cnt < arguments.length; cnt += 1) {
             current = arguments[cnt];
+            if (current.default) {
+                current = current.default;
+            }
             Module_1.default.prototype.enable.call(current, config_1.default.units);
         }
         moduleLoadPromise.resolve(true);

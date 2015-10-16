@@ -1,8 +1,8 @@
+export import Module = require('./modules/Module');
 export import client = require('./modules/client');
 export import clientBoot = require('./modules/clientBoot');
 export import config = require('./modules/config');
 export import empty = require('./modules/empty');
-export import Module = require('./modules/Module');
 export import moduleDefine = require('./modules/moduleDefine');
 export import moduleRegistry = require('./modules/moduleRegistry');
 export import ninejsClient = require('./modules/ninejs-client');

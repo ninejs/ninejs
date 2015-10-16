@@ -11,8 +11,14 @@
     var isNode = (typeof (window) === 'undefined');
     var req = require;
     var dojoConfig;
+    var _global = ((typeof (global) !== 'undefined') ? global : window) || {};
     if (isDojo) {
-        dojoConfig = require('dojo/_base/config');
+        if (!isNode) {
+            dojoConfig = _global.dojoConfig || {};
+        }
+        else {
+            dojoConfig = require('dojo/_base/config');
+        }
     }
     function mixin(src, target) {
         if (!src) {

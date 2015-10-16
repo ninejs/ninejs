@@ -20,6 +20,8 @@ else {
 	parser = require('./utils/parser/amd');
 }
 
+let svgNamespace = 'http://www.w3.org/2000/svg';
+
 interface ElementContextType {
 	mode?: string;
 	needsDom?: boolean;
@@ -397,7 +399,8 @@ export function compileDom(template: string, sync: boolean, options: any): any {
 				name = xmlNode.nodeLocalName(),
 				mid = amdPrefix + '/' + name,
 				amdModuleVar = amdPathMapping[mid],
-				instanceName: string;
+				instanceName: string,
+				defaultCondition: Condition;
 			enableAmd();
 			if (!amdModuleVar) {
 				amdModuleVar = renderer.getNewVariable();//Here I'm asking renderer and not parentRenderer to avoid a shadowing
@@ -411,6 +414,10 @@ export function compileDom(template: string, sync: boolean, options: any): any {
 								parentRenderer.literal(mid)
 							)
 					);
+				let chunk = new Chunk(parentRenderer);
+				defaultCondition = chunk.renderer.addCondition(renderer.expression(amdModuleVar).member('default'));
+				defaultCondition.renderer.addAssignment(amdModuleVar, renderer.expression(amdModuleVar).member('default'));
+				parentRenderer.addStatementAtBeginning(chunk);
 			}
 			instanceName = renderer.getNewVariable();
 			renderer.addVar(instanceName);
@@ -954,9 +961,9 @@ export function compileDom(template: string, sync: boolean, options: any): any {
 					parentRenderer
 						.expression('require')
 						.invoke(
-					parentRenderer.literal(mid)
-				)
-			);
+							parentRenderer.literal(mid)
+						)
+					);
 		}
 
 		var options: { [name: string]: string } = {};
@@ -1000,7 +1007,7 @@ export function compileDom(template: string, sync: boolean, options: any): any {
 		}
 	}
 	function getAppendStrategy(xmlNode: XmlNode) {
-		if (xmlNode.namespaceUri() === 'http://www.w3.org/2000/svg') {
+		if (xmlNode.namespaceUri() === svgNamespace) {
 			return 'aens';
 		}
 		else {

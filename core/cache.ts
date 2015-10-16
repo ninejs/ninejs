@@ -34,7 +34,11 @@ var strip = function(text: string) {
 var getText: (url: string, sync: boolean, load: (data: any) => void) => void;
 if (!isNode) {
 	getText = function(url: string, sync: boolean, load: (data: any) => void) {
-		request.get({ url: url, type: 'html' }).then(load);
+		let requestType = 'html';
+		if (url.indexOf('.json') === url.length - ('.json').length) {
+			requestType = 'json';
+		}
+		request.get({ url: url, type: requestType }).then(load);
 	};
 } else {
 	// Path for node.js and rhino, to load from local file system.

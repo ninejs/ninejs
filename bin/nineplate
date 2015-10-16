@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
-var nineplate = require('../nineplate'),
-	cssBuilder = require('../css/build/dojo-amd'),
+var nineplate = require('../nineplate').default,
+	cssBuilder = require('../_css/build/dojo-amd'),
 	argv = require('optimist').argv,
 	fs = require('fs'),
 	path = require('path'),
@@ -60,6 +60,9 @@ process.on('beforeExit', function () {
 	if (hasErrors) {
 		console.log(hasErrors + ' Errors');
 		process.exit(1);
+	}
+	else {
+		process.exit(0);
 	}
 });
 (function solve (realPath) {

@@ -51,6 +51,10 @@ class Widget extends Properties {
 	skinContract: { [name: string]: { type: string } };
 	waitNode: HTMLElement;
 	waitSkin: any; //Promise or Skin
+	static extend(...args: any[]) {
+		args.unshift(this);
+		return extend.apply(null, args);
+	}
 	/**
 	 * Calls destroy() on every registered child, and later removes all event listeners.
 	 * Extend this function in order to do any implementation specific destroy logic,like finalizing non-ninejs child components.
@@ -320,13 +324,16 @@ class Widget extends Properties {
 			if (this.domNode && this.domNode.nodeType === 1) {
 				appendIt();
 			}
+
+			for (cnt = 0; cnt < self.$njsEventListenerHandlers.length; cnt += 1) {
+				self.$njsEventListenerHandlers[cnt].remove();
+			}
+			self.$njsEventListenerHandlers = [];
+
 			this.waitSkin = when(this.updateSkin(), function(/*sk*/) {
 				if (self.domNode) {
 					listeners =  self.$njsEventListeners;
-					for (cnt = 0; cnt < self.$njsEventListenerHandlers.length; cnt += 1) {
-						self.$njsEventListenerHandlers[cnt].remove();
-					}
-					self.$njsEventListenerHandlers = [];
+
 					for (var p in listeners) {
 						if (listeners.hasOwnProperty(p)) {
 							current = listeners[p];

@@ -67,6 +67,7 @@ export declare class JavascriptRenderer {
     addParameter: (name: string) => JavascriptRenderer;
     addReturn: (expr: any) => JavascriptRenderer;
     addStatement: (stmt: any) => JavascriptRenderer;
+    addStatementAtBeginning: (stmt: any) => JavascriptRenderer;
     addVar: (name: string, value?: any) => JavascriptRenderer;
     append: (stmt: any) => JavascriptRenderer;
     array: (init: any[]) => JsArray;

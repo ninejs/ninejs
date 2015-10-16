@@ -7,7 +7,7 @@ import { StyleType } from '../css'
 declare var require: any;
 
 class Skin extends Properties {
-	cssList: StyleType[] = [];
+	cssList: StyleType[];
 	template: ResultFunction;
 	enabled: boolean = false;
 	applies () { //override to define a 'rule' that tells whether this skin applies or not to your widget
@@ -79,5 +79,5 @@ class Skin extends Properties {
 	updated (control: any) : void {
 	}
 }
-
+Skin.prototype.cssList = [];
 export default Skin;

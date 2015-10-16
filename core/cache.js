@@ -29,7 +29,11 @@
     var getText;
     if (!isNode) {
         getText = function (url, sync, load) {
-            request.get({ url: url, type: 'html' }).then(load);
+            var requestType = 'html';
+            if (url.indexOf('.json') === url.length - ('.json').length) {
+                requestType = 'json';
+            }
+            request.get({ url: url, type: requestType }).then(load);
         };
     }
     else {

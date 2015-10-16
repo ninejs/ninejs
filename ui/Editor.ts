@@ -275,7 +275,10 @@ export class NativeSelect extends ControlBase {
 		}
 		function getValue (item: any) {
 			var value: string;
-			if (isValue(item.value)) {
+			if (isValue(item.label)) {
+				value = item.label;
+			}
+			else if (isValue(item.value)) {
 				value = item.value;
 			}
 			else {

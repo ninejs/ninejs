@@ -470,6 +470,10 @@
                 statements.push(new Statement(stmt));
                 return this;
             };
+            this.addStatementAtBeginning = function (stmt) {
+                statements.unshift(new Statement(stmt));
+                return this;
+            };
             this.append = function (stmt) {
                 statements.push(stmt);
                 return this;

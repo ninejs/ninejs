@@ -19,6 +19,8 @@ Sample:
 ```javascript
 define(['ninejs/core/extend', 'ninejs/core/ext/Properties'], function(extend, Properties) {
 	'use strict';
+	extend = extend.default;
+	Properties = Properties.default;
 	var MyClass = extend(Properties, {
 		nameGetter: function() {
 			return this.name;
@@ -40,6 +42,8 @@ Properties also exposes a static `mixin` function. It acts like any other regula
 ```javascript
 define(['ninejs/core/extend', 'ninejs/core/ext/Properties'], function(extend, Properties) {
 	'use strict';
+	extend = extend.default;
+	Properties = Properties.default;
 	var MyClass = extend(Properties, {
 		nameGetter: function() {
 			return this.name;
