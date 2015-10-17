@@ -6,10 +6,15 @@
         define(deps, factory);
     }
 })(["require", "exports", "reqwest/reqwest"], function (require, exports) {
-    var req = require, isAmd = typeof (define) === 'function' && define.amd, isDojo = isAmd && (define.amd.vendor === 'dojotoolkit.org');
+    var req = require, isNode = typeof (window) === 'undefined', isAmd = typeof (define) === 'function' && define.amd, isDojo = isAmd && (define.amd.vendor === 'dojotoolkit.org');
     var request;
     if (isAmd) {
-        request = require('reqwest/reqwest');
+        if (isNode) {
+            request = require.nodeRequire('request');
+        }
+        else {
+            request = require('reqwest/reqwest');
+        }
     }
     else if (typeof (exports) === 'object') {
         request = req('request');

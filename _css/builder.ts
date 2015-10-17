@@ -21,8 +21,12 @@ export interface ProcessCssImportType {
 	css: string;
 }
 
+declare var define: any;
 declare var require: any;
 var req = require;
+let isNode = typeof(window) === 'undefined',
+	isAmd = (typeof(define) !== 'undefined') && (define.amd),
+	isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
 
 function resolveUrl(url: string, path: string, prefixes: AMDPrefixesType[], baseUrl: string, toBase64: boolean) {
 	function attachBaseUrl(baseUrl: string, r: string) {
@@ -96,10 +100,18 @@ function resolveUrl(url: string, path: string, prefixes: AMDPrefixesType[], base
 }
 var fs: {
 	existsSync: (url: string) => boolean;
-	readFileSync: (url: string) => Buffer;
+	readFileSync: (url: string, encoding?: string) => Buffer | string;
 }, pathModule: {
 	extname: (url: string) => string;
 };
+if (isDojo) {
+	fs = require.nodeRequire('fs');
+	pathModule = require.nodeRequire('path');
+}
+else {
+	fs = req('fs');
+	pathModule = req('path');
+}
 function convertToBase64Url(url:string, path: string) {
 	if (/^data:/.test(url)){
 		return url;
@@ -107,10 +119,6 @@ function convertToBase64Url(url:string, path: string) {
 	var suffixIdx = url.indexOf('?');
 	if (suffixIdx >= 0) {
 		url = url.substr(0, suffixIdx);
-	}
-	if (!fs || !pathModule){
-		fs = req('fs');
-		pathModule = req('path');
 	}
 	var sizeLimit = 30000;
 	var mimeTypes: { [name: string]: string } = {
@@ -126,7 +134,7 @@ function convertToBase64Url(url:string, path: string) {
 
 	if (mimeTypes[extension]){
 		if (fs.existsSync(url)) {
-			var buf = fs.readFileSync(url);
+			var buf: any = fs.readFileSync(url);
 			if (buf.length < sizeLimit){
 				return 'data:' + mimeTypes[extension] + ';base64,' + buf.toString('base64');
 			}
@@ -161,6 +169,10 @@ function embedUrls(data: string, path: string, prefixes: AMDPrefixesType[], base
 
 	return r;
 }
+let localRegex = /^([a-z]:)/i;
+function isLocalFs(src: string) {
+	return src.match(localRegex);
+}
 export function processCss(data: string, path: string, realPath: string, prefixes: AMDPrefixesType[], baseUrl: string, options: ProcessCssOptionsType, callback: (t: ProcessedCssType) => void) {
 	function addImports(data: string, path: string, prefixes: AMDPrefixesType[], baseUrl: string, toBase64: boolean) {
 		var children: ProcessedCssType[] = [];
@@ -183,7 +195,12 @@ export function processCss(data: string, path: string, realPath: string, prefixe
 					children.push(child);
 				});
 			}
-			request.get(realUrl, { type: 'html' }).then(loadHandler);
+			if (isNode && isLocalFs(realUrl)) {
+				loadHandler(fs.readFileSync(realUrl, 'utf-8'));
+			}
+			else {
+				request.get(realUrl, {type: 'html'}).then(loadHandler);
+			}
 			return '';
 		});
 		var r: ProcessCssImportType = { children: children, css: data };

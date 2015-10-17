@@ -9,6 +9,7 @@
     ///<reference path='../typings/node/node.d.ts'/>
     var request = require('../request');
     var req = require;
+    var isNode = typeof (window) === 'undefined', isAmd = (typeof (define) !== 'undefined') && (define.amd), isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
     function resolveUrl(url, path, prefixes, baseUrl, toBase64) {
         function attachBaseUrl(baseUrl, r) {
             if (baseUrl) {
@@ -77,6 +78,14 @@
         return r;
     }
     var fs, pathModule;
+    if (isDojo) {
+        fs = require.nodeRequire('fs');
+        pathModule = require.nodeRequire('path');
+    }
+    else {
+        fs = req('fs');
+        pathModule = req('path');
+    }
     function convertToBase64Url(url, path) {
         if (/^data:/.test(url)) {
             return url;
@@ -84,10 +93,6 @@
         var suffixIdx = url.indexOf('?');
         if (suffixIdx >= 0) {
             url = url.substr(0, suffixIdx);
-        }
-        if (!fs || !pathModule) {
-            fs = req('fs');
-            pathModule = req('path');
         }
         var sizeLimit = 30000;
         var mimeTypes = {
@@ -138,6 +143,10 @@
         });
         return r;
     }
+    var localRegex = /^([a-z]:)/i;
+    function isLocalFs(src) {
+        return src.match(localRegex);
+    }
     function processCss(data, path, realPath, prefixes, baseUrl, options, callback) {
         function addImports(data, path, prefixes, baseUrl, toBase64) {
             var children = [];
@@ -161,7 +170,12 @@
                         children.push(child);
                     });
                 }
-                request.get(realUrl, { type: 'html' }).then(loadHandler);
+                if (isNode && isLocalFs(realUrl)) {
+                    loadHandler(fs.readFileSync(realUrl, 'utf-8'));
+                }
+                else {
+                    request.get(realUrl, { type: 'html' }).then(loadHandler);
+                }
                 return '';
             });
             var r = { children: children, css: data };

@@ -1,6 +1,6 @@
 /* jshint unused: false */
 'use strict';
-var amdExclude = ['coverage', 'node_modules', 'Gruntfile.js', 'tests/', '/nineplate/utils/node/text', '/nineplate/utils/parser/commonjs', '/nineplate/utils/parser/grammar', '/nineplate/utils/parser/gruntTasks/gruntGenerateParser', '/modules/ninejs-server', '/modules/serverBoot', '/modules/webserver', '/lib/', '/out/'];
+var amdExclude = ['coverage', 'node_modules', 'Gruntfile.js', 'tests/', '/_nineplate/utils/node/text', '/_nineplate/utils/parser/commonjs', '/_nineplate/utils/parser/grammar', '/modules/ninejs-server', '/modules/serverBoot', '/modules/webserver', '/lib/', '/out/', '/grunt/'];
 var profile = {
 	resourceTags: {
 		ignore: function(filename){

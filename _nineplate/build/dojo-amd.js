@@ -1,5 +1,6 @@
 define(['../../nineplate', 'dojo/node!fs'], function (nineplate, fs) {
 	'use strict';
+	nineplate = nineplate.default;
 
 	return {
 		start: function (
