@@ -133,7 +133,7 @@ declare module 'ninejs/nineplate' {
         text: string;
         compiledDomVersion: (v: any) => any;
         compiledTextVersion: (v: any) => any;
-        toAmd(sync: boolean, options: any): any;
+        toAmd(sync: boolean, options?: any): any;
         toCommonJs(): any;
         compileDomSync(options?: any): (val: any) => any;
         compileDom(sync: boolean, options?: any): any;

@@ -91,7 +91,7 @@ export class Template extends Properties {
 	text: string = '';
 	compiledDomVersion: (v: any) => any;
 	compiledTextVersion: (v: any) => any;
-	toAmd (sync: boolean, options: any): any {
+	toAmd (sync: boolean, options: any = {}): any {
 		var prefix = options.ninejsPrefix || 'ninejs';
 		var preText = '(function (deps, factory) { \n' +
 				'	if (typeof module === \'object\' && typeof module.exports === \'object\') { \n' +

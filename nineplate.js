@@ -88,6 +88,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.text = '';
         }
         Template.prototype.toAmd = function (sync, options) {
+            if (options === void 0) { options = {}; }
             var prefix = options.ninejsPrefix || 'ninejs';
             var preText = '(function (deps, factory) { \n' +
                 '	if (typeof module === \'object\' && typeof module.exports === \'object\') { \n' +
