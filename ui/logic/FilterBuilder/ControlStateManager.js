@@ -1,5 +1,5 @@
 /* jshint strict: false, unused: true */
-define(['dojo/_base/declare', 'dojo/Stateful', 'dojo/_base/lang', '../../core/array', '../../utils/domUtils', '../../utils/setClass'], function(declare, Stateful, lang, array, domUtils, setClass) {
+define(['dojo/_base/declare', 'dojo/Stateful', 'dojo/_base/lang', '../../../core/array', '../../utils/domUtils', '../../utils/setClass'], function(declare, Stateful, lang, array, domUtils, setClass) {
 	setClass = setClass.default;
 	var ControlStateManager = (declare([Stateful],
 	{
