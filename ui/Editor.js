@@ -765,5 +765,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     Editor.prototype.TimeTextBoxControlSetter = getControlSetter('TimeTextBoxControl');
     Editor.prototype.DateTextBoxControlSetter = getControlSetter('DateTextBoxControl');
     Editor.prototype.NumberTextBoxControlSetter = getControlSetter('NumberTextBoxControl');
+    exports.default = Editor;
 });
 //# sourceMappingURL=Editor.js.map

@@ -83,3 +83,4 @@ declare class Editor extends Widget {
     constructor(args: any);
 }
 export { Editor };
+export default Editor;

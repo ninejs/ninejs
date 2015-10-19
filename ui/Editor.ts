@@ -871,3 +871,4 @@ Editor.prototype.TimeTextBoxControlSetter = getControlSetter('TimeTextBoxControl
 Editor.prototype.DateTextBoxControlSetter = getControlSetter('DateTextBoxControl');
 Editor.prototype.NumberTextBoxControlSetter = getControlSetter('NumberTextBoxControl');
 export { Editor }
+export default Editor
