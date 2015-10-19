@@ -7,6 +7,7 @@ var nineplate = require('../nineplate').default,
 	path = require('path'),
 	def = require('../core/deferredUtils');
 function generate (text, args) {
+	var options = {};
 	if (args.sourceExtension === '.css') {
 		var fn = cssBuilder.buildAppender(text, path.relative(args.baseUrl || '', args.sourcePath).split('\\').join('/'), args.sourcePath, args.cssPrefixes || {}, path.dirname(args.sourcePath), {}, true);
 		var defer = def.defer();
@@ -22,7 +23,9 @@ function generate (text, args) {
 			throw err;
 		}
 		if (args.target === 'amd') {
-			return template.toAmd();
+			options.ignoreHtmlOptimization = true;
+			options.standalone = args.standalone || false;
+			return template.toAmd(false, options);
 		}
 		else if (args.target === 'commonjs') {
 			return template.toCommonJs();

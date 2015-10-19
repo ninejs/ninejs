@@ -104,13 +104,15 @@ var fs: {
 }, pathModule: {
 	extname: (url: string) => string;
 };
-if (isDojo) {
-	fs = require.nodeRequire('fs');
-	pathModule = require.nodeRequire('path');
-}
-else {
-	fs = req('fs');
-	pathModule = req('path');
+if (isNode) {
+	if (isDojo) {
+		fs = require.nodeRequire('fs');
+		pathModule = require.nodeRequire('path');
+	}
+	else {
+		fs = req('fs');
+		pathModule = req('path');
+	}
 }
 function convertToBase64Url(url:string, path: string) {
 	if (/^data:/.test(url)){

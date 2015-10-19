@@ -78,13 +78,15 @@
         return r;
     }
     var fs, pathModule;
-    if (isDojo) {
-        fs = require.nodeRequire('fs');
-        pathModule = require.nodeRequire('path');
-    }
-    else {
-        fs = req('fs');
-        pathModule = req('path');
+    if (isNode) {
+        if (isDojo) {
+            fs = require.nodeRequire('fs');
+            pathModule = require.nodeRequire('path');
+        }
+        else {
+            fs = req('fs');
+            pathModule = req('path');
+        }
     }
     function convertToBase64Url(url, path) {
         if (/^data:/.test(url)) {

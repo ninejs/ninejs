@@ -1,6 +1,13 @@
 define(['../../core/deferredUtils',
 	'../../core/extend', '../Widget', '../Skin', '../../nineplate!./NavBar.html', '../../css!./NavBar.css', '../utils/append', '../utils/setText', '../utils/setClass', '../../core/on'], function(def, extend, Widget, Skin, template, css, append, setText, setClass, on) {
 	'use strict';
+	extend = extend.default;
+	Widget = Widget.default;
+	Skin = Skin.default;
+	append = append.default;
+	setText = setText.default;
+	setClass = setClass.default;
+	on = on.default;
 	var copyClasses = function (fromObj, toNode){
 			var classArray,
 				cnt,

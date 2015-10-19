@@ -87,17 +87,18 @@ var __extends = (this && this.__extends) || function (d, b) {
             _super.apply(this, arguments);
             this.text = '';
         }
-        Template.prototype.toAmd = function (sync) {
+        Template.prototype.toAmd = function (sync, options) {
+            var prefix = options.ninejsPrefix || 'ninejs';
             var preText = '(function (deps, factory) { \n' +
                 '	if (typeof module === \'object\' && typeof module.exports === \'object\') { \n' +
-                '		var v = factory(require, exports); if (v !== undefined) module.exports = v; \n' +
+                '		var v = factory(require, exports' + ((options.standalone) ? '' : ', require(\'' + prefix + '/_nineplate/utils/functions' + '\')') + '); if (v !== undefined) module.exports = v; \n' +
                 '	} \n' +
                 '	else if (typeof define === \'function\' && define.amd) { \n' +
                 '		define(deps, factory); \n' +
                 '	} \n' +
-                '})([\'require\', \'module\'', prePostText = '], function (require, module) {\n/* jshint -W074 */\n/* globals window: true */\n\'use strict\';\nvar r = ', postText = ';\nmodule.exports = r;	});\n';
+                '})([\'require\', \'module\'' + ((options.standalone) ? '' : ', \'' + prefix + '/_nineplate/utils/functions' + '\''), prePostText = '], function (require, module' + ((options.standalone) ? '' : ', fn') + ') {\n/* jshint -W074 */\n/* globals window: true */\n\'use strict\';\nvar r = ', postText = ';\nmodule.exports = r;	});\n';
             if (isNode && !sync) {
-                return def.when(this.compileDom(false), function (fn) {
+                return def.when(this.compileDom(false, options), function (fn) {
                     var depsText = (fn.amdDependencies || []).map(function (item) {
                         return '\'' + item + '\'';
                     }).join(',');
@@ -106,7 +107,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     throw err;
                 });
             }
-            var fn = this.compileDom(sync);
+            var fn = this.compileDom(sync, options);
             var depsText = (fn.amdDependencies || []).map(function (item) {
                 return '\'' + item + '\'';
             }).join(',');
@@ -126,22 +127,22 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             return preText + this.compileText(false) + postText;
         };
-        Template.prototype.compileDomSync = function () {
+        Template.prototype.compileDomSync = function (options) {
             if (this.compiledDomVersion) {
                 return this.compiledDomVersion;
             }
-            var result = exports.domProcessor.compileDom(this.text, true, { ignoreHtmlOptimization: true });
+            var result = exports.domProcessor.compileDom(this.text, true, options || { ignoreHtmlOptimization: true });
             this.compiledDomVersion = result;
             return result;
         };
-        Template.prototype.compileDom = function (sync) {
+        Template.prototype.compileDom = function (sync, options) {
             if (sync) {
-                return this.compileDomSync();
+                return this.compileDomSync(options);
             }
             else {
                 var result = this.compiledDomVersion, self = this;
                 if (!result) {
-                    result = def.when(exports.domProcessor.compileDom(this.text, sync, { ignoreHtmlOptimization: true }), function (val) {
+                    result = def.when(exports.domProcessor.compileDom(this.text, sync, options || { ignoreHtmlOptimization: true }), function (val) {
                         self.compiledDomVersion = val;
                         return val;
                     }, function (err) {

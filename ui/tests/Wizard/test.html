@@ -12,6 +12,8 @@
 		<script src='../../../../dojo/dojo.js'></script>
 		<script type='text/javascript'>
 			require(['ninejs/ui/Wizard', 'ninejs/ui/TransitionPanel', 'ninejs/nineplate', 'ninejs/ui/Skin', 'dojo/domReady!'], function(Wizard, TransitionPanel, nineplate, Skin) {
+				TransitionPanel = TransitionPanel.default;
+				Skin = Skin.default;
 				var wizard = new Wizard();
 				var step1 = new TransitionPanel({
 					skin: new Skin({

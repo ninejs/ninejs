@@ -39,6 +39,9 @@
             .addGlobal('window')
             .addGlobal('Object')
             .addGlobal('Array');
+        if (!options.standalone) {
+            renderer.addGlobal('fn');
+        }
         function enableAmd() {
             if (!amdEnabled) {
                 parentRenderer
@@ -888,8 +891,12 @@
         renderer
             .addParameter('context')
             .addParameter('document')
-            .init()
-            .addVar('fn', objUtils.deepToString(functions))
+            .init();
+        if (options.standaloneTemplate) {
+            renderer
+                .addVar('fn', objUtils.deepToString(functions));
+        }
+        renderer
             .addVar('r', renderer.raw('{}'));
         if (sync) {
             processDom();

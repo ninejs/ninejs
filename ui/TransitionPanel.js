@@ -1,6 +1,9 @@
 define(['../core/deferredUtils',
 	'../core/extend', './utils/setClass', './Widget', '../css!./css/common.css'], function(def, extend, setClass, Widget, commonCss) {
 	'use strict';
+	extend = extend.default;
+	setClass = setClass.default;
+	Widget = Widget.default;
 	commonCss.enable();
 	function insertAfter(node, ref) {
 		var parent = ref.parentNode;

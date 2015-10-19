@@ -13,7 +13,7 @@
  * @constructor
  */
 define(['dojo/_base/declare', 'dojo/Stateful', 'dojo/json', '../../../core/logic/Expression'], function(declare, Stateful, json, Expression) {
-
+	Expression = Expression.default;
 	return declare([Stateful], {
 
 		_getKey : function() {

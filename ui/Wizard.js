@@ -1,5 +1,8 @@
-define(['../core/extend', './Widget', './bootstrap/Button', './Skins/Wizard/Default', 'dojo/_base/array'], function(extend, Widget, Button, DefaultSkin, array) {
+define(['../core/extend', './Widget', './bootstrap/Button', './Skins/Wizard/Default', '../core/array'], function(extend, Widget, Button, DefaultSkin, array) {
 	'use strict';
+	extend = extend.default;
+	Widget = Widget.default;
+
 	function i18n(key) {
 		return key;
 	}

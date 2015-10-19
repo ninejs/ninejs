@@ -14,10 +14,10 @@ export declare class Template extends Properties {
     text: string;
     compiledDomVersion: (v: any) => any;
     compiledTextVersion: (v: any) => any;
-    toAmd(sync: boolean): any;
+    toAmd(sync: boolean, options: any): any;
     toCommonJs(): any;
-    compileDomSync(): (val: any) => any;
-    compileDom(sync: boolean): any;
+    compileDomSync(options?: any): (val: any) => any;
+    compileDom(sync: boolean, options?: any): any;
     renderDom(context: any): any;
     compileTextSync(): any;
     compileText(sync: boolean): any;

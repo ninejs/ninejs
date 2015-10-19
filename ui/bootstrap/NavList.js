@@ -1,5 +1,12 @@
-define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./NavList.html', '../utils/setClass', '../utils/append', '../utils/setText', 'dojo/_base/array', 'dojo/on', '../../css!./NavList.css', './bootstrap'], function(extend, Widget, Skin, template, setClass, append, setText, array, on, css) {
+define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./NavList.html', '../utils/setClass', '../utils/append', '../utils/setText', '../../core/array', '../../core/on', '../../css!./NavList.css'], function(extend, Widget, Skin, template, setClass, append, setText, array, on, css) {
 	'use strict';
+	extend = extend.default;
+	Widget = Widget.default;
+	Skin = Skin.default;
+	setClass = setClass.default;
+	append = append.default;
+	setText = setText.default;
+	on = on.default;
 	css.enable();
 	var NavList = extend(Widget, {
 		skin: new Skin({ template: template, cssList: [] }),

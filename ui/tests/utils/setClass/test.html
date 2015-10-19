@@ -12,6 +12,7 @@
 		<script src='../../../../../dojo/dojo.js'></script>
 		<script type='text/javascript'>
 			require(['ninejs/ui/utils/setClass', 'dojo/query', 'dojo/domReady!'], function(setClass, query) {
+				setClass = setClass.default;
 				query('body div').forEach(function(node) {
 					setClass(node, '!hasBorder');
 					setClass(node, '!hasBorder');

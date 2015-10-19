@@ -91,19 +91,20 @@ export class Template extends Properties {
 	text: string = '';
 	compiledDomVersion: (v: any) => any;
 	compiledTextVersion: (v: any) => any;
-	toAmd (sync: boolean): any {
+	toAmd (sync: boolean, options: any): any {
+		var prefix = options.ninejsPrefix || 'ninejs';
 		var preText = '(function (deps, factory) { \n' +
 				'	if (typeof module === \'object\' && typeof module.exports === \'object\') { \n' +
-				'		var v = factory(require, exports); if (v !== undefined) module.exports = v; \n' +
+				'		var v = factory(require, exports' + ((options.standalone) ? '' : ', require(\'' + prefix + '/_nineplate/utils/functions' + '\')') + '); if (v !== undefined) module.exports = v; \n' +
 				'	} \n' +
 				'	else if (typeof define === \'function\' && define.amd) { \n' +
 				'		define(deps, factory); \n' +
 				'	} \n' +
-				'})([\'require\', \'module\'',
-			prePostText = '], function (require, module) {\n/* jshint -W074 */\n/* globals window: true */\n\'use strict\';\nvar r = ',
+				'})([\'require\', \'module\'' + ((options.standalone) ? '' : ', \'' + prefix + '/_nineplate/utils/functions' + '\''),
+			prePostText = '], function (require, module' + ((options.standalone)?'':', fn') + ') {\n/* jshint -W074 */\n/* globals window: true */\n\'use strict\';\nvar r = ',
 			postText =  ';\nmodule.exports = r;	});\n';
 		if (isNode && !sync) {
-			return def.when(this.compileDom(false), function (fn) {
+			return def.when(this.compileDom(false, options), function (fn) {
 				var depsText = (fn.amdDependencies || []).map(function (item: string) {
 					return '\'' + item + '\'';
 				}).join(',');
@@ -112,7 +113,7 @@ export class Template extends Properties {
 				throw err;
 			});
 		}
-		var fn = this.compileDom(sync);
+		var fn = this.compileDom(sync, options);
 		var depsText = (fn.amdDependencies || []).map(function (item: string) {
 			return '\'' + item + '\'';
 		}).join(',');
@@ -132,24 +133,24 @@ export class Template extends Properties {
 		}
 		return preText + this.compileText(false) + postText;
 	}
-	compileDomSync () : (val: any) => any {
+	compileDomSync (options?: any) : (val: any) => any {
 		if (this.compiledDomVersion) {
 			return this.compiledDomVersion;
 		}
-		var result = domProcessor.compileDom(this.text, true, { ignoreHtmlOptimization: true });
+		var result = domProcessor.compileDom(this.text, true, options || { ignoreHtmlOptimization: true });
 		this.compiledDomVersion = result;
 		return result;
 	}
-	compileDom (sync: boolean): any {
+	compileDom (sync: boolean, options?: any): any {
 		/* jshint evil: true */
 		if (sync) {
-			return this.compileDomSync();
+			return this.compileDomSync(options);
 		}
 		else {
 			var result: any = this.compiledDomVersion,
 				self = this;
 			if (!result) {
-				result = def.when(domProcessor.compileDom(this.text, sync, { ignoreHtmlOptimization: true }), function(val) {
+				result = def.when(domProcessor.compileDom(this.text, sync, options || { ignoreHtmlOptimization: true }), function(val) {
 					self.compiledDomVersion = val;
 					return val;
 				}, function (err) {

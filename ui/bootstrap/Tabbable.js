@@ -1,5 +1,12 @@
-define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./Tabbable.html', '../utils/setClass', '../utils/append', '../utils/setText', 'dojo/_base/array', 'dojo/on', './bootstrap'], function(extend, Widget, Skin, template, setClass, append, setText, array, on) {
+define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./Tabbable.html', '../utils/setClass', '../utils/append', '../utils/setText', '../../core/array', '../../core/on'], function(extend, Widget, Skin, template, setClass, append, setText, array, on) {
 	'use strict';
+	extend = extend.default;
+	Widget = Widget.default;
+	Skin = Skin.default;
+	setClass = setClass.default;
+	append = append.default;
+	setText = setText.default;
+	on = on.default;
 	var Tabbable = extend(Widget, {
 		skin: new Skin({ template: template, cssList: [] }),
 		autoSelectFirst: true,
@@ -21,7 +28,7 @@ define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./Tabbable
 				append(this.domNode, this.tabsNode, 'afterBegin');
 			}
 		},
-		updateSkin: extend.after(function() {
+		onUpdatedSkin: extend.after(function() {
 			this.set('tabsPosition', this.tabsPosition);
 			if (this.autoSelectFirst && this.items[0]) {
 				this.onItemClick({ item: this.items[0] });

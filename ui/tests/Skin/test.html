@@ -12,6 +12,8 @@
 		<script src='../../../../dojo/dojo.js'></script>
 		<script type='text/javascript'>
 			require(['ninejs/ui/Widget', 'ninejs/ui/Skin', 'ninejs/nineplate', 'ninejs/css', 'dojo/has'], function(Widget, Skin, nineplate, css, has) {
+				Widget = Widget.default;
+				Skin = Skin.default;
 				var ieTemplate = nineplate.buildTemplate('<div><span>This is being shown in IE</span></div>');
 				var otherTemplate = nineplate.buildTemplate('<div><span>This is being shown in another browser</span></div>');
 				var skin1 = new Skin({ template: ieTemplate.compileDom(), applies: function() {

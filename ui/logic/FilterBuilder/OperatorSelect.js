@@ -1,5 +1,5 @@
 /* jshint strict: false, unused: true */
-define(['dojo/_base/declare', '../../ComboButton', 'dojo/_base/array'], function(declare, ComboButton, array) {
+define(['dojo/_base/declare', '../../ComboButton', '../../../core/array'], function(declare, ComboButton, array) {
 	 /*
 	 * Control that we use as the Operator selector (Equals, not Equals, etc)
 	 */

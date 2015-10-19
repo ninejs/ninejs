@@ -1,5 +1,7 @@
 define(['../../core/extend', '../Widget', './ContentPaneExtension'], function(extend, Widget, ContentPaneExtension) {
 	'use strict';
+	extend = extend.default;
+	Widget = Widget.default;
 	var Panel = extend(Widget, ContentPaneExtension, {
 		startup: function() {
 			this.show.call(this, arguments);

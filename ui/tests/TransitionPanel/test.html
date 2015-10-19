@@ -11,7 +11,10 @@
 		</script>
 		<script src='../../../../dojo/dojo.js'></script>
 		<script type='text/javascript'>
-			require(['ninejs/ui/TransitionPanel', 'ninejs/ui/Skin', 'ninejs/nineplate', 'dojo/on', 'dojo/domReady!'], function(TransitionPanel, Skin, nineplate, on) {
+			require(['ninejs/ui/TransitionPanel', 'ninejs/ui/Skin', 'ninejs/nineplate', 'ninejs/core/on', 'dojo/domReady!'], function(TransitionPanel, Skin, nineplate, on) {
+				TransitionPanel = TransitionPanel.default;
+				Skin = Skin.default;
+				on = on.default;
 				var firstStepTemplate = nineplate.buildTemplate('<div id="target" class="block">This is a text that is about to be transitioned with the panel</div>');
 				var template = nineplate.buildTemplate('<div class="block"><span>This is being shown in a TransitionPanel</span></div>');
 				var firstStepSkin = new Skin({

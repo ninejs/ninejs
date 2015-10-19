@@ -1,5 +1,7 @@
 /* jshint strict: false */
-define(['dojo/_base/declare', 'dijit/layout/ContentPane', 'dijit/form/RadioButton', 'dijit/_TemplatedMixin', 'dojo/text!./AdvancedOptionsPanel.html', 'dojo/on', 'dijit/TooltipDialog', 'dijit/popup', 'dojo/dom-class', '../../utils/domUtils', '../../utils/setText', 'dojo/i18n!../nls/FilterBuilder'], function(declare, ContentPane, RadioButton, TemplatedMixin, template, on, TooltipDialog, popup, domClass, domUtils, setText, resources) {
+define(['dojo/_base/declare', 'dijit/layout/ContentPane', 'dijit/form/RadioButton', 'dijit/_TemplatedMixin', 'dojo/text!./AdvancedOptionsPanel.html', '../../core/on', 'dijit/TooltipDialog', 'dijit/popup', 'dojo/dom-class', '../../utils/domUtils', '../../utils/setText', 'dojo/i18n!../nls/FilterBuilder'], function(declare, ContentPane, RadioButton, TemplatedMixin, template, on, TooltipDialog, popup, domClass, domUtils, setText, resources) {
+	on = on.default;
+	setText = setText.default;
 	return declare([ContentPane, TemplatedMixin], {
 		template: true,
 		templateString: template,

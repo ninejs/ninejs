@@ -1,5 +1,12 @@
-define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./Dropdown.html', '../utils/append', '../utils/setClass', '../utils/setText', 'dojo/on'], function(extend, Widget, Skin, template, append, setClass, setText, on) {
+define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./Dropdown.html', '../utils/append', '../utils/setClass', '../utils/setText', '../../core/on'], function(extend, Widget, Skin, template, append, setClass, setText, on) {
 	'use strict';
+	extend = extend.default;
+	Widget = Widget.default;
+	Skin = Skin.default;
+	append = append.default;
+	setClass = setClass.default;
+	setText = setText.default;
+	on = on.default;
 	function getChildElement(parent, idx) {
 		var cnt, children = parent.childNodes, i = -1;
 		for (cnt = 0; cnt < children.length; cnt += 1) {

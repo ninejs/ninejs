@@ -1,5 +1,5 @@
 /* jshint strict: false */
-define(['dojo/_base/declare', 'dijit/form/FilteringSelect', 'dojo/store/Memory', 'ninejs/core/on'], function (declare, FilteringSelect, Memory, on) {
+define(['dojo/_base/declare', 'dijit/form/FilteringSelect', 'dojo/store/Memory', '../../../core/on'], function (declare, FilteringSelect, Memory, on) {
 	on = on.default;
 	/*
 	 * Control that we use as the Field selector

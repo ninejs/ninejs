@@ -1,7 +1,6 @@
 /* jshint strict: false */
-define(['dojo/_base/declare', 'dijit/Menu', 'dijit/MenuItem', 'dijit/form/ComboButton', 'dojo/_base/array'], function(declare, Menu, MenuItem, DijitComboButton, array) {
-	var ComboButton = (declare([DijitComboButton],
-	{
+define(['dojo/_base/declare', 'dijit/Menu', 'dijit/MenuItem', 'dijit/form/ComboButton', '../core/array'], function(declare, Menu, MenuItem, DijitComboButton, array) {
+	var ComboButton = (declare([DijitComboButton], {
 		onClick: function()
 		{
 			this.toggleDropDown();

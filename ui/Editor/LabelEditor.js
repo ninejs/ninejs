@@ -11,7 +11,12 @@
 define(['../../core/array',
 	'../../core/extend', '../Editor', '../utils/append', '../utils/setText', '../utils/setClass', '../../core/on', '../../css!./LabelEditor.css!enable'], function(array, extend, Editor, append, setText, setClass, on) {
 	'use strict';
-
+	extend = extend.default;
+	Editor = Editor.default;
+	append = append.default;
+	setText = setText.default;
+	setClass = setClass.default;
+	on = on.default;
 	function identity(v) {
 		return v;
 	}

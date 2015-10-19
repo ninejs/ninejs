@@ -1,5 +1,11 @@
-define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./SplitButtonDropdown.html', '../utils/append', '../utils/setClass', '../utils/setText', 'dojo/on', '../../css!./SplitButtonDropdown.css'], function (extend, Widget, Skin, template, append, setClass, setText, on, css) {
+define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./SplitButtonDropdown.html', '../utils/append', '../utils/setClass', '../utils/setText', '../../core/on', '../../css!./SplitButtonDropdown.css'], function (extend, Widget, Skin, template, append, setClass, setText, on, css) {
 	'use strict';
+	extend = extend.default;
+	Widget = Widget.default;
+	Skin = Skin.default;
+	append = append.default;
+	setClass = setClass.default;
+	on = on.default;
 	var SplitButtonDropdown = extend(Widget, {
 		skin: new Skin({ template: template, cssList: [css] }),
 		addItem: function(item) {

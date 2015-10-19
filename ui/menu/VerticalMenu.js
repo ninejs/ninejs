@@ -1,5 +1,9 @@
 /* jshint strict: false */
-define(['dojo/_base/declare', 'dojo/_base/array', 'dijit/layout/ContentPane', 'dijit/_TemplatedMixin', 'dojo/on', 'dojo/text!./VerticalMenu.html', '../utils/domUtils', '../../css!./skin/VerticalMenu/Default.css', '../utils/setClass', '../utils/append', '../utils/setText'], function(declare, array, ContentPane, TemplatedMixin, on, defaultTemplate, domUtils, defaultSkin, setClass, append, setText) {
+define(['dojo/_base/declare', '../../core/array', 'dijit/layout/ContentPane', 'dijit/_TemplatedMixin', '../../core/on', 'dojo/text!./VerticalMenu.html', '../utils/domUtils', '../../css!./skin/VerticalMenu/Default.css', '../utils/setClass', '../utils/append', '../utils/setText'], function(declare, array, ContentPane, TemplatedMixin, on, defaultTemplate, domUtils, defaultSkin, setClass, append, setText) {
+	on = on.default;
+	setClass = setClass.default;
+	append = append.default;
+	setText = setText.default;
 	var cssLoaded = false;
 	var VerticalMenu = declare([ContentPane, TemplatedMixin], {
 		template: true,

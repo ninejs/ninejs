@@ -1,5 +1,6 @@
 /* jshint strict: false, unused: true */
 define(['../../dojo/ContentPaneExtension', '../../Editor'], function (ContentPaneExtension, Editor) {
+	Editor = Editor.default;
 	 /*
 	 * Control that we use as the Value selector. This should be able to change based
 	 * on the field's data type and other settings
