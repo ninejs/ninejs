@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports"], factory);
     }
-})(["require", "exports"], function (require, exports) {
+})(function (require, exports) {
     var append;
     append = (function () {
         var append = function (parentNode, node, position) {
@@ -63,6 +63,7 @@
     exports.toIndex = append.toIndex;
     exports.remove = append.remove;
     exports.create = append.create;
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = append;
 });
 //# sourceMappingURL=append.js.map

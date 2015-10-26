@@ -95,16 +95,19 @@ export class Template extends Properties {
 		var prefix = options.ninejsPrefix || 'ninejs';
 		var preText = '(function (deps, factory) { \n' +
 				'	if (typeof module === \'object\' && typeof module.exports === \'object\') { \n' +
-				'		var v = factory(require, exports' + ((options.standalone) ? '' : ', require(\'' + prefix + '/_nineplate/utils/functions' + '\')') + '); if (v !== undefined) module.exports = v; \n' +
+				'		var v = factory(require, exports); if (v !== undefined) module.exports = v; \n' +
 				'	} \n' +
 				'	else if (typeof define === \'function\' && define.amd) { \n' +
 				'		define(deps, factory); \n' +
 				'	} \n' +
-				'})([\'require\', \'module\'' + ((options.standalone) ? '' : ', \'' + prefix + '/_nineplate/utils/functions' + '\''),
-			prePostText = '], function (require, module' + ((options.standalone)?'':', fn') + ') {\n/* jshint -W074 */\n/* globals window: true */\n\'use strict\';\nvar r = ',
+				'})([\'require\', \'module\'',
+			prePostText = '], function (require, module) {\n/* jshint -W074 */\n/* globals window: true */\n\'use strict\';\nvar r = ',
 			postText =  ';\nmodule.exports = r;	});\n';
 		if (isNode && !sync) {
 			return def.when(this.compileDom(false, options), function (fn) {
+				if (!options.standalone) {
+					fn.amdDependencies.push(`${prefix}/_nineplate/utils/functions`);
+				}
 				var depsText = (fn.amdDependencies || []).map(function (item: string) {
 					return '\'' + item + '\'';
 				}).join(',');

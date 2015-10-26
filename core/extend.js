@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports"], factory);
     }
-})(["require", "exports"], function (require, exports) {
+})(function (require, exports) {
     var decoratorList = {};
     function isArray(obj) {
         return Object.prototype.toString.call(obj) === '[object Array]';
@@ -173,6 +173,7 @@
     exports.after = after;
     exports.before = before;
     exports.around = around;
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = extend;
 });
 //# sourceMappingURL=extend.js.map

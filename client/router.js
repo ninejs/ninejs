@@ -3,14 +3,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", '../core/deferredUtils', '../core/ext/Evented', '../core/ext/Properties', './hash', '../core/on'], factory);
     }
-})(["require", "exports", '../core/deferredUtils', '../core/ext/Evented', '../core/ext/Properties', './hash', '../core/on'], function (require, exports) {
+})(function (require, exports) {
     var deferredUtils_1 = require('../core/deferredUtils');
     var Evented_1 = require('../core/ext/Evented');
     var Properties_1 = require('../core/ext/Properties');
@@ -61,6 +61,9 @@ var __extends = (this && this.__extends) || function (d, b) {
             };
         }
     }
+    var itemsRemove = function (item) {
+        item.remove();
+    };
     var Router = (function (_super) {
         __extends(Router, _super);
         function Router() {
@@ -93,7 +96,6 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
         };
         Router.prototype.addRoute = function (route) {
-            var self = this;
             this.routes.push(route);
             return route;
         };
@@ -105,9 +107,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             return undefined;
         };
         Router.prototype.destroy = function () {
-            this.routes.forEach(function (item) {
-                item.remove();
-            });
+            this.routes.forEach(itemsRemove);
             this.hashHandler.remove();
         };
         Router.prototype.dispatchRoute = function (evt) {

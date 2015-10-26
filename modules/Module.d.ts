@@ -15,7 +15,7 @@ declare class Module extends Properties {
     init(name: string, config: any): any;
     consumesModule(name: string): boolean;
     providesModule(name: string): boolean;
-    enable(config: any): PromiseType;
+    enable(config: any): PromiseType<any>;
     constructor(args?: any);
 }
 export default Module;

@@ -105,52 +105,54 @@ class Module extends Properties {
 		}
 		return false;
 	}
-	enable (config: any) {
+	enable (config: any): PromiseType<any> {
 		if (!this.get('enabled')) {
 			var error = moduleRegistry.validate(this, true),
 				errorProvides: string[] = [],
 				cnt: number;
-			if (error) {
-				for (cnt = 0; cnt < this.provides.length; cnt += 1) {
-					errorProvides.push(this.provides[cnt].id);
+			return when(error, (error: string) =>{
+				if (error) {
+					for (cnt = 0; cnt < this.provides.length; cnt += 1) {
+						errorProvides.push(this.provides[cnt].id);
+					}
+					throw new Error('Error while trying to enable module with provides: "' + errorProvides.join(',') + '": \n' + error);
 				}
-				throw new Error('Error while trying to enable module with provides: "' + errorProvides.join(',') + '": \n' + error);
-			}
-			else {
-				var self = this;
-				return when(all(this.consumes.map(function (unit) {
-					if (!moduleRegistry.enabledUnits[unit.id]) {
-						return moduleRegistry.initUnit(unit.id);
-					}
-					else {
-						return moduleRegistry.enabledUnits[unit.id];
-					}
-				})), function () {
-					return when(all(self.provides.map(function (item) {
-						if (!moduleRegistry.enabledUnits[item.id]) {
-							var _defer = defer();
-							moduleRegistry.enabledUnits[item.id] = _defer.promise;
-							when(self.init(item.id, config[item.id]), function () {
-								_defer.resolve(true);
-							}, (err:any) => {
-								_defer.reject(err);
-							});
-							return moduleRegistry.enabledUnits[item.id];
+				else {
+					var self = this;
+					return when(all(this.consumes.map(function (unit) {
+						if (!moduleRegistry.enabledUnits[unit.id]) {
+							return moduleRegistry.initUnit(unit.id);
 						}
 						else {
-							return moduleRegistry.enabledUnits[item.id];
+							return moduleRegistry.enabledUnits[unit.id];
 						}
 					})), function () {
-						self.set('enabled', true);
+						return when(all(self.provides.map(function (item) {
+							if (!moduleRegistry.enabledUnits[item.id]) {
+								var _defer = defer();
+								moduleRegistry.enabledUnits[item.id] = _defer.promise;
+								when(self.init(item.id, config[item.id]), function () {
+									_defer.resolve(true);
+								}, (err:any) => {
+									_defer.reject(err);
+								});
+								return moduleRegistry.enabledUnits[item.id];
+							}
+							else {
+								return moduleRegistry.enabledUnits[item.id];
+							}
+						})), function () {
+							self.set('enabled', true);
+						}, function (err: any) {
+							console.log('Error while enabling some modules');
+							throw new Error(err);
+						});
 					}, function (err: any) {
 						console.log('Error while enabling some modules');
 						throw new Error(err);
 					});
-				}, function (err: any) {
-					console.log('Error while enabling some modules');
-					throw new Error(err);
-				});
-			}
+				}
+			});
 		}
 		else {
 			var t = defer();

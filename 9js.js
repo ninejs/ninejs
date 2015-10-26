@@ -1,12 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './_css', './_nineplate', './client', './config', './core', './css', './modernizer', './modules', './nineplate', './request', './ui'], factory);
     }
-})(["require", "exports", './_css', './_nineplate', './client', './config', './core', './css', './modernizer', './modules', './nineplate', './request', './ui'], function (require, exports) {
-    /// <reference path="./typings/node/node.d.ts" />
+})(function (require, exports) {
     exports._css = require('./_css');
     exports._nineplate = require('./_nineplate');
     exports.client = require('./client');

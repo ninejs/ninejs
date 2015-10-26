@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './config', './moduleRegistry', './Module', '../core/extend', '../core/deferredUtils', './client/router', './ninejs-client', './client/container', './client/singlePageContainer'], factory);
     }
-})(["require", "exports", './config', './moduleRegistry', './Module', '../core/extend', '../core/deferredUtils', './client/router', './ninejs-client', './client/container', './client/singlePageContainer'], function (require, exports) {
+})(function (require, exports) {
     var config_1 = require('./config');
     var moduleRegistry_1 = require('./moduleRegistry');
     var Module_1 = require('./Module');
@@ -41,15 +41,17 @@
         extend_1.default.mixinRecursive(config_1.default, { units: {} });
         extend_1.default.mixinRecursive(allUnitsCfg, config_1.default.units);
         extend_1.default.mixinRecursive(config_1.default.units, allUnitsCfg);
-        for (cnt = 0; cnt < arguments.length; cnt += 1) {
-            current = arguments[cnt];
+        var arr = Array.prototype.map.call(arguments, function (current) {
             if (current.default) {
                 current = current.default;
             }
             Module_1.default.prototype.enable.call(current, config_1.default.units);
-        }
-        moduleLoadPromise.resolve(true);
+        });
+        deferredUtils_1.when(deferredUtils_1.all(arr), function () {
+            moduleLoadPromise.resolve(true);
+        });
     });
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = deferredUtils_1.when(moduleLoadPromise.promise, function () {
         var deferred = deferredUtils_1.defer();
         deferredUtils_1.when(moduleRegistry_1.moduleRegistry.enableModules(), function (val) {
@@ -60,8 +62,8 @@
         });
         return deferred.promise;
     }, function (error) {
-        console.log(error);
-        throw new Error(error);
+        console.error(error);
+        throw error;
     });
 });
 //# sourceMappingURL=clientBoot.js.map

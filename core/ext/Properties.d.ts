@@ -3,8 +3,8 @@ export default class Properties {
     get(name: string): any;
     set(name: any, ...values: any[]): any;
     watch(name: string, action: (name: string, oldValue: any, newValue: any) => void): WatchHandle;
-    mixinProperties(target: any): Properties;
-    mixinRecursive(target: any): Properties;
+    mixinProperties(target: any): this;
+    mixinRecursive(target: any): this;
     $njsWatch: {
         [name: string]: {
             action: (name: string, oldValue: any, newValue: any) => void;

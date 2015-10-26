@@ -77,11 +77,11 @@ declare module 'ninejs/css' {
     export class StyleInstance implements StyleType {
         styleNode: HTMLStyleElement;
         children: StyleInstance[];
-        enable(): StyleInstance;
-        disable(): StyleInstance;
+        enable(): this;
+        disable(): this;
     }
     export function style(processResult: StyleObject): StyleObject;
-    export function loadFromString(css: string, uniqueId: string): def.PromiseType;
+    export function loadFromString(css: string, uniqueId: string): def.PromiseType<{}>;
     export function load(id: string, require: any, load: (r: StyleObject) => void): void;
 }
 
@@ -280,7 +280,7 @@ declare module 'ninejs/client/router' {
         addRoute(route: Route): Route;
         removeRoute(route: Route): any;
         destroy(): void;
-        dispatchRoute(evt: any): PromiseType;
+        dispatchRoute(evt: any): PromiseType<void>;
         hashHandler: {
             remove: () => void;
         };
@@ -298,7 +298,7 @@ declare module 'ninejs/client/router' {
         removeRoute(): any;
         register(): Route;
         titleGetter(): any;
-        execute(args: any, evt: any): PromiseType;
+        execute(args: any, evt: any): PromiseType<any>;
         action: (evt: any) => void;
         loadAction: (args: any, evt: any) => any;
         initAction(): any;
@@ -391,7 +391,7 @@ declare module 'ninejs/core/aspect' {
 declare module 'ninejs/core/bluebird' {
     import { PromiseManagerType, PromiseConstructorType } from 'ninejs/core/deferredUtils';
     var bluebird: PromiseManagerType;
-    var defer: (v?: any) => PromiseConstructorType;
+    var defer: <T>(v?: T) => PromiseConstructorType<T>;
     export { defer };
     export default bluebird;
 }
@@ -409,31 +409,32 @@ declare module 'ninejs/core/cache' {
 }
 
 declare module 'ninejs/core/deferredUtils' {
-    export interface PromiseType {
-        then(resolve: (v: any) => any, ...rest: ((v: any) => void)[]): PromiseType;
-        fin(act: () => void): PromiseType;
+    export interface PromiseType<T> {
+        then<U>(resolve: (v: T) => U | PromiseType<U>, onrejected?: (reason: any) => any): PromiseType<U>;
+        catch(onrejected?: (reason: any) => any): Promise<T>;
+        fin(act: () => void): PromiseType<T>;
     }
-    export interface PromiseConstructorType {
-        promise: PromiseType;
-        resolve: (v: any) => void;
+    export interface PromiseConstructorType<T> {
+        promise: PromiseType<T>;
+        resolve: (v: T | PromiseType<T>) => T;
         reject: (e: Error) => void;
     }
     export interface PromiseManagerType {
-        when: (v: any, success: (v: any) => any, reject?: (e: Error) => void, fin?: () => void) => PromiseType;
-        defer: (v?: any) => PromiseConstructorType;
-        all: (arr: any[]) => PromiseType;
-        delay: (ms: number) => PromiseType;
+        when: <T, U>(v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void, fin?: () => void) => PromiseType<U>;
+        defer: <T>(v?: T) => PromiseConstructorType<T>;
+        all: (arr: any[]) => PromiseType<any[]>;
+        delay: (ms: number) => PromiseType<any>;
     }
-    export function isPromise(valueOrPromise: any): boolean;
-    export var delay: (ms: number) => PromiseType;
-    export var mapToPromises: (arr: any[]) => PromiseType[];
-    export var defer: (v?: any) => PromiseConstructorType;
-    export var when: (valueOrPromise: any, resolve: (v: any) => any, reject?: (e: any) => void, progress?: (p: any) => void, finalBlock?: () => void) => PromiseType;
-    export var all: (arr: any[]) => PromiseType;
-    export var series: (taskList: any[]) => PromiseType;
-    export function ncall(fn: (...args: any[]) => any, self: any, ...args: any[]): PromiseType;
-    export function nfcall(fn: (...args: any[]) => any, ...args: any[]): PromiseType;
-    export function resolve(r: any): PromiseType;
+    export function isPromise<T>(valueOrPromise: any): valueOrPromise is PromiseType<T>;
+    export var delay: (ms: number) => PromiseType<any>;
+    export var mapToPromises: (arr: any[]) => PromiseType<any>[];
+    export var defer: <T>(v?: T) => PromiseConstructorType<T>;
+    export var when: <T, U>(v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void, fin?: () => void) => PromiseType<U>;
+    export var all: (arr: any[]) => PromiseType<any[]>;
+    export var series: (taskList: any[]) => PromiseType<any>;
+    export function resolve<T>(val: T): PromiseType<T>;
+    export function ncall<T>(fn: (...args: any[]) => any, self: any, ...args: any[]): PromiseType<T>;
+    export function nfcall<T>(fn: (...args: any[]) => any, ...args: any[]): PromiseType<T>;
 }
 
 declare module 'ninejs/core/ext' {
@@ -466,6 +467,7 @@ declare module 'ninejs/core/objUtils' {
     export function isArrayLike(value: any): any;
     export function isNumber(n: any): boolean;
     export function isDate(date: any): boolean;
+    export function isHTMLElement(v: any): v is HTMLElement;
 }
 
 declare module 'ninejs/core/on' {
@@ -525,7 +527,7 @@ declare module 'ninejs/modules/Module' {
         init(name: string, config: any): any;
         consumesModule(name: string): boolean;
         providesModule(name: string): boolean;
-        enable(config: any): PromiseType;
+        enable(config: any): PromiseType<any>;
         constructor(args?: any);
     }
     export default Module;
@@ -542,7 +544,7 @@ declare module 'ninejs/modules/client' {
 declare module 'ninejs/modules/clientBoot' {
     import { PromiseType } from 'ninejs/core/deferredUtils';
     export { PromiseType };
-    var _default: PromiseType;
+    var _default: PromiseType<{}>;
     export default _default;
 }
 
@@ -566,16 +568,16 @@ declare module 'ninejs/modules/moduleRegistry' {
     import { PromiseType } from 'ninejs/core/deferredUtils';
     export class ModuleRegistry extends Properties {
         addModule: (m: any) => void;
-        build: () => PromiseType;
-        enableModules: () => PromiseType;
+        build: () => PromiseType<any>;
+        enableModules: () => PromiseType<any>;
         enabledUnits: {
             [name: string]: any;
         };
-        initUnit: (unitId: string) => PromiseType;
+        initUnit: (unitId: string) => PromiseType<any>;
         providesList: {
             [name: string]: any;
         };
-        validate: (m: any, enableOnDemand: boolean) => string;
+        validate: (m: any, enableOnDemand: boolean) => PromiseType<string>;
         Module: any;
         hasProvide(id: string): boolean;
         constructor();
@@ -643,7 +645,7 @@ declare module 'ninejs/modules/ninejs-server' {
 
 declare module 'ninejs/modules/serverBoot' {
     import { PromiseType } from 'ninejs/core/deferredUtils';
-    var _default: PromiseType;
+    var _default: PromiseType<{}>;
     export default _default;
 }
 
@@ -663,8 +665,8 @@ declare module 'ninejs/core/ext/Properties' {
         get(name: string): any;
         set(name: any, ...values: any[]): any;
         watch(name: string, action: (name: string, oldValue: any, newValue: any) => void): WatchHandle;
-        mixinProperties(target: any): Properties;
-        mixinRecursive(target: any): Properties;
+        mixinProperties(target: any): this;
+        mixinRecursive(target: any): this;
         $njsWatch: {
             [name: string]: {
                 action: (name: string, oldValue: any, newValue: any) => void;
@@ -703,7 +705,7 @@ declare module 'ninejs/ui/Skin' {
         enable(widget: {
             domNode: any;
             mixinProperties: (obj: any) => void;
-        }): def.PromiseType;
+        }): def.PromiseType<{}>;
         disable(): void;
         updated(control: any): void;
     }
@@ -730,10 +732,10 @@ declare module 'ninejs/ui/Widget' {
         $njsEventListeners: {
             [name: string]: EventHandler[];
         };
-        $njsShowDefer: PromiseConstructorType;
+        $njsShowDefer: PromiseConstructorType<HTMLElement>;
         currentSkin: Skin;
         waiting: boolean;
-        domNode: any;
+        domNode: HTMLElement | PromiseType<HTMLElement>;
         skin: any;
         skinContract: {
             [name: string]: {
@@ -746,24 +748,27 @@ declare module 'ninejs/ui/Widget' {
         destroy(): void;
         registerChildWidget(w: Widget): void;
         remove(): boolean;
-        skinSetter(value: any): PromiseType;
-        classSetter(v: string): PromiseType;
-        idSetter(v: string): PromiseType;
-        styleSetter(v: string): PromiseType;
-        updateSkin(): PromiseType;
+        skinSetter(value: Skin | PromiseType<Skin> | string): PromiseType<Skin>;
+        classSetter(v: string): PromiseType<HTMLElement>;
+        idSetter(v: string): PromiseType<HTMLElement>;
+        styleSetter(v: string): PromiseType<HTMLElement>;
+        updateSkin(): PromiseType<void>;
         onUpdatedSkin(): void;
         forceUpdateSkin(): void;
-        loadSkin(name: string): PromiseType;
+        loadSkin(name: string): PromiseType<Skin>;
         own(...args: RemovableType[]): void;
-        show(parentNode?: any): any;
+        show(parentNode?: HTMLElement | string): PromiseType<HTMLElement>;
         on(type: string, action: (e?: any) => any, persistEvent?: boolean): RemovableType;
         emit(type: string, data: any): void;
         subscribe(type: string, action: (data: any) => any): void;
         collect(type: string, data: any): any[];
-        wait(_defer: PromiseType): PromiseType;
+        wait(_defer: PromiseType<any>): PromiseType<void>;
         constructor(args: any);
     }
     export default Widget;
+    export interface WidgetConstructor {
+        new (args: any): Widget;
+    }
 }
 
 declare module 'ninejs/ui/bootstrap' {
@@ -1007,7 +1012,9 @@ declare module 'ninejs/core/logic/Expression' {
 
 declare module 'ninejs/modules/client/FullScreenFrame' {
     import Widget from 'ninejs/ui/Widget';
+    import { PromiseType } from 'ninejs/core/deferredUtils';
     class FullScreenFrame extends Widget {
+        init: PromiseType<HTMLElement>;
         containerNode: HTMLElement;
         selectedSetter(idx: any): void;
         addChild(child: any): any;

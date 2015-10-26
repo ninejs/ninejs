@@ -1234,6 +1234,14 @@ export function compileDom(template: string, sync: boolean, options: any): any {
 		renderer
 			.addVar('fn', objUtils.deepToString(functions));
 	}
+	else {
+		enableAmd();
+		parentRenderer
+			.addVar('fn', parentRenderer
+				.expression('require')
+				.invoke(parentRenderer.literal(`${options.ninejsPrefix || 'ninejs'}/_nineplate/utils/functions`)));
+		amdPathMapping[`${options.ninejsPrefix || 'ninejs'}/_nineplate/utils/functions`] = 'fn';
+	}
 	renderer
 		.addVar('r', renderer.raw('{}'));
 

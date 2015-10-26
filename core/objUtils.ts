@@ -93,3 +93,7 @@ export function isNumber (n: any) {
 export function isDate (date: any) {
 	return (date instanceof Date) && (!isNaN(date.valueOf()));
 }
+
+export function isHTMLElement (v: any): v is HTMLElement {
+	return v && (v.nodeType === 1);
+}

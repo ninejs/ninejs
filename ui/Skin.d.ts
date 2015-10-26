@@ -11,7 +11,7 @@ declare class Skin extends Properties {
     enable(widget: {
         domNode: any;
         mixinProperties: (obj: any) => void;
-    }): def.PromiseType;
+    }): def.PromiseType<{}>;
     disable(): void;
     updated(control: any): void;
 }

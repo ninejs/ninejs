@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './modules/Module', './modules/client', './modules/clientBoot', './modules/config', './modules/empty', './modules/moduleDefine', './modules/moduleRegistry', './modules/ninejs-client', './modules/ninejs-server', './modules/serverBoot', './modules/webserver'], factory);
     }
-})(["require", "exports", './modules/Module', './modules/client', './modules/clientBoot', './modules/config', './modules/empty', './modules/moduleDefine', './modules/moduleRegistry', './modules/ninejs-client', './modules/ninejs-server', './modules/serverBoot', './modules/webserver'], function (require, exports) {
+})(function (require, exports) {
     exports.Module = require('./modules/Module');
     exports.client = require('./modules/client');
     exports.clientBoot = require('./modules/clientBoot');

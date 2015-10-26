@@ -20,9 +20,9 @@ export declare class StyleObject implements StyleType {
 export declare class StyleInstance implements StyleType {
     styleNode: HTMLStyleElement;
     children: StyleInstance[];
-    enable(): StyleInstance;
-    disable(): StyleInstance;
+    enable(): this;
+    disable(): this;
 }
 export declare function style(processResult: StyleObject): StyleObject;
-export declare function loadFromString(css: string, uniqueId: string): def.PromiseType;
+export declare function loadFromString(css: string, uniqueId: string): def.PromiseType<{}>;
 export declare function load(id: string, require: any, load: (r: StyleObject) => void): void;

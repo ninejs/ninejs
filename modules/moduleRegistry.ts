@@ -104,12 +104,12 @@ function areVersionsCompatible(source: any, target: string) {
 }
 export class ModuleRegistry extends Properties {
 	addModule: (m: any) => void;
-	build: () => PromiseType;
-	enableModules: () => PromiseType;
+	build: () => PromiseType<any>;
+	enableModules: () => PromiseType<any>;
 	enabledUnits: { [ name: string ]: any };
-	initUnit: (unitId: string) => PromiseType;
+	initUnit: (unitId: string) => PromiseType<any>;
 	providesList: { [ name: string ]: any };
-	validate: (m: any, enableOnDemand: boolean) => string;
+	validate: (m: any, enableOnDemand: boolean) => PromiseType<string>;
 	Module: any;
 
 	hasProvide(id: string) {
@@ -179,7 +179,7 @@ export class ModuleRegistry extends Properties {
 				}
 			}
 
-			function processOnDemand(self: ModuleRegistry) {
+			function processOnDemand(self: ModuleRegistry, current: any) {
 				if (enableOnDemand) {
 					if (!moduleSet[current.id]) {
 						throw new Error('module not found: "' + current.id + '". Perhaps you forgot to add it.');
@@ -193,7 +193,7 @@ export class ModuleRegistry extends Properties {
 				}
 			}
 
-			function processConsumesFeatures(self: ModuleRegistry) {
+			function processConsumesFeatures(self: ModuleRegistry, current: any) {
 				if (current.features) {
 					var p: string;
 					var features = self.providesList[current.id].features;
@@ -217,13 +217,11 @@ export class ModuleRegistry extends Properties {
 			}
 
 			var consumes = m.consumes,
-				current: any,
 				messages = '',
 				len = 0,
 				cnt: number;
-			for (cnt = 0; cnt < consumes.length; cnt += 1) {
+			let defs = consumes.map((current: any) => {
 				len += 1;
-				current = consumes[cnt];
 				if (!this.providesList[current.id]) { //try enabling it
 					var onDemandModules = this.get('onDemandModules') || {},
 						onDemand: any;
@@ -233,21 +231,24 @@ export class ModuleRegistry extends Properties {
 						this.addModule(onDemand);
 					}
 				}
-				processOnDemand(this);
-				if (this.providesList[current.id]) {
-					if (!areVersionsCompatible(this.providesList[current.id].version, current.version)) {
-						messages += 'incompatible versions on module "' + current.id + '". Your version is "' + this.providesList[current.id].version + '". Required version is: "' + current.version + '"\n';
+				return when(processOnDemand(this, current), () => {
+					if (this.providesList[current.id]) {
+						if (!areVersionsCompatible(this.providesList[current.id].version, current.version)) {
+							messages += 'incompatible versions on module "' + current.id + '". Your version is "' + this.providesList[current.id].version + '". Required version is: "' + current.version + '"\n';
+						}
+						else {
+							processConsumesFeatures(this, current);
+						}
 					}
 					else {
-						processConsumesFeatures(this);
+						messages += 'missing dependency: "' + current.id + '" version: "' + current.version + '"\n';
 					}
-				}
-				else {
-					messages += 'missing dependency: "' + current.id + '" version: "' + current.version + '"\n';
-				}
-			}
-			errorIfNoDependencies();
-			return messages;
+				});
+			});
+			return when(all(defs), () => {
+				errorIfNoDependencies();
+				return messages;
+			});
 		};
 		this.enableModules = function () {
 			var currentModule: any,
@@ -277,7 +278,10 @@ export class ModuleRegistry extends Properties {
 					self.enabledUnits[unitId] = r || true;
 					_defer.resolve(r || true);
 				}, console.error);
-				return this.enabledUnits[unitId];
+				return _defer.promise;
+			}
+			else {
+				return defer(this.enabledUnits[unitId]).promise;
 			}
 		};
 		this.build = function () {

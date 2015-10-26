@@ -3,14 +3,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", '../../ui/Widget', './Skin/FullScreenFrame', '../../ui/utils/append', '../../ui/utils/setClass', '../../core/on', '../../core/deferredUtils', '../../core/array'], factory);
     }
-})(["require", "exports", '../../ui/Widget', './Skin/FullScreenFrame', '../../ui/utils/append', '../../ui/utils/setClass', '../../core/on', '../../core/deferredUtils', '../../core/array'], function (require, exports) {
+})(function (require, exports) {
     var Widget_1 = require('../../ui/Widget');
     var FullScreenFrame_1 = require('./Skin/FullScreenFrame');
     var append_1 = require('../../ui/utils/append');
@@ -89,6 +89,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         return FullScreenFrame;
     })(Widget_1.default);
     FullScreenFrame.prototype.skin = FullScreenFrame_1.default;
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = FullScreenFrame;
 });
 //# sourceMappingURL=FullScreenFrame.js.map

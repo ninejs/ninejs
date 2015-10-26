@@ -1,19 +1,16 @@
-/// <reference path="../../typings/node/node.d.ts" />
-/// <reference path="../../typings/method-override/method-override.d.ts" />
-/// <reference path="../../typings/morgan/morgan.d.ts" />
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", '../../core/ext/Properties', 'express', './Endpoint', './StaticResource', '../../nineplate', './NineplateResource', './SinglePage/SinglePageContainer', './ClientUtils', '../../core/deferredUtils', 'morgan', 'serve-favicon', 'compression', 'cookie-parser', 'express-session', 'method-override', 'body-parser', 'path'], factory);
     }
-})(["require", "exports", '../../core/ext/Properties', 'express', './Endpoint', './StaticResource', '../../nineplate', './NineplateResource', './SinglePage/SinglePageContainer', './ClientUtils', '../../core/deferredUtils', 'morgan', 'serve-favicon', 'compression', 'cookie-parser', 'express-session', 'method-override', 'body-parser', 'path'], function (require, exports) {
+})(function (require, exports) {
     var Properties_1 = require('../../core/ext/Properties');
     var express = require('express');
     var Endpoint_1 = require('./Endpoint');
@@ -220,6 +217,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     WebServer.prototype.StaticResource = StaticResource_1.default;
     WebServer.prototype.NineplateResource = NineplateResource_1.default;
     WebServer.prototype.SinglePageContainer = SinglePageContainer_1.default;
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = WebServer;
 });
 //# sourceMappingURL=WebServer.js.map

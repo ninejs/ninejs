@@ -58,19 +58,19 @@ if (config.modules) {
 }
 var moduleLoadPromise = {};
 if (fs.existsSync(njsModulesPath)) {
-	moduleLoadPromise = nfcall(fs.readdir, njsModulesPath).then(function(files) {
+	moduleLoadPromise = nfcall<string[]>(fs.readdir, njsModulesPath).then(function(files) {
 		return all(files.map(function(dir: string) {
 			var dirpath = path.resolve(njsModulesPath, dir);
 			return nfcall(fs.stat, dirpath).then(function(stat: fs.Stats) {
 				if (stat.isDirectory()){
 					loadModule(dirpath);
 				}
-			}, function(error: any) {
-				throw new Error(error);
+			}, function(error: Error) {
+				throw error;
 			});
 		}));
-	}, function(error) {
-		throw new Error(error);
+	}, (error: Error) => {
+		throw error;
 	});
 }
 export default defer(moduleLoadPromise).promise.then(function(){

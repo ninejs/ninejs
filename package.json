@@ -54,7 +54,7 @@
     "stylus": "*",
     "text": "git+https://github.com/requirejs/text.git#master",
     "tsd": "^0.6.3",
-    "typescript": "git+https://github.com/Microsoft/typescript.git#ea880e966906ae6146012ce29b35a5a6345b4158",
+    "typescript": "git+https://github.com/Microsoft/typescript.git#853e9a24621d6ee1520c2a51db8c0863b9556da1",
     "uglify-js": "*",
     "uubench": "*"
   },

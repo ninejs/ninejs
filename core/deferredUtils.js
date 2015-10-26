@@ -1,12 +1,11 @@
-/// <reference path="./extend.ts" />
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './bluebird'], factory);
     }
-})(["require", "exports", './bluebird'], function (require, exports) {
+})(function (require, exports) {
     var bluebird_1 = require('./bluebird');
     var nativePromise = typeof (Promise) === 'function';
     ;
@@ -37,10 +36,14 @@
                 pReject = reject;
             });
             p.resolve = function (v) {
-                setTimeout(function () { pResolve(v); }, 0);
+                setTimeout(function () {
+                    pResolve(v);
+                }, 0);
             };
             p.reject = function (v) {
-                setTimeout(function () { pReject(v); }, 0);
+                setTimeout(function () {
+                    pReject(v);
+                }, 0);
             };
             p.promise = p;
             if (arguments.length) {
@@ -48,12 +51,12 @@
             }
             return p;
         };
-        _when = function (valueOrPromise, onSuccess, onFailure) {
-            if (isPromise(valueOrPromise)) {
-                return Promise.resolve(valueOrPromise).then(onSuccess, onFailure);
+        _when = function (v, success, reject, fin) {
+            if (isPromise(v)) {
+                return Promise.resolve(v).then(success, reject);
             }
             else {
-                return Promise.resolve(onSuccess(valueOrPromise));
+                return Promise.resolve(success(v));
             }
         };
         _all = function (arr) {
@@ -98,18 +101,16 @@
                 return Q.defer();
             }
         };
-        _when = function (valueOrPromise, resolve, reject, progress, finalBlock) {
+        _when = function (v, success, reject, fin) {
             var r;
-            if (isPromise(valueOrPromise)) {
-                r = valueOrPromise.then(resolve, reject);
+            if (isPromise(v)) {
+                r = v.then(success, reject);
             }
             else {
-                var defer = Q.defer();
-                r = defer.promise.then(resolve, reject);
-                defer.resolve(valueOrPromise);
+                r = resolve(v).then(success, reject);
             }
-            if (typeof (finalBlock) === 'function') {
-                return r.fin(finalBlock);
+            if (typeof (fin) === 'function') {
+                return r.fin(fin);
             }
             else {
                 return r;
@@ -123,11 +124,10 @@
         };
     }
     _series = function (taskList) {
-        var t, currentPromise, result = this.defer(), self = this;
+        var t, currentPromise, result = _defer(), self = this;
         currentPromise = result.promise;
         taskList.forEach(function (cur) {
             var defer = self.defer();
-            t = cur.promise;
             if (typeof (t) === 'function') {
                 t = t();
             }
@@ -152,6 +152,12 @@
     exports.when = _when;
     exports.all = _all;
     exports.series = _series;
+    function resolve(val) {
+        var d = exports.defer();
+        d.resolve(val);
+        return d.promise;
+    }
+    exports.resolve = resolve;
     function ncall(fn, self) {
         var args = [];
         for (var _i = 2; _i < arguments.length; _i++) {
@@ -160,7 +166,12 @@
         var d = exports.defer();
         function callback(err, result) {
             if (err) {
-                d.reject(err);
+                if (err instanceof Error) {
+                    d.reject(err);
+                }
+                else {
+                    d.reject(new Error(err));
+                }
             }
             else {
                 d.resolve(result);
@@ -180,22 +191,21 @@
         var d = exports.defer();
         function callback(err, result) {
             if (err) {
-                d.reject(err);
+                if (err instanceof Error) {
+                    d.reject(err);
+                }
+                else {
+                    d.reject(new Error(err));
+                }
             }
             else {
                 d.resolve(result);
             }
         }
-        ;
         args.push(callback);
         fn.apply(null, args);
         return d.promise;
     }
     exports.nfcall = nfcall;
-    function resolve(r) {
-        var d = exports.defer(r);
-        return d.promise;
-    }
-    exports.resolve = resolve;
 });
 //# sourceMappingURL=deferredUtils.js.map

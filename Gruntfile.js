@@ -131,8 +131,7 @@ function exports(grunt) {
 					noImplicitAny: true,
 					module: 'umd',
 					target: 'es5',
-					experimentalAsyncFunctions: true,
-					isolatedModules: true
+					experimentalAsyncFunctions: true
 				}
 			}
 		},

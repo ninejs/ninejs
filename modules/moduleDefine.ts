@@ -1,6 +1,6 @@
 import extend from '../core/extend';
 import Module from './Module';
-import { when, isPromise } from '../core/deferredUtils';
+import { when, isPromise, defer, all } from '../core/deferredUtils';
 
 export function define (consumes: any[], callback: (unitDefine: (item: any, provide: (...args: any[]) => any) => void) => void) {
 	consumes = (consumes || []).map(function (item: any) {
@@ -21,28 +21,52 @@ export function define (consumes: any[], callback: (unitDefine: (item: any, prov
 			if (typeof(provideMap[name]) !== 'undefined') {
 				var args = [config],
 					self = this;
-				this.consumes.forEach(function (item) {
-					args.push(self.getUnit(item.id));
-				});
-				var unitObj = provideMap[name].apply(null, args);
-				if (unitObj) {
-					if (isPromise(unitObj.init)) {
-						return unitObj.init;
+				let consumers = this.consumes.map(item => {
+					let unit = self.getUnit(item.id);
+					args.push(unit);
+					if (unit) {
+						if (isPromise(unit.init)) {
+							return unit.init;
+						}
+						else if (typeof(unit.init) === 'function') {
+							let d = defer();
+							try {
+								d.resolve(unit.init());
+							}
+							catch (err) {
+								d.reject(err);
+							}
+							return d.promise;
+						}
+						else {
+							return unit;
+						}
 					}
-					else if (typeof(unitObj.init) === 'function') {
-						return when(unitObj.init(), (d) => {
-							return d;
-						}, (err) => {
-							throw new Error(err);
-						});
+					else {
+						return unit;
+					}
+				});
+				return when(all(consumers), () => {
+					var unitObj = provideMap[name].apply(null, args);
+					if (unitObj) {
+						if (isPromise(unitObj.init)) {
+							return unitObj.init;
+						}
+						else if (typeof(unitObj.init) === 'function') {
+							return when(unitObj.init(), (d) => {
+								return d;
+							}, (err) => {
+								throw err;
+							});
+						}
+						else {
+							return unitObj;
+						}
 					}
 					else {
 						return unitObj;
 					}
-				}
-				else {
-					return unitObj;
-				}
+				});
 			}
 		}
 		getProvides (name: string) {
@@ -51,8 +75,11 @@ export function define (consumes: any[], callback: (unitDefine: (item: any, prov
 			}
 		}
 		init () {
-			Module.prototype.init.call(this);
-			return this.doInit.apply(this, arguments);
+			let x = Module.prototype.init.call(this);
+			let args = arguments;
+			return when(x, () => {
+				return this.doInit.apply(this, args);
+			});
 		}
 		constructor () {
 			super();

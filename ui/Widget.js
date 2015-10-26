@@ -3,21 +3,27 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", '../core/extend', '../core/ext/Properties', '../core/on', '../core/deferredUtils', './utils/setClass', './utils/append', '../core/objUtils'], factory);
     }
-})(["require", "exports", '../core/extend', '../core/ext/Properties', '../core/on', '../core/deferredUtils', './utils/setClass', './utils/append', '../core/objUtils'], function (require, exports) {
+})(function (require, exports) {
     var extend_1 = require('../core/extend');
     var Properties_1 = require('../core/ext/Properties');
     var on_1 = require('../core/on');
     var deferredUtils_1 = require('../core/deferredUtils');
     var setClass_1 = require('./utils/setClass');
     var append_1 = require('./utils/append');
-    var objUtils = require('../core/objUtils');
+    var objUtils_1 = require('../core/objUtils');
+    var widgetSpecialEvents = {
+        'updatedSkin': true,
+        'updatingSkin': true,
+        'removing': true,
+        'show': true
+    };
     window.setTimeout(function () {
         on_1.default(window.document.body, 'click', function () {
             on_1.default.emit(window.document.body, '9jsclosewidgets', { target: null });
@@ -39,6 +45,20 @@ var __extends = (this && this.__extends) || function (d, b) {
             parent.removeChild(node);
         }
     }
+    var collectReduce = function (previous, current) {
+        var data = previous.data, t = current(data), arr = previous.array;
+        if (typeof (t) !== 'undefined') {
+            if (objUtils_1.isArray(t)) {
+                t.forEach(function (item) {
+                    arr.push(item);
+                });
+            }
+            else {
+                arr.push(t);
+            }
+        }
+        return previous;
+    };
     var Widget = (function (_super) {
         __extends(Widget, _super);
         function Widget(args) {
@@ -81,9 +101,10 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.$njsChildWidgets.push(w);
         };
         Widget.prototype.remove = function () {
-            if (this.domNode && this.domNode.parentNode) {
+            var domNode = this.domNode;
+            if (objUtils_1.isHTMLElement(domNode)) {
                 this.emit('removing', {});
-                this.domNode.parentNode.removeChild(this.domNode);
+                domNode.parentNode.removeChild(domNode);
                 return true;
             }
             return false;
@@ -121,22 +142,21 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         Widget.prototype.classSetter = function (v) {
             var arg = v.split(' ');
-            var self = this;
-            return deferredUtils_1.when(this.domNode, function () {
-                arg.unshift(self.domNode);
-                setClass_1.default.apply(null, arg);
+            return deferredUtils_1.when(this.domNode, function (domNode) {
+                arg.unshift(domNode);
+                return setClass_1.default.apply(null, arg);
             });
         };
         Widget.prototype.idSetter = function (v) {
-            var self = this;
-            return deferredUtils_1.when(this.domNode, function () {
-                self.domNode.id = v;
+            return deferredUtils_1.when(this.domNode, function (domNode) {
+                domNode.id = v;
+                return domNode;
             });
         };
         Widget.prototype.styleSetter = function (v) {
-            var self = this;
-            return deferredUtils_1.when(this.domNode, function () {
-                self.domNode.setAttribute('style', v);
+            return deferredUtils_1.when(this.domNode, function (domNode) {
+                domNode.setAttribute('style', v);
+                return domNode;
             });
         };
         Widget.prototype.updateSkin = function () {
@@ -229,28 +249,32 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
         };
         Widget.prototype.show = function (parentNode) {
-            var listeners, current, cnt, self = this;
-            function appendIt() {
+            var listeners, current, cnt, parent, self = this;
+            function appendIt(domNode) {
                 if (typeof (parentNode) === 'string') {
-                    parentNode = window.document.getElementById(parentNode);
+                    parent = window.document.getElementById(parentNode);
                 }
-                if (parentNode) {
-                    parentNode.appendChild(self.domNode);
+                else if (objUtils_1.isHTMLElement(parentNode)) {
+                    parent = parentNode;
                 }
-                return self;
+                if (parent) {
+                    parent.appendChild(domNode);
+                }
+                return deferredUtils_1.defer(domNode).promise;
             }
             if (this.waitSkin) {
                 if (parentNode) {
                     return deferredUtils_1.when(this.waitSkin, function () {
                         self.waitSkin = null;
-                        self.show(parentNode);
+                        return self.show(parentNode);
                     });
                 }
                 return this.waitSkin;
             }
             if (!this.currentSkin) {
-                if (this.domNode && this.domNode.nodeType === 1) {
-                    appendIt();
+                var domNode = this.domNode;
+                if (objUtils_1.isHTMLElement(domNode)) {
+                    appendIt(domNode);
                 }
                 for (cnt = 0; cnt < self.$njsEventListenerHandlers.length; cnt += 1) {
                     self.$njsEventListenerHandlers[cnt].remove();
@@ -268,14 +292,20 @@ var __extends = (this && this.__extends) || function (d, b) {
                             }
                         }
                     }
-                    var result = appendIt();
-                    self.waitSkin = null;
-                    return result;
+                    var domNode = self.domNode;
+                    if (objUtils_1.isHTMLElement(domNode)) {
+                        var result = appendIt(self.domNode);
+                        self.waitSkin = null;
+                        return result;
+                    }
+                    else {
+                        throw new Error('Invalid domNode');
+                    }
                 }, console.error);
                 return this.waitSkin;
             }
             else {
-                return appendIt();
+                return appendIt(this.domNode);
             }
         };
         Widget.prototype.on = function (type, action, persistEvent) {
@@ -289,7 +319,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     on_1.default.emit(this.owner.domNode, type, e);
                 }
             });
-            if (persistEvent) {
+            if (persistEvent || widgetSpecialEvents[type]) {
                 this.$njsEventListenerHandlers.push(r);
             }
             else {
@@ -316,20 +346,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.$njsCollect[type].push(action);
         };
         Widget.prototype.collect = function (type, data) {
-            return (this.$njsCollect[type] || []).reduce(function (previous, current) {
-                var t = current(data);
-                if (typeof (t) !== 'undefined') {
-                    if (objUtils.isArray(t)) {
-                        t.forEach(function (item) {
-                            previous.push(item);
-                        });
-                    }
-                    else {
-                        previous.push(t);
-                    }
-                }
-                return previous;
-            }, []);
+            return (this.$njsCollect[type] || []).reduce(collectReduce, { array: [], data: data }).array;
         };
         Widget.prototype.wait = function (_defer) {
             var d, self = this;
@@ -337,7 +354,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 if (typeof (_defer.then) === 'function') {
                     if (this.domNode) {
                         return deferredUtils_1.when(this.domNode, function () {
-                            var w = self.waitNode || self.domNode, waitNode = createWaitNode(w, self);
+                            var w = (self.waitNode || self.domNode), waitNode = createWaitNode(w, self);
                             return deferredUtils_1.when(_defer, function () {
                                 destroyWaitNode(w, waitNode, self);
                             }, function () {
@@ -347,7 +364,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     }
                     else {
                         return deferredUtils_1.when(this.show(), function () {
-                            var w = self.waitNode || self.domNode;
+                            var w = (self.waitNode || self.domNode);
                             var waitNode = createWaitNode(w, self);
                             return deferredUtils_1.when(_defer, function () {
                                 destroyWaitNode(w, waitNode, self);
@@ -368,6 +385,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     })(Properties_1.default);
     Widget.prototype.$njsWidget = true;
     Widget.prototype.waiting = false;
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Widget;
 });
 //# sourceMappingURL=Widget.js.map

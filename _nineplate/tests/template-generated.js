@@ -5,34 +5,14 @@
 	else if (typeof define === 'function' && define.amd) { 
 		define(deps, factory); 
 	} 
-})(['require', 'module'], function (require, module) {
+})(['require', 'module', 'ninejs/_nineplate/utils/functions','ninejs/_nineplate/utils/functions'], function (require, module) {
 /* jshint -W074 */
 /* globals window: true */
 'use strict';
 var r = function anonymous(context,document
 /**/) {
 'use strict';
-var fn = {t:function (e, text, doc) {
-        return e.appendChild(doc.createTextNode(text));
-    },tst:function () {
-        return window.document.body && (window.document.body.insertAdjacentElement);
-    },ae:function (e, name, doc) {
-        var node = doc.createElement(name);
-        e.appendChild(node);
-        return node;
-    },aens:function (e, name, ns, doc) {
-        var node = doc.createElementNS(ns, name);
-        e.appendChild(node);
-        return node;
-    },e:function (e, name, doc) {
-        var node = doc.createElement(name);
-        e.insertAdjacentElement('beforeEnd', node);
-        return node;
-    },ens:function (e, name, ns, doc) {
-        var node = doc.createElementNS(ns, name);
-        e.insertAdjacentElement('beforeEnd', node);
-        return node;
-    }},
+var fn = require('ninejs/_nineplate/utils/functions'),
     r = {},
     nodes = [],
     node,
@@ -573,13 +553,17 @@ txn.nodeValue = txn.nodeValue + '.';
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'h1',node.ownerDocument);
+result = [];
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'Another h1';
+node.innerHTML = result.join('');
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'div',node.ownerDocument);
+result = [];
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'Another div';
+node.innerHTML = result.join('');
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'div',node.ownerDocument);
@@ -639,13 +623,17 @@ txn = t(node,'',node.ownerDocument);
 _0.call(this,context);
 nodes.push(node);
 node = ens(node,'hi','http://eduardoburgos.com/',node.ownerDocument);
+result = [];
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'Hello';
+node.innerHTML = result.join('');
 node = nodes.pop();
 nodes.push(node);
 node = ens(node,'hi','http://eduardoburgos.com/',node.ownerDocument);
+result = [];
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'Hi there!';
+node.innerHTML = result.join('');
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'div',node.ownerDocument);
@@ -668,18 +656,24 @@ if (av !== ''){
 
 }
 node.className = av;
+result = [];
 nodes.push(node);
 node = e(node,'span',node.ownerDocument);
+result = [];
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'This is some static text that should be';
+node.innerHTML = result.join('');
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'span',node.ownerDocument);
+result = [];
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'rendered';
+node.innerHTML = result.join('');
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'span',node.ownerDocument);
+result = [];
 txn = t(node,'',node.ownerDocument);
 txn.nodeValue = txn.nodeValue + 'as innerHTML in a DOM rendered environment. Even though it has variables such as ';
 putValue = context['number'];
@@ -688,7 +682,28 @@ txn.nodeValue = txn.nodeValue + ' it should be able to render as innerHTML becau
 putValue = context['title'];
 txn.nodeValue = txn.nodeValue + ((putValue !== undefined)? putValue:'');
 txn.nodeValue = txn.nodeValue + ' are not bound and do not represent an attach point node.';
+node.innerHTML = result.join('');
 node = nodes.pop();
+av = '';
+putValue = context['tagName'];
+if (av !== ''){
+	av = av + ((putValue) || '');
+
+} else {
+	av = ((putValue) || '');
+
+}
+av = av + ' ';
+putValue = context['class'];
+if (av !== ''){
+	av = av + ((putValue) || '');
+
+} else {
+	av = ((putValue) || '');
+
+}
+node.className = av;
+node.innerHTML = result.join('');
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'div',node.ownerDocument);

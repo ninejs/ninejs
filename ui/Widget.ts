@@ -5,10 +5,17 @@ import { default as on, EventHandler, RemovableType } from '../core/on';
 import { PromiseType, PromiseConstructorType, when, defer, isPromise } from '../core/deferredUtils';
 import setClass from './utils/setClass';
 import append from './utils/append';
-import * as objUtils from '../core/objUtils';
+import { isArray, isHTMLElement } from '../core/objUtils';
 import Skin from './Skin';
 
 declare var require: any;
+
+let widgetSpecialEvents: { [name: string]: boolean } = {
+	'updatedSkin': true,
+	'updatingSkin': true,
+	'removing': true,
+	'show': true
+};
 
 window.setTimeout(function () {
 	on(window.document.body, 'click', function (/*evt*/) {
@@ -33,6 +40,22 @@ function destroyWaitNode (parent: HTMLElement, node: HTMLElement, self: Widget) 
 	}
 }
 
+let collectReduce = (previous: { array: any[], data: any }, current: (data: any) => any) => {
+	let data = previous.data,
+		t = current(data),
+		arr = previous.array;
+	if (typeof(t) !== 'undefined') {
+		if (isArray(t)) {
+			t.forEach(function (item: any) {
+				arr.push(item);
+			});
+		}
+		else {
+			arr.push(t);
+		}
+	}
+	return previous;
+};
 
 class Widget extends Properties {
 	$njsWidget: boolean;
@@ -40,13 +63,13 @@ class Widget extends Properties {
 	$njsCollect: { [ name: string]: ((data: any) => any)[] }
 	$njsEventListenerHandlers: RemovableType[];
 	$njsEventListeners: { [name: string]: EventHandler[] };
-	$njsShowDefer: PromiseConstructorType;
+	$njsShowDefer: PromiseConstructorType<HTMLElement>;
 	currentSkin: Skin;
 	waiting: boolean;
 	/*
 	Starts as a Promise then turns into a HTMLElement
 	 */
-	domNode: any;
+	domNode: HTMLElement | PromiseType<HTMLElement>;
 	skin: any;
 	skinContract: { [name: string]: { type: string } };
 	waitNode: HTMLElement;
@@ -73,7 +96,7 @@ class Widget extends Properties {
 		}
 	}
 	/**
-	 * Retisters a new child widget.
+	 * Registers a new child widget.
 	 * @param  {ninejs/ui/Widget} w the new child to be added.
 	 * @return {undefined}
 	 */
@@ -87,9 +110,10 @@ class Widget extends Properties {
 	 * @return {boolean} true if the component was removed from its parent; false otherwise.
 	 */
 	remove () {
-		if (this.domNode && this.domNode.parentNode) {
+		let domNode = this.domNode;
+		if (isHTMLElement(domNode)) {
 			this.emit('removing', {});
-			this.domNode.parentNode.removeChild(this.domNode);
+			domNode.parentNode.removeChild(domNode);
 			return true;
 		}
 		return false;
@@ -101,13 +125,13 @@ class Widget extends Properties {
 	 * @return {object}       A promise (if loadSkin() was called); or the actual skin value (object or string)
 	 * @throws {Error} If one function or property is not found
 	 */
-	skinSetter (value: any) {
+	skinSetter (value: Skin | PromiseType<Skin> | string) {
 		if (typeof(value) === 'string') {
-			return this.loadSkin(value);
+			return this.loadSkin(value as string);
 		}
 		var self = this;
 		this.skin = value;
-		return when(value, function (sk) {
+		return when<Skin, Skin>(value as (Skin | PromiseType<Skin>), function (sk: Skin) {
 			var skinContract = self.skinContract,
 				p: string,
 				item: { type: string };
@@ -141,11 +165,10 @@ class Widget extends Properties {
 	 * @return {undefined}
 	 */
 	classSetter (v: string) {
-		var arg = v.split(' ');
-		var self = this;
-		return when(this.domNode, function () {
-			arg.unshift(self.domNode);
-			setClass.apply(null, arg);
+		var arg: any[] = v.split(' ');
+		return when<HTMLElement, HTMLElement>(this.domNode, (domNode: HTMLElement) => {
+			arg.unshift(domNode);
+			return setClass.apply(null, arg);
 		});
 	}
 	/**
@@ -155,9 +178,9 @@ class Widget extends Properties {
 	 * @return {undefined}
 	 */
 	idSetter (v: string) {
-		var self = this;
-		return when(this.domNode, function () {
-			self.domNode.id = v;
+		return when<HTMLElement, HTMLElement>(this.domNode, (domNode: HTMLElement) => {
+			domNode.id = v;
+			return domNode;
 		});
 	}
 	/**
@@ -167,9 +190,9 @@ class Widget extends Properties {
 	 * @return {undefined}
 	 */
 	styleSetter (v: string) {
-		var self = this;
-		return when(this.domNode, function () {
-			self.domNode.setAttribute('style', v);
+		return when<HTMLElement, HTMLElement>(this.domNode, (domNode: HTMLElement) => {
+			domNode.setAttribute('style', v);
+			return domNode;
 		});
 	}
 	/**
@@ -273,7 +296,7 @@ class Widget extends Properties {
 	 * @return {promise}      The promise used to wraps the skin
 	 */
 	loadSkin (name: string) {
-		var _defer = defer();
+		var _defer = defer<Skin>();
 		this.set('skin', _defer.promise);
 		require([name], function (skin: Skin) {
 			_defer.resolve(skin);
@@ -292,37 +315,42 @@ class Widget extends Properties {
 		}
 	}
 	/**
-	 * If the widged has a currentSkin then it is appended (as text or domNode) to the parent node.
-	 * If the widged does not have a skin yet, then a promise is returned that resolves when updateSkin() finished; at that point all event listeners are moved (for the old domNode) and attached to the new one. The node is appended to the parent node and a self referece is returned.
+	 * If the widget has a currentSkin then it is appended (as text or domNode) to the parent node.
+	 * If the widget does not have a skin yet, then a promise is returned that resolves when updateSkin() finished; at that point all event listeners are moved (for the old domNode) and attached to the new one. The node is appended to the parent node and a self referece is returned.
 	 * @param  {string|domNode} parentNode The id of the dom element, or the element itself
 	 * @return {object}            This widget or a promise
 	 */
-	show (parentNode?: any) {
+	show (parentNode?: HTMLElement | string): PromiseType<HTMLElement> {
 		var listeners: { [ name: string ]: EventHandler[] },
 			current: EventHandler[],
 			cnt: number,
+			parent: HTMLElement,
 			self = this;
-		function appendIt() {
+		function appendIt(domNode: HTMLElement) {
 			if (typeof(parentNode) === 'string') {
-				parentNode = window.document.getElementById(parentNode);
+				parent = window.document.getElementById(parentNode as string);
 			}
-			if (parentNode) {
-				parentNode.appendChild(self.domNode);
+			else if (isHTMLElement(parentNode)){
+				parent = parentNode;
 			}
-			return self;
+			if (parent) {
+				parent.appendChild(domNode);
+			}
+			return defer(domNode).promise;
 		}
 		if (this.waitSkin) {
 			if (parentNode) {
 				return when(this.waitSkin, function () {
 					self.waitSkin = null;
-					self.show(parentNode);
+					return self.show(parentNode);
 				});
 			}
 			return this.waitSkin;
 		}
 		if (!this.currentSkin) {
-			if (this.domNode && this.domNode.nodeType === 1) {
-				appendIt();
+			let domNode = this.domNode;
+			if (isHTMLElement(domNode)) {
+				appendIt(domNode);
 			}
 
 			for (cnt = 0; cnt < self.$njsEventListenerHandlers.length; cnt += 1) {
@@ -343,14 +371,20 @@ class Widget extends Properties {
 						}
 					}
 				}
-				var result = appendIt();
-				self.waitSkin = null;
-				return result;
+				let domNode = self.domNode;
+				if (isHTMLElement(domNode)) {
+					var result = appendIt(self.domNode as HTMLElement);
+					self.waitSkin = null;
+					return result;
+				}
+				else {
+					throw new Error('Invalid domNode');
+				}
 			}, console.error);
 			return this.waitSkin;
 		}
 		else {
-			return appendIt();
+			return appendIt(this.domNode as HTMLElement);
 		}
 	}
 	/**
@@ -372,7 +406,7 @@ class Widget extends Properties {
 				on.emit(this.owner.domNode, type, e);
 			}
 		});
-		if (persistEvent) {
+		if (persistEvent || widgetSpecialEvents[type]) {
 			this.$njsEventListenerHandlers.push(r);
 		}
 		else {
@@ -407,45 +441,32 @@ class Widget extends Properties {
 		this.$njsCollect[type].push(action);
 	}
 	collect (type: string, data: any) {
-		return (this.$njsCollect[type] || []).reduce(function (previous: any[], current: (data: any) => any) {
-			var t = current(data);
-			if (typeof(t) !== 'undefined') {
-				if (objUtils.isArray(t)) {
-					t.forEach(function (item: any) {
-						previous.push(item);
-					});
-				}
-				else {
-					previous.push(t);
-				}
-			}
-			return previous;
-		}, []);
+		return (this.$njsCollect[type] || []).reduce(collectReduce, { array: [], data: data }).array;
 	}
 	/**
 	 * Allows a Widget to display a state while waiting for a promise.
 	 * @param _defer {Promise}
 	 * @returns {Promise}
 	 */
-	wait (_defer: PromiseType) {
-		var d: PromiseConstructorType,
+	wait (_defer: PromiseType<any>) {
+		var d: PromiseConstructorType<any>,
 			self = this;
 		if (_defer) {
 			if (typeof(_defer.then) === 'function') {
 				if (this.domNode) {
-					return when(this.domNode, function() {
-						var w = self.waitNode || self.domNode,
+					return when(this.domNode, () => {
+						var w = (self.waitNode || self.domNode) as HTMLElement,
 							waitNode = createWaitNode(w, self);
-						return when(_defer, function () {
+						return when(_defer, () => {
 							destroyWaitNode(w, waitNode, self);
-						}, function () {
+						}, () => {
 							destroyWaitNode(w, waitNode, self);
 						});
 					});
 				}
 				else {
 					return when(this.show(), function () {
-						var w = self.waitNode || self.domNode;
+						var w = (self.waitNode || self.domNode) as HTMLElement;
 						var waitNode = createWaitNode(w, self);
 						return when(_defer, function () {
 							destroyWaitNode(w, waitNode, self);
@@ -475,7 +496,7 @@ class Widget extends Properties {
 		this.$njsEventListenerHandlers = [];
 		this.$njsCollect = {};
 		this.$njsChildWidgets = [];
-		this.$njsShowDefer = defer();
+		this.$njsShowDefer = defer<HTMLElement>();
 		if (!this.domNode) {
 			this.domNode = this.$njsShowDefer.promise;
 		}
@@ -489,3 +510,7 @@ class Widget extends Properties {
 Widget.prototype.$njsWidget = true;
 Widget.prototype.waiting = false;
 export default Widget;
+
+export interface WidgetConstructor {
+	new (args: any) : Widget;
+}

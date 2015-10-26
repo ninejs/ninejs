@@ -2,7 +2,7 @@ import clientConfig from './config'
 import { moduleRegistry  as registry } from './moduleRegistry'
 import Module from './Module'
 import extend from '../core/extend'
-import { defer, when, PromiseType } from '../core/deferredUtils'
+import { defer, when, all, PromiseType } from '../core/deferredUtils'
 import './client/router'
 import './ninejs-client'
 import './client/container'
@@ -50,14 +50,23 @@ require(moduleArray, function() {
 	extend.mixinRecursive(clientConfig, { units: {} });
 	extend.mixinRecursive(allUnitsCfg, clientConfig.units);
 	extend.mixinRecursive(clientConfig.units, allUnitsCfg);
-	for (cnt = 0; cnt < arguments.length; cnt += 1) {
-		current = arguments[cnt];
+	let arr = Array.prototype.map.call(arguments, (current: any) => {
 		if (current.default) {
 			current = current.default;
 		}
 		Module.prototype.enable.call(current, clientConfig.units);
-	}
-	moduleLoadPromise.resolve(true);
+	});
+	when(all(arr), () => {
+		moduleLoadPromise.resolve(true);
+	});
+	//for (cnt = 0; cnt < arguments.length; cnt += 1) {
+	//	current = arguments[cnt];
+	//	if (current.default) {
+	//		current = current.default;
+	//	}
+	//	Module.prototype.enable.call(current, clientConfig.units);
+	//}
+	//moduleLoadPromise.resolve(true);
 });
 export { PromiseType };
 export default when(moduleLoadPromise.promise, function(){
@@ -70,6 +79,6 @@ export default when(moduleLoadPromise.promise, function(){
 	});
 	return deferred.promise;
 }, function(error) {
-	console.log(error);
-	throw new Error(error);
+	console.error(error);
+	throw error;
 });

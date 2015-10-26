@@ -1,18 +1,16 @@
-/// <reference path="../../typings/node/node.d.ts" />
-/// <reference path="../../typings/express/express.d.ts" />
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", '../../core/ext/Properties', 'fs', 'path', '../../core/extend'], factory);
     }
-})(["require", "exports", '../../core/ext/Properties', 'fs', 'path', '../../core/extend'], function (require, exports) {
+})(function (require, exports) {
     var Properties_1 = require('../../core/ext/Properties');
     var fs = require('fs');
     var path = require('path');
@@ -211,6 +209,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         return Utils;
     })();
     exports.Utils = Utils;
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Utils;
 });
 //# sourceMappingURL=ClientUtils.js.map

@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './Editor/Default'], factory);
     }
-})(["require", "exports", './Editor/Default'], function (require, exports) {
+})(function (require, exports) {
     exports.Default = require('./Editor/Default');
 });
 //# sourceMappingURL=Editor.js.map

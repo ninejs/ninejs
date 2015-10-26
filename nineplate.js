@@ -3,14 +3,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", "./core/text", './core/extend', './core/ext/Properties', './core/deferredUtils', './_nineplate/domProcessor', './_nineplate/textProcessor', './_nineplate/utils/node/text'], factory);
     }
-})(["require", "exports", "./core/text", './core/extend', './core/ext/Properties', './core/deferredUtils', './_nineplate/domProcessor', './_nineplate/textProcessor', './_nineplate/utils/node/text'], function (require, exports) {
+})(function (require, exports) {
     var extend_1 = require('./core/extend');
     var Properties_1 = require('./core/ext/Properties');
     var def = require('./core/deferredUtils');
@@ -78,6 +78,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         return result.load(name, req, onLoad, config);
     }
     exports.load = load;
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = result;
     exports.domProcessor = _domProcessor;
     exports.textProcessor = _textProcessor;
@@ -92,14 +93,17 @@ var __extends = (this && this.__extends) || function (d, b) {
             var prefix = options.ninejsPrefix || 'ninejs';
             var preText = '(function (deps, factory) { \n' +
                 '	if (typeof module === \'object\' && typeof module.exports === \'object\') { \n' +
-                '		var v = factory(require, exports' + ((options.standalone) ? '' : ', require(\'' + prefix + '/_nineplate/utils/functions' + '\')') + '); if (v !== undefined) module.exports = v; \n' +
+                '		var v = factory(require, exports); if (v !== undefined) module.exports = v; \n' +
                 '	} \n' +
                 '	else if (typeof define === \'function\' && define.amd) { \n' +
                 '		define(deps, factory); \n' +
                 '	} \n' +
-                '})([\'require\', \'module\'' + ((options.standalone) ? '' : ', \'' + prefix + '/_nineplate/utils/functions' + '\''), prePostText = '], function (require, module' + ((options.standalone) ? '' : ', fn') + ') {\n/* jshint -W074 */\n/* globals window: true */\n\'use strict\';\nvar r = ', postText = ';\nmodule.exports = r;	});\n';
+                '})([\'require\', \'module\'', prePostText = '], function (require, module) {\n/* jshint -W074 */\n/* globals window: true */\n\'use strict\';\nvar r = ', postText = ';\nmodule.exports = r;	});\n';
             if (isNode && !sync) {
                 return def.when(this.compileDom(false, options), function (fn) {
+                    if (!options.standalone) {
+                        fn.amdDependencies.push(prefix + "/_nineplate/utils/functions");
+                    }
                     var depsText = (fn.amdDependencies || []).map(function (item) {
                         return '\'' + item + '\'';
                     }).join(',');

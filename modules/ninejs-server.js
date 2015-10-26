@@ -1,18 +1,16 @@
-/// <reference path="../typings/node/node.d.ts" />
-/// <reference path="../typings/bunyan/bunyan.d.ts" />
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", '../core/extend', './Module', 'bunyan'], factory);
     }
-})(["require", "exports", '../core/extend', './Module', 'bunyan'], function (require, exports) {
+})(function (require, exports) {
     var extend_1 = require('../core/extend');
     var Module_1 = require('./Module');
     var bunyan = require('bunyan');
@@ -101,6 +99,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     })(Module_1.default);
     exports.NineJs = NineJs;
     var result = new NineJs(undefined);
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = result;
 });
 //# sourceMappingURL=ninejs-server.js.map

@@ -1,16 +1,21 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", "reqwest/reqwest"], factory);
     }
-})(["require", "exports", "reqwest/reqwest"], function (require, exports) {
+})(function (require, exports) {
     var req = require, isNode = typeof (window) === 'undefined', isAmd = typeof (define) === 'function' && define.amd, isDojo = isAmd && (define.amd.vendor === 'dojotoolkit.org');
     var request;
     if (isAmd) {
         if (isNode) {
-            request = require.nodeRequire('request');
+            if (isDojo) {
+                request = require.nodeRequire('request');
+            }
+            else {
+                request = require('request');
+            }
         }
         else {
             request = require('reqwest/reqwest');
@@ -22,6 +27,7 @@
     function fn() {
         return request.apply(request, arguments);
     }
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = fn;
     var verb = function (v, args) {
         var obj;

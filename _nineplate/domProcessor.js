@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", "./utils/parser/amd", './utils/functions', '../core/deferredUtils', './baseProcessor', '../core/objUtils', './renderers/JavascriptRenderer'], factory);
     }
-})(["require", "exports", "./utils/parser/amd", './utils/functions', '../core/deferredUtils', './baseProcessor', '../core/objUtils', './renderers/JavascriptRenderer'], function (require, exports) {
+})(function (require, exports) {
     var functions = require('./utils/functions');
     var def = require('../core/deferredUtils');
     var baseProcessor_1 = require('./baseProcessor');
@@ -895,6 +895,14 @@
         if (options.standaloneTemplate) {
             renderer
                 .addVar('fn', objUtils.deepToString(functions));
+        }
+        else {
+            enableAmd();
+            parentRenderer
+                .addVar('fn', parentRenderer
+                .expression('require')
+                .invoke(parentRenderer.literal((options.ninejsPrefix || 'ninejs') + "/_nineplate/utils/functions")));
+            amdPathMapping[((options.ninejsPrefix || 'ninejs') + "/_nineplate/utils/functions")] = 'fn';
         }
         renderer
             .addVar('r', renderer.raw('{}'));

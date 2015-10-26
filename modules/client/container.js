@@ -3,14 +3,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", '../Module'], factory);
     }
-})(["require", "exports", '../Module'], function (require, exports) {
+})(function (require, exports) {
     var Module_1 = require('../Module');
     var Container = (function () {
         function Container() {
@@ -49,6 +49,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         return ContainerModule;
     })(Module_1.default);
     var result = new ContainerModule();
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = result;
 });
 //# sourceMappingURL=container.js.map

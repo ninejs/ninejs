@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", '../css'], factory);
     }
-})(["require", "exports", '../css'], function (require, exports) {
+})(function (require, exports) {
     var css = require('../css');
     function load() {
         var args = [];

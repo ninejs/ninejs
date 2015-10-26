@@ -1,18 +1,16 @@
-/// <reference path="../../typings/node/node.d.ts" />
-/// <reference path="../../typings/express/express.d.ts" />
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './Endpoint', 'crypto'], factory);
     }
-})(["require", "exports", './Endpoint', 'crypto'], function (require, exports) {
+})(function (require, exports) {
     var Endpoint_1 = require('./Endpoint');
     var crypto = require('crypto');
     var parseCacheControl = function (str) {
@@ -115,6 +113,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.StaticResource = StaticResource;
     StaticResource.prototype.maxAge = 10 * 86400 * 1000;
     StaticResource.prototype.cacheType = 'public';
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = StaticResource;
 });
 //# sourceMappingURL=StaticResource.js.map

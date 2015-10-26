@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './core/_common', './core/array', './core/aspect', './core/bluebird', './core/cache', './core/deferredUtils', './core/ext', './core/extend', './core/logic', './core/objUtils', './core/on', './core/text'], factory);
     }
-})(["require", "exports", './core/_common', './core/array', './core/aspect', './core/bluebird', './core/cache', './core/deferredUtils', './core/ext', './core/extend', './core/logic', './core/objUtils', './core/on', './core/text'], function (require, exports) {
+})(function (require, exports) {
     exports._common = require('./core/_common');
     exports.array = require('./core/array');
     exports.aspect = require('./core/aspect');

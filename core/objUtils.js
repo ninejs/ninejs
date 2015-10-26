@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports"], factory);
     }
-})(["require", "exports"], function (require, exports) {
+})(function (require, exports) {
     function stripFunctionName(fstring) {
         var idx = fstring.indexOf('(');
         if (idx > 9) {
@@ -98,5 +98,9 @@
         return (date instanceof Date) && (!isNaN(date.valueOf()));
     }
     exports.isDate = isDate;
+    function isHTMLElement(v) {
+        return v && (v.nodeType === 1);
+    }
+    exports.isHTMLElement = isHTMLElement;
 });
 //# sourceMappingURL=objUtils.js.map

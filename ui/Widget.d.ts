@@ -12,10 +12,10 @@ declare class Widget extends Properties {
     $njsEventListeners: {
         [name: string]: EventHandler[];
     };
-    $njsShowDefer: PromiseConstructorType;
+    $njsShowDefer: PromiseConstructorType<HTMLElement>;
     currentSkin: Skin;
     waiting: boolean;
-    domNode: any;
+    domNode: HTMLElement | PromiseType<HTMLElement>;
     skin: any;
     skinContract: {
         [name: string]: {
@@ -28,21 +28,24 @@ declare class Widget extends Properties {
     destroy(): void;
     registerChildWidget(w: Widget): void;
     remove(): boolean;
-    skinSetter(value: any): PromiseType;
-    classSetter(v: string): PromiseType;
-    idSetter(v: string): PromiseType;
-    styleSetter(v: string): PromiseType;
-    updateSkin(): PromiseType;
+    skinSetter(value: Skin | PromiseType<Skin> | string): PromiseType<Skin>;
+    classSetter(v: string): PromiseType<HTMLElement>;
+    idSetter(v: string): PromiseType<HTMLElement>;
+    styleSetter(v: string): PromiseType<HTMLElement>;
+    updateSkin(): PromiseType<void>;
     onUpdatedSkin(): void;
     forceUpdateSkin(): void;
-    loadSkin(name: string): PromiseType;
+    loadSkin(name: string): PromiseType<Skin>;
     own(...args: RemovableType[]): void;
-    show(parentNode?: any): any;
+    show(parentNode?: HTMLElement | string): PromiseType<HTMLElement>;
     on(type: string, action: (e?: any) => any, persistEvent?: boolean): RemovableType;
     emit(type: string, data: any): void;
     subscribe(type: string, action: (data: any) => any): void;
     collect(type: string, data: any): any[];
-    wait(_defer: PromiseType): PromiseType;
+    wait(_defer: PromiseType<any>): PromiseType<void>;
     constructor(args: any);
 }
 export default Widget;
+export interface WidgetConstructor {
+    new (args: any): Widget;
+}

@@ -3,14 +3,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", '../core/extend', '../core/ext/Properties', '../nineplate', '../core/deferredUtils'], factory);
     }
-})(["require", "exports", '../core/extend', '../core/ext/Properties', '../nineplate', '../core/deferredUtils'], function (require, exports) {
+})(function (require, exports) {
     var extend = require('../core/extend');
     var Properties_1 = require('../core/ext/Properties');
     var nineplate_1 = require('../nineplate');
@@ -88,6 +88,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         return Skin;
     })(Properties_1.default);
     Skin.prototype.cssList = [];
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Skin;
 });
 //# sourceMappingURL=Skin.js.map

@@ -13,7 +13,12 @@ var req = require,
 var request: any;
 if (isAmd) {
 	if (isNode) {
-		request = require.nodeRequire('request');
+		if (isDojo) {
+			request = require.nodeRequire('request');
+		}
+		else {
+			request = require('request');
+		}
 	}
 	else {
 		request = require('reqwest/reqwest');

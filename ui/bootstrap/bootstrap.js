@@ -1,16 +1,11 @@
-/// <amd-dependency path="../../css!./less/bootstrap.css" />
-/// <amd-dependency path="../../css!./vresponsive.css" />
-/// <amd-dependency path="../../css!./vresponsive-device.css" />
-/// <amd-dependency path="../../css!../css/common.css" />
-/// <amd-dependency path="../../css!./gridMax.css" />
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", "../../css!./less/bootstrap.css", "../../css!./vresponsive.css", "../../css!./vresponsive-device.css", "../../css!../css/common.css", "../../css!./gridMax.css"], factory);
     }
-})(["require", "exports", "../../css!./less/bootstrap.css", "../../css!./vresponsive.css", "../../css!./vresponsive-device.css", "../../css!../css/common.css", "../../css!./gridMax.css"], function (require, exports) {
+})(function (require, exports) {
     var bootstrapCss = require('../../css!./less/bootstrap.css'), verticalResponsiveCss = require('../../css!./vresponsive.css'), verticalResponsiveDeviceCss = require('../../css!./vresponsive-device.css'), commonCss = require('../../css!../css/common.css'), gridMaxCss = require('../../css!./gridMax.css');
     var BootstrapProto = (function () {
         function BootstrapProto() {
@@ -151,6 +146,7 @@
     var bootstrap = new BootstrapProto();
     bootstrap.enable('commonCss');
     bootstrap.enable('gridMax');
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = bootstrap;
 });
 //# sourceMappingURL=bootstrap.js.map

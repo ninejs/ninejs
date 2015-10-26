@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './core/extend', './modules/config'], factory);
     }
-})(["require", "exports", './core/extend', './modules/config'], function (require, exports) {
+})(function (require, exports) {
     var extend = require('./core/extend');
     var moduleConfig = require('./modules/config');
     var isAmd = (typeof (define) !== 'undefined') && define.amd;
@@ -38,6 +38,7 @@
     r.ninejs = r.ninejs || {};
     extend.mixinRecursive(r.ninejs, _global.ninejsConfig || {});
     extend.mixinRecursive(r.ninejs, moduleConfig || {});
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = r;
 });
 //# sourceMappingURL=config.js.map

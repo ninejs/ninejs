@@ -3,15 +3,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './StaticResource'], factory);
     }
-})(["require", "exports", './StaticResource'], function (require, exports) {
-    /// <reference path="../../typings/express/express.d.ts" />
+})(function (require, exports) {
     var StaticResource_1 = require('./StaticResource');
     var NineplateResource = (function (_super) {
         __extends(NineplateResource, _super);
@@ -44,6 +43,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     NineplateResource.prototype.contentType = 'text/html; charset=utf-8';
     NineplateResource.prototype.doctype = 'html';
     NineplateResource.prototype.context = {};
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = NineplateResource;
 });
 //# sourceMappingURL=NineplateResource.js.map

@@ -3,14 +3,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", '../Module', './WebServer'], factory);
     }
-})(["require", "exports", '../Module', './WebServer'], function (require, exports) {
+})(function (require, exports) {
     var Module_1 = require('../Module');
     var WebServer_1 = require('./WebServer');
     var packageJson = require('../../package.json');
@@ -90,6 +90,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
         });
     });
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = result;
 });
 //# sourceMappingURL=module.js.map

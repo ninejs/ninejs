@@ -1,11 +1,11 @@
-import Widget from './Widget'
+import { default as Widget, WidgetConstructor } from './Widget'
 import extend from '../core/extend'
 import Properties from '../core/ext/Properties'
 import defaultSkin from './Skins/Editor/Default'
-import { defer, when, isPromise, PromiseConstructorType, PromiseType } from '../core/deferredUtils'
+import { defer, when, resolve, isPromise, PromiseConstructorType, PromiseType } from '../core/deferredUtils'
 import modernizer from '../modernizer'
 import { forEach } from '../core/array'
-import { isString } from '../core/objUtils'
+import { isString, isHTMLElement, isDate } from '../core/objUtils'
 import { default as on, RemovableType } from '../core/on'
 import { setText, setClass, append } from './utils/domUtils'
 import config from '../config'
@@ -25,18 +25,34 @@ declare var require: any;
  * @constructor
  */
 
+export interface EditorWidgetConstructor {
+	new (args: any) : Widget & { editor?: Widget };
+}
+
 var editorConfig: any = (((config.ninejs || {}).ui || {}).Editor || {}),
 	NumberTextBox: any,
-	numberTextBoxDefer: PromiseConstructorType,
-	timeTextBoxDefer: PromiseConstructorType,
+	numberTextBoxDefer: PromiseConstructorType<EditorWidgetConstructor>,
+	timeTextBoxDefer: PromiseConstructorType<EditorWidgetConstructor>,
 	DateTextBox: any,
-	dateTextBoxDefer: PromiseConstructorType,
+	dateTextBoxDefer: PromiseConstructorType<EditorWidgetConstructor>,
 	TimeTextBox: any,
 	numberTextBoxImpl: string = editorConfig.NumberTextBox || 'dijit/form/NumberTextBox',
 	dateTextBoxImpl: string = editorConfig.DateTextBox || 'dijit/form/DateTextBox',
 	timeTextBoxImpl: string = editorConfig.TimeTextBox || 'dijit/form/TimeTextBox',
 	ENTER = 13;
 var pad = '00';
+
+let applyToNode = (node: HTMLElement | PromiseType<HTMLElement>, callback: (node: HTMLElement) => void, self: any) => {
+	if (isHTMLElement(node)) {
+		return resolve(callback.call(self, node));
+	}
+	else {
+		return when<HTMLElement, any> (node, (domNode: HTMLElement) => {
+			return callback.call(self, domNode);
+		});
+	}
+};
+
 function padTime(str: string) {
 	return pad.substring(0, pad.length - str.length) + str;
 }
@@ -63,6 +79,45 @@ function parseTime(time: string) : Date {
 	return d;
 }
 
+let focus = (node: HTMLElement) => {
+	node.focus();
+};
+
+let setName = (node: HTMLElement) => {
+	(node as HTMLInputElement).name = this.value;
+};
+
+let controlBaseSetValue = (node: HTMLElement) => {
+	let input = node as HTMLInputElement,
+		v = this.value;
+	if (v && (input.type === 'time')) {
+		var d = new Date(v);
+		if (isNaN(d.valueOf())) {
+			d = parseTime(v);
+		}
+		v = padTime('' + d.getHours()) + ':' + padTime('' + d.getMinutes()) + ':' + padTime('' + d.getSeconds());
+	}
+	this.self.value = v;
+	input.value = v;
+};
+
+let controlBaseOnChange = (node: HTMLElement) => {
+	this.own(
+		on(node, 'change', (e) => {
+			let node = e.currentTarget;
+			if ((node as HTMLInputElement).type === 'checkbox') {
+				this.set('value', node.checked);
+			}
+			else {
+				this.set('value', node.value);
+			}
+		})
+	);
+};
+
+let setStep = (domNode: HTMLElement) => {
+	(domNode as HTMLInputElement).step = this.value + '';
+};
 
 export class ControlBase extends Widget {
 	value: any;
@@ -81,65 +136,55 @@ export class ControlBase extends Widget {
 
 	}
 	focus () {
-		this.domNode.focus();
+		applyToNode(this.domNode, focus, this);
 	}
 	valueSetter (v: any) {
-		if (v && (this.domNode.type === 'time')) {
-			var d = new Date(v);
-			if (isNaN(d.valueOf())) {
-				d = parseTime(v);
-			}
-			v = padTime('' + d.getHours()) + ':' + padTime('' + d.getMinutes()) + ':' + padTime('' + d.getSeconds());
-		}
-		this.value = v;
-		this.domNode.value = v;
+		applyToNode(this.domNode, controlBaseSetValue, { self: this, value: v });
 	}
 	valueGetter () {
 		return this.value;
 	}
 	nameSetter (v: string) {
 		this.name = v;
-		this.domNode.name = v;
+		return applyToNode(this.domNode, setName, { value: v });
 	}
 	constructor (args: any) {
 		super(args);
-		var valueField = (this.domNode.type === 'checkbox') ? 'checked' : 'value';
-		this.own(
-			on(this.domNode, 'change', () => {
-				this.set('value', this.domNode[valueField]);
-			})
-		);
+		applyToNode(this.domNode, controlBaseOnChange, this);
 	}
 }
+
 var goodNumber = /^(\+|-)?((\d+(\.\d+)?)|(\.\d+))$/,
 	goodPrefix = /^(\+|-)?((\d*(\.?\d*)?)|(\.\d*))$/;
 export class NativeNumberTextBox extends ControlBase {
 	stepSetter (p: number) {
-		this.domNode.step = p;
+		let node = this.domNode;
+		applyToNode(node, setStep, { value: p });
 	}
 	constructor (args: any) {
-		this.domNode = append.create('input');
-		this.domNode.type = 'number';
+		let node = append.create('input') as HTMLInputElement;
+		node.type = 'number';
 		var previousValue: number;
-		on(this.domNode, 'input,propertyChange', () => {
+		on(node, 'input,propertyChange', () => {
 			if (!goodPrefix.test(this.value)) {
 				this.value = previousValue;
 			}
 			if (!goodNumber.test(this.value)) {
-				setClass(this.domNode, 'invalid');
+				setClass(node, 'invalid');
 			}
 			else {
-				setClass(this.domNode, '!invalid');
+				setClass(node, '!invalid');
 				previousValue = this.value;
 			}
 		});
+		this.domNode = node;
 		super(args);
 	}
 }
 function getNumberTextBoxConstructor() {
 	var NumberTextBox: any;
 	if (!modernizer['inputtypes'].number) {
-		numberTextBoxDefer = defer();
+		numberTextBoxDefer = defer<EditorWidgetConstructor>();
 		NumberTextBox = numberTextBoxDefer.promise;
 		require([numberTextBoxImpl], function (C: any) {
 			NumberTextBox = C;
@@ -162,27 +207,36 @@ function toHTML5Date(date: Date) {
 		formated = year + '-' + month + '-' + day;
 	return formated;
 }
+
+let inputSetValue = (domNode: HTMLElement) => {
+	(domNode as HTMLInputElement).value = this.value;
+};
+
 export class NativeDateTextBox extends ControlBase {
 	constructor (args: any) {
-		this.domNode = append.create('input');
-		this.domNode.type = 'date';
+		let node = append.create('input') as HTMLInputElement;
+		node.type = 'date';
+		this.domNode = node;
 		super(args);
 	}
 	valueSetter (val: any) {
-		if (Object.prototype.toString.call(val) === '[object Date]') {
+		let value: string,
+			node = this.domNode;
+		if (isDate(val)) {
 			this.value = val;
-			this.domNode.value = toHTML5Date(val);
+			value = toHTML5Date(val);
 		}
 		else {
 			this.value = new Date(val);
-			this.domNode.value = val;
+			value = val;
 		}
+		applyToNode(node, inputSetValue, { value: value });
 	}
 }
 function getDateTextBoxConstructor () {
 	var DateTextBox: any;
 	if (!modernizer['inputtypes'].date) {
-		dateTextBoxDefer = defer();
+		dateTextBoxDefer = defer<EditorWidgetConstructor>();
 		DateTextBox = dateTextBoxDefer.promise;
 		setTimeout(function () {
 			require([dateTextBoxImpl], function (C: any) {
@@ -202,14 +256,15 @@ function getDateTextBoxConstructor () {
 }
 export class NativeTimeTextBox extends ControlBase {
 	constructor (args: any) {
-		this.domNode = append.create('input');
-		this.domNode.type = 'time';
+		let node = append.create('input') as HTMLInputElement;
+		node.type = 'time';
+		this.domNode = node;
 		super(args);
 	}
 }
 function getTimeTextBoxConstructor() {
 	if (!modernizer['inputtypes'].time) {
-		timeTextBoxDefer = defer();
+		timeTextBoxDefer = defer<EditorWidgetConstructor>();
 		TimeTextBox = timeTextBoxDefer.promise;
 		setTimeout(function () {
 			require([timeTextBoxImpl], function (C: any) {
@@ -229,85 +284,94 @@ function getTimeTextBoxConstructor() {
 }
 NumberTextBox = getNumberTextBoxConstructor();
 DateTextBox = getDateTextBoxConstructor();
+let setChecked = (domNode: HTMLElement) => {
+	(domNode as HTMLInputElement).checked = this.value;
+};
 export class NativeCheckBox extends ControlBase {
 	constructor (args: any) {
-		this.domNode = append.create('input');
-		this.domNode.type = 'checkbox';
-		this.domNode.checked = '';
+		let node = append.create('input') as HTMLInputElement;
+		node.type = 'checkbox';
+		node.checked = false;
+		this.domNode = node;
 		super(args);
 	}
 	valueSetter (v: boolean) {
 		super.valueSetter(v);
-		var self = this;
-		when(this.domNode, function () {
-			self.domNode.checked = (v)? 'checked' : '';
-		});
+		applyToNode(this.domNode, setChecked, { value: v });
 	}
 }
 export class NativeTextBox extends ControlBase {
 	constructor (args: any) {
-		this.domNode = append.create('input');
-		this.domNode.type = 'text'
+		let node = append.create('input') as HTMLInputElement;
+		node.type = 'text'
+		this.domNode = node;
 		super(args);
 	}
 }
+
+function isValue (val: any) {
+	return (val !== undefined) && (val !== null);
+}
+function getKey (item: any) {
+	var key: string;
+	if (isValue(item.key)) {
+		key = item.key;
+	}
+	else if (isValue(item.value)) {
+		key = item.value;
+	}
+	else {
+		key = item;
+	}
+	return key;
+}
+function getValue (item: any) {
+	var value: string;
+	if (isValue(item.label)) {
+		value = item.label;
+	}
+	else if (isValue(item.value)) {
+		value = item.value;
+	}
+	else {
+		value = item;
+	}
+	return value;
+}
+
+let setOptions = (domNode: HTMLElement) => {
+	var node = domNode,
+		self = this.self,
+		v = this.value;
+	setText.emptyNode(node);
+	if (v) {
+		forEach(v, function (item) {
+			var key = getKey(item),
+				value = getValue(item),
+				opt: HTMLElement;
+
+			opt = append.create('option');
+			opt.setAttribute('value', key);
+
+			if (item.disabled === true) {
+				opt.setAttribute('disabled', 'disabled');
+			}
+
+			if (item.selected === true || key === self.get('value')) {
+				opt.setAttribute('selected', 'selected');
+			}
+			setText(append(node, opt), value);
+		});
+	}
+};
+
 export class NativeSelect extends ControlBase {
 	constructor (args: any) {
 		this.domNode = append.create('select');
 		super(args);
 	}
 	optionsSetter (v: any[]) {
-		function isValue (val: any) {
-			return (val !== undefined) && (val !== null);
-		}
-		function getKey (item: any) {
-			var key: string;
-			if (isValue(item.key)) {
-				key = item.key;
-			}
-			else if (isValue(item.value)) {
-				key = item.value;
-			}
-			else {
-				key = item;
-			}
-			return key;
-		}
-		function getValue (item: any) {
-			var value: string;
-			if (isValue(item.label)) {
-				value = item.label;
-			}
-			else if (isValue(item.value)) {
-				value = item.value;
-			}
-			else {
-				value = item;
-			}
-			return value;
-		}
-		var node = this.domNode,
-			self = this;
-		setText.emptyNode(node);
-		if (v) {
-			forEach(v, function (item) {
-				var key = getKey(item),
-					value = getValue(item),
-					opt: HTMLElement;
-
-				opt = append.create('option');
-				opt.setAttribute('value', key);
-
-				if (item.disabled === true) {
-					opt.setAttribute('disabled', 'disabled');
-				}
-
-				if (item.selected === true || key === self.get('value')) {
-					opt.setAttribute('selected', 'selected');
-				}
-				setText(append(node, opt), value);
-			});
-		}
+		applyToNode(this.domNode, setOptions, { self: this, value: v });
 	}
 }
 TimeTextBox = getTimeTextBoxConstructor();
@@ -411,7 +475,7 @@ let buildTimeTextBox = function (self: Editor) {
 			}
 		};
 	extend.mixin(args, self.args);
-	return when(TimeTextBoxControl, function (TimeTextBoxControl) {
+	return when<EditorWidgetConstructor, Widget>(TimeTextBoxControl, function (TimeTextBoxControl) {
 		var control = new TimeTextBoxControl(args);
 		self.own(
 			on(getEventTarget(control), 'blur', function (e) {
@@ -442,18 +506,20 @@ let buildCheckBox = function (self: Editor) {
 	extend.mixin(args, self.args);
 	return when(CheckBoxControl, function (CheckBoxControl: { new (args: any): Widget }) {
 		var control = new CheckBoxControl(args);
-		return when(control.show(self.domNode), function () {
-			self.own(
-				on(getEventTarget(control), 'blur', function (e: any) {
-					control.get('editor').emit('blur', e);
-				})
-			);
-			control.watch('value', function (name, old, newv) {
-				/* jshint unused: true */
-				self.set('value', newv, true);
-				control.get('editor').emit('input', { value: self.get('value')});
+		return when (self.domNode, (domNode: HTMLElement) => {
+			return when<HTMLElement, Widget>(control.show(domNode), function () {
+				self.own(
+					on(getEventTarget(control), 'blur', function (e: any) {
+						control.get('editor').emit('blur', e);
+					})
+				);
+				control.watch('value', function (name, old, newv) {
+					/* jshint unused: true */
+					self.set('value', newv, true);
+					control.get('editor').emit('input', { value: self.get('value')});
+				});
+				return control;
 			});
-			return control;
 		});
 	});
 };
@@ -499,28 +565,36 @@ let buildSelect = function (self: Editor) {
 			}
 		};
 	extend.mixin(args, self.args);
-	return when(SelectControl, function (SelectControl) {
+	return when<EditorWidgetConstructor, Widget>(SelectControl, function (SelectControl: EditorWidgetConstructor) {
 		var control = new SelectControl(args);
-		return when(control.show(self.domNode), function () {
-			self.own(
-				on(getEventTarget(control), 'blur', function (e) {
-					control.editor.emit('blur', e);
-				}),
-				on(getEventTarget(control), 'input', function (e) {
-					control.editor.emit('input', e);
-				})
-			);
-			control.watch('value', function (name: string, old: any, newv: any) {
-				/* jshint unused: true */
-				self.set('value', newv, true);
+		return when<HTMLElement, Widget>(self.domNode, (domNode: HTMLElement) => {
+			return when<HTMLElement, Widget>(control.show(domNode), (domNode: HTMLElement) => {
+				self.own(
+					on(getEventTarget(control), 'blur', function (e) {
+						control['editor'].emit('blur', e);
+					}),
+					on(getEventTarget(control), 'input', function (e) {
+						control['editor'].emit('input', e);
+					})
+				);
+				control.watch('value', function (name: string, old: any, newv: any) {
+					/* jshint unused: true */
+					self.set('value', newv, true);
+				});
+				control.on('change', function () {
+					self.set('value', control.get('value'), true);
+					self.emit('change', {});
+				});
+				return control;
 			});
-			control.on('change', function () {
-				self.set('value', control.get('value'), true);
-				self.emit('change', {});
-			});
-			return control;
 		});
 	});
+};
+
+let editorFunctions = {
+	clearDataTypeClasses: (domNode: HTMLElement) => {
+		setClass(domNode, '!dataType-integer', '!dataType-decimal', '!dataType-date', '!dataType-datetime', '!dataType-boolean', '!dataType-record', '!dataType-alphanumeric', '!dataType-list');
+	}
 };
 
 class Editor extends Widget {
@@ -531,18 +605,16 @@ class Editor extends Widget {
 	DateTextBoxControlSetter: (c: any) => void;
 	NumberTextBoxControlSetter: (c: any) => void;
 
-	NumberTextBoxControl: any;
-	DateTextBoxControl: any;
-	TimeTextBoxControl: any;
-	CheckBoxControl: any;
-	TextBoxControl: any;
-	SelectControl: any;
+	NumberTextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
+	DateTextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
+	TimeTextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
+	CheckBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
+	TextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
+	SelectControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
 
 
 	_clearDataTypeClasses () {
-		return when(this.show(), () => {
-			setClass(this.domNode, '!dataType-integer', '!dataType-decimal', '!dataType-date', '!dataType-datetime', '!dataType-boolean', '!dataType-record', '!dataType-alphanumeric', '!dataType-list');
-		});
+		return when(this.show(), editorFunctions.clearDataTypeClasses);
 	}
 	onUpdatedSkin () {
 		var self = this;
@@ -557,23 +629,29 @@ class Editor extends Widget {
 		});
 	}
 	dataType: string;
-	control: any;
+	control: Widget | PromiseType<Widget>;
 	placeholder: string;
 	maxLength: number;
 	title: string;
 	pattern: string;
 	options: any[];
 	value: any;
-	controlDefer: PromiseConstructorType;
+	controlDefer: PromiseConstructorType<Widget>;
 	args: any;
 	name: string;
+
+	min: number;
+	max: number;
+	required: boolean;
+	autocomplete: boolean;
 	controlClassSetter (v: string) {
-		var self = this;
-		return when(this.control, function () {
-			if (self.control) {
-				var arg = v.split(' ');
-				arg.unshift(self.control.domNode);
-				setClass.apply(null, arg);
+		return when(this.control, function (control: Widget) {
+			if (control) {
+				return when (control.domNode, (domNode: HTMLElement) => {
+					var arg: any[] = v.split(' ');
+					arg.unshift(domNode);
+					setClass.apply(null, arg);
+				});
 			}
 			else {
 				throw new Error('Please set control\'s dataType property prior to assigning \'controlClass\' property');
@@ -582,10 +660,12 @@ class Editor extends Widget {
 	}
 	placeholderSetter (v: string) {
 		this.placeholder = v;
-		var self = this;
-		return when(this.control, function () {
-			if (self.control) {
-				self.control.domNode.placeholder = v;
+		return when(this.control, function (control: Widget) {
+			if (control) {
+				return when(control.domNode, (domNode) => {
+					let node: any = domNode;
+					node.placeholder = v;
+				});
 			}
 			else {
 				throw new Error('Please set control\'s dataType property prior to assigning \'placeholder\' property');
@@ -594,20 +674,23 @@ class Editor extends Widget {
 	}
 	nameSetter (v: string) {
 		this.name = v;
-		var self = this;
-		return when(this.control, function () {
-			if (self.control) {
-				self.control.set('name', v);
+		return when(this.control, function (control: Widget) {
+			if (control) {
+				control.set('name', v);
 			}
 			else {
 				throw new Error('Please set control\'s dataType property prior to assigning \'name\' property');
 			}
 		});
 	}
-	autocompleteSetter (v: string) {
-		return when(this.control, () => {
+	autocompleteSetter (v: boolean) {
+		this.autocomplete = v;
+		return when(this.control, (control: Widget) => {
 			if (this.control) {
-				this.control.domNode.autocomplete = v;
+				return when (control.domNode, (domNode) => {
+					let node: any = domNode;
+					node.autocomplete = v;
+				});
 			}
 			else {
 				throw new Error('Please set control\'s dataType property prior to assigning \'autocomplete\' property');
@@ -615,10 +698,12 @@ class Editor extends Widget {
 		});
 	}
 	inputTypeSetter (v: string) {
-		var self = this;
-		return when(this.control, function () {
-			if (self.control) {
-				self.control.domNode.type = v;
+		return when(this.control, function (control: Widget) {
+			if (control) {
+				return when(control.domNode, (domNode) => {
+					let node: any = domNode;
+					node.type = v;
+				});
 			}
 			else {
 				throw new Error('Please set control\'s dataType property prior to assigning \'inputType\' property');
@@ -626,32 +711,32 @@ class Editor extends Widget {
 		});
 	}
 	requiredSetter (v: boolean) {
-		return when(this.control, () => {
-			if (this.control.domNode) {
-				if (!!v) {
-					this.control.domNode.required = 'required';
-				}
-				else {
-					this.control.domNode.required = null;
-				}
-			}
-			else {
-				on.once(this, 'updatedSkin', function (_: any) {
-					if (!!v) {
-						this.control.domNode.required = 'required';
+		this.required = v;
+		return when(this.control, (control: Widget) => {
+			if (control) {
+				return when(control.domNode, (domNode) => {
+					let node: any = domNode;
+					if (v) {
+						node.required = 'required';
 					}
 					else {
-						this.control.domNode.required = null;
+						node.required = null;
 					}
 				});
+			}
+			else {
+				throw new Error('Please set control\'s dataType property prior to assigning \'min\' property');
 			}
 		});
 	}
 	minSetter (v: number) {
-		var self = this;
-		return when(this.control, function () {
-			if (self.control) {
-				self.control.domNode.min = v;
+		this.min = v;
+		return when(this.control, function (control: Widget) {
+			if (control) {
+				return when(control.domNode, (domNode) => {
+					let node: any = domNode;
+					node.min = v;
+				});
 			}
 			else {
 				throw new Error('Please set control\'s dataType property prior to assigning \'min\' property');
@@ -659,10 +744,13 @@ class Editor extends Widget {
 		});
 	}
 	maxSetter (v: number) {
-		var self = this;
-		return when(this.control, function () {
-			if (self.control) {
-				self.control.domNode.max = v;
+		this.max = v;
+		return when(this.control, function (control: Widget) {
+			if (control) {
+				return when(control.domNode, (domNode) => {
+					let node: any = domNode;
+					node.max = v;
+				});
 			}
 			else {
 				throw new Error('Please set control\'s dataType property prior to assigning \'max\' property');
@@ -671,10 +759,12 @@ class Editor extends Widget {
 	}
 	maxLengthSetter (v: number) {
 		this.maxLength = v; /*The uppercase L is not a typo*/
-		var self = this;
-		return when(this.control, function () {
-			if (self.control) {
-				self.control.domNode.maxLength = v; /*The uppercase L is not a typo*/
+		return when(this.control, function (control: Widget) {
+			if (control) {
+				return when(control.domNode, (domNode: HTMLElement) => {
+					let node: any = domNode;
+					node.maxLength = v; /*The uppercase L is not a typo*/
+				});
 			}
 			else {
 				throw new Error('Please set control\'s dataType property prior to assigning \'maxlength\' property');
@@ -683,10 +773,12 @@ class Editor extends Widget {
 	}
 	titleSetter (v: string) {
 		this.title = v;
-		var self = this;
-		return when(this.control, function () {
-			if (self.control) {
-				self.control.domNode.title = v;
+		return when(this.control, function (control: Widget) {
+			if (control) {
+				return when(control.domNode, (domNode: HTMLElement) => {
+					let node: any = domNode;
+					node.title = v;
+				});
 			}
 			else {
 				throw new Error('Please set control\'s dataType property prior to assigning \'title\' property');
@@ -695,10 +787,13 @@ class Editor extends Widget {
 	}
 	patternSetter (v: string) {
 		this.pattern = v;
-		var self = this;
-		return when(this.control, function () {
-			if (self.control) {
-				self.control.domNode.pattern = v;
+		return when(this.control, function (control: Widget) {
+			if (control) {
+
+				return when(control.domNode, function (domNode: HTMLElement) {
+					let node: any = domNode;
+					node.pattern = v;
+				});
 			}
 			else {
 				throw new Error('Please set control\'s dataType property prior to assigning \'pattern\' property');
@@ -725,9 +820,10 @@ class Editor extends Widget {
 
 	focus () {
 		var self = this;
-		return when(this.control, function () {
-			if (self.control && (typeof(self.control.focus) === 'function')) {
-				self.control.focus();
+		return when(this.control, function (control: Widget) {
+			let ctrl: any = control;
+			if (ctrl && (typeof(ctrl.focus) === 'function')) {
+				ctrl.focus();
 			}
 		});
 	}
@@ -737,73 +833,83 @@ class Editor extends Widget {
 	 *
 	 */
 	dataTypeSetter (val: string) {
-		var self = this;
+		var self = this,
+			domNode = this.domNode as HTMLElement;
 
-		if (val && (val !== this.dataType)) {
-			if (this.control) {
-				if (typeof (this.control.destroy) === 'function') {
-					this.control.destroy();
-				}
-				else if (typeof (this.control.destroyRecursive) === 'function') {
-					this.control.destroyRecursive(false);
-				}
-			}
-			var p = when(this._clearDataTypeClasses(), function (): PromiseType {
-				setClass(self.domNode, ('dataType-' + val));
-
-				var controlMap: {
-					[ name: string ]: (tgt: Editor) => PromiseType
-				} = {
-					'integer' : function (self: Editor): PromiseType {
-						return buildNumberTextBox(self, 0);
-					},
-					'decimal' : function (self: Editor) {
-						return buildNumberTextBox(self);
-					},
-					'date' : buildDateTextBox,
-					'time' : buildTimeTextBox,
-					'datetime' : buildTimeTextBox,
-					'boolean' : buildCheckBox,
-					'record' : buildTextBox,
-					'alphanumeric' : buildTextBox,
-					'list' : buildSelect
-				};
-				return when(controlMap[val](self), function (ctrl: Widget) {
-					var controlPromise = self.control;
-					if (self.control && (self.control.startup || self.control.show)) {
-						self.control.destroy();
-						setText.emptyNode(self.domNode);
+		return when (this.domNode, (domNode: HTMLElement) => {
+			if (val && (val !== this.dataType)) {
+				let ctrl: any = this.control;
+				if (ctrl) {
+					if (typeof (ctrl.destroy) === 'function') {
+						ctrl.destroy();
 					}
-					self.control = ctrl;
-					if (isPromise(controlPromise)) {
-						self.controlDefer.resolve(ctrl);
-						self.controlDefer = null;
+					else if (typeof (ctrl.destroyRecursive) === 'function') {
+						ctrl.destroyRecursive(false);
 					}
+				}
+				var p = when(this._clearDataTypeClasses(), function (): PromiseType<Widget> {
+					setClass(domNode, ('dataType-' + val));
 
-					(self.control.startup || self.control.show).call(self.control);
-					append(self.domNode, self.control.domNode);
-					return ctrl;
+					var controlMap: {
+						[ name: string ]: (tgt: Editor) => PromiseType<Widget>
+					} = {
+						'integer' : function (self: Editor): PromiseType<Widget> {
+							return buildNumberTextBox(self, 0);
+						},
+						'decimal' : function (self: Editor): PromiseType<Widget> {
+							return buildNumberTextBox(self);
+						},
+						'date' : buildDateTextBox,
+						'time' : buildTimeTextBox,
+						'datetime' : buildTimeTextBox,
+						'boolean' : buildCheckBox,
+						'record' : buildTextBox,
+						'alphanumeric' : buildTextBox,
+						'list' : buildSelect
+					};
+					return when(controlMap[val](self), function (ctrl: Widget) {
+						let controlPromise = self.control,
+							anyControl: any = self.control;
+						if (anyControl && (anyControl.startup || anyControl.show)) {
+							anyControl.destroy();
+							setText.emptyNode(domNode);
+						}
+						self.control = ctrl;
+						anyControl = ctrl;
+						if (isPromise(controlPromise)) {
+							self.controlDefer.resolve(ctrl);
+							self.controlDefer = null;
+						}
+
+						(anyControl.startup || ctrl.show).call(ctrl);
+						return when(ctrl.domNode, (controlDomNode: HTMLElement) => {
+							append(domNode, controlDomNode);
+							return ctrl;
+						});
+					});
 				});
-			});
 
-			this.dataType = val;
-			return p;
-		}
+				this.dataType = val;
+				return p;
+			}
+		});
 	}
 
 	nullValueSetter (val: any) {
 		var self = this;
-		return when(this.control, function () {
-			if (self.control) {
-				self.control.nullValue = val;
+		return when(this.control, function (control: Widget) {
+			let ctrl: any = control;
+			if (ctrl) {
+				ctrl.nullValue = val;
 			}
 		});
 	}
 
 	valueSetter (val: any, stopPropagate?: boolean) {
-		var self = this;
-		if ((val === null) && this.control && (this.control.nullValue !== undefined) && (this.control.nullValue !== null)){
-			val = this.control.nullValue;
+		var self = this,
+			control: any = this.control;
+		if ((val === null) && control && (control.nullValue !== undefined) && (control.nullValue !== null)){
+			val = control.nullValue;
 			this.value = val;
 			this.set('value', val, true);
 		}
@@ -829,10 +935,10 @@ class Editor extends Widget {
 					if (val && isString(val)) {
 						implied = val * 1;
 					}
-					self.control.set('value', implied);
+					control.set('value', implied);
 				}
 				else {
-					self.control.set('value', val);
+					control.set('value', val);
 				}
 			}
 		};
@@ -840,7 +946,7 @@ class Editor extends Widget {
 			return when(this.control, setter);
 		}
 		else {
-			setter(this.control);
+			setter(this.control as Widget);
 		}
 
 	}
@@ -848,17 +954,17 @@ class Editor extends Widget {
 	optionsSetter (values: any[]) {
 		this.options = values;
 		var self = this;
-		return when(this.control, function () {
-			if (self.get('dataType') === 'list') {
-				self.control.set('options', values);
-				self.control.set('value', self.value);
+		return when(this.control, (control: Widget) => {
+			if (this.get('dataType') === 'list') {
+				control.set('options', values);
+				control.set('value', self.value);
 			}
 		});
 	}
 	constructor (args: any) {
 		this.dataType = null;
 		super(args);
-		this.controlDefer = defer();
+		this.controlDefer = defer<Widget>();
 		this.control = this.controlDefer.promise;
 	}
 }

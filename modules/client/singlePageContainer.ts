@@ -8,7 +8,7 @@ bootstrap.enable('vresponsiveViewPort');
 export default define(['ninejs', 'container'], function (provide) {
 	provide('singlePageContainer', function (config, ninejs, containerModule) {
 		var container =  new FullScreenFrame({});
-		container.show(window.document.body);
+		container.init = container.show(window.document.body);
 		containerModule.setContainer('singlePageContainer', container);
 		return container;
 	});

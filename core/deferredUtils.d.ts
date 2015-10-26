@@ -1,26 +1,27 @@
 /// <reference path="extend.d.ts" />
-export interface PromiseType {
-    then(resolve: (v: any) => any, ...rest: ((v: any) => void)[]): PromiseType;
-    fin(act: () => void): PromiseType;
+export interface PromiseType<T> {
+    then<U>(resolve: (v: T) => U | PromiseType<U>, onrejected?: (reason: any) => any): PromiseType<U>;
+    catch(onrejected?: (reason: any) => any): Promise<T>;
+    fin(act: () => void): PromiseType<T>;
 }
-export interface PromiseConstructorType {
-    promise: PromiseType;
-    resolve: (v: any) => void;
+export interface PromiseConstructorType<T> {
+    promise: PromiseType<T>;
+    resolve: (v: T | PromiseType<T>) => T;
     reject: (e: Error) => void;
 }
 export interface PromiseManagerType {
-    when: (v: any, success: (v: any) => any, reject?: (e: Error) => void, fin?: () => void) => PromiseType;
-    defer: (v?: any) => PromiseConstructorType;
-    all: (arr: any[]) => PromiseType;
-    delay: (ms: number) => PromiseType;
+    when: <T, U>(v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void, fin?: () => void) => PromiseType<U>;
+    defer: <T>(v?: T) => PromiseConstructorType<T>;
+    all: (arr: any[]) => PromiseType<any[]>;
+    delay: (ms: number) => PromiseType<any>;
 }
-export declare function isPromise(valueOrPromise: any): boolean;
-export declare var delay: (ms: number) => PromiseType;
-export declare var mapToPromises: (arr: any[]) => PromiseType[];
-export declare var defer: (v?: any) => PromiseConstructorType;
-export declare var when: (valueOrPromise: any, resolve: (v: any) => any, reject?: (e: any) => void, progress?: (p: any) => void, finalBlock?: () => void) => PromiseType;
-export declare var all: (arr: any[]) => PromiseType;
-export declare var series: (taskList: any[]) => PromiseType;
-export declare function ncall(fn: (...args: any[]) => any, self: any, ...args: any[]): PromiseType;
-export declare function nfcall(fn: (...args: any[]) => any, ...args: any[]): PromiseType;
-export declare function resolve(r: any): PromiseType;
+export declare function isPromise<T>(valueOrPromise: any): valueOrPromise is PromiseType<T>;
+export declare var delay: (ms: number) => PromiseType<any>;
+export declare var mapToPromises: (arr: any[]) => PromiseType<any>[];
+export declare var defer: <T>(v?: T) => PromiseConstructorType<T>;
+export declare var when: <T, U>(v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void, fin?: () => void) => PromiseType<U>;
+export declare var all: (arr: any[]) => PromiseType<any[]>;
+export declare var series: (taskList: any[]) => PromiseType<any>;
+export declare function resolve<T>(val: T): PromiseType<T>;
+export declare function ncall<T>(fn: (...args: any[]) => any, self: any, ...args: any[]): PromiseType<T>;
+export declare function nfcall<T>(fn: (...args: any[]) => any, ...args: any[]): PromiseType<T>;

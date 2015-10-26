@@ -1,12 +1,11 @@
-/// <reference path="../typings/tsd.d.ts" />
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './config', '../core/extend', 'path', 'fs', '../core/deferredUtils', './moduleRegistry'], factory);
     }
-})(["require", "exports", './config', '../core/extend', 'path', 'fs', '../core/deferredUtils', './moduleRegistry'], function (require, exports) {
+})(function (require, exports) {
     var config_1 = require('./config');
     var extend_1 = require('../core/extend');
     var path = require('path');
@@ -65,13 +64,14 @@
                         loadModule(dirpath);
                     }
                 }, function (error) {
-                    throw new Error(error);
+                    throw error;
                 });
             }));
         }, function (error) {
-            throw new Error(error);
+            throw error;
         });
     }
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = deferredUtils_1.defer(moduleLoadPromise).promise.then(function () {
         var _defer = deferredUtils_1.defer();
         process.nextTick(function () {

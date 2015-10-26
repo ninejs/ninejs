@@ -1,12 +1,11 @@
-/// <amd-dependency path="../../css!../css/common.css" />
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", "../../css!../css/common.css", './setClass', './setText', './append', '../../modernizer', '../../core/on'], factory);
     }
-})(["require", "exports", "../../css!../css/common.css", './setClass', './setText', './append', '../../modernizer', '../../core/on'], function (require, exports) {
+})(function (require, exports) {
     var setClass_1 = require('./setClass');
     var setText_1 = require('./setText');
     var append_1 = require('./append');

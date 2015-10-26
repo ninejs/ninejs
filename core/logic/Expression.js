@@ -1,17 +1,16 @@
-///<amd-dependency path="../i18n!./nls/Expression.json" />
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", "../i18n!./nls/Expression.json", '../ext/Properties', '../objUtils', '../i18n', '../array'], factory);
     }
-})(["require", "exports", "../i18n!./nls/Expression.json", '../ext/Properties', '../objUtils', '../i18n', '../array'], function (require, exports) {
+})(function (require, exports) {
     var Properties_1 = require('../ext/Properties');
     var objUtils_1 = require('../objUtils');
     var i18n_1 = require('../i18n');
@@ -222,16 +221,6 @@ var __extends = (this && this.__extends) || function (d, b) {
         SelectorOptions[SelectorOptions["time"] = 'time'] = "time";
     })(SelectorOptions || (SelectorOptions = {}));
     function toDateString(dateObj, options) {
-        // summary:
-        //		Format a Date object as a string according a subset of the ISO-8601 standard
-        //
-        // description:
-        //		When options.selector is omitted, output follows [RFC3339](http://www.ietf.org/rfc/rfc3339.txt)
-        //		The local time zone is included as an offset from GMT, except when selector=='time' (time without a date)
-        //		Does not check bounds.  Only years between 100 and 9999 are supported.
-        //
-        // dateObject:
-        //		A Date object
         var dateObject = dateObj;
         var _ = function (n) { return (n < 10) ? '0' + n : n; };
         options = options || {};
@@ -688,6 +677,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         return Expression;
     })(Properties_1.default);
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Expression;
 });
 //# sourceMappingURL=Expression.js.map

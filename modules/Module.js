@@ -3,14 +3,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", '../core/ext/Properties', './moduleRegistry', '../core/ext/Evented', '../core/deferredUtils'], factory);
     }
-})(["require", "exports", '../core/ext/Properties', './moduleRegistry', '../core/ext/Evented', '../core/deferredUtils'], function (require, exports) {
+})(function (require, exports) {
     var Properties_1 = require('../core/ext/Properties');
     var moduleRegistry_1 = require('./moduleRegistry');
     var Evented_1 = require('../core/ext/Evented');
@@ -97,49 +97,52 @@ var __extends = (this && this.__extends) || function (d, b) {
             return false;
         };
         Module.prototype.enable = function (config) {
+            var _this = this;
             if (!this.get('enabled')) {
                 var error = moduleRegistry_1.moduleRegistry.validate(this, true), errorProvides = [], cnt;
-                if (error) {
-                    for (cnt = 0; cnt < this.provides.length; cnt += 1) {
-                        errorProvides.push(this.provides[cnt].id);
+                return deferredUtils_1.when(error, function (error) {
+                    if (error) {
+                        for (cnt = 0; cnt < _this.provides.length; cnt += 1) {
+                            errorProvides.push(_this.provides[cnt].id);
+                        }
+                        throw new Error('Error while trying to enable module with provides: "' + errorProvides.join(',') + '": \n' + error);
                     }
-                    throw new Error('Error while trying to enable module with provides: "' + errorProvides.join(',') + '": \n' + error);
-                }
-                else {
-                    var self = this;
-                    return deferredUtils_1.when(deferredUtils_1.all(this.consumes.map(function (unit) {
-                        if (!moduleRegistry_1.moduleRegistry.enabledUnits[unit.id]) {
-                            return moduleRegistry_1.moduleRegistry.initUnit(unit.id);
-                        }
-                        else {
-                            return moduleRegistry_1.moduleRegistry.enabledUnits[unit.id];
-                        }
-                    })), function () {
-                        return deferredUtils_1.when(deferredUtils_1.all(self.provides.map(function (item) {
-                            if (!moduleRegistry_1.moduleRegistry.enabledUnits[item.id]) {
-                                var _defer = deferredUtils_1.defer();
-                                moduleRegistry_1.moduleRegistry.enabledUnits[item.id] = _defer.promise;
-                                deferredUtils_1.when(self.init(item.id, config[item.id]), function () {
-                                    _defer.resolve(true);
-                                }, function (err) {
-                                    _defer.reject(err);
-                                });
-                                return moduleRegistry_1.moduleRegistry.enabledUnits[item.id];
+                    else {
+                        var self = _this;
+                        return deferredUtils_1.when(deferredUtils_1.all(_this.consumes.map(function (unit) {
+                            if (!moduleRegistry_1.moduleRegistry.enabledUnits[unit.id]) {
+                                return moduleRegistry_1.moduleRegistry.initUnit(unit.id);
                             }
                             else {
-                                return moduleRegistry_1.moduleRegistry.enabledUnits[item.id];
+                                return moduleRegistry_1.moduleRegistry.enabledUnits[unit.id];
                             }
                         })), function () {
-                            self.set('enabled', true);
+                            return deferredUtils_1.when(deferredUtils_1.all(self.provides.map(function (item) {
+                                if (!moduleRegistry_1.moduleRegistry.enabledUnits[item.id]) {
+                                    var _defer = deferredUtils_1.defer();
+                                    moduleRegistry_1.moduleRegistry.enabledUnits[item.id] = _defer.promise;
+                                    deferredUtils_1.when(self.init(item.id, config[item.id]), function () {
+                                        _defer.resolve(true);
+                                    }, function (err) {
+                                        _defer.reject(err);
+                                    });
+                                    return moduleRegistry_1.moduleRegistry.enabledUnits[item.id];
+                                }
+                                else {
+                                    return moduleRegistry_1.moduleRegistry.enabledUnits[item.id];
+                                }
+                            })), function () {
+                                self.set('enabled', true);
+                            }, function (err) {
+                                console.log('Error while enabling some modules');
+                                throw new Error(err);
+                            });
                         }, function (err) {
                             console.log('Error while enabling some modules');
                             throw new Error(err);
                         });
-                    }, function (err) {
-                        console.log('Error while enabling some modules');
-                        throw new Error(err);
-                    });
-                }
+                    }
+                });
             }
             else {
                 var t = deferredUtils_1.defer();
@@ -150,6 +153,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         return Module;
     })(Properties_1.default);
     moduleRegistry_1.moduleRegistry.Module = Module;
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Module;
 });
 //# sourceMappingURL=Module.js.map

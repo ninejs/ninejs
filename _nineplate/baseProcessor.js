@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './utils/node/xmlParser'], factory);
     }
-})(["require", "exports", './utils/node/xmlParser'], function (require, exports) {
+})(function (require, exports) {
     var xmlParser_1 = require('./utils/node/xmlParser');
     var isNode = typeof (window) === 'undefined';
     function manualTrim(str) {

@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './webserver/ClientUtils', './webserver/Endpoint', './webserver/NineplateResource', './webserver/SinglePage', './webserver/StaticResource', './webserver/WebServer', './webserver/module'], factory);
     }
-})(["require", "exports", './webserver/ClientUtils', './webserver/Endpoint', './webserver/NineplateResource', './webserver/SinglePage', './webserver/StaticResource', './webserver/WebServer', './webserver/module'], function (require, exports) {
+})(function (require, exports) {
     exports.ClientUtils = require('./webserver/ClientUtils');
     exports.Endpoint = require('./webserver/Endpoint');
     exports.NineplateResource = require('./webserver/NineplateResource');

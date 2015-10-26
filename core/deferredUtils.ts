@@ -3,10 +3,6 @@
 import extend from './extend'
 import bluebird from './bluebird'
 
-//declare var define:{
-//	(deps:string[], callback:(...rest:any[]) => any): void;
-//	amd: any;
-//};
 declare var Promise: any;
 /**
 @module ninejs/core/deferredUtils 
@@ -15,38 +11,39 @@ declare var Promise: any;
 
 var nativePromise = typeof(Promise) === 'function';
 
-export interface PromiseType {
-	then(resolve: (v: any) => any, ...rest: ((v: any) => void)[]) : PromiseType;
-	fin(act: () => void) : PromiseType
+export interface PromiseType<T> {
+	then<U>(resolve: (v: T) => U | PromiseType<U>, onrejected?: (reason: any) => any) : PromiseType<U>;
+	catch(onrejected?: (reason: any) => any): Promise<T>;
+	fin(act: () => void) : PromiseType<T>
 };
-export interface PromiseConstructorType {
-	promise: PromiseType;
-	resolve: (v: any) => void;
+export interface PromiseConstructorType<T> {
+	promise: PromiseType<T>;
+	resolve: (v: T | PromiseType<T>) => T;
 	reject: (e: Error) => void;
 };
 export interface PromiseManagerType {
-	when: (v: any, success: (v: any) => any, reject?: (e: Error) => void, fin?: () => void) => PromiseType,
-	defer: (v?: any) => PromiseConstructorType,
-	all: (arr: any[]) => PromiseType,
-	delay: (ms: number) => PromiseType
+	when:<T, U> (v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void, fin?: () => void) => PromiseType<U>,
+	defer:<T> (v?: T) => PromiseConstructorType<T>,
+	all: (arr: any[]) => PromiseType<any[]>,
+	delay: (ms: number) => PromiseType<any>
 }
 var Q: PromiseManagerType = bluebird;
-export function isPromise(valueOrPromise: any) {
+export function isPromise<T>(valueOrPromise: any): valueOrPromise is PromiseType<T> {
 	return valueOrPromise && (typeof(valueOrPromise.then) === 'function');
 }
-var _mapToPromises: (arr: any[]) => PromiseType[];
-var _defer: (v: any) => PromiseConstructorType;
-var _when: (valueOrPromise: any, onSuccess: (tgt: any) => any, onFailure: (err: any) => void) => PromiseType;
-var _all: (arr: any[]) => PromiseType;
-var _delay: (ms: number) => PromiseType;
-var _series: (taskList: any[]) => PromiseType;
+var _mapToPromises: (arr: any[]) => PromiseType<any>[];
+var _defer: <T> (v?: T) => PromiseConstructorType<T>;
+var _when: <T, U> (v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void, fin?: () => void) => PromiseType<U>;
+var _all: (arr: any[]) => PromiseType<any[]>;
+var _delay: (ms: number) => PromiseType<any>;
+var _series: (taskList: any[]) => PromiseType<any>;
 
 if (nativePromise) {
 	_mapToPromises = function(arr: any[]) {
 		var cnt: number,
 			len = arr.length,
 			current: any,
-			result: PromiseType[] = [];
+			result: PromiseType<any>[] = [];
 		for (cnt = 0; cnt < len; cnt += 1) {
 			current = arr[cnt];
 			result.push(Promise.resolve(current));
@@ -61,10 +58,14 @@ if (nativePromise) {
 				pReject = reject;
 			});
 		p.resolve = (v: any) => {
-			setTimeout ( () => { pResolve(v); }, 0);
+			setTimeout ( () => {
+				pResolve(v);
+			}, 0);
 		};
 		p.reject = (v: any) => {
-			setTimeout ( () => { pReject(v); }, 0);
+			setTimeout ( () => {
+				pReject(v);
+			}, 0);
 		};
 		p.promise = p;
 		if (arguments.length) {
@@ -72,12 +73,12 @@ if (nativePromise) {
 		}
 		return p;
 	};
-	_when = function (valueOrPromise: any, onSuccess: (tgt: any) => any, onFailure: (err: any) => void) {
-		if (isPromise(valueOrPromise)) {
-			return Promise.resolve(valueOrPromise).then(onSuccess, onFailure);
+	_when = <T, U> (v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void, fin?: () => void) => {
+		if (isPromise(v)) {
+			return Promise.resolve(v).then(success, reject);
 		}
 		else {
-			return Promise.resolve(onSuccess(valueOrPromise));
+			return Promise.resolve(success(v));
 		}
 	};
 	_all = function (arr: any[]) {
@@ -101,8 +102,8 @@ else {
 		var cnt: number,
 			len = arr.length,
 			current: any,
-			defer: PromiseConstructorType,
-			result: PromiseType[] = [];
+			defer: PromiseConstructorType<any>,
+			result: PromiseType<any>[] = [];
 		for (cnt = 0; cnt < len; cnt += 1) {
 			current = arr[cnt];
 			if (this.isPromise(current)) {
@@ -127,18 +128,16 @@ else {
 		}
 	};
 	/* jshint unused: true */
-	_when = function (valueOrPromise: any, resolve: (v: any) => any, reject?: (e: Error) => void, progress?: (p: any) => void, finalBlock?: () => void) {
-		var r: PromiseType;
-		if (isPromise(valueOrPromise)) {
-			r = valueOrPromise.then(resolve, reject);
+	_when = <T, U> (v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void, fin?: () => void) => {
+		var r: PromiseType<U>;
+		if (isPromise(v)) {
+			r = v.then(success, reject);
 		}
 		else {
-			var defer = Q.defer();
-			r = defer.promise.then(resolve, reject);
-			defer.resolve(valueOrPromise);
+			r = resolve(v).then(success, reject);
 		}
-		if (typeof(finalBlock) === 'function') {
-			return r.fin(finalBlock);
+		if (typeof(fin) === 'function') {
+			return r.fin(fin);
 		}
 		else {
 			return r;
@@ -162,13 +161,12 @@ else {
  */
 _series = function (taskList: any[]) {
 	var t: any,
-		currentPromise: PromiseType,
-		result = this.defer(),
+		currentPromise: PromiseType<any>,
+		result = _defer<any>(),
 		self = this;
 	currentPromise = result.promise;
 	taskList.forEach(function (cur) {
 		var defer = self.defer();
-		t = cur.promise;
 		if (typeof(t) === 'function') {
 			t = t();
 		}
@@ -188,17 +186,27 @@ _series = function (taskList: any[]) {
 
 	return currentPromise;
 };
-export var delay: (ms: number) => PromiseType = _delay;
-export var mapToPromises: (arr: any[]) => PromiseType[] = _mapToPromises;
-export var defer: (v?: any) => PromiseConstructorType = _defer;
-export var when: (valueOrPromise: any, resolve: (v: any) => any, reject?: (e: any) => void, progress?: (p: any) => void, finalBlock?: () => void) => PromiseType = _when;
-export var all: (arr: any[]) => PromiseType = _all;
-export var series: (taskList: any[]) => PromiseType = _series;
-export function ncall (fn: (...args: any[]) => any, self: any, ...args: any[]) {
-	var d = defer();
-	function callback (err: any, result: any) {
+export var delay: (ms: number) => PromiseType<any> = _delay;
+export var mapToPromises: (arr: any[]) => PromiseType<any>[] = _mapToPromises;
+export var defer: <T> (v?: T) => PromiseConstructorType<T> = _defer;
+export var when: <T, U> (v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void, fin?: () => void) => PromiseType<U> = _when;
+export var all: (arr: any[]) => PromiseType<any[]> = _all;
+export var series: (taskList: any[]) => PromiseType<any> = _series;
+export function resolve<T>(val: T) {
+	let d = defer<T>();
+	d.resolve(val);
+	return d.promise;
+}
+export function ncall<T> (fn: (...args: any[]) => any, self: any, ...args: any[]) {
+	var d = defer<T>();
+	function callback (err: any, result: T) {
 		if (err) {
-			d.reject(err);
+			if (err instanceof Error) {
+				d.reject(err);
+			}
+			else {
+				d.reject(new Error(err));
+			}
 		}
 		else {
 			d.resolve(result);
@@ -208,22 +216,22 @@ export function ncall (fn: (...args: any[]) => any, self: any, ...args: any[]) {
 	fn.apply(self, args);
 	return d.promise;
 }
-export function nfcall (fn: (...args: any[]) => any, ...args: any[]) {
-	var d = defer();
-	function callback (err: any, result: any) {
+export function nfcall<T> (fn: (...args: any[]) => any, ...args: any[]) {
+	var d = defer<T>();
+	function callback (err: any, result: T) {
 		if (err) {
-			d.reject(err);
+			if (err instanceof Error) {
+				d.reject(err);
+			}
+			else {
+				d.reject(new Error(err));
+			}
 		}
 		else {
 			d.resolve(result);
 		}
-	};
+	}
 	args.push(callback);
 	fn.apply(null, args);
 	return d.promise;
 }
-export function resolve(r: any) {
-	var d = defer(r);
-	return d.promise;
-}
-

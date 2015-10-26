@@ -1,7 +1,12 @@
-import Widget from './Widget';
+import { default as Widget } from './Widget';
 import Properties from '../core/ext/Properties';
 import { PromiseConstructorType, PromiseType } from '../core/deferredUtils';
 import { RemovableType } from '../core/on';
+export interface EditorWidgetConstructor {
+    new (args: any): Widget & {
+        editor?: Widget;
+    };
+}
 export declare class ControlBase extends Widget {
     value: any;
     name: string;
@@ -11,7 +16,7 @@ export declare class ControlBase extends Widget {
     focus(): void;
     valueSetter(v: any): void;
     valueGetter(): any;
-    nameSetter(v: string): void;
+    nameSetter(v: string): PromiseType<any>;
     constructor(args: any);
 }
 export declare class NativeNumberTextBox extends ControlBase {
@@ -43,43 +48,47 @@ declare class Editor extends Widget {
     TimeTextBoxControlSetter: (c: any) => void;
     DateTextBoxControlSetter: (c: any) => void;
     NumberTextBoxControlSetter: (c: any) => void;
-    NumberTextBoxControl: any;
-    DateTextBoxControl: any;
-    TimeTextBoxControl: any;
-    CheckBoxControl: any;
-    TextBoxControl: any;
-    SelectControl: any;
-    _clearDataTypeClasses(): PromiseType;
+    NumberTextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
+    DateTextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
+    TimeTextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
+    CheckBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
+    TextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
+    SelectControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
+    _clearDataTypeClasses(): PromiseType<void>;
     onUpdatedSkin(): void;
     dataType: string;
-    control: any;
+    control: Widget | PromiseType<Widget>;
     placeholder: string;
     maxLength: number;
     title: string;
     pattern: string;
     options: any[];
     value: any;
-    controlDefer: PromiseConstructorType;
+    controlDefer: PromiseConstructorType<Widget>;
     args: any;
     name: string;
-    controlClassSetter(v: string): PromiseType;
-    placeholderSetter(v: string): PromiseType;
-    nameSetter(v: string): PromiseType;
-    autocompleteSetter(v: string): PromiseType;
-    inputTypeSetter(v: string): PromiseType;
-    requiredSetter(v: boolean): PromiseType;
-    minSetter(v: number): PromiseType;
-    maxSetter(v: number): PromiseType;
-    maxLengthSetter(v: number): PromiseType;
-    titleSetter(v: string): PromiseType;
-    patternSetter(v: string): PromiseType;
+    min: number;
+    max: number;
+    required: boolean;
+    autocomplete: boolean;
+    controlClassSetter(v: string): PromiseType<void>;
+    placeholderSetter(v: string): PromiseType<void>;
+    nameSetter(v: string): PromiseType<void>;
+    autocompleteSetter(v: boolean): PromiseType<void>;
+    inputTypeSetter(v: string): PromiseType<void>;
+    requiredSetter(v: boolean): PromiseType<void>;
+    minSetter(v: number): PromiseType<void>;
+    maxSetter(v: number): PromiseType<void>;
+    maxLengthSetter(v: number): PromiseType<void>;
+    titleSetter(v: string): PromiseType<void>;
+    patternSetter(v: string): PromiseType<void>;
     onBlur(): void;
-    bind(target: Properties, name: string): Editor;
-    focus(): PromiseType;
-    dataTypeSetter(val: string): PromiseType;
-    nullValueSetter(val: any): PromiseType;
-    valueSetter(val: any, stopPropagate?: boolean): PromiseType;
-    optionsSetter(values: any[]): PromiseType;
+    bind(target: Properties, name: string): this;
+    focus(): PromiseType<void>;
+    dataTypeSetter(val: string): PromiseType<Widget>;
+    nullValueSetter(val: any): PromiseType<void>;
+    valueSetter(val: any, stopPropagate?: boolean): PromiseType<void>;
+    optionsSetter(values: any[]): PromiseType<void>;
     constructor(args: any);
 }
 export { Editor };

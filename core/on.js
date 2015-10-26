@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", '../modernizer', './aspect'], factory);
     }
-})(["require", "exports", '../modernizer', './aspect'], function (require, exports) {
+})(function (require, exports) {
     var modernizer_1 = require('../modernizer');
     var aspect = require('./aspect');
     var isNode = (typeof (process) !== 'undefined') && (process.toString() === '[object process]');
@@ -103,36 +103,6 @@
     var on;
     on = (function () {
         var on = function (target, type, listener, dontFix) {
-            // summary:
-            //		A function that provides core event listening functionality. With this function
-            //		you can provide a target, event type, and listener to be notified of
-            //		future matching events that are fired.
-            // target: Element|Object
-            //		This is the target object or DOM element that to receive events from
-            // type: String|Function
-            //		This is the name of the event to listen for or an extension event type.
-            // listener: Function
-            //		This is the function that should be called when the event fires.
-            // returns: Object
-            //		An object with a remove() method that can be used to stop listening for this
-            //		event.
-            // description:
-            //		To listen for 'click' events on a button node, we can do:
-            //		|	define(['dojo/on'], function(listen){
-            //		|		on(button, 'click', clickHandler);
-            //		|		...
-            //		Evented JavaScript objects can also have their own events.
-            //		|	var obj = new Evented;
-            //		|	on(obj, 'foo', fooHandler);
-            //		And then we could publish a 'foo' event:
-            //		|	on.emit(obj, 'foo', {key: 'value'});
-            //		We can use extension events as well. For example, you could listen for a tap gesture:
-            //		|	define(['dojo/on', 'dojo/gesture/tap', function(listen, tap){
-            //		|		on(button, tap, tapHandler);
-            //		|		...
-            //		which would trigger fooHandler. Note that for a simple object this is equivalent to calling:
-            //		|	obj.onfoo({key:'value'});
-            //		If you use on.emit on a DOM node, it will use native event dispatching when possible.
             if (typeof target.on === 'function' && typeof type !== 'function' && !target.nodeType) {
                 return target.on(type, listener);
             }
@@ -435,10 +405,6 @@
             var windowOrientation = window.orientation;
             var fixTouchListener = function (listener) {
                 return function (originalEvent) {
-                    //Event normalization(for ontouchxxx and resize):
-                    //1.incorrect e.pageX|pageY in iOS
-                    //2.there are no 'e.rotation', 'e.scale' and 'onorientationchange' in Android
-                    //3.More TBD e.g. force | screenX | screenX | clientX | clientY | radiusX | radiusY
                     var event = originalEvent.corrected;
                     if (!event) {
                         var type = originalEvent.type;
@@ -502,6 +468,7 @@
     exports.emit = on.emit;
     exports.pausable = on.pausable;
     exports.once = on.once;
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = on;
 });
 //# sourceMappingURL=on.js.map

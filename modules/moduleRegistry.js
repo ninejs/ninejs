@@ -3,14 +3,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", '../core/extend', '../core/ext/Properties', './config', '../core/deferredUtils'], factory);
     }
-})(["require", "exports", '../core/extend', '../core/ext/Properties', './config', '../core/deferredUtils'], function (require, exports) {
+})(function (require, exports) {
     var extend = require('../core/extend');
     var Properties_1 = require('../core/ext/Properties');
     var config_1 = require('./config');
@@ -152,6 +152,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 };
             };
             this.validate = function (m, enableOnDemand) {
+                var _this = this;
                 function errorIfNoDependencies() {
                     if (!len) {
                         for (cnt = 0; cnt < m.provides.length; cnt += 1) {
@@ -164,7 +165,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                         }
                     }
                 }
-                function processOnDemand(self) {
+                function processOnDemand(self, current) {
                     if (enableOnDemand) {
                         if (!moduleSet[current.id]) {
                             throw new Error('module not found: "' + current.id + '". Perhaps you forgot to add it.');
@@ -177,7 +178,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                         }
                     }
                 }
-                function processConsumesFeatures(self) {
+                function processConsumesFeatures(self, current) {
                     if (current.features) {
                         var p;
                         var features = self.providesList[current.id].features;
@@ -199,32 +200,34 @@ var __extends = (this && this.__extends) || function (d, b) {
                         }
                     }
                 }
-                var consumes = m.consumes, current, messages = '', len = 0, cnt;
-                for (cnt = 0; cnt < consumes.length; cnt += 1) {
+                var consumes = m.consumes, messages = '', len = 0, cnt;
+                var defs = consumes.map(function (current) {
                     len += 1;
-                    current = consumes[cnt];
-                    if (!this.providesList[current.id]) {
-                        var onDemandModules = this.get('onDemandModules') || {}, onDemand;
-                        if (onDemandModules[current.id] && !this.hasProvide(current.id)) {
+                    if (!_this.providesList[current.id]) {
+                        var onDemandModules = _this.get('onDemandModules') || {}, onDemand;
+                        if (onDemandModules[current.id] && !_this.hasProvide(current.id)) {
                             onDemand = req(onDemandModules[current.id]).default;
-                            this.addModule(onDemand);
+                            _this.addModule(onDemand);
                         }
                     }
-                    processOnDemand(this);
-                    if (this.providesList[current.id]) {
-                        if (!areVersionsCompatible(this.providesList[current.id].version, current.version)) {
-                            messages += 'incompatible versions on module "' + current.id + '". Your version is "' + this.providesList[current.id].version + '". Required version is: "' + current.version + '"\n';
+                    return deferredUtils_1.when(processOnDemand(_this, current), function () {
+                        if (_this.providesList[current.id]) {
+                            if (!areVersionsCompatible(_this.providesList[current.id].version, current.version)) {
+                                messages += 'incompatible versions on module "' + current.id + '". Your version is "' + _this.providesList[current.id].version + '". Required version is: "' + current.version + '"\n';
+                            }
+                            else {
+                                processConsumesFeatures(_this, current);
+                            }
                         }
                         else {
-                            processConsumesFeatures(this);
+                            messages += 'missing dependency: "' + current.id + '" version: "' + current.version + '"\n';
                         }
-                    }
-                    else {
-                        messages += 'missing dependency: "' + current.id + '" version: "' + current.version + '"\n';
-                    }
-                }
-                errorIfNoDependencies();
-                return messages;
+                    });
+                });
+                return deferredUtils_1.when(deferredUtils_1.all(defs), function () {
+                    errorIfNoDependencies();
+                    return messages;
+                });
             };
             this.enableModules = function () {
                 var currentModule, cnt, pArray = [];
@@ -251,7 +254,10 @@ var __extends = (this && this.__extends) || function (d, b) {
                         self.enabledUnits[unitId] = r || true;
                         _defer.resolve(r || true);
                     }, console.error);
-                    return this.enabledUnits[unitId];
+                    return _defer.promise;
+                }
+                else {
+                    return deferredUtils_1.defer(this.enabledUnits[unitId]).promise;
                 }
             };
             this.build = function () {

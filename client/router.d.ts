@@ -21,7 +21,7 @@ export declare class Router extends Properties implements RouterBase {
     addRoute(route: Route): Route;
     removeRoute(route: Route): any;
     destroy(): void;
-    dispatchRoute(evt: any): PromiseType;
+    dispatchRoute(evt: any): PromiseType<void>;
     hashHandler: {
         remove: () => void;
     };
@@ -39,7 +39,7 @@ export declare class Route extends Properties implements RouterBase {
     removeRoute(): any;
     register(): Route;
     titleGetter(): any;
-    execute(args: any, evt: any): PromiseType;
+    execute(args: any, evt: any): PromiseType<any>;
     action: (evt: any) => void;
     loadAction: (args: any, evt: any) => any;
     initAction(): any;

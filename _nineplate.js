@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './_nineplate/baseProcessor', './_nineplate/domProcessor', './_nineplate/renderers', './_nineplate/textProcessor', './_nineplate/utils'], factory);
     }
-})(["require", "exports", './_nineplate/baseProcessor', './_nineplate/domProcessor', './_nineplate/renderers', './_nineplate/textProcessor', './_nineplate/utils'], function (require, exports) {
+})(function (require, exports) {
     exports.baseProcessor = require('./_nineplate/baseProcessor');
     exports.domProcessor = require('./_nineplate/domProcessor');
     exports.renderers = require('./_nineplate/renderers');

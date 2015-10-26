@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './cache'], factory);
     }
-})(["require", "exports", './cache'], function (require, exports) {
+})(function (require, exports) {
     var cache_1 = require('./cache');
     var getText = cache_1.default.getText;
     var notFound = {}, pending = {};
@@ -16,12 +16,6 @@
     }
     exports.normalize = normalize;
     function load(id, require, load, config) {
-        // id: String
-        //		Path to the resource.
-        // require: Function
-        //		Object that include the function toUrl with given id returns a valid URL from which to load the text.
-        // load: Function
-        //		Callback function which will be called, when the loading finished.
         var parts = id.split('!'), stripFlag = parts.length > 1, absMid = parts[0], url = require.toUrl(parts[0]), requireCacheUrl = 'url:' + url, text = notFound, finish = function (text) {
             load(stripFlag ? cache_1.default.strip(text) : text);
         };

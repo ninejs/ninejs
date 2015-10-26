@@ -77,6 +77,10 @@ export interface RouterBase {
 	get: (name: string) => any
 }
 
+let itemsRemove = (item: Route) => {
+	item.remove();
+};
+
 export class Router extends Properties implements RouterBase {
 	initAction: (evt: any) => any
 	loadAction: (args: any, evt: any) => any
@@ -102,7 +106,6 @@ export class Router extends Properties implements RouterBase {
 		}
 	}
 	addRoute (route: Route) {
-		var self = this;
 		this.routes.push(route);
 		return route;
 	}
@@ -114,9 +117,7 @@ export class Router extends Properties implements RouterBase {
 		return undefined;
 	}
 	destroy () {
-		this.routes.forEach(function(item) {
-			item.remove();
-		});
+		this.routes.forEach(itemsRemove);
 		this.hashHandler.remove();
 	}
 	dispatchRoute (evt: any) {
@@ -243,7 +244,7 @@ export class Route extends Properties implements RouterBase {
 			loadAction: (...args: any[]) => any = this.loadAction || rTrue,
 			title = this.get('title'),
 			self = this;
-		return when(<any>initAction.call(this, args, evt), function(result): PromiseType {
+		return when(<any>initAction.call(this, args, evt), function(result) {
 			if (result !== false) { //if result is false it means stop propagation
 				if (typeof(title) === 'string') {
 					window.document.title = title;

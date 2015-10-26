@@ -104,7 +104,7 @@ define(['../../core/deferredUtils',
 				else {
 					newItemNode = append(parentNode, item.domNode);
 				}
-				copyClasses.call(this, item, newItemNode);
+				copyClasses(item, newItemNode);
 			}
 
 			return newItemNode;
