@@ -74,11 +74,11 @@ if (nativePromise) {
 		return p;
 	};
 	_when = <T, U> (v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void, fin?: () => void) => {
-		if (isPromise(v)) {
-			return Promise.resolve(v).then(success, reject);
+		if (isPromise<T>(v)) {
+			return v.then(success, reject);
 		}
 		else {
-			return Promise.resolve(success(v));
+			return Promise.resolve(v).then(success);
 		}
 	};
 	_all = function (arr: any[]) {

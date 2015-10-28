@@ -201,7 +201,7 @@ export function processCss(data: string, path: string, realPath: string, prefixe
 				loadHandler(fs.readFileSync(realUrl, 'utf-8'));
 			}
 			else {
-				request.get(realUrl, {type: 'html'}).then(loadHandler);
+				request.get(realUrl, { headers: { Accept: 'text/css, text/plain, text/*'}, type: 'html'}).then(loadHandler);
 			}
 			return '';
 		});

@@ -319,8 +319,10 @@ var __extends = (this && this.__extends) || function (d, b) {
                     on_1.default.emit(this.owner.domNode, type, e);
                 }
             });
-            if (persistEvent || widgetSpecialEvents[type]) {
-                this.$njsEventListenerHandlers.push(r);
+            if (persistEvent) {
+                if (!widgetSpecialEvents[type]) {
+                    this.$njsEventListenerHandlers.push(r);
+                }
             }
             else {
                 this.own(r);

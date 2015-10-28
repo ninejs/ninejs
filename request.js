@@ -3,9 +3,10 @@
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "reqwest/reqwest"], factory);
+        define(["require", "exports", "reqwest/reqwest", './core/deferredUtils'], factory);
     }
 })(function (require, exports) {
+    var deferredUtils_1 = require('./core/deferredUtils');
     var req = require, isNode = typeof (window) === 'undefined', isAmd = typeof (define) === 'function' && define.amd, isDojo = isAmd && (define.amd.vendor === 'dojotoolkit.org');
     var request;
     if (isAmd) {
@@ -24,8 +25,41 @@
     else if (typeof (exports) === 'object') {
         request = req('request');
     }
+    function raw() {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i - 0] = arguments[_i];
+        }
+        var d = deferredUtils_1.defer();
+        if (isNode) {
+            args.push(function (err, res, body) {
+                if (err) {
+                    d.reject(err);
+                }
+                else {
+                    d.resolve({ response: res, body: body });
+                }
+            });
+            request.apply(request, args);
+        }
+        else {
+            request.apply(request, args).then(function (data) {
+                d.resolve({ response: data, body: data });
+            }, function (err) {
+                d.reject(err);
+            });
+        }
+        return d.promise;
+    }
+    exports.raw = raw;
     function fn() {
-        return request.apply(request, arguments);
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i - 0] = arguments[_i];
+        }
+        return raw.apply(null, args).then(function (r) {
+            return r.response;
+        });
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = fn;

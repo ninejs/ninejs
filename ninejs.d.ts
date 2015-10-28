@@ -61,14 +61,12 @@ declare module 'ninejs/css' {
         disable: () => StyleType;
     }
     export class StyleObject implements StyleType {
-        globalWindow: Window;
         children: StyleObject[];
         path: string;
         data: string;
         [name: string]: any;
         document: HTMLDocument;
         handle: StyleInstance;
-        normalizeUrls(css: string): string;
         enableOldIE(styleNode: any, result: StyleInstance, parent: any, document: HTMLDocument): void;
         enable(parent?: any): StyleInstance;
         disable(): StyleInstance;
@@ -145,7 +143,13 @@ declare module 'ninejs/nineplate' {
 }
 
 declare module 'ninejs/request' {
-    export default function fn(): any;
+    import { PromiseType } from 'ninejs/core/deferredUtils';
+    export interface RawResponse {
+        response: any;
+        body: any;
+    }
+    export function raw(...args: any[]): PromiseType<RawResponse>;
+    export default function fn(...args: any[]): any;
     export function get(...args: any[]): any;
     export function post(...args: any[]): any;
     export function put(...args: any[]): any;
@@ -276,11 +280,11 @@ declare module 'ninejs/client/router' {
         on(type: string, listener: (e?: any) => any): any;
         emit(...arglist: any[]): any;
         register(route: any, action?: (evt: any) => void): Route;
-        go(route: string, replace: boolean): void;
+        go(route: string, replace: boolean): PromiseType<any>;
         addRoute(route: Route): Route;
         removeRoute(route: Route): any;
         destroy(): void;
-        dispatchRoute(evt: any): PromiseType<void>;
+        dispatchRoute(evt: any): PromiseType<any>;
         hashHandler: {
             remove: () => void;
         };
@@ -310,7 +314,7 @@ declare module 'ninejs/client/router' {
     export function on(type: string, listener: (e?: any) => any): any;
     export function emit(...arglist: any[]): any;
     export function register(route: any, action?: (evt: any) => void): Route;
-    export function go(route: string, replace?: boolean): void;
+    export function go(route: string, replace?: boolean): PromiseType<any>;
     export function addRoute(route: Route): Route;
     export function removeRoute(route: Route): any;
     export function startup(): void;

@@ -4,14 +4,12 @@ export interface StyleType {
     disable: () => StyleType;
 }
 export declare class StyleObject implements StyleType {
-    globalWindow: Window;
     children: StyleObject[];
     path: string;
     data: string;
     [name: string]: any;
     document: HTMLDocument;
     handle: StyleInstance;
-    normalizeUrls(css: string): string;
     enableOldIE(styleNode: any, result: StyleInstance, parent: any, document: HTMLDocument): void;
     enable(parent?: any): StyleInstance;
     disable(): StyleInstance;

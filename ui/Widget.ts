@@ -406,8 +406,10 @@ class Widget extends Properties {
 				on.emit(this.owner.domNode, type, e);
 			}
 		});
-		if (persistEvent || widgetSpecialEvents[type]) {
-			this.$njsEventListenerHandlers.push(r);
+		if (persistEvent) {
+			if (!widgetSpecialEvents[type]) {
+				this.$njsEventListenerHandlers.push(r);
+			}
 		}
 		else {
 			this.own(r);

@@ -15,52 +15,50 @@
         }
         return false;
     })(), isAmd = (typeof (define) !== 'undefined') && define.amd, isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org', ieCssText, ieCssUpdating, externalCssCache = {};
+    var normalizeUrls = function (css, self) {
+        css = css.replace(/url\s*\(\s*['"]?([^'"\)]*)['"]?\s*\)/g, function ($0, url) {
+            var newUrl = '', amdPrefix;
+            if (!(/:/.test(url) || /^\/\//.test(url))) {
+                var arrSplit = self.path.split(' => ');
+                var cnt;
+                for (cnt = 0; cnt < arrSplit.length; cnt += 1) {
+                    var slashSplit = arrSplit[cnt].split('/');
+                    if (cnt === 0) {
+                        amdPrefix = slashSplit[0];
+                    }
+                    slashSplit.pop();
+                    if (slashSplit.length && cnt > 0) {
+                        newUrl += '/';
+                    }
+                    newUrl += slashSplit.join('/');
+                }
+                if (newUrl) {
+                    newUrl += '/';
+                }
+                newUrl += url;
+            }
+            else {
+                newUrl = url;
+            }
+            if (isDojo && amdPrefix) {
+                if (require.packs && require.packs[amdPrefix]) {
+                    var amdPackage = require.packs[amdPrefix];
+                    var loc = amdPackage.location.split('/');
+                    if (loc.length) {
+                        loc.pop();
+                        loc.push(newUrl);
+                        newUrl = loc.join('/');
+                    }
+                }
+            }
+            return 'url(\'' + newUrl + '\')';
+        });
+        return css;
+    };
     var StyleObject = (function () {
         function StyleObject() {
             this.children = [];
-            this.globalWindow = window;
         }
-        StyleObject.prototype.normalizeUrls = function (css) {
-            var self = this;
-            css = css.replace(/url\s*\(\s*['"]?([^'"\)]*)['"]?\s*\)/g, function ($0, url) {
-                var newUrl = '', amdPrefix;
-                if (!(/:/.test(url) || /^\/\//.test(url))) {
-                    var arrSplit = self.path.split(' => ');
-                    var cnt;
-                    for (cnt = 0; cnt < arrSplit.length; cnt += 1) {
-                        var slashSplit = arrSplit[cnt].split('/');
-                        if (cnt === 0) {
-                            amdPrefix = slashSplit[0];
-                        }
-                        slashSplit.pop();
-                        if (slashSplit.length && cnt > 0) {
-                            newUrl += '/';
-                        }
-                        newUrl += slashSplit.join('/');
-                    }
-                    if (newUrl) {
-                        newUrl += '/';
-                    }
-                    newUrl += url;
-                }
-                else {
-                    newUrl = url;
-                }
-                if (isDojo && amdPrefix) {
-                    if (require.packs && require.packs[amdPrefix]) {
-                        var amdPackage = require.packs[amdPrefix];
-                        var loc = amdPackage.location.split('/');
-                        if (loc.length) {
-                            loc.pop();
-                            loc.push(newUrl);
-                            newUrl = loc.join('/');
-                        }
-                    }
-                }
-                return 'url(\'' + newUrl + '\')';
-            });
-            return css;
-        };
         StyleObject.prototype.enableOldIE = function (styleNode, result, parent, document) {
             var cnt, accumulated, actual, c, ieNode;
             if (!ieNode) {
@@ -103,7 +101,7 @@
             var isScoped = (isDomElement(parent)), linkNode, result;
             var document;
             if (!parent) {
-                document = this.globalWindow.document;
+                document = window.document;
                 parent = document.getElementsByTagName('head')[0];
             }
             else {
@@ -137,10 +135,10 @@
                 styleNode.type = 'text/css';
                 styleNode.setAttribute('data-ninejs-path', this.path);
                 if (styleNode.styleSheet && (!ielt10)) {
-                    styleNode.styleSheet.cssText = this.data = this.normalizeUrls(cssText);
+                    styleNode.styleSheet.cssText = this.data = normalizeUrls(cssText, this);
                 }
                 else {
-                    this.data = this.normalizeUrls(cssText);
+                    this.data = normalizeUrls(cssText, this);
                     styleNode.appendChild(document.createTextNode(this.data));
                 }
                 if (isScoped) {
@@ -157,10 +155,10 @@
                     for (cnt = 0; cnt < self.children.length; cnt += 1) {
                         var child = self.children[cnt], childHandle;
                         if (isScoped) {
-                            childHandle = child.enable(parent);
+                            childHandle = StyleObject.prototype.enable.call(child, parent);
                         }
                         else {
-                            childHandle = child.enable();
+                            childHandle = StyleObject.prototype.enable.call(child);
                         }
                         r.push(childHandle);
                     }

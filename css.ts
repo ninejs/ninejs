@@ -27,58 +27,56 @@ export interface StyleType {
 	enable: (parent?: any) => StyleType;
 	disable: () => StyleType;
 }
+let normalizeUrls = (css: string, self: any) => {
+	/* jshint unused: true */
+	css = css.replace(/url\s*\(\s*['"]?([^'"\)]*)['"]?\s*\)/g, function($0, url){
+		var newUrl = '',
+			amdPrefix: string;
+		if (!(/:/.test(url) || /^\/\//.test(url))){
+			var arrSplit = self.path.split(' => ');
+			var cnt: number;
+			for (cnt = 0; cnt < arrSplit.length; cnt += 1){
+				var slashSplit = arrSplit[cnt].split('/');
+				if (cnt === 0) {
+					amdPrefix = slashSplit[0];
+				}
+				slashSplit.pop();
+				if (slashSplit.length && cnt > 0){
+					newUrl += '/';
+				}
+				newUrl += slashSplit.join('/');
+			}
+			if (newUrl){
+				newUrl += '/';
+			}
+			newUrl += url;
+		}
+		else {
+			newUrl = url;
+		}
+		if (isDojo && amdPrefix) {
+			//Tring to find AMD package
+			if (require.packs && require.packs[amdPrefix]) {
+				var amdPackage = require.packs[amdPrefix];
+				var loc = amdPackage.location.split('/');
+				if (loc.length) {
+					loc.pop();
+					loc.push(newUrl);
+					newUrl = loc.join('/');
+				}
+			}
+		}
+		return 'url(\'' + newUrl + '\')';
+	});
+	return css;
+};
 export class StyleObject implements StyleType {
-	globalWindow: Window;
 	children: StyleObject[] = [];
 	path: string;
 	data: string;
 	[name: string]: any;
 	document: HTMLDocument;
 	handle: StyleInstance;
-	normalizeUrls (css: string) {
-		/* jshint unused: true */
-		var self = this;
-		css = css.replace(/url\s*\(\s*['"]?([^'"\)]*)['"]?\s*\)/g, function($0, url){
-			var newUrl = '',
-				amdPrefix: string;
-			if (!(/:/.test(url) || /^\/\//.test(url))){
-				var arrSplit = self.path.split(' => ');
-				var cnt: number;
-				for (cnt = 0; cnt < arrSplit.length; cnt += 1){
-					var slashSplit = arrSplit[cnt].split('/');
-					if (cnt === 0) {
-						amdPrefix = slashSplit[0];
-					}
-					slashSplit.pop();
-					if (slashSplit.length && cnt > 0){
-						newUrl += '/';
-					}
-					newUrl += slashSplit.join('/');
-				}
-				if (newUrl){
-					newUrl += '/';
-				}
-				newUrl += url;
-			}
-			else {
-				newUrl = url;
-			}
-			if (isDojo && amdPrefix) {
-				//Tring to find AMD package
-				if (require.packs && require.packs[amdPrefix]) {
-					var amdPackage = require.packs[amdPrefix];
-					var loc = amdPackage.location.split('/');
-					if (loc.length) {
-						loc.pop();
-						loc.push(newUrl);
-						newUrl = loc.join('/');
-					}
-				}
-			}
-			return 'url(\'' + newUrl + '\')';
-		});
-		return css;
-	}
 	enableOldIE (styleNode: any, result: StyleInstance, parent: any, document: HTMLDocument): void {
 		var cnt: number,
 			accumulated: string[],
@@ -136,7 +134,7 @@ export class StyleObject implements StyleType {
 
 		var document: HTMLDocument;
 		if (!parent) {
-			document = this.globalWindow.document;
+			document = window.document as HTMLDocument;
 			parent = document.getElementsByTagName('head')[0];
 		}
 		else {
@@ -174,11 +172,11 @@ export class StyleObject implements StyleType {
 			styleNode.setAttribute('data-ninejs-path', this.path);
 			if (styleNode.styleSheet && (!ielt10))
 			{
-				styleNode.styleSheet.cssText = this.data = this.normalizeUrls(cssText);
+				styleNode.styleSheet.cssText = this.data = normalizeUrls(cssText, this);
 			}
 			else
 			{
-				this.data = this.normalizeUrls(cssText);
+				this.data = normalizeUrls(cssText, this);
 				styleNode.appendChild(document.createTextNode(this.data));
 			}
 			if (isScoped) {
@@ -195,10 +193,10 @@ export class StyleObject implements StyleType {
 				for (cnt = 0; cnt < self.children.length; cnt += 1) {
 					var child = self.children[cnt], childHandle: StyleInstance;
 					if (isScoped) {
-						childHandle = child.enable(parent);
+						childHandle = StyleObject.prototype.enable.call(child, parent);
 					}
 					else {
-						childHandle = child.enable();
+						childHandle = StyleObject.prototype.enable.call(child);
 					}
 					r.push(childHandle);
 				}
@@ -224,7 +222,6 @@ export class StyleObject implements StyleType {
 		return this.enable().disable();
 	}
 	constructor () {
-		this.globalWindow = window;
 	}
 }
 

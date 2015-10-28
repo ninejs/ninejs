@@ -101,7 +101,7 @@ let controlBaseSetValue = (node: HTMLElement) => {
 	input.value = v;
 };
 
-let controlBaseOnChange = (node: HTMLElement) => {
+function controlBaseOnChange (node: HTMLElement) {
 	this.own(
 		on(node, 'change', (e) => {
 			let node = e.currentTarget;

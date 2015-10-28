@@ -37,27 +37,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     var consumers = this.consumes.map(function (item) {
                         var unit = self.getUnit(item.id);
                         args.push(unit);
-                        if (unit) {
-                            if (deferredUtils_1.isPromise(unit.init)) {
-                                return unit.init;
-                            }
-                            else if (typeof (unit.init) === 'function') {
-                                var d = deferredUtils_1.defer();
-                                try {
-                                    d.resolve(unit.init());
-                                }
-                                catch (err) {
-                                    d.reject(err);
-                                }
-                                return d.promise;
-                            }
-                            else {
-                                return unit;
-                            }
-                        }
-                        else {
-                            return unit;
-                        }
+                        return unit;
                     });
                     return deferredUtils_1.when(deferredUtils_1.all(consumers), function () {
                         var unitObj = provideMap[name].apply(null, args);
@@ -67,6 +47,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                             }
                             else if (typeof (unitObj.init) === 'function') {
                                 return deferredUtils_1.when(unitObj.init(), function (d) {
+                                    delete unitObj.init;
                                     return d;
                                 }, function (err) {
                                     throw err;

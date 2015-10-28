@@ -17,6 +17,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var hash_1 = require('./hash');
     var on_1 = require('../core/on');
     var idMatch = /:(\w[\w\d]*)/g, idReplacement = '([^\\/]+)', globMatch = /\*(\w[\w\d]*)/, globReplacement = '(.+)';
+    var activeRouteDefer = null;
     function nullf() {
         return null;
     }
@@ -87,12 +88,18 @@ var __extends = (this && this.__extends) || function (d, b) {
         Router.prototype.go = function (route, replace) {
             var current = getRoute();
             route = cleanRoute(route);
+            if (activeRouteDefer) {
+                activeRouteDefer.reject(new Error('route changed'));
+                activeRouteDefer = null;
+            }
             this.emit('9jsRouteChanging', { route: route, oldRoute: current, replace: replace });
             if (current === route) {
-                this.dispatchRoute({ newURL: route, oldURL: '' });
+                return this.dispatchRoute({ newURL: route, oldURL: '' });
             }
             else {
+                activeRouteDefer = deferredUtils_1.defer();
                 setRoute(route, replace);
+                return activeRouteDefer.promise;
             }
         };
         Router.prototype.addRoute = function (route) {
@@ -118,10 +125,11 @@ var __extends = (this && this.__extends) || function (d, b) {
             if (idx >= 0) {
                 newUrl = newUrl.substr(idx + 1);
             }
-            function emitChanged() {
+            function emitChanged(result) {
                 self.emit('9jsRouteChanged', {
                     route: newUrl
                 });
+                return result;
             }
             function routeActionError(err) {
                 throw err;
@@ -172,7 +180,12 @@ var __extends = (this && this.__extends) || function (d, b) {
                     timeStamp: evt.timeStamp,
                     type: evt.type
                 };
-                self.dispatchRoute(e);
+                deferredUtils_1.when(self.dispatchRoute(e), function (result) {
+                    if (activeRouteDefer) {
+                        activeRouteDefer.resolve(result);
+                        activeRouteDefer = null;
+                    }
+                });
             });
         };
         return Router;

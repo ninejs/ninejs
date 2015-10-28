@@ -65,8 +65,9 @@ var __extends = (this && this.__extends) || function (d, b) {
         _this.self.value = v;
         input.value = v;
     };
-    var controlBaseOnChange = function (node) {
-        _this.own(on_1.default(node, 'change', function (e) {
+    function controlBaseOnChange(node) {
+        var _this = this;
+        this.own(on_1.default(node, 'change', function (e) {
             var node = e.currentTarget;
             if (node.type === 'checkbox') {
                 _this.set('value', node.checked);
@@ -75,7 +76,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                 _this.set('value', node.value);
             }
         }));
-    };
+    }
+    ;
     var setStep = function (domNode) {
         domNode.step = _this.value + '';
     };

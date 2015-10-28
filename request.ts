@@ -1,4 +1,6 @@
 ///<amd-dependency path="reqwest/reqwest" />
+import { defer, PromiseType } from './core/deferredUtils';
+
 declare var require: any;
 declare var define:{
 	(deps:string[], callback:(...rest:any[]) => any): void;
@@ -28,8 +30,37 @@ else if (typeof(exports) === 'object') {
 	request = req('request');
 }
 
-export default function fn () {
-	return request.apply(request, arguments);
+export interface RawResponse {
+	response: any,
+	body: any
+}
+
+export function raw (...args: any[]) {
+	let d = defer<RawResponse>();
+	if (isNode) {
+		args.push((err: any, res: any, body: any) => {
+			if (err) {
+				d.reject(err);
+			}
+			else {
+				d.resolve({ response: res, body: body });
+			}
+		});
+		request.apply(request, args);
+	}
+	else {
+		request.apply(request, args).then((data: any) => {
+			d.resolve({ response: data, body: data});
+		}, (err: any) => {
+			d.reject(err);
+		});
+	}
+	return d.promise;
+}
+export default function fn (...args: any[]) {
+	return raw.apply(null, args).then ((r: RawResponse) => {
+		return r.response;
+	});
 }
 var verb = function (v: string, args: any[]) {
 	var obj: any;

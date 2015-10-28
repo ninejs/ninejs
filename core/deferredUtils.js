@@ -53,10 +53,10 @@
         };
         _when = function (v, success, reject, fin) {
             if (isPromise(v)) {
-                return Promise.resolve(v).then(success, reject);
+                return v.then(success, reject);
             }
             else {
-                return Promise.resolve(success(v));
+                return Promise.resolve(v).then(success);
             }
         };
         _all = function (arr) {

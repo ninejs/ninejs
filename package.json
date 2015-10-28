@@ -2,10 +2,13 @@
   "name": "ninejs",
   "description": "NineJs",
   "version": "0.2.0",
-  "author": "Eduardo Burgos <eburgos@gmail.com>",
+  "author": {
+    "name": "Eduardo Burgos",
+    "email": "eburgos@gmail.com"
+  },
   "repository": {
     "type": "git",
-    "url": "git://github.com/ninejs/ninejs"
+    "url": "git://github.com/ninejs/ninejs.git"
   },
   "main": "lib/ninejs",
   "dojoBuild": "profile.build.js",
@@ -71,7 +74,11 @@
   },
   "scripts": {},
   "contributors": [
-    "Eduardo Burgos <eburgos@gmail.com> (http://www.eduardoburgos.com/)"
+    {
+      "name": "Eduardo Burgos",
+      "email": "eburgos@gmail.com",
+      "url": "http://www.eduardoburgos.com/"
+    }
   ],
   "readmeFilename": "README.md",
   "keywords": [

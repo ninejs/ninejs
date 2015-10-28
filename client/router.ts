@@ -1,5 +1,5 @@
 import { indexOf, forEach } from '../core/array';
-import { when, PromiseType } from '../core/deferredUtils';
+import { when, PromiseType, defer, PromiseConstructorType } from '../core/deferredUtils';
 import Evented from '../core/ext/Evented';
 import Properties from '../core/ext/Properties';
 import hash from './hash';
@@ -11,6 +11,8 @@ var idMatch = /:(\w[\w\d]*)/g,
 	idReplacement = '([^\\/]+)',
 	globMatch = /\*(\w[\w\d]*)/,
 	globReplacement = '(.+)';
+
+let activeRouteDefer: PromiseConstructorType<any> = null;
 function nullf(): any {
 	return null;
 }
@@ -97,12 +99,18 @@ export class Router extends Properties implements RouterBase {
 	go (route: string, replace: boolean) {
 		var current = getRoute();
 		route = cleanRoute(route);
+		if (activeRouteDefer) {
+			activeRouteDefer.reject(new Error('route changed'));
+			activeRouteDefer = null;
+		}
 		this.emit('9jsRouteChanging', { route: route, oldRoute: current, replace: replace });
 		if (current === route) {
-			this.dispatchRoute({ newURL: route, oldURL: '' });
+			return this.dispatchRoute({ newURL: route, oldURL: '' });
 		}
 		else {
+			activeRouteDefer = defer<any>();
 			setRoute(route, replace);
+			return activeRouteDefer.promise;
 		}
 	}
 	addRoute (route: Route) {
@@ -138,10 +146,11 @@ export class Router extends Properties implements RouterBase {
 		if (idx >= 0) {
 			newUrl = newUrl.substr(idx + 1);
 		}
-		function emitChanged () {
+		function emitChanged (result: any) {
 			self.emit('9jsRouteChanged', {
 				route: newUrl
 			});
+			return result;
 		}
 		function routeActionError(err: Error) {
 			throw err;
@@ -194,7 +203,12 @@ export class Router extends Properties implements RouterBase {
 				timeStamp: evt.timeStamp,
 				type: evt.type
 			};
-			self.dispatchRoute(e);
+			when (self.dispatchRoute(e), (result) => {
+				if (activeRouteDefer) {
+					activeRouteDefer.resolve(result);
+					activeRouteDefer = null;
+				}
+			});
 		});
 	}
 	constructor () {
