@@ -1,7 +1,6 @@
 import extend from '../extend'
 import { isArrayLike, isDate } from '../objUtils'
 
-
 var emitToWatchList: (self: Properties, name: string, oldValue: any, newValue: any) => void;
 
 function sliceArguments(arr: IArguments, refIndex: number) {
@@ -12,7 +11,22 @@ function sliceArguments(arr: IArguments, refIndex: number) {
 	return r;
 }
 var watchIdCount = 0;
-var WatchHandleConstructor = extend({
+
+export interface WatchHandle {
+	new (action: (name: string, oldValue: any, newValue: any) => void, watchList: WatchHandle[]): WatchHandle;
+	pause: () => void;
+	resume: () => void;
+	remove: () => void;
+	id: number;
+	action: (name: string, oldValue: any, newValue: any) => void;
+	watchList: WatchHandle[]
+}
+
+export interface EventedArray extends Array<any> {
+	new (arr: any[]): EventedArray;
+}
+
+var WatchHandleConstructor = extend<WatchHandle>({
 	pause: function() {
 		if (this.action && !this.action['$njsIsEmpty']) {
 			this.bkAction = this.action;
@@ -45,7 +59,7 @@ var WatchHandleConstructor = extend({
 	this.action = action;
 	this.watchList = watchList;
 });
-var EventedArrayConstructor: { new (...rest: any[] ): EventedArray } = extend(Array, function (arr: any[]) {
+var EventedArrayConstructor: { new (...rest: any[] ): EventedArray } = extend<EventedArray>(Array, function (arr: any[]) {
 		var cnt: number,
 			len: number;
 		if (arr && arr.length) {
@@ -226,18 +240,4 @@ emitToWatchList = function (self: Properties, name: string, oldValue: any, newVa
 			}
 		}
 	}
-}
-
-export interface EventedArray extends Array<any> {
-	new (arr: any[]): EventedArray;
-}
-
-export interface WatchHandle {
-	new (action: (name: string, oldValue: any, newValue: any) => void, watchList: WatchHandle[]): WatchHandle;
-	pause: () => void;
-	resume: () => void;
-	remove: () => void;
-	id: number;
-	action: (name: string, oldValue: any, newValue: any) => void;
-	watchList: WatchHandle[]
 }

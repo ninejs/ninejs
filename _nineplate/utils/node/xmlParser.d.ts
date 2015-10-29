@@ -1,4 +1,5 @@
 export declare class XmlParserError extends Error {
+    constructor(msg: string);
     line: number;
     column: number;
     xml: string;

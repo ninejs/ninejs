@@ -239,10 +239,6 @@ export class Utils {
 			requireJsLocation = path.dirname(requireJsLocation);
 			this.amdPaths['requirejs'] = path.resolve(requireJsLocation, '..'); //requirejs path defaults to ./bin
 		}
-		var qLocation: string = require.resolve('q');
-		if (qLocation) {
-			this.amdPaths['q'] = path.dirname(qLocation);
-		}
 		var reqwestLocation: string = require.resolve('reqwest');
 		if (reqwestLocation) {
 			this.amdPaths['reqwest'] = path.dirname(reqwestLocation);

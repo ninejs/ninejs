@@ -43,9 +43,15 @@ var __extends = (this && this.__extends) || function (d, b) {
                 }
             }
             if (this.template) {
+                var template;
                 if (typeof (this.template) === 'string') {
-                    nTemplate = nineplate_1.default.buildTemplate(this.template);
-                    this.template = nTemplate.compileDom(true);
+                    var templateString = this.template;
+                    nTemplate = nineplate_1.default.buildTemplate(templateString);
+                    template = nTemplate.compileDom(true);
+                    this.template = template;
+                }
+                else {
+                    template = this.template;
                 }
                 var parentNode;
                 var oldNode;
@@ -54,7 +60,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     oldNode = widget.domNode;
                 }
                 var afterLoadDeps = function () {
-                    templateResult = self.template(widget);
+                    templateResult = template(widget);
                     if (widget.mixinProperties) {
                         widget.mixinProperties(templateResult);
                     }
@@ -66,8 +72,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                     }
                     defer.resolve(true);
                 };
-                if (this.template.amdDependencies && this.template.amdDependencies.length) {
-                    require(this.template.amdDependencies || [], afterLoadDeps);
+                if (template.amdDependencies && template.amdDependencies.length) {
+                    require(template.amdDependencies || [], afterLoadDeps);
                 }
                 else {
                     afterLoadDeps();

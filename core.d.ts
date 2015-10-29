@@ -1,4 +1,3 @@
-export import _common = require('./core/_common');
 export import array = require('./core/array');
 export import aspect = require('./core/aspect');
 export import bluebird = require('./core/bluebird');

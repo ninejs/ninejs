@@ -5,6 +5,9 @@ var defer = function() {
 	return Q.defer();
 };
 export class XmlParserError extends Error {
+	constructor (msg: string) {
+		super(msg);
+	}
 	line: number;
 	column: number;
 	xml: string;

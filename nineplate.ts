@@ -28,7 +28,14 @@ export interface ResultFunction {
 	amdDependencies?: string[];
 }
 
-var Nineplate = extend({
+export interface NineplateType {
+	buildTemplate: (val: string) => Template;
+	getTemplate: (path: string, callback: (t: Template) => void) => void;
+	load: (name: string, req: any, onLoad: (v: any) => void, config?: any) => void;
+	__express: (path: string, options: any, callback: (err: any, val: any) => void) => void;
+}
+
+var Nineplate = extend<NineplateType>({
 	buildTemplate: function(val: string) {
 		var template = new Template();
 		template.set('text', val);

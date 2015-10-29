@@ -3,7 +3,7 @@
 import extend from './extend';
 import Evented from './ext/Evented';
 import * as amdText from './text';
-import { defer } from './deferredUtils';
+import { defer, PromiseType } from './deferredUtils';
 declare var define: any;
 
 var isAmd = (typeof(define) !== 'undefined' && define.amd),
@@ -27,7 +27,16 @@ function getFile(src: string, require: any, load: (data: any) => void, config?: 
 	}
 	return obj;
 }
-var I18nResourceSet = extend(Evented, {
+export interface I18nResource {
+	loadResource: (locale: string, require: any, load: (data: any) => void) => any;
+	setLocale: (locale: string, ignoreChangedEvent: boolean, req: any, originalLoad: (data: any) => void) => PromiseType<any>;
+	getResource: () => any;
+	root: any;
+	baseUrl: string;
+	baseName: string;
+	available: { [name: string]: boolean };
+}
+var I18nResourceSet = extend<I18nResource>(Evented, {
 	loadResource: function(locale: string, require: any, load: (data: any) => void) {
 		var shrt: string,
 			parent = this.loaded.root,

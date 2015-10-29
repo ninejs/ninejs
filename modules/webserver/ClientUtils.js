@@ -95,10 +95,6 @@ var __extends = (this && this.__extends) || function (d, b) {
                 requireJsLocation = path.dirname(requireJsLocation);
                 this.amdPaths['requirejs'] = path.resolve(requireJsLocation, '..');
             }
-            var qLocation = require.resolve('q');
-            if (qLocation) {
-                this.amdPaths['q'] = path.dirname(qLocation);
-            }
             var reqwestLocation = require.resolve('reqwest');
             if (reqwestLocation) {
                 this.amdPaths['reqwest'] = path.dirname(reqwestLocation);

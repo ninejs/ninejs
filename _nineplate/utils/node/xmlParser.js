@@ -18,8 +18,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     };
     var XmlParserError = (function (_super) {
         __extends(XmlParserError, _super);
-        function XmlParserError() {
-            _super.apply(this, arguments);
+        function XmlParserError(msg) {
+            _super.call(this, msg);
         }
         return XmlParserError;
     })(Error);

@@ -4,7 +4,7 @@ import * as def from '../core/deferredUtils';
 import { StyleType } from '../css';
 declare class Skin extends Properties {
     cssList: StyleType[];
-    template: ResultFunction;
+    template: ResultFunction | string;
     enabled: boolean;
     applies(): boolean;
     templateSetter(value: any): void;

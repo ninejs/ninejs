@@ -5,8 +5,14 @@ export interface ResultFunction {
     (context: any, doc?: HTMLDocument): any;
     amdDependencies?: string[];
 }
-declare var result: any;
-export declare function load(name: string, req: any, onLoad: (v: any) => void, config?: any): any;
+export interface NineplateType {
+    buildTemplate: (val: string) => Template;
+    getTemplate: (path: string, callback: (t: Template) => void) => void;
+    load: (name: string, req: any, onLoad: (v: any) => void, config?: any) => void;
+    __express: (path: string, options: any, callback: (err: any, val: any) => void) => void;
+}
+declare var result: NineplateType;
+export declare function load(name: string, req: any, onLoad: (v: any) => void, config?: any): void;
 export default result;
 export declare var domProcessor: typeof _domProcessor;
 export declare var textProcessor: typeof _textProcessor;

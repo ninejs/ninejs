@@ -8,7 +8,7 @@ declare var require: any;
 
 class Skin extends Properties {
 	cssList: StyleType[];
-	template: ResultFunction;
+	template: ResultFunction | string;
 	enabled: boolean = false;
 	applies () { //override to define a 'rule' that tells whether this skin applies or not to your widget
 		return true;
@@ -36,9 +36,15 @@ class Skin extends Properties {
 			}
 		}
 		if (this.template) {
+			let template: ResultFunction;
 			if (typeof(this.template) === 'string') {
-				nTemplate = nineplate.buildTemplate(this.template);
-				this.template = nTemplate.compileDom(true);
+				let templateString = this.template as string;
+				nTemplate = nineplate.buildTemplate(templateString);
+				template = nTemplate.compileDom(true);
+				this.template = template;
+			}
+			else {
+				template = this.template as ResultFunction;
 			}
 			var parentNode: HTMLElement;
 			var oldNode: HTMLElement;
@@ -47,7 +53,7 @@ class Skin extends Properties {
 				oldNode = widget.domNode;
 			}
 			var afterLoadDeps = function () {
-				templateResult = self.template(widget);
+				templateResult = template(widget);
 				if (widget.mixinProperties){
 					widget.mixinProperties(templateResult);
 				}
@@ -59,8 +65,8 @@ class Skin extends Properties {
 				}
 				defer.resolve(true);
 			};
-			if (this.template.amdDependencies && this.template.amdDependencies.length) {
-				require(this.template.amdDependencies || [], afterLoadDeps);
+			if (template.amdDependencies && template.amdDependencies.length) {
+				require(template.amdDependencies || [], afterLoadDeps);
 			}
 			else {
 				afterLoadDeps();

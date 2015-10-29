@@ -1,3 +1,15 @@
+export interface WatchHandle {
+    new (action: (name: string, oldValue: any, newValue: any) => void, watchList: WatchHandle[]): WatchHandle;
+    pause: () => void;
+    resume: () => void;
+    remove: () => void;
+    id: number;
+    action: (name: string, oldValue: any, newValue: any) => void;
+    watchList: WatchHandle[];
+}
+export interface EventedArray extends Array<any> {
+    new (arr: any[]): EventedArray;
+}
 export default class Properties {
     [name: string]: any;
     get(name: string): any;
@@ -14,16 +26,4 @@ export default class Properties {
     $njsConstructors: ((args: any) => void)[];
     constructor(...argslist: any[]);
     static mixin(target: any): (args: any) => void;
-}
-export interface EventedArray extends Array<any> {
-    new (arr: any[]): EventedArray;
-}
-export interface WatchHandle {
-    new (action: (name: string, oldValue: any, newValue: any) => void, watchList: WatchHandle[]): WatchHandle;
-    pause: () => void;
-    resume: () => void;
-    remove: () => void;
-    id: number;
-    action: (name: string, oldValue: any, newValue: any) => void;
-    watchList: WatchHandle[];
 }

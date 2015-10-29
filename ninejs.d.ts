@@ -40,7 +40,6 @@ declare module 'ninejs/config' {
 }
 
 declare module 'ninejs/core' {
-    export import _common = require('ninejs/core/_common');
     export import array = require('ninejs/core/array');
     export import aspect = require('ninejs/core/aspect');
     export import bluebird = require('ninejs/core/bluebird');
@@ -122,8 +121,14 @@ declare module 'ninejs/nineplate' {
         (context: any, doc?: HTMLDocument): any;
         amdDependencies?: string[];
     }
-    var result: any;
-    export function load(name: string, req: any, onLoad: (v: any) => void, config?: any): any;
+    export interface NineplateType {
+        buildTemplate: (val: string) => Template;
+        getTemplate: (path: string, callback: (t: Template) => void) => void;
+        load: (name: string, req: any, onLoad: (v: any) => void, config?: any) => void;
+        __express: (path: string, options: any, callback: (err: any, val: any) => void) => void;
+    }
+    var result: NineplateType;
+    export function load(name: string, req: any, onLoad: (v: any) => void, config?: any): void;
     export default result;
     export var domProcessor: typeof _domProcessor;
     export var textProcessor: typeof _textProcessor;
@@ -320,38 +325,6 @@ declare module 'ninejs/client/router' {
     export function startup(): void;
 }
 
-declare module 'ninejs/core/_common' {
-    export interface DecoratorFunction {
-        (fn: Function): any;
-        $$ninejsType: string;
-        method: Function;
-    }
-    export interface Extendable {
-        (fn: Function): any;
-        extend: (...rest: any[]) => any;
-    }
-    export interface Extend {
-        (...rest: any[]): {
-            new (...rest: any[]): any;
-        };
-        registerDecorator: (name: string, dec: (original: Function, current: Function) => any) => void;
-        after: Function;
-        before: Function;
-        around: Function;
-        isArray: (obj: any) => boolean;
-        mixin: (obj: any, target: any) => void;
-        mixinRecursive: (obj: any, target: any) => void;
-        postConstruct: (construct: Function) => any;
-        decorators: {
-            [decoratorName: string]: {
-                (fn: Function): any;
-                $$ninejsType: string;
-                method: Function;
-            };
-        };
-    }
-}
-
 declare module 'ninejs/core/array' {
     export interface ArrayLike {
         length: number;
@@ -444,11 +417,38 @@ declare module 'ninejs/core/deferredUtils' {
 declare module 'ninejs/core/ext' {
     export import Evented = require('ninejs/core/ext/Evented');
     export import Properties = require('ninejs/core/ext/Properties');
-    export import _common = require('ninejs/core/ext/_common');
 }
 
 declare module 'ninejs/core/extend' {
-    import { Extend } from 'ninejs/core/_common';
+    export interface DecoratorFunction {
+        (fn: Function): any;
+        $$ninejsType: string;
+        method: Function;
+    }
+    export interface Extendable {
+        (fn: Function): any;
+        extend: (...rest: any[]) => any;
+    }
+    export interface Extend {
+        <T>(...rest: any[]): {
+            new (...rest: any[]): T;
+        };
+        registerDecorator: (name: string, dec: (original: Function, current: Function) => any) => void;
+        after: Function;
+        before: Function;
+        around: Function;
+        isArray: (obj: any) => boolean;
+        mixin: (obj: any, target: any) => void;
+        mixinRecursive: (obj: any, target: any) => void;
+        postConstruct: (construct: Function) => any;
+        decorators: {
+            [decoratorName: string]: {
+                (fn: Function): any;
+                $$ninejsType: string;
+                method: Function;
+            };
+        };
+    }
     function isArray(obj: any): boolean;
     function mixin(obj: any, target: any): void;
     function mixinRecursive(obj: any, target: any): void;
@@ -664,6 +664,18 @@ declare module 'ninejs/modules/webserver' {
 }
 
 declare module 'ninejs/core/ext/Properties' {
+    export interface WatchHandle {
+        new (action: (name: string, oldValue: any, newValue: any) => void, watchList: WatchHandle[]): WatchHandle;
+        pause: () => void;
+        resume: () => void;
+        remove: () => void;
+        id: number;
+        action: (name: string, oldValue: any, newValue: any) => void;
+        watchList: WatchHandle[];
+    }
+    export interface EventedArray extends Array<any> {
+        new (arr: any[]): EventedArray;
+    }
     export default class Properties {
         [name: string]: any;
         get(name: string): any;
@@ -681,18 +693,6 @@ declare module 'ninejs/core/ext/Properties' {
         constructor(...argslist: any[]);
         static mixin(target: any): (args: any) => void;
     }
-    export interface EventedArray extends Array<any> {
-        new (arr: any[]): EventedArray;
-    }
-    export interface WatchHandle {
-        new (action: (name: string, oldValue: any, newValue: any) => void, watchList: WatchHandle[]): WatchHandle;
-        pause: () => void;
-        resume: () => void;
-        remove: () => void;
-        id: number;
-        action: (name: string, oldValue: any, newValue: any) => void;
-        watchList: WatchHandle[];
-    }
 }
 
 declare module 'ninejs/ui/Skin' {
@@ -702,7 +702,7 @@ declare module 'ninejs/ui/Skin' {
     import { StyleType } from 'ninejs/css';
     class Skin extends Properties {
         cssList: StyleType[];
-        template: ResultFunction;
+        template: ResultFunction | string;
         enabled: boolean;
         applies(): boolean;
         templateSetter(value: any): void;
@@ -788,6 +788,7 @@ declare module 'ninejs/ui/utils' {
 
 declare module 'ninejs/_nineplate/utils/node/xmlParser' {
     export class XmlParserError extends Error {
+        constructor(msg: string);
         line: number;
         column: number;
         xml: string;
@@ -938,23 +939,6 @@ declare module 'ninejs/core/ext/Evented' {
         emit(...arglist: any[]): any;
     };
     export default result;
-}
-
-declare module 'ninejs/core/ext/_common' {
-    export interface PropertiesInstance {
-        get: (name: string) => any;
-        set: (name: string, val: any) => any;
-        watch: (propertyName: string, action: ((propertyName: string, oldValue: any, newValue: any) => void)) => void;
-        mixinProperties: (target: any) => void;
-        mixinRecursive: (target: any) => void;
-        $njsWatch: {
-            [name: string]: any[];
-        };
-    }
-    export interface Properties {
-        new (m: any): PropertiesInstance;
-        mixin: (target: any) => ((target: any) => void);
-    }
 }
 
 declare module 'ninejs/core/logic/Expression' {
