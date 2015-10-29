@@ -102,7 +102,14 @@ var initialOperatorList: { [ name: string ]: Operator } = {
 	},
 	'contains':{
 		name: 'contains',
-		'operator': function(a,b) { return String.prototype.indexOf.call(a, b) >= 0; },
+		'operator': function(a,b) {
+			if ((typeof(a) === 'undefined') || (a == null)) {
+				return false;
+			}
+			else {
+				return String.prototype.indexOf.call(a, b) >= 0;
+			}
+		},
 		dataTypeList: [
 			'String'
 		]

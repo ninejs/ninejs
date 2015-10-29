@@ -91,7 +91,14 @@ var __extends = (this && this.__extends) || function (d, b) {
         },
         'contains': {
             name: 'contains',
-            'operator': function (a, b) { return String.prototype.indexOf.call(a, b) >= 0; },
+            'operator': function (a, b) {
+                if ((typeof (a) === 'undefined') || (a == null)) {
+                    return false;
+                }
+                else {
+                    return String.prototype.indexOf.call(a, b) >= 0;
+                }
+            },
             dataTypeList: [
                 'String'
             ]
