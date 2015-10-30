@@ -803,7 +803,7 @@ class Editor extends Widget {
 	onBlur () {
 
 	}
-	bind (target: Properties, name: string){
+	bind (target: Properties, name: string) : Editor {
 		if (target) {
 			var self = this;
 			this.watch('value', function (pname, oldv, newv){

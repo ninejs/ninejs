@@ -168,6 +168,17 @@ function exports(grunt) {
 					'./typings/node/node.d.ts'
 				]
 			}
+		},
+		typedoc: {
+			options: {
+				tspath: './node_modules/typescript/lib/',
+				out: './docs/',
+				module: 'umd',
+				excludeExternals: true
+			},
+			main: {
+				src: ['*.ts', '**/*.ts', '!node_modules/**', '!typings/**']
+			}
 		}
 	});
 
@@ -176,6 +187,7 @@ function exports(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-globaltsd');
+	grunt.loadNpmTasks('typedoc');
 	grunt.task.loadTasks('grunt');
 	grunt.registerMultiTask('mocha','run Phantomjs tests with Mocha', function() {
 		var done = this.async(),
@@ -220,7 +232,7 @@ function exports(grunt) {
 	grunt.registerTask('test', ['mochaTest:normal', 'mocha']);
 	grunt.registerTask('css', ['less', 'ncss', 'stylus']);
 	// Default task.
-	grunt.registerTask('default', ['tsd', 'globaltsd', 'ts', 'dts_bundle', 'css', 'generateParsers', 'test']);
+	grunt.registerTask('default', ['tsd', 'globaltsd', 'ts', 'dts_bundle', 'typedoc', 'css', 'generateParsers', 'test']);
 
 }
 

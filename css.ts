@@ -117,7 +117,7 @@ export class StyleObject implements StyleType {
 			}
 		}
 	}
-	enable (parent?: any) {
+	enable (parent?: any): StyleInstance {
 		/*
 		Taken from Stack overflow question 384286
 		*/
@@ -218,7 +218,7 @@ export class StyleObject implements StyleType {
 		handleFound(this);
 		return result;
 	}
-	disable () {
+	disable () : StyleInstance {
 		return this.enable().disable();
 	}
 	constructor () {
@@ -228,13 +228,13 @@ export class StyleObject implements StyleType {
 export class StyleInstance implements StyleType {
 	styleNode: HTMLStyleElement;
 	children: StyleInstance[];
-	enable () {
+	enable (): StyleInstance {
 		if (this.styleNode){
 			this.styleNode.media = 'screen';
 		}
 		return this;
 	}
-	disable () {
+	disable (): StyleInstance {
 		this.styleNode.media = 'screen and (max-width:0px)';
 		return this;
 	}

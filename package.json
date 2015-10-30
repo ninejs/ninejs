@@ -57,7 +57,7 @@
     "stylus": "*",
     "text": "git+https://github.com/requirejs/text.git#master",
     "tsd": "^0.6.3",
-    "typedoc": "^0.3.12",
+    "typedoc": "ninejs/typedoc",
     "typescript": "git+https://github.com/Microsoft/typescript.git#067e1ccef23ee12b7404c020079e45a993091597",
     "uglify-js": "*",
     "uubench": "*"

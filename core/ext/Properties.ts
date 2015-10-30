@@ -181,11 +181,11 @@ export default class Properties {
 		currentWatch.push(result);
 		return result;
 	}
-	mixinProperties (target: any) {
+	mixinProperties (target: any): Properties {
 		Properties.mixin(this)(target);
 		return this;
 	}
-	mixinRecursive (target: any) {
+	mixinRecursive (target: any): Properties {
 		mixRecursive(this, target);
 		return this;
 	}

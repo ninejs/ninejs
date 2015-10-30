@@ -83,7 +83,7 @@ declare class Editor extends Widget {
     titleSetter(v: string): PromiseType<void>;
     patternSetter(v: string): PromiseType<void>;
     onBlur(): void;
-    bind(target: Properties, name: string): this;
+    bind(target: Properties, name: string): Editor;
     focus(): PromiseType<void>;
     dataTypeSetter(val: string): PromiseType<Widget>;
     nullValueSetter(val: any): PromiseType<void>;
