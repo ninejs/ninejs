@@ -177,7 +177,26 @@ function exports(grunt) {
 				excludeExternals: true
 			},
 			main: {
-				src: ['*.ts', '**/*.ts', '!node_modules/**', '!typings/**']
+				src: [
+					'*.ts',
+					'**/*.ts',
+					'!9js.d.ts', '!9js.ts', '!ninejs.d.ts',
+					'!_css.*',
+					'!_nineplate.*',
+					'!_nineplate/utils.*',
+					'!_nineplate/renderers.*',
+					'!client.*',
+					'!core.*',
+					'!core/ext.*',
+					'!core/logic.*',
+					'!modules.*',
+					'!modules/client.*',
+					'!modules/webserver.*',
+					'!ui.*',
+					'!ui/bootstrap.*',
+					'!ui/Skins.*',
+					'!node_modules/**',
+					'!typings/**']
 			}
 		}
 	});
