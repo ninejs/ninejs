@@ -50,7 +50,12 @@
         var cnt, currentModule;
         for (cnt = 0; cnt < config_1.default.modules.length; cnt += 1) {
             currentModule = require(config_1.default.modules[cnt]);
-            currentModule.loadedFrom(config_1.default.modules[cnt]);
+            if (currentModule.default) {
+                currentModule = currentModule.default;
+            }
+            if (currentModule.loadedFrom) {
+                currentModule.loadedFrom(config_1.default.modules[cnt]);
+            }
             moduleRegistry_1.moduleRegistry.addModule(currentModule);
         }
     }

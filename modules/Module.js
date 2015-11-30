@@ -3,14 +3,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (deps, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../core/ext/Properties', './moduleRegistry', '../core/ext/Evented', '../core/deferredUtils'], factory);
+        define(deps, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", '../core/ext/Properties', './moduleRegistry', '../core/ext/Evented', '../core/deferredUtils'], function (require, exports) {
     var Properties_1 = require('../core/ext/Properties');
     var moduleRegistry_1 = require('./moduleRegistry');
     var Evented_1 = require('../core/ext/Evented');
@@ -153,7 +153,6 @@ var __extends = (this && this.__extends) || function (d, b) {
         return Module;
     })(Properties_1.default);
     moduleRegistry_1.moduleRegistry.Module = Module;
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Module;
 });
 //# sourceMappingURL=Module.js.map

@@ -18,5 +18,4 @@ node_modules
 .idea
 covreporter.html
 .tscache/
-typings/
 tscommand-*.*

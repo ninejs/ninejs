@@ -22,11 +22,10 @@ declare class WebServer extends Properties {
     SinglePageContainer: {
         new (args: any): SinglePageContainer;
     };
-    logger: {
-        [name: string]: Logger;
-    };
+    logger: Logger;
     app: Application;
     config: any;
+    serverName: string;
     baseUrl: string;
     jsUrl: string;
     port: number;

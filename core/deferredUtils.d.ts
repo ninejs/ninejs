@@ -1,7 +1,7 @@
 /// <reference path="extend.d.ts" />
 export interface PromiseType<T> {
     then<U>(resolve: (v: T) => U | PromiseType<U>, onrejected?: (reason: any) => any): PromiseType<U>;
-    catch(onrejected?: (reason: any) => any): Promise<T>;
+    catch(onrejected?: (reason: any) => any): PromiseType<T>;
     fin(act: () => void): PromiseType<T>;
 }
 export interface PromiseConstructorType<T> {

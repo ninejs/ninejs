@@ -56,6 +56,7 @@ result.on('modulesEnabled', function() {
 		for (p in servers) {
 			if (servers.hasOwnProperty(p)) {
 				item = servers[p];
+				item.serverName = p;
 				item.postCreate();
 			}
 		}

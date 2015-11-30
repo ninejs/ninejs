@@ -434,7 +434,6 @@
         if (iE == -1) {
             this.m_chunkTransitionContinuation = this.m_xml.slice(iB - 2);
             return XMLP._INTERRUPT;
-            return this._setErr(XMLP.ERR_CLOSE_PI);
         }
         iTB = SAXStrings.indexOfNonWhitespace(this.m_xml, iB, iE);
         if (iTB == -1) {

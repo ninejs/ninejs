@@ -1,11 +1,11 @@
-(function (factory) {
+(function (deps, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../on'], factory);
+        define(deps, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", '../on'], function (require, exports) {
     var on_1 = require('../on');
     var isAmd = (typeof (define) !== 'undefined') && define.amd, isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org', isNode = (typeof (window) === 'undefined'), req = (isDojo && isNode) ? global.require : require;
     var result;
@@ -32,7 +32,6 @@
             }
         };
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = result;
 });
 //# sourceMappingURL=Evented.js.map

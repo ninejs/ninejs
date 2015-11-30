@@ -1,11 +1,11 @@
-(function (factory) {
+(function (deps, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../extend', '../objUtils'], factory);
+        define(deps, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", '../extend', '../objUtils'], function (require, exports) {
     var extend_1 = require('../extend');
     var objUtils_1 = require('../objUtils');
     var emitToWatchList;
@@ -204,7 +204,6 @@
         };
         return Properties;
     })();
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Properties;
     ;
     emitToWatchList = function (self, name, oldValue, newValue) {

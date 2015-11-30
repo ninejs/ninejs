@@ -73,6 +73,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             for (p in servers) {
                 if (servers.hasOwnProperty(p)) {
                     item = servers[p];
+                    item.serverName = p;
                     item.postCreate();
                 }
             }

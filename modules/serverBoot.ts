@@ -52,7 +52,12 @@ if (config.modules) {
 		currentModule: any;
 	for (cnt = 0; cnt < config.modules.length; cnt += 1) {
 		currentModule = require(config.modules[cnt]);
-		currentModule.loadedFrom(config.modules[cnt]);
+		if (currentModule.default) {
+			currentModule = currentModule.default;
+		}
+		if (currentModule.loadedFrom) {
+			currentModule.loadedFrom(config.modules[cnt]);
+		}
 		registry.addModule(currentModule);
 	}
 }

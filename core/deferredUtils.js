@@ -1,11 +1,12 @@
-(function (factory) {
+/// <reference path="./extend.ts" />
+(function (deps, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", './bluebird'], factory);
+        define(deps, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", './bluebird'], function (require, exports) {
     var bluebird_1 = require('./bluebird');
     var nativePromise = typeof (Promise) === 'function';
     ;

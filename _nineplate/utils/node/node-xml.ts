@@ -605,7 +605,6 @@ XMLP.prototype._parsePI = function(iB: any) {
         //This item never closes, although it could be a malformed document, we will assume that we are mid-chunck, save the string and reurn as interrupted
         this.m_chunkTransitionContinuation = this.m_xml.slice(iB-2);//the '-2' adds the '?>' back into the string
         return XMLP._INTERRUPT;
-        return this._setErr(XMLP.ERR_CLOSE_PI);
     }
 
     iTB = SAXStrings.indexOfNonWhitespace(this.m_xml, iB, iE);

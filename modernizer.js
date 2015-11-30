@@ -1,12 +1,11 @@
-(function (factory) {
+(function (deps, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports"], factory);
+        define(deps, factory);
     }
-})(function (require, exports) {
-    Object.defineProperty(exports, "__esModule", { value: true });
+})(["require", "exports"], function (require, exports) {
     exports.default = (function (window) {
         var _window = (typeof (window) !== 'undefined') ? window : {}, _document = window.document;
         var Modernizr = (function (window, document) {

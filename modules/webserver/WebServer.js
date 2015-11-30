@@ -201,9 +201,11 @@ var __extends = (this && this.__extends) || function (d, b) {
             });
             if (this.ip) {
                 this.app.listen(this.port, this.ip);
+                this.logger.info("wev server \"" + this.serverName + "\" listening on port " + this.port + " with ip " + this.ip);
             }
             else {
                 this.app.listen(this.port);
+                this.logger.info("wev server \"" + this.serverName + "\" listening on port " + this.port);
             }
         };
         WebServer.prototype.clientSetup = function (action) {

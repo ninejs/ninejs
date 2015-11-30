@@ -36,9 +36,10 @@ class WebServer extends Properties {
 	SinglePageContainer: {
 		new (args: any): SinglePageContainer;
 	};
-	logger: { [ name: string ]: Logger };
+	logger: Logger;
 	app: Application;
 	config: any;
+	serverName: string;
 	baseUrl: string;
 	jsUrl: string;
 	port: number;
@@ -236,9 +237,11 @@ class WebServer extends Properties {
 		});
 		if (this.ip) {
 			this.app.listen(this.port, this.ip);
+			this.logger.info(`wev server "${this.serverName}" listening on port ${this.port} with ip ${this.ip}`);
 		}
 		else {
 			this.app.listen(this.port);
+			this.logger.info(`wev server "${this.serverName}" listening on port ${this.port}`);
 		}
 	}
 	clientSetup (action: (utils: ClientUtils) => void) {
