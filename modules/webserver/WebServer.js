@@ -29,6 +29,7 @@ var WebServer = extend(Properties, {
 		this.port = config.port;
 		this.ip = config.ip || undefined;
 		this.app = express();
+		this.timeout = config.timeout;
 	},
 	/*
 	Parameters are resources.
@@ -191,11 +192,16 @@ var WebServer = extend(Properties, {
 			});
 			self.app[resource.method || 'get'].apply(self.app, args);
 		});
+		var server;
 		if (this.ip) {
-			this.app.listen(this.port, this.ip);
+			server = this.app.listen(this.port, this.ip);
 		}
 		else {
-			this.app.listen (this.port);
+			server = this.app.listen (this.port);
+		}
+
+		if (typeof(this.timeout) !== 'undefined') {
+			server.timeout = this.timeout;
 		}
 	},
 	clientSetup: function(action) {
