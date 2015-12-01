@@ -1,16 +1,11 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", '../core/extend', '../core/ext/Properties', './config', '../core/deferredUtils'], factory);
     }
-})(["require", "exports", '../core/extend', '../core/ext/Properties', './config', '../core/deferredUtils'], function (require, exports) {
+})(function (require, exports) {
     var extend = require('../core/extend');
     var Properties_1 = require('../core/ext/Properties');
     var config_1 = require('./config');
@@ -104,10 +99,9 @@ var __extends = (this && this.__extends) || function (d, b) {
         }
         return source === target;
     }
-    var ModuleRegistry = (function (_super) {
-        __extends(ModuleRegistry, _super);
-        function ModuleRegistry() {
-            _super.call(this);
+    class ModuleRegistry extends Properties_1.default {
+        constructor() {
+            super();
             extend.mixin(this, {
                 providesList: {}
             });
@@ -152,7 +146,6 @@ var __extends = (this && this.__extends) || function (d, b) {
                 };
             };
             this.validate = function (m, enableOnDemand) {
-                var _this = this;
                 function errorIfNoDependencies() {
                     if (!len) {
                         for (cnt = 0; cnt < m.provides.length; cnt += 1) {
@@ -201,22 +194,22 @@ var __extends = (this && this.__extends) || function (d, b) {
                     }
                 }
                 var consumes = m.consumes, messages = '', len = 0, cnt;
-                var defs = consumes.map(function (current) {
+                let defs = consumes.map((current) => {
                     len += 1;
-                    if (!_this.providesList[current.id]) {
-                        var onDemandModules = _this.get('onDemandModules') || {}, onDemand;
-                        if (onDemandModules[current.id] && !_this.hasProvide(current.id)) {
+                    if (!this.providesList[current.id]) {
+                        var onDemandModules = this.get('onDemandModules') || {}, onDemand;
+                        if (onDemandModules[current.id] && !this.hasProvide(current.id)) {
                             onDemand = req(onDemandModules[current.id]).default;
-                            _this.addModule(onDemand);
+                            this.addModule(onDemand);
                         }
                     }
-                    return deferredUtils_1.when(processOnDemand(_this, current), function () {
-                        if (_this.providesList[current.id]) {
-                            if (!areVersionsCompatible(_this.providesList[current.id].version, current.version)) {
-                                messages += 'incompatible versions on module "' + current.id + '". Your version is "' + _this.providesList[current.id].version + '". Required version is: "' + current.version + '"\n';
+                    return deferredUtils_1.when(processOnDemand(this, current), () => {
+                        if (this.providesList[current.id]) {
+                            if (!areVersionsCompatible(this.providesList[current.id].version, current.version)) {
+                                messages += 'incompatible versions on module "' + current.id + '". Your version is "' + this.providesList[current.id].version + '". Required version is: "' + current.version + '"\n';
                             }
                             else {
-                                processConsumesFeatures(_this, current);
+                                processConsumesFeatures(this, current);
                             }
                         }
                         else {
@@ -224,7 +217,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                         }
                     });
                 });
-                return deferredUtils_1.when(deferredUtils_1.all(defs), function () {
+                return deferredUtils_1.when(deferredUtils_1.all(defs), () => {
                     errorIfNoDependencies();
                     return messages;
                 });
@@ -278,11 +271,10 @@ var __extends = (this && this.__extends) || function (d, b) {
                 });
             };
         }
-        ModuleRegistry.prototype.hasProvide = function (id) {
+        hasProvide(id) {
             return !!this.providesList[id];
-        };
-        return ModuleRegistry;
-    })(Properties_1.default);
+        }
+    }
     exports.ModuleRegistry = ModuleRegistry;
     exports.moduleRegistry = new ModuleRegistry;
 });

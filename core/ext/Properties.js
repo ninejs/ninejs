@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", '../extend', '../objUtils'], factory);
     }
-})(["require", "exports", '../extend', '../objUtils'], function (require, exports) {
+})(function (require, exports) {
     var extend_1 = require('../extend');
     var objUtils_1 = require('../objUtils');
     var emitToWatchList;
@@ -106,13 +106,9 @@
             }
         }
     };
-    var Properties = (function () {
-        function Properties() {
-            var argslist = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                argslist[_i - 0] = arguments[_i];
-            }
-            var args = argslist[0], self = this, me = this, execute = function () {
+    class Properties {
+        constructor(...argslist) {
+            var args = argslist[0], self = this, me = this, execute = () => {
                 if (typeof (args) === 'object') {
                     for (var p in args) {
                         if (args.hasOwnProperty(p)) {
@@ -131,7 +127,7 @@
                 execute();
             }
         }
-        Properties.prototype.get = function (name) {
+        get(name) {
             var getter = this[name + 'Getter'], args;
             if (typeof (getter) === 'function') {
                 args = sliceArguments(arguments, 1);
@@ -140,12 +136,8 @@
             else {
                 return this[name];
             }
-        };
-        Properties.prototype.set = function (name) {
-            var values = [];
-            for (var _i = 1; _i < arguments.length; _i++) {
-                values[_i - 1] = arguments[_i];
-            }
+        }
+        set(name, ...values) {
             var result, value = values[0];
             if (typeof (name) === 'string') {
                 var sname = name, old = this.get(sname), newValue = value, setter = this[sname + 'Setter'], args;
@@ -175,8 +167,8 @@
                 result = this;
             }
             return result;
-        };
-        Properties.prototype.watch = function (name, action) {
+        }
+        watch(name, action) {
             var currentWatch = this.$njsWatch[name], result;
             if (!currentWatch) {
                 currentWatch = this.$njsWatch[name] = [];
@@ -184,27 +176,26 @@
             result = new WatchHandleConstructor(action, currentWatch);
             currentWatch.push(result);
             return result;
-        };
-        Properties.prototype.mixinProperties = function (target) {
+        }
+        mixinProperties(target) {
             Properties.mixin(this)(target);
             return this;
-        };
-        Properties.prototype.mixinRecursive = function (target) {
+        }
+        mixinRecursive(target) {
             mixRecursive(this, target);
             return this;
-        };
-        Properties.mixin = function (target) {
-            return function (args) {
+        }
+        static mixin(target) {
+            return (args) => {
                 for (var p in args) {
                     if (args.hasOwnProperty(p)) {
                         Properties.prototype.set.call(target, p, args[p]);
                     }
                 }
             };
-        };
-        return Properties;
-    })();
-    exports.default = Properties;
+        }
+    }
+    exports.Properties = Properties;
     ;
     emitToWatchList = function (self, name, oldValue, newValue) {
         var watchList = self.$njsWatch, watchProp, cnt;

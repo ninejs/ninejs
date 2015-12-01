@@ -3,6 +3,8 @@
 /// <reference path="typings/node/node.d.ts" />
 
 declare module 'ninejs' {
+    export import _css = require('ninejs/_css');
+    export import _nineplate = require('ninejs/_nineplate');
     export import client = require('ninejs/client');
     export import config = require('ninejs/config');
     export import core = require('ninejs/core');
@@ -12,8 +14,19 @@ declare module 'ninejs' {
     export import nineplate = require('ninejs/nineplate');
     export import request = require('ninejs/request');
     export import ui = require('ninejs/ui');
-    export import _css = require('ninejs/_css');
-    export import _nineplate = require('ninejs/_nineplate');
+}
+
+declare module 'ninejs/_css' {
+    export import builder = require('ninejs/_css/builder');
+    export import styleEnable = require('ninejs/_css/styleEnable');
+}
+
+declare module 'ninejs/_nineplate' {
+    export import baseProcessor = require('ninejs/_nineplate/baseProcessor');
+    export import domProcessor = require('ninejs/_nineplate/domProcessor');
+    export import renderers = require('ninejs/_nineplate/renderers');
+    export import textProcessor = require('ninejs/_nineplate/textProcessor');
+    export import utils = require('ninejs/_nineplate/utils');
 }
 
 declare module 'ninejs/client' {
@@ -87,11 +100,11 @@ declare module 'ninejs/modernizer' {
 }
 
 declare module 'ninejs/modules' {
+    export import Module = require('ninejs/modules/Module');
     export import client = require('ninejs/modules/client');
     export import clientBoot = require('ninejs/modules/clientBoot');
     export import config = require('ninejs/modules/config');
     export import empty = require('ninejs/modules/empty');
-    export import Module = require('ninejs/modules/Module');
     export import moduleDefine = require('ninejs/modules/moduleDefine');
     export import moduleRegistry = require('ninejs/modules/moduleRegistry');
     export import ninejsClient = require('ninejs/modules/ninejs-client');
@@ -150,24 +163,102 @@ declare module 'ninejs/request' {
 }
 
 declare module 'ninejs/ui' {
-    export import bootstrap = require('ninejs/ui/bootstrap');
     export import Skin = require('ninejs/ui/Skin');
     export import Skins = require('ninejs/ui/Skins');
-    export import utils = require('ninejs/ui/utils');
     export import Widget = require('ninejs/ui/Widget');
+    export import bootstrap = require('ninejs/ui/bootstrap');
+    export import utils = require('ninejs/ui/utils');
 }
 
-declare module 'ninejs/_css' {
-    export import builder = require('ninejs/_css/builder');
-    export import styleEnable = require('ninejs/_css/styleEnable');
+declare module 'ninejs/_css/builder' {
+    export interface AMDPrefixesType {
+        name: string;
+        location: string;
+    }
+    export interface ProcessedCssType {
+        path: string;
+        data: string;
+        children: ProcessedCssType[];
+    }
+    export interface ProcessCssOptionsType {
+        path?: string;
+        parentPath?: string;
+        toBase64?: boolean;
+        [name: string]: any;
+    }
+    export interface ProcessCssImportType {
+        children: ProcessedCssType[];
+        css: string;
+    }
+    export function processCss(data: string, path: string, realPath: string, prefixes: AMDPrefixesType[], baseUrl: string, options: ProcessCssOptionsType, callback: (t: ProcessedCssType) => void): void;
 }
 
-declare module 'ninejs/_nineplate' {
-    export import baseProcessor = require('ninejs/_nineplate/baseProcessor');
-    export import domProcessor = require('ninejs/_nineplate/domProcessor');
-    export import renderers = require('ninejs/_nineplate/renderers');
-    export import textProcessor = require('ninejs/_nineplate/textProcessor');
-    export import utils = require('ninejs/_nineplate/utils');
+declare module 'ninejs/_css/styleEnable' {
+    export function load(...args: any[]): any;
+}
+
+declare module 'ninejs/_nineplate/baseProcessor' {
+    import { InternalNode } from 'ninejs/_nineplate/utils/node/xmlParser';
+    export class XmlNode {
+        node: InternalNode;
+        nodeType(): number;
+        value(): any;
+        nodeValue(): any;
+        getAttributes(): XmlNode[];
+        getChildNodes(): XmlNode[];
+        hasVariableTagName(): boolean;
+        getVariableTagName(callback: (v: string) => void): void;
+        nodeName(): string;
+        nodeLocalName(): string;
+        namespaceUri(): string;
+        parentNode(): XmlNode;
+        set(n: string, v: any): void;
+        get(n: string): any;
+        constructor(parsedXmlNode: InternalNode);
+    }
+    export class TextParseContext {
+        r: string[];
+        lineBuffer: string[];
+        ignoreComments: boolean;
+        append(line: string): void;
+        appendLine(): void;
+        getText(): string;
+        constructor();
+    }
+    export function trim(content: any): string;
+    export function safeFilter(content: string): string;
+    export function getParsedXml(text: string, sync: boolean): any;
+    export interface ExpressionToken {
+        content: any;
+        contentType: string;
+        type: string;
+        identifier: string;
+        value: any;
+        modifier: string;
+        optimized: string[];
+        arguments: ExpressionToken[];
+    }
+    export interface ParserType {
+        parse: (content: string) => ExpressionToken;
+    }
+    export { InternalNode } from 'ninejs/_nineplate/utils/node/xmlParser';
+}
+
+declare module 'ninejs/_nineplate/domProcessor' {
+    export function compileDom(template: string, sync: boolean, options: any): any;
+}
+
+declare module 'ninejs/_nineplate/renderers' {
+    export import JavascriptRenderer = require('ninejs/_nineplate/renderers/JavascriptRenderer');
+}
+
+declare module 'ninejs/_nineplate/textProcessor' {
+    export function compileText(template: string, sync: boolean): any;
+}
+
+declare module 'ninejs/_nineplate/utils' {
+    export import functions = require('ninejs/_nineplate/utils/functions');
+    export import node = require('ninejs/_nineplate/utils/node');
 }
 
 declare module 'ninejs/client/hash' {
@@ -422,31 +513,6 @@ declare module 'ninejs/core/text' {
     export function load(id: string, require: any, load: (data: any) => void, config: any): void;
 }
 
-declare module 'ninejs/modules/client' {
-    export import container = require('ninejs/modules/client/container');
-    export import FullScreenFrame = require('ninejs/modules/client/FullScreenFrame');
-    export import router = require('ninejs/modules/client/router');
-    export import singlePageContainer = require('ninejs/modules/client/singlePageContainer');
-    export import Skin = require('ninejs/modules/client/Skin');
-}
-
-declare module 'ninejs/modules/clientBoot' {
-    import { PromiseType } from 'ninejs/core/deferredUtils';
-    export { PromiseType };
-    var _default: PromiseType<{}>;
-    export default _default;
-}
-
-declare module 'ninejs/modules/config' {
-    var config: any;
-    export default config;
-}
-
-declare module 'ninejs/modules/empty' {
-    var _default: any;
-    export default _default;
-}
-
 declare module 'ninejs/modules/Module' {
     import Properties from 'ninejs/core/ext/Properties';
     import { PromiseType } from 'ninejs/core/deferredUtils';
@@ -469,6 +535,31 @@ declare module 'ninejs/modules/Module' {
         constructor(args?: any);
     }
     export default Module;
+}
+
+declare module 'ninejs/modules/client' {
+    export import FullScreenFrame = require('ninejs/modules/client/FullScreenFrame');
+    export import Skin = require('ninejs/modules/client/Skin');
+    export import container = require('ninejs/modules/client/container');
+    export import router = require('ninejs/modules/client/router');
+    export import singlePageContainer = require('ninejs/modules/client/singlePageContainer');
+}
+
+declare module 'ninejs/modules/clientBoot' {
+    import { PromiseType } from 'ninejs/core/deferredUtils';
+    export { PromiseType };
+    var _default: PromiseType<{}>;
+    export default _default;
+}
+
+declare module 'ninejs/modules/config' {
+    var config: any;
+    export default config;
+}
+
+declare module 'ninejs/modules/empty' {
+    var _default: any;
+    export default _default;
 }
 
 declare module 'ninejs/modules/moduleDefine' {
@@ -565,11 +656,11 @@ declare module 'ninejs/modules/serverBoot' {
 declare module 'ninejs/modules/webserver' {
     export import ClientUtils = require('ninejs/modules/webserver/ClientUtils');
     export import Endpoint = require('ninejs/modules/webserver/Endpoint');
-    export import module = require('ninejs/modules/webserver/module');
     export import NineplateResource = require('ninejs/modules/webserver/NineplateResource');
     export import SinglePage = require('ninejs/modules/webserver/SinglePage');
     export import StaticResource = require('ninejs/modules/webserver/StaticResource');
     export import WebServer = require('ninejs/modules/webserver/WebServer');
+    export import module = require('ninejs/modules/webserver/module');
 }
 
 declare module 'ninejs/core/ext/Properties' {
@@ -604,18 +695,6 @@ declare module 'ninejs/core/ext/Properties' {
     }
 }
 
-declare module 'ninejs/_nineplate/domProcessor' {
-    export function compileDom(template: string, sync: boolean, options: any): any;
-}
-
-declare module 'ninejs/_nineplate/textProcessor' {
-    export function compileText(template: string, sync: boolean): any;
-}
-
-declare module 'ninejs/ui/bootstrap' {
-    export import bootstrap = require('ninejs/ui/bootstrap/bootstrap');
-}
-
 declare module 'ninejs/ui/Skin' {
     import Properties from 'ninejs/core/ext/Properties';
     import { ResultFunction } from 'ninejs/nineplate';
@@ -640,13 +719,6 @@ declare module 'ninejs/ui/Skin' {
 declare module 'ninejs/ui/Skins' {
     export import Editor = require('ninejs/ui/Skins/Editor');
     export import Wizard = require('ninejs/ui/Skins/Wizard');
-}
-
-declare module 'ninejs/ui/utils' {
-    export import append = require('ninejs/ui/utils/append');
-    export import domUtils = require('ninejs/ui/utils/domUtils');
-    export import setClass = require('ninejs/ui/utils/setClass');
-    export import setText = require('ninejs/ui/utils/setText');
 }
 
 declare module 'ninejs/ui/Widget' {
@@ -703,530 +775,15 @@ declare module 'ninejs/ui/Widget' {
     }
 }
 
-declare module 'ninejs/_css/builder' {
-    export interface AMDPrefixesType {
-        name: string;
-        location: string;
-    }
-    export interface ProcessedCssType {
-        path: string;
-        data: string;
-        children: ProcessedCssType[];
-    }
-    export interface ProcessCssOptionsType {
-        path?: string;
-        parentPath?: string;
-        toBase64?: boolean;
-        [name: string]: any;
-    }
-    export interface ProcessCssImportType {
-        children: ProcessedCssType[];
-        css: string;
-    }
-    export function processCss(data: string, path: string, realPath: string, prefixes: AMDPrefixesType[], baseUrl: string, options: ProcessCssOptionsType, callback: (t: ProcessedCssType) => void): void;
+declare module 'ninejs/ui/bootstrap' {
+    export import bootstrap = require('ninejs/ui/bootstrap/bootstrap');
 }
 
-declare module 'ninejs/_css/styleEnable' {
-    export function load(...args: any[]): any;
-}
-
-declare module 'ninejs/_nineplate/baseProcessor' {
-    import { InternalNode } from 'ninejs/_nineplate/utils/node/xmlParser';
-    export class XmlNode {
-        node: InternalNode;
-        nodeType(): number;
-        value(): any;
-        nodeValue(): any;
-        getAttributes(): XmlNode[];
-        getChildNodes(): XmlNode[];
-        hasVariableTagName(): boolean;
-        getVariableTagName(callback: (v: string) => void): void;
-        nodeName(): string;
-        nodeLocalName(): string;
-        namespaceUri(): string;
-        parentNode(): XmlNode;
-        set(n: string, v: any): void;
-        get(n: string): any;
-        constructor(parsedXmlNode: InternalNode);
-    }
-    export class TextParseContext {
-        r: string[];
-        lineBuffer: string[];
-        ignoreComments: boolean;
-        append(line: string): void;
-        appendLine(): void;
-        getText(): string;
-        constructor();
-    }
-    export function trim(content: any): string;
-    export function safeFilter(content: string): string;
-    export function getParsedXml(text: string, sync: boolean): any;
-    export interface ExpressionToken {
-        content: any;
-        contentType: string;
-        type: string;
-        identifier: string;
-        value: any;
-        modifier: string;
-        optimized: string[];
-        arguments: ExpressionToken[];
-    }
-    export interface ParserType {
-        parse: (content: string) => ExpressionToken;
-    }
-    export { InternalNode } from 'ninejs/_nineplate/utils/node/xmlParser';
-}
-
-declare module 'ninejs/_nineplate/renderers' {
-    export import JavascriptRenderer = require('ninejs/_nineplate/renderers/JavascriptRenderer');
-}
-
-declare module 'ninejs/_nineplate/utils' {
-    export import functions = require('ninejs/_nineplate/utils/functions');
-    export import node = require('ninejs/_nineplate/utils/node');
-}
-
-declare module 'ninejs/core/ext/Evented' {
-    import { RemovableType } from 'ninejs/core/on';
-    var result: {
-        on(type: string, listener: (e?: any) => any): RemovableType;
-        emit(...arglist: any[]): any;
-    };
-    export default result;
-}
-
-declare module 'ninejs/core/logic/Expression' {
-    import Properties from 'ninejs/core/ext/Properties';
-    export interface Operator {
-        name: string;
-        operator?: (a: any, b: any) => boolean;
-        reductor?: (a: any, b: any) => boolean;
-        dataTypeList?: string[];
-    }
-    export interface Summary {
-        name: string;
-        dataTypeList: (item: any) => boolean;
-        action?: (data: any) => any;
-        postAction?: (values: any[], side: string, fn: (val: any) => boolean) => boolean;
-    }
-    export interface RecordContext {
-        name: string;
-        value: any;
-    }
-    class Expression extends Properties {
-        constructor(args: any);
-        operator: string;
-        operatorList: {
-            [name: string]: Operator;
-        };
-        summaryList: {
-            [name: string]: Summary;
-        };
-        isNegative: boolean;
-        source: any;
-        sourceSummary: string;
-        target: any;
-        targetSummary: string;
-        expressionList: Expression[];
-        where: Expression;
-        ambiguous: boolean;
-        _formatValue(val: any, isVariable?: boolean): any;
-        sourceValueGetter(): any;
-        targetValueGetter(): any;
-        toString(): any;
-        _buildGetterFunction(src: string): (data: any, recordContextStack: RecordContext[], where: Expression) => any;
-        sourceFieldSetter(src: string): void;
-        targetFieldSetter(src: string): void;
-        ambiguousSetter(val: boolean): void;
-        filter(arr: any[], recordContextStack?: RecordContext[]): any[];
-        evaluate(data: any, recordContextStack?: RecordContext[]): boolean;
-        involvedSourcesGetter(): string[];
-        reset(): void;
-        clone(): Expression;
-        toJson(): any;
-        fromJson(data: any): void;
-        hasSource(): boolean;
-        hasTarget(): boolean;
-        isValid(): boolean;
-    }
-    export default Expression;
-}
-
-declare module 'ninejs/modules/client/container' {
-    import Module from 'ninejs/modules/Module';
-    var result: Module;
-    export default result;
-}
-
-declare module 'ninejs/modules/client/FullScreenFrame' {
-    import Widget from 'ninejs/ui/Widget';
-    import { PromiseType } from 'ninejs/core/deferredUtils';
-    class FullScreenFrame extends Widget {
-        init: PromiseType<HTMLElement>;
-        containerNode: HTMLElement;
-        selectedSetter(idx: any): void;
-        addChild(child: any): any;
-    }
-    export default FullScreenFrame;
-}
-
-declare module 'ninejs/modules/client/router' {
-    import Module from 'ninejs/modules/Module';
-    var result: Module;
-    export default result;
-}
-
-declare module 'ninejs/modules/client/singlePageContainer' {
-    import Module from 'ninejs/modules/Module';
-    var _default: Module;
-    export default _default;
-}
-
-declare module 'ninejs/modules/client/Skin' {
-    export import FullScreenFrame = require('ninejs/modules/client/Skin/FullScreenFrame');
-}
-
-declare module 'ninejs/modules/webserver/ClientUtils' {
-    import Properties from 'ninejs/core/ext/Properties';
-    import WebServer from 'ninejs/modules/webserver/WebServer';
-    import StaticResource from 'ninejs/modules/webserver/StaticResource';
-    import { Logger } from 'ninejs/modules/ninejs-server';
-    import { Request, Response } from 'ninejs/modules/webserver/WebServer';
-    export class CacheManifest extends Properties {
-        baseUrl: string;
-        defaultCreationDate: Date;
-        networkResources: string[];
-        cacheResources: string[];
-        offlineResources: string[];
-        config: any;
-        cacheEndpoint: StaticResource;
-        addToCache(collection: string[], url: string, prefix: string, filter: (url: string) => boolean): void;
-        cache(url: string, prefix?: string, filter?: (url: string) => boolean): void;
-        network(url: string, prefix: string, filter: (url: string) => boolean): void;
-        handler(req: Request, res: Response): void;
-        constructor(args: any);
-    }
-    export class Utils {
-        webServer: WebServer;
-        appCache: CacheManifest;
-        requireJsConfigEndpoint: StaticResource;
-        cacheEndpoint: StaticResource;
-        amdPaths: {
-            [name: string]: string;
-        };
-        aliases: string[][];
-        boot: string[];
-        modules: {
-            [name: string]: string;
-        };
-        units: {
-            [name: string]: any;
-        };
-        postActions: string[];
-        has: {
-            [name: string]: any;
-        };
-        logger: {
-            [name: string]: Logger;
-        };
-        init(webServer: WebServer): void;
-        addAmdPath(prefix: string, path: string): void;
-        addAmdAlias(moduleName: string, alias: string): void;
-        addBoot(target: string): void;
-        addModule(name: string, target: string): void;
-        getUnit(name: string): any;
-        addPostAction(action: string): void;
-        requireJsConfigHandler(req: Request, res: Response): void;
-        constructor();
-    }
-    export default Utils;
-}
-
-declare module 'ninejs/modules/webserver/Endpoint' {
-    import Properties from 'ninejs/core/ext/Properties';
-    import WebServer from 'ninejs/modules/webserver/WebServer';
-    import { Request, Response, Application } from 'ninejs/modules/webserver/WebServer';
-    class Endpoint extends Properties {
-        type: string;
-        method: string;
-        children: Endpoint[];
-        app: Application;
-        server: WebServer;
-        route: string;
-        order: number;
-        validate: (req: Request, res: Response) => any;
-        handleAs: string;
-        parserOptions: any;
-        on(eventType: string, callback: (ev: any) => void): any;
-        emit(eventType: string, data: any): any;
-        handler(req: Request, res: Response): void;
-        constructor(args: any);
-    }
-    export { Endpoint };
-    export default Endpoint;
-}
-
-declare module 'ninejs/modules/webserver/module' {
-    import Module from 'ninejs/modules/Module';
-    var result: Module;
-    export default result;
-}
-
-declare module 'ninejs/modules/webserver/NineplateResource' {
-    import StaticResource from 'ninejs/modules/webserver/StaticResource';
-    import { Request, Response } from 'ninejs/modules/webserver/WebServer';
-    class NineplateResource extends StaticResource {
-        type: string;
-        contentType: string;
-        doctype: string;
-        context: any;
-        handler(req: Request, res: Response): void;
-        constructor(arg: any);
-    }
-    export default NineplateResource;
-}
-
-declare module 'ninejs/modules/webserver/SinglePage' {
-    export import SinglePageContainer = require('ninejs/modules/webserver/SinglePage/SinglePageContainer');
-}
-
-declare module 'ninejs/modules/webserver/StaticResource' {
-    import { Endpoint } from 'ninejs/modules/webserver/Endpoint';
-    import { Request, Response } from 'ninejs/modules/webserver/WebServer';
-    class NonCachedStaticResource extends Endpoint {
-        contentType: string;
-        content: any;
-        props: any;
-        path: string;
-        options: any;
-        action: (req: Request, res: Response) => void;
-        handler(req: Request, res: Response): void;
-        constructor(args: any);
-    }
-    class StaticResource extends NonCachedStaticResource {
-        maxAge: number;
-        cacheType: string;
-        lastModifiedSince: Date;
-        etag: string;
-        path: string;
-        applyETag(res: Response, content: string): void;
-        mustRevalidate(req: Request, res: Response): boolean;
-        handler(req: Request, res: Response): void;
-        constructor(args: any);
-    }
-    export { NonCachedStaticResource, StaticResource };
-    export default StaticResource;
-}
-
-declare module 'ninejs/modules/webserver/WebServer' {
-    import Properties from 'ninejs/core/ext/Properties';
-    import Endpoint from 'ninejs/modules/webserver/Endpoint';
-    import StaticResource from 'ninejs/modules/webserver/StaticResource';
-    import NineplateResource from 'ninejs/modules/webserver/NineplateResource';
-    import SinglePageContainer from 'ninejs/modules/webserver/SinglePage/SinglePageContainer';
-    import ClientUtils from 'ninejs/modules/webserver/ClientUtils';
-    import { Logger } from 'ninejs/modules/ninejs-server';
-    import http = require('http');
-    class WebServer extends Properties {
-        Endpoint: {
-            new (args: any): Endpoint;
-        };
-        StaticResource: {
-            new (args: any): StaticResource;
-        };
-        NineplateResource: {
-            new (args: any): NineplateResource;
-        };
-        SinglePageContainer: {
-            new (args: any): SinglePageContainer;
-        };
-        logger: Logger;
-        app: Application;
-        config: any;
-        serverName: string;
-        baseUrl: string;
-        jsUrl: string;
-        port: number;
-        ip: string;
-        phases: {
-            static: StaticResource[];
-            utils: Endpoint[];
-            auth: Endpoint[];
-            endpoint: Endpoint[];
-            [name: string]: Endpoint[];
-        };
-        clientUtils: ClientUtils;
-        init(config: any): void;
-        build(): void;
-        add(resource: Endpoint, prefix?: string): void;
-        postCreate(): void;
-        clientSetup(action: (utils: ClientUtils) => void): void;
-        constructor(args: any);
-    }
-    export default WebServer;
-    export interface Request extends http.ServerRequest {
-        get(name: string): string;
-        header(name: string): string;
-        headers: {
-            [key: string]: string;
-        };
-        accepts(type: string): string;
-        accepts(type: string[]): string;
-        param(name: string, defaultValue?: any): string;
-        is(type: string): boolean;
-        protocol: string;
-        secure: boolean;
-        ip: string;
-        ips: string[];
-        hostname: string;
-        xhr: boolean;
-        body: any;
-        cookies: any;
-        method: string;
-        params: any;
-        user: any;
-        authenticatedUser: any;
-        clearCookie(name: string, options?: any): Response;
-        query: any;
-        route: any;
-        signedCookies: any;
-        originalUrl: string;
-        url: string;
-    }
-    export interface Send {
-        (status: number, body?: any): Response;
-        (body: any): Response;
-    }
-    export interface CookieOptions {
-        maxAge?: number;
-        signed?: boolean;
-        expires?: Date;
-        httpOnly?: boolean;
-        path?: string;
-        domain?: string;
-        secure?: boolean;
-    }
-    export interface Response extends http.ServerResponse {
-        status: (code: number) => Response;
-        sendStatus: (code: number) => Response;
-        getHeader: (name: string) => string;
-        send: Send;
-        json: Send;
-        jsonp: Send;
-        sendFile(path: string): void;
-        sendFile(path: string, options: any): void;
-        sendFile(path: string, fn: (err: Error) => void): void;
-        sendFile(path: string, options: any, fn: (err: Error) => void): void;
-        download(path: string): void;
-        download(path: string, filename: string, fn: (err: Error) => void): void;
-        contentType(type: string): Response;
-        type(type: string): Response;
-        format(obj: any): Response;
-        attachment(filename?: string): Response;
-        set(field: any): Response;
-        set(field: string, value?: string): Response;
-        header(field: any): Response;
-        header(field: string, value?: string): Response;
-        headersSent: boolean;
-        get(field: string): string;
-        clearCookie(name: string, options?: any): Response;
-        cookie(name: string, val: string, options: CookieOptions): Response;
-        cookie(name: string, val: any, options: CookieOptions): Response;
-        cookie(name: string, val: any): Response;
-        redirect(url: string): void;
-        redirect(status: number, url: string): void;
-        redirect(url: string, status: number): void;
-        render(view: string, options?: Object, callback?: (err: Error, html: string) => void): void;
-        render(view: string, callback?: (err: Error, html: string) => void): void;
-        locals: any;
-        charset: string;
-    }
-    export interface Application {
-        listen: (port: number, ip?: string) => void;
-        engine: (name: string, callback: (path: string, options: any, callback: (err: any, val: any) => void) => void) => void;
-        enable: (name: string) => void;
-        render(name: string, options?: Object, callback?: (err: Error, html: string) => void): void;
-        render(name: string, callback: (err: Error, html: string) => void): void;
-    }
-}
-
-declare module 'ninejs/ui/bootstrap/bootstrap' {
-    import { StyleInstance } from 'ninejs/css';
-    export class BootstrapProto {
-        map: {
-            [name: string]: string;
-        };
-        enable(...args: string[]): void;
-        disable(...args: string[]): void;
-        bootstrapCss: StyleInstance;
-        enableCss(val: boolean): void;
-        commonCss: StyleInstance;
-        enableCommonCss(val: boolean): void;
-        verticalResponsiveDeviceCss: StyleInstance;
-        enableVResponsiveDevice(val: boolean): void;
-        verticalResponsiveCss: StyleInstance;
-        enableVResponsiveViewPort(val: boolean): void;
-        gridMaxCss: StyleInstance;
-        enableGridMax(val: boolean): void;
-        constructor();
-    }
-    var bootstrap: BootstrapProto;
-    export default bootstrap;
-}
-
-declare module 'ninejs/ui/Skins/Editor' {
-    export import Default = require('ninejs/ui/Skins/Editor/Default');
-}
-
-declare module 'ninejs/ui/Skins/Wizard' {
-    export import Default = require('ninejs/ui/Skins/Wizard/Default');
-}
-
-declare module 'ninejs/ui/utils/append' {
-    var append: {
-        (parentNode: HTMLElement, node: any, position?: string): HTMLElement;
-        create: (node: string) => HTMLElement;
-        remove: (node: HTMLElement) => void;
-        toIndex: (parentNode: HTMLElement, node: HTMLElement, index: number) => HTMLElement;
-    };
-    export var toIndex: (parentNode: HTMLElement, node: HTMLElement, index: number) => HTMLElement;
-    export var remove: (node: HTMLElement) => void;
-    export var create: (node: string) => HTMLElement;
-    export default append;
-}
-
-declare module 'ninejs/ui/utils/domUtils' {
-    import _setClass from 'ninejs/ui/utils/setClass';
-    import _setText from 'ninejs/ui/utils/setText';
-    import _append from 'ninejs/ui/utils/append';
-    export function isHidden(control: any): boolean;
-    export function isShown(control: any): boolean;
-    export function hide(control: any): void;
-    export function show(control: any, showAttr: string): void;
-    export function empty(node: HTMLElement): void;
-    export function enableHovering(control: any, enter: (e: Event) => void, leave: (e: Event) => void, options: {
-        pausable: boolean;
-    }): any;
-    export var setText: typeof _setText;
-    export var setClass: typeof _setClass;
-    export var append: typeof _append;
-}
-
-declare module 'ninejs/ui/utils/setClass' {
-    var setClass: {
-        (node: HTMLElement, ...clist: string[]): HTMLElement;
-        has: (node: HTMLElement, ...clist: string[]) => boolean;
-        temporary: (node: HTMLElement, delay: number, ...clist: string[]) => number;
-    };
-    export default setClass;
-}
-
-declare module 'ninejs/ui/utils/setText' {
-    var setText: {
-        (node: HTMLElement, text: string): HTMLElement;
-        emptyNode: (node: HTMLElement) => void;
-    };
-    export default setText;
+declare module 'ninejs/ui/utils' {
+    export import append = require('ninejs/ui/utils/append');
+    export import domUtils = require('ninejs/ui/utils/domUtils');
+    export import setClass = require('ninejs/ui/utils/setClass');
+    export import setText = require('ninejs/ui/utils/setText');
 }
 
 declare module 'ninejs/_nineplate/utils/node/xmlParser' {
@@ -1375,6 +932,459 @@ declare module 'ninejs/_nineplate/utils/node' {
     export import xmlParser = require('ninejs/_nineplate/utils/node/xmlParser');
 }
 
+declare module 'ninejs/core/ext/Evented' {
+    import { RemovableType } from 'ninejs/core/on';
+    var result: {
+        on(type: string, listener: (e?: any) => any): RemovableType;
+        emit(...arglist: any[]): any;
+    };
+    export default result;
+}
+
+declare module 'ninejs/core/logic/Expression' {
+    import Properties from 'ninejs/core/ext/Properties';
+    export interface Operator {
+        name: string;
+        operator?: (a: any, b: any) => boolean;
+        reductor?: (a: any, b: any) => boolean;
+        dataTypeList?: string[];
+    }
+    export interface Summary {
+        name: string;
+        dataTypeList: (item: any) => boolean;
+        action?: (data: any) => any;
+        postAction?: (values: any[], side: string, fn: (val: any) => boolean) => boolean;
+    }
+    export interface RecordContext {
+        name: string;
+        value: any;
+    }
+    class Expression extends Properties {
+        constructor(args: any);
+        operator: string;
+        operatorList: {
+            [name: string]: Operator;
+        };
+        summaryList: {
+            [name: string]: Summary;
+        };
+        isNegative: boolean;
+        source: any;
+        sourceSummary: string;
+        target: any;
+        targetSummary: string;
+        expressionList: Expression[];
+        where: Expression;
+        ambiguous: boolean;
+        _formatValue(val: any, isVariable?: boolean): any;
+        sourceValueGetter(): any;
+        targetValueGetter(): any;
+        toString(): any;
+        _buildGetterFunction(src: string): (data: any, recordContextStack: RecordContext[], where: Expression) => any;
+        sourceFieldSetter(src: string): void;
+        targetFieldSetter(src: string): void;
+        ambiguousSetter(val: boolean): void;
+        filter(arr: any[], recordContextStack?: RecordContext[]): any[];
+        evaluate(data: any, recordContextStack?: RecordContext[]): boolean;
+        involvedSourcesGetter(): string[];
+        reset(): void;
+        clone(): Expression;
+        toJson(): any;
+        fromJson(data: any): void;
+        hasSource(): boolean;
+        hasTarget(): boolean;
+        isValid(): boolean;
+    }
+    export default Expression;
+}
+
+declare module 'ninejs/modules/client/FullScreenFrame' {
+    import Widget from 'ninejs/ui/Widget';
+    import { PromiseType } from 'ninejs/core/deferredUtils';
+    class FullScreenFrame extends Widget {
+        init: PromiseType<HTMLElement>;
+        containerNode: HTMLElement;
+        selectedSetter(idx: any): void;
+        addChild(child: any): any;
+    }
+    export default FullScreenFrame;
+}
+
+declare module 'ninejs/modules/client/Skin' {
+    export import FullScreenFrame = require('ninejs/modules/client/Skin/FullScreenFrame');
+}
+
+declare module 'ninejs/modules/client/container' {
+    import Module from 'ninejs/modules/Module';
+    var result: Module;
+    export default result;
+}
+
+declare module 'ninejs/modules/client/router' {
+    import Module from 'ninejs/modules/Module';
+    var result: Module;
+    export default result;
+}
+
+declare module 'ninejs/modules/client/singlePageContainer' {
+    import Module from 'ninejs/modules/Module';
+    var _default: Module;
+    export default _default;
+}
+
+declare module 'ninejs/modules/webserver/ClientUtils' {
+    import Properties from 'ninejs/core/ext/Properties';
+    import WebServer from 'ninejs/modules/webserver/WebServer';
+    import StaticResource from 'ninejs/modules/webserver/StaticResource';
+    import { Logger } from 'ninejs/modules/ninejs-server';
+    import { Request, Response } from 'ninejs/modules/webserver/WebServer';
+    export class CacheManifest extends Properties {
+        baseUrl: string;
+        defaultCreationDate: Date;
+        networkResources: string[];
+        cacheResources: string[];
+        offlineResources: string[];
+        config: any;
+        cacheEndpoint: StaticResource;
+        addToCache(collection: string[], url: string, prefix: string, filter: (url: string) => boolean): void;
+        cache(url: string, prefix?: string, filter?: (url: string) => boolean): void;
+        network(url: string, prefix: string, filter: (url: string) => boolean): void;
+        handler(req: Request, res: Response): void;
+        constructor(args: any);
+    }
+    export class Utils {
+        webServer: WebServer;
+        appCache: CacheManifest;
+        requireJsConfigEndpoint: StaticResource;
+        cacheEndpoint: StaticResource;
+        amdPaths: {
+            [name: string]: string;
+        };
+        aliases: string[][];
+        boot: string[];
+        modules: {
+            [name: string]: any;
+        };
+        units: {
+            [name: string]: any;
+        };
+        postActions: string[];
+        has: {
+            [name: string]: any;
+        };
+        logger: {
+            [name: string]: Logger;
+        };
+        init(webServer: WebServer): void;
+        addAmdPath(prefix: string, path: string): void;
+        addAmdAlias(moduleName: string, alias: string): void;
+        addBoot(target: string): void;
+        addModule(name: string, target: any): void;
+        getUnit(name: string): any;
+        addPostAction(action: string): void;
+        requireJsConfigHandler(req: Request, res: Response): void;
+        constructor();
+    }
+    export default Utils;
+}
+
+declare module 'ninejs/modules/webserver/Endpoint' {
+    import Properties from 'ninejs/core/ext/Properties';
+    import WebServer from 'ninejs/modules/webserver/WebServer';
+    import { Request, Response, Application } from 'ninejs/modules/webserver/WebServer';
+    class Endpoint extends Properties {
+        type: string;
+        method: string;
+        children: Endpoint[];
+        app: Application;
+        server: WebServer;
+        route: string;
+        order: number;
+        validate: (req: Request, res: Response) => any;
+        handleAs: string;
+        parserOptions: any;
+        on(eventType: string, callback: (ev: any) => void): any;
+        emit(eventType: string, data: any): any;
+        handler(req: Request, res: Response, next?: () => void): void;
+        constructor(args: any);
+    }
+    export { Endpoint };
+    export default Endpoint;
+}
+
+declare module 'ninejs/modules/webserver/NineplateResource' {
+    import StaticResource from 'ninejs/modules/webserver/StaticResource';
+    import { Request, Response } from 'ninejs/modules/webserver/WebServer';
+    class NineplateResource extends StaticResource {
+        type: string;
+        contentType: string;
+        doctype: string;
+        context: any;
+        handler(req: Request, res: Response): void;
+        constructor(arg: any);
+    }
+    export default NineplateResource;
+}
+
+declare module 'ninejs/modules/webserver/SinglePage' {
+    export import SinglePageContainer = require('ninejs/modules/webserver/SinglePage/SinglePageContainer');
+}
+
+declare module 'ninejs/modules/webserver/StaticResource' {
+    import { Endpoint } from 'ninejs/modules/webserver/Endpoint';
+    import { Request, Response } from 'ninejs/modules/webserver/WebServer';
+    class NonCachedStaticResource extends Endpoint {
+        contentType: string;
+        content: any;
+        props: any;
+        path: string;
+        options: any;
+        action: (req: Request, res: Response) => void;
+        handler(req: Request, res: Response): void;
+        constructor(args: any);
+    }
+    class StaticResource extends NonCachedStaticResource {
+        maxAge: number;
+        cacheType: string;
+        lastModifiedSince: Date;
+        etag: string;
+        path: string;
+        applyETag(res: Response, content: string): void;
+        mustRevalidate(req: Request, res: Response): boolean;
+        handler(req: Request, res: Response): void;
+        constructor(args: any);
+    }
+    export { NonCachedStaticResource, StaticResource };
+    export default StaticResource;
+}
+
+declare module 'ninejs/modules/webserver/WebServer' {
+    import Properties from 'ninejs/core/ext/Properties';
+    import Endpoint from 'ninejs/modules/webserver/Endpoint';
+    import StaticResource from 'ninejs/modules/webserver/StaticResource';
+    import NineplateResource from 'ninejs/modules/webserver/NineplateResource';
+    import SinglePageContainer from 'ninejs/modules/webserver/SinglePage/SinglePageContainer';
+    import ClientUtils from 'ninejs/modules/webserver/ClientUtils';
+    import { Logger } from 'ninejs/modules/ninejs-server';
+    import http = require('http');
+    class WebServer extends Properties {
+        Endpoint: {
+            new (args: any): Endpoint;
+        };
+        StaticResource: {
+            new (args: any): StaticResource;
+        };
+        NineplateResource: {
+            new (args: any): NineplateResource;
+        };
+        SinglePageContainer: {
+            new (args: any): SinglePageContainer;
+        };
+        logger: Logger;
+        app: Application;
+        config: any;
+        serverName: string;
+        baseUrl: string;
+        jsUrl: string;
+        port: number;
+        ip: string;
+        timeout: number;
+        phases: {
+            static: StaticResource[];
+            utils: Endpoint[];
+            auth: Endpoint[];
+            endpoint: Endpoint[];
+            [name: string]: Endpoint[];
+        };
+        clientUtils: ClientUtils;
+        init(config: any): void;
+        build(): void;
+        add(resource: Endpoint, prefix?: string): void;
+        postCreate(): void;
+        clientSetup(action: (utils: ClientUtils) => void): void;
+        constructor(args: any);
+    }
+    export default WebServer;
+    export interface Request extends http.ServerRequest {
+        get(name: string): string;
+        header(name: string): string;
+        headers: {
+            [key: string]: string;
+        };
+        accepts(type: string): string;
+        accepts(type: string[]): string;
+        param(name: string, defaultValue?: any): string;
+        is(type: string): boolean;
+        protocol: string;
+        secure: boolean;
+        ip: string;
+        ips: string[];
+        hostname: string;
+        xhr: boolean;
+        body: any;
+        cookies: any;
+        method: string;
+        params: any;
+        user: any;
+        authenticatedUser: any;
+        clearCookie(name: string, options?: any): Response;
+        query: any;
+        route: any;
+        signedCookies: any;
+        originalUrl: string;
+        url: string;
+        session: any;
+    }
+    export interface Send {
+        (status: number, body?: any): Response;
+        (body: any): Response;
+    }
+    export interface CookieOptions {
+        maxAge?: number;
+        signed?: boolean;
+        expires?: Date;
+        httpOnly?: boolean;
+        path?: string;
+        domain?: string;
+        secure?: boolean;
+    }
+    export interface Response extends http.ServerResponse {
+        status: (code: number) => Response;
+        sendStatus: (code: number) => Response;
+        getHeader: (name: string) => string;
+        send: Send;
+        json: Send;
+        jsonp: Send;
+        sendFile(path: string): void;
+        sendFile(path: string, options: any): void;
+        sendFile(path: string, fn: (err: Error) => void): void;
+        sendFile(path: string, options: any, fn: (err: Error) => void): void;
+        download(path: string): void;
+        download(path: string, filename: string, fn: (err: Error) => void): void;
+        contentType(type: string): Response;
+        type(type: string): Response;
+        format(obj: any): Response;
+        attachment(filename?: string): Response;
+        set(field: any): Response;
+        set(field: string, value?: string): Response;
+        header(field: any): Response;
+        header(field: string, value?: string): Response;
+        headersSent: boolean;
+        get(field: string): string;
+        clearCookie(name: string, options?: any): Response;
+        cookie(name: string, val: string, options: CookieOptions): Response;
+        cookie(name: string, val: any, options: CookieOptions): Response;
+        cookie(name: string, val: any): Response;
+        redirect(url: string): void;
+        redirect(status: number, url: string): void;
+        redirect(url: string, status: number): void;
+        render(view: string, options?: Object, callback?: (err: Error, html: string) => void): void;
+        render(view: string, callback?: (err: Error, html: string) => void): void;
+        locals: any;
+        charset: string;
+    }
+    export interface Application {
+        listen: (port: number, ip?: string) => any;
+        engine: (name: string, callback: (path: string, options: any, callback: (err: any, val: any) => void) => void) => void;
+        enable: (name: string) => void;
+        render(name: string, options?: Object, callback?: (err: Error, html: string) => void): void;
+        render(name: string, callback: (err: Error, html: string) => void): void;
+    }
+}
+
+declare module 'ninejs/modules/webserver/module' {
+    import Module from 'ninejs/modules/Module';
+    var result: Module;
+    export default result;
+}
+
+declare module 'ninejs/ui/Skins/Editor' {
+    export import Default = require('ninejs/ui/Skins/Editor/Default');
+}
+
+declare module 'ninejs/ui/Skins/Wizard' {
+    export import Default = require('ninejs/ui/Skins/Wizard/Default');
+}
+
+declare module 'ninejs/ui/bootstrap/bootstrap' {
+    import { StyleInstance } from 'ninejs/css';
+    export class BootstrapProto {
+        map: {
+            [name: string]: string;
+        };
+        enable(...args: string[]): void;
+        disable(...args: string[]): void;
+        bootstrapCss: StyleInstance;
+        enableCss(val: boolean): void;
+        commonCss: StyleInstance;
+        enableCommonCss(val: boolean): void;
+        verticalResponsiveDeviceCss: StyleInstance;
+        enableVResponsiveDevice(val: boolean): void;
+        verticalResponsiveCss: StyleInstance;
+        enableVResponsiveViewPort(val: boolean): void;
+        gridMaxCss: StyleInstance;
+        enableGridMax(val: boolean): void;
+        constructor();
+    }
+    var bootstrap: BootstrapProto;
+    export default bootstrap;
+}
+
+declare module 'ninejs/ui/utils/append' {
+    var append: {
+        (parentNode: HTMLElement, node: any, position?: string): HTMLElement;
+        create: (node: string) => HTMLElement;
+        remove: (node: HTMLElement) => void;
+        toIndex: (parentNode: HTMLElement, node: HTMLElement, index: number) => HTMLElement;
+    };
+    export var toIndex: (parentNode: HTMLElement, node: HTMLElement, index: number) => HTMLElement;
+    export var remove: (node: HTMLElement) => void;
+    export var create: (node: string) => HTMLElement;
+    export default append;
+}
+
+declare module 'ninejs/ui/utils/domUtils' {
+    import _setClass from 'ninejs/ui/utils/setClass';
+    import _setText from 'ninejs/ui/utils/setText';
+    import _append from 'ninejs/ui/utils/append';
+    export function isHidden(control: any): boolean;
+    export function isShown(control: any): boolean;
+    export function hide(control: any): void;
+    export function show(control: any, showAttr: string): void;
+    export function empty(node: HTMLElement): void;
+    export function enableHovering(control: any, enter: (e: Event) => void, leave: (e: Event) => void, options: {
+        pausable: boolean;
+    }): any;
+    export var setText: typeof _setText;
+    export var setClass: typeof _setClass;
+    export var append: typeof _append;
+}
+
+declare module 'ninejs/ui/utils/setClass' {
+    var setClass: {
+        (node: HTMLElement, ...clist: string[]): HTMLElement;
+        has: (node: HTMLElement, ...clist: string[]) => boolean;
+        temporary: (node: HTMLElement, delay: number, ...clist: string[]) => number;
+    };
+    export default setClass;
+}
+
+declare module 'ninejs/ui/utils/setText' {
+    var setText: {
+        (node: HTMLElement, text: string): HTMLElement;
+        emptyNode: (node: HTMLElement) => void;
+    };
+    export default setText;
+}
+
+declare module 'ninejs/_nineplate/utils/node/node-xml' {
+    export var SaxParser: any;
+}
+
+declare module 'ninejs/_nineplate/utils/node/text' {
+    export function load(name: string, req: any, onLoad: Function): void;
+}
+
 declare module 'ninejs/modules/client/Skin/FullScreenFrame' {
     import Skin from 'ninejs/ui/Skin';
     var _default: Skin;
@@ -1401,13 +1411,5 @@ declare module 'ninejs/ui/Skins/Wizard/Default' {
     import Skin from 'ninejs/ui/Skin';
     var _default: Skin;
     export default _default;
-}
-
-declare module 'ninejs/_nineplate/utils/node/node-xml' {
-    export var SaxParser: any;
-}
-
-declare module 'ninejs/_nineplate/utils/node/text' {
-    export function load(name: string, req: any, onLoad: Function): void;
 }
 

@@ -1,8 +1,3 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 (function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -78,18 +73,15 @@ var __extends = (this && this.__extends) || function (d, b) {
         return result.load(name, req, onLoad, config);
     }
     exports.load = load;
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = result;
     exports.domProcessor = _domProcessor;
     exports.textProcessor = _textProcessor;
-    var Template = (function (_super) {
-        __extends(Template, _super);
-        function Template() {
-            _super.apply(this, arguments);
+    class Template extends Properties_1.default {
+        constructor(...args) {
+            super(...args);
             this.text = '';
         }
-        Template.prototype.toAmd = function (sync, options) {
-            if (options === void 0) { options = {}; }
+        toAmd(sync, options = {}) {
             var prefix = options.ninejsPrefix || 'ninejs';
             var preText = '(function (deps, factory) { \n' +
                 '	if (typeof module === \'object\' && typeof module.exports === \'object\') { \n' +
@@ -102,7 +94,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             if (isNode && !sync) {
                 return def.when(this.compileDom(false, options), function (fn) {
                     if (!options.standalone) {
-                        fn.amdDependencies.push(prefix + "/_nineplate/utils/functions");
+                        fn.amdDependencies.push(`${prefix}/_nineplate/utils/functions`);
                     }
                     var depsText = (fn.amdDependencies || []).map(function (item) {
                         return '\'' + item + '\'';
@@ -117,8 +109,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                 return '\'' + item + '\'';
             }).join(',');
             return preText + depsText + prePostText + fn + postText;
-        };
-        Template.prototype.toCommonJs = function () {
+        }
+        toCommonJs() {
             var preText = '/* jshint -W074 */\n/* globals window: true */\n\'use strict\';\nmodule.exports =', postText = ';';
             if (isNode) {
                 if (isDojo) {
@@ -131,16 +123,16 @@ var __extends = (this && this.__extends) || function (d, b) {
                 }
             }
             return preText + this.compileText(false) + postText;
-        };
-        Template.prototype.compileDomSync = function (options) {
+        }
+        compileDomSync(options) {
             if (this.compiledDomVersion) {
                 return this.compiledDomVersion;
             }
             var result = exports.domProcessor.compileDom(this.text, true, options || { ignoreHtmlOptimization: true });
             this.compiledDomVersion = result;
             return result;
-        };
-        Template.prototype.compileDom = function (sync, options) {
+        }
+        compileDom(sync, options) {
             if (sync) {
                 return this.compileDomSync(options);
             }
@@ -156,20 +148,20 @@ var __extends = (this && this.__extends) || function (d, b) {
                 }
                 return result;
             }
-        };
-        Template.prototype.renderDom = function (context) {
+        }
+        renderDom(context) {
             var compiled = this.compileDom(true);
             return compiled(context);
-        };
-        Template.prototype.compileTextSync = function () {
+        }
+        compileTextSync() {
             if (this.compiledTextVersion) {
                 return this.compiledTextVersion;
             }
             else {
                 return exports.textProcessor.compileText(this.text, true);
             }
-        };
-        Template.prototype.compileText = function (sync) {
+        }
+        compileText(sync) {
             if (sync) {
                 return this.compileTextSync();
             }
@@ -189,13 +181,12 @@ var __extends = (this && this.__extends) || function (d, b) {
                 }
                 return result;
             }
-        };
-        Template.prototype.renderText = function (context) {
+        }
+        renderText(context) {
             var compiled = this.compileText(true);
             return compiled(context);
-        };
-        return Template;
-    })(Properties_1.default);
+        }
+    }
     exports.Template = Template;
 });
 //# sourceMappingURL=nineplate.js.map

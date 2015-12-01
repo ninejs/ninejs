@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports"], factory);
     }
-})(["require", "exports"], function (require, exports) {
+})(function (require, exports) {
     var decoratorList = {};
     function isArray(obj) {
         return Object.prototype.toString.call(obj) === '[object Array]';
@@ -38,7 +38,7 @@
     }
     exports.mixinRecursive = mixinRecursive;
     function registerDecorator(decoratorName, decoratorFn) {
-        extend.decorators[decoratorName] = (function () {
+        extend.decorators[decoratorName] = (() => {
             var dec = function () {
                 var decorator = decoratorFn.apply(this, arguments);
                 decorator.$$ninejsType = decoratorName;
@@ -59,7 +59,7 @@
         }
         targetType.prototype[name] = toInjectMethod;
     }
-    var extend = (function () {
+    var extend = (() => {
         var extend = function () {
             var idx = 0, SuperClass, njsType, typeArgs = [];
             var fillArguments = function (args) {
@@ -69,7 +69,7 @@
                 }
             };
             fillArguments.call(this, arguments);
-            njsType = (function () {
+            njsType = (() => {
                 var njsType = function () {
                     var idx = 0, current, currentFn;
                     if (!this.$njsConstructors) {

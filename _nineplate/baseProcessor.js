@@ -18,34 +18,34 @@
         }
         return str;
     }
-    var XmlNode = (function () {
-        function XmlNode(parsedXmlNode) {
+    class XmlNode {
+        constructor(parsedXmlNode) {
             this.node = parsedXmlNode;
         }
-        XmlNode.prototype.nodeType = function () {
+        nodeType() {
             return this.node.nodeType;
-        };
-        XmlNode.prototype.value = function () {
+        }
+        value() {
             return this.node.value;
-        };
-        XmlNode.prototype.nodeValue = function () {
+        }
+        nodeValue() {
             return this.node.nodeValue;
-        };
-        XmlNode.prototype.getAttributes = function () {
+        }
+        getAttributes() {
             var cnt, attributes = this.node.attributes, len = attributes.length, r = [];
             for (cnt = 0; cnt < len; cnt += 1) {
                 r.push(new XmlNode(attributes[cnt]));
             }
             return r;
-        };
-        XmlNode.prototype.getChildNodes = function () {
+        }
+        getChildNodes() {
             var cnt, children = isNode ? this.node.children : this.node.childNodes, len = children.length, r = [];
             for (cnt = 0; cnt < len; cnt += 1) {
                 r.push(new XmlNode(children[cnt]));
             }
             return r;
-        };
-        XmlNode.prototype.hasVariableTagName = function () {
+        }
+        hasVariableTagName() {
             var attributes = this.getAttributes(), cnt;
             for (cnt = 0; cnt < attributes.length; cnt += 1) {
                 if (attributes[cnt].nodeName() === 'data-ninejs-tagName') {
@@ -53,8 +53,8 @@
                 }
             }
             return false;
-        };
-        XmlNode.prototype.getVariableTagName = function (callback) {
+        }
+        getVariableTagName(callback) {
             var attributes = this.getAttributes(), found, cnt;
             for (cnt = 0; cnt < attributes.length; cnt += 1) {
                 if (attributes[cnt].nodeName() === 'data-ninejs-tagName') {
@@ -67,53 +67,51 @@
             else {
                 return callback(null);
             }
-        };
-        XmlNode.prototype.nodeName = function () {
+        }
+        nodeName() {
             return this.node.nodeName;
-        };
-        XmlNode.prototype.nodeLocalName = function () {
+        }
+        nodeLocalName() {
             return this.node.localName || this.node.nodeName;
-        };
-        XmlNode.prototype.namespaceUri = function () {
+        }
+        namespaceUri() {
             return this.node.namespaceURI || this.node.namespaceUri || '';
-        };
-        XmlNode.prototype.parentNode = function () {
+        }
+        parentNode() {
             if (!this.node.parentNode) {
                 return null;
             }
             else {
                 return new XmlNode(this.node.parentNode);
             }
-        };
-        XmlNode.prototype.set = function (n, v) {
+        }
+        set(n, v) {
             this.node[n] = v;
-        };
-        XmlNode.prototype.get = function (n) {
+        }
+        get(n) {
             return this.node[n];
-        };
-        return XmlNode;
-    })();
+        }
+    }
     exports.XmlNode = XmlNode;
-    var TextParseContext = (function () {
-        function TextParseContext() {
+    class TextParseContext {
+        constructor() {
             this.r = [];
             this.lineBuffer = [];
         }
-        TextParseContext.prototype.append = function (line) {
+        append(line) {
             this.appendLine();
             this.r.push(line);
-        };
-        TextParseContext.prototype.appendLine = function () {
+        }
+        appendLine() {
             if (this.lineBuffer.length) {
                 this.r.push('result.push(\'' + this.lineBuffer.join('') + '\');\n');
                 this.lineBuffer = [];
             }
-        };
-        TextParseContext.prototype.getText = function () {
+        }
+        getText() {
             return this.r.join('');
-        };
-        return TextParseContext;
-    })();
+        }
+    }
     exports.TextParseContext = TextParseContext;
     function trim(content) {
         if (!content) {

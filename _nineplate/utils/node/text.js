@@ -6,7 +6,7 @@
         define(["require", "exports"], factory);
     }
 })(function (require, exports) {
-    var fs;
+    let fs;
     function load(name, req, onLoad) {
         if (!fs) {
             fs = require('fs');

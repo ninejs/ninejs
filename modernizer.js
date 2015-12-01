@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports"], factory);
     }
-})(["require", "exports"], function (require, exports) {
+})(function (require, exports) {
     exports.default = (function (window) {
         var _window = (typeof (window) !== 'undefined') ? window : {}, _document = window.document;
         var Modernizr = (function (window, document) {
@@ -108,11 +108,8 @@
                     }
                     var args = slice.call(arguments, 1), bound = function () {
                         if (this instanceof bound) {
-                            var F = (function () {
-                                function F() {
-                                }
-                                return F;
-                            })();
+                            class F {
+                            }
                             F.prototype = target.prototype;
                             var self = new F();
                             var result = target.apply(self, args.concat(slice.call(arguments)));

@@ -123,15 +123,9 @@ function exports(grunt) {
 		},
 		ts: {
 			default : {
-				src: tsfiles,
+				tsconfig: './tsconfig.json',
 				options: {
-					compiler: './node_modules/typescript/bin/tsc',
-					comments: false,
-					declaration: true,
-					noImplicitAny: true,
-					module: 'umd',
-					target: 'es5',
-					experimentalAsyncFunctions: true
+					"compiler": "./node_modules/typescript/bin/tsc"
 				}
 			}
 		},

@@ -16,6 +16,7 @@ export interface ModernizerType {
 declare var WebGLRenderingContext: any;
 declare var DocumentTouch: any;
 declare var window: any;
+declare var process: any;
 export default (function(window: any) {
 
 

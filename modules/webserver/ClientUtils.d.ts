@@ -30,7 +30,7 @@ export declare class Utils {
     aliases: string[][];
     boot: string[];
     modules: {
-        [name: string]: string;
+        [name: string]: any;
     };
     units: {
         [name: string]: any;
@@ -46,7 +46,7 @@ export declare class Utils {
     addAmdPath(prefix: string, path: string): void;
     addAmdAlias(moduleName: string, alias: string): void;
     addBoot(target: string): void;
-    addModule(name: string, target: string): void;
+    addModule(name: string, target: any): void;
     getUnit(name: string): any;
     addPostAction(action: string): void;
     requireJsConfigHandler(req: Request, res: Response): void;

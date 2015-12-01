@@ -23,7 +23,7 @@ class Endpoint extends Properties {
 	emit (eventType: string, data: any) {
 		return Evented.emit.apply(this, arguments);
 	}
-	handler (req: Request, res: Response) {
+	handler (req: Request, res: Response, next?: () => void) {
 	}
 	constructor (args: any) {
 		super(args);

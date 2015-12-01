@@ -1,8 +1,3 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 (function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -29,10 +24,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     var bodyParser = require('body-parser');
     var path = require('path');
     var busboy = require('connect-busboy');
-    var WebServer = (function (_super) {
-        __extends(WebServer, _super);
-        function WebServer(args) {
-            _super.call(this, args);
+    class WebServer extends Properties_1.default {
+        constructor(args) {
+            super(args);
             this.phases = {
                 static: [],
                 utils: [],
@@ -41,17 +35,17 @@ var __extends = (this && this.__extends) || function (d, b) {
             };
             this.clientUtils = new ClientUtils_1.default();
         }
-        WebServer.prototype.init = function (config) {
+        init(config) {
             this.config = config;
             this.baseUrl = config.baseUrl || '';
             this.jsUrl = config.jsUrl || '/js';
             this.port = config.port;
             this.ip = config.ip || undefined;
             this.app = express();
-        };
-        WebServer.prototype.build = function () {
-        };
-        WebServer.prototype.add = function (resource, prefix) {
+        }
+        build() {
+        }
+        add(resource, prefix) {
             var self = this;
             if (prefix) {
                 resource.route = prefix + resource.route;
@@ -62,8 +56,8 @@ var __extends = (this && this.__extends) || function (d, b) {
             resource.children.forEach(function (r) {
                 self.add(r, resource.route);
             });
-        };
-        WebServer.prototype.postCreate = function () {
+        }
+        postCreate() {
             function sortByOrder(a, b) {
                 return (a.order || 0) - (b.order || 0);
             }
@@ -130,7 +124,9 @@ var __extends = (this && this.__extends) || function (d, b) {
                     app.use(self.baseUrl + resource.route, function () { return resource.handler.apply(resource, arguments); });
                 }
                 else {
-                    app.use(resource.handler);
+                    app.use(function () {
+                        return resource.handler.apply(resource, arguments);
+                    });
                 }
             });
             var utils = (this.phases.utils || []).slice(0);
@@ -140,7 +136,9 @@ var __extends = (this && this.__extends) || function (d, b) {
                     app.use(self.baseUrl + resource.route, function () { return resource.handler.apply(resource, arguments); });
                 }
                 else {
-                    app.use(resource.handler);
+                    app.use(function () {
+                        return resource.handler.apply(resource, arguments);
+                    });
                 }
             });
             var endpoints = (this.phases.endpoint || []).slice(0);
@@ -177,14 +175,14 @@ var __extends = (this && this.__extends) || function (d, b) {
                     args.push(function (req, res, next) {
                         var r = resource.validate.call(resource, req, res);
                         if (r) {
-                            deferredUtils_1.when(r, function (result) {
+                            deferredUtils_1.when(r, (result) => {
                                 if (result) {
                                     res.status(400).send(result);
                                 }
                                 else {
                                     next();
                                 }
-                            }, function (err) {
+                            }, (err) => {
                                 res.status(400).send(err.message);
                             });
                         }
@@ -199,27 +197,29 @@ var __extends = (this && this.__extends) || function (d, b) {
                 var app = self.app;
                 app[resource.method || 'get'].apply(self.app, args);
             });
+            let server;
             if (this.ip) {
-                this.app.listen(this.port, this.ip);
-                this.logger.info("wev server \"" + this.serverName + "\" listening on port " + this.port + " with ip " + this.ip);
+                server = this.app.listen(this.port, this.ip);
+                this.logger.info(`wev server "${this.serverName}" listening on port ${this.port} with ip ${this.ip}`);
             }
             else {
-                this.app.listen(this.port);
-                this.logger.info("wev server \"" + this.serverName + "\" listening on port " + this.port);
+                server = this.app.listen(this.port);
+                this.logger.info(`wev server "${this.serverName}" listening on port ${this.port}`);
             }
-        };
-        WebServer.prototype.clientSetup = function (action) {
+            if (typeof (this.timeout) !== 'undefined') {
+                server.timeout = this.timeout;
+            }
+        }
+        clientSetup(action) {
             if (action) {
                 action(this.clientUtils);
             }
-        };
-        return WebServer;
-    })(Properties_1.default);
+        }
+    }
     WebServer.prototype.Endpoint = Endpoint_1.default;
     WebServer.prototype.StaticResource = StaticResource_1.default;
     WebServer.prototype.NineplateResource = NineplateResource_1.default;
     WebServer.prototype.SinglePageContainer = SinglePageContainer_1.default;
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = WebServer;
 });
 //# sourceMappingURL=WebServer.js.map

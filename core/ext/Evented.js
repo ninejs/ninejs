@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", '../on'], factory);
     }
-})(["require", "exports", '../on'], function (require, exports) {
+})(function (require, exports) {
     var on_1 = require('../on');
     var isAmd = (typeof (define) !== 'undefined') && define.amd, isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org', isNode = (typeof (window) === 'undefined'), req = (isDojo && isNode) ? global.require : require;
     var result;
@@ -21,11 +21,7 @@
                     return after(target, 'on' + type, listener, true);
                 });
             },
-            emit: function () {
-                var arglist = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    arglist[_i - 0] = arguments[_i];
-                }
+            emit: function (...arglist) {
                 var args = [this];
                 args.push.apply(args, arglist);
                 return on_1.default.emit.apply(on, args);

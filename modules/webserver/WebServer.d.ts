@@ -30,6 +30,7 @@ declare class WebServer extends Properties {
     jsUrl: string;
     port: number;
     ip: string;
+    timeout: number;
     phases: {
         static: StaticResource[];
         utils: Endpoint[];
@@ -74,6 +75,7 @@ export interface Request extends http.ServerRequest {
     signedCookies: any;
     originalUrl: string;
     url: string;
+    session: any;
 }
 export interface Send {
     (status: number, body?: any): Response;
@@ -124,7 +126,7 @@ export interface Response extends http.ServerResponse {
     charset: string;
 }
 export interface Application {
-    listen: (port: number, ip?: string) => void;
+    listen: (port: number, ip?: string) => any;
     engine: (name: string, callback: (path: string, options: any, callback: (err: any, val: any) => void) => void) => void;
     enable: (name: string) => void;
     render(name: string, options?: Object, callback?: (err: Error, html: string) => void): void;

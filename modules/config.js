@@ -1,17 +1,17 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports"], factory);
     }
-})(["require", "exports"], function (require, exports) {
+})(function (require, exports) {
     var isAmd = (typeof (define) !== 'undefined') && define.amd;
     var isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
     var isNode = (typeof (window) === 'undefined');
     var req = require;
     var dojoConfig;
-    var _global = ((typeof (global) !== 'undefined') ? global : window) || {};
+    let _global = ((typeof (global) !== 'undefined') ? global : window) || {};
     if (isDojo) {
         if (!isNode) {
             dojoConfig = _global.dojoConfig || {};

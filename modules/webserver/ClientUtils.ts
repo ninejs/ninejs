@@ -104,7 +104,7 @@ export class Utils {
 	amdPaths: { [name: string]: string };
 	aliases: string[][];
 	boot: string[];
-	modules: { [name: string]: string };
+	modules: { [name: string]: any };
 	units: { [ name: string ]: any };
 	postActions: string[];
 	has: { [ name: string ]: any };
@@ -150,7 +150,7 @@ export class Utils {
 			this.boot.push(target);
 		}
 	}
-	addModule (name: string, target: string) {
+	addModule (name: string, target: any) {
 		this.modules[name] = target;
 	}
 	getUnit (name: string) {

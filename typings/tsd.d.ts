@@ -1,4 +1,3 @@
-/// <reference path="bluebird/bluebird.d.ts" />
 /// <reference path="body-parser/body-parser.d.ts" />
 /// <reference path="bunyan/bunyan.d.ts" />
 /// <reference path="compression/compression.d.ts" />

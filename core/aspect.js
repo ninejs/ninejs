@@ -1,11 +1,11 @@
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports"], factory);
     }
-})(["require", "exports"], function (require, exports) {
+})(function (require, exports) {
     var nextId = 0;
     function advise(dispatcher, type, advice, receiveArguments) {
         var previous = dispatcher[type];
@@ -79,11 +79,7 @@
         return function (target, methodName, advice, receiveArguments) {
             var existing = target[methodName], dispatcher, results;
             if (!existing || existing.target !== target) {
-                target[methodName] = dispatcher = function () {
-                    var args = [];
-                    for (var _i = 0; _i < arguments.length; _i++) {
-                        args[_i - 0] = arguments[_i];
-                    }
+                target[methodName] = dispatcher = function (...args) {
                     var executionId = nextId;
                     var before = dispatcher.before;
                     while (before) {

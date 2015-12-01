@@ -44,6 +44,7 @@ class WebServer extends Properties {
 	jsUrl: string;
 	port: number;
 	ip: string;
+	timeout: number;
 	phases: {
 		static: StaticResource[],
 		utils: Endpoint[],
@@ -151,7 +152,7 @@ class WebServer extends Properties {
 			else {
 				xml = crossdomain({ domain: '*' });
 			}
-			app.use('/crossdomain.xml', function (req, res) {
+			app.use('/crossdomain.xml', function (req: express.Request, res: express.Response) {
 				/* jshint unused: true */
 				res.set('Content-Type', 'application/xml; charset=utf-8');
 				res.status(200).send(xml);
@@ -164,7 +165,9 @@ class WebServer extends Properties {
 				app.use(self.baseUrl + resource.route, function() { return resource.handler.apply(resource, arguments); });
 			}
 			else {
-				app.use(resource.handler);
+				app.use(function () {
+					return resource.handler.apply(resource, arguments);
+				});
 			}
 		});
 		var utils = (this.phases.utils || []).slice(0);
@@ -174,7 +177,9 @@ class WebServer extends Properties {
 				app.use(self.baseUrl + resource.route, function() { return resource.handler.apply(resource, arguments); });
 			}
 			else {
-				app.use(resource.handler);
+				app.use(function () {
+					return resource.handler.apply(resource, arguments);
+				});
 			}
 		});
 		var endpoints = (this.phases.endpoint || []).slice(0);
@@ -235,13 +240,17 @@ class WebServer extends Properties {
 			var app: any = self.app;
 			app[resource.method || 'get'].apply(self.app, args);
 		});
+		let server: any;
 		if (this.ip) {
-			this.app.listen(this.port, this.ip);
+			server = this.app.listen(this.port, this.ip);
 			this.logger.info(`wev server "${this.serverName}" listening on port ${this.port} with ip ${this.ip}`);
 		}
 		else {
-			this.app.listen(this.port);
+			server = this.app.listen(this.port);
 			this.logger.info(`wev server "${this.serverName}" listening on port ${this.port}`);
+		}
+		if (typeof(this.timeout) !== 'undefined') {
+			server.timeout = this.timeout;
 		}
 	}
 	clientSetup (action: (utils: ClientUtils) => void) {
@@ -322,6 +331,8 @@ export interface Request extends http.ServerRequest {
 	originalUrl: string;
 
 	url: string;
+
+	session: any;
 }
 export interface Send {
 	(status: number, body?: any): Response;
@@ -375,7 +386,7 @@ export interface Response extends http.ServerResponse {
 }
 
 export interface Application {
-	listen: (port: number, ip?: string) => void;
+	listen: (port: number, ip?: string) => any;
 	engine: (name: string, callback: (path: string, options: any, callback: (err: any, val: any) => void) => void) => void;
 	enable: (name: string) => void;
 	render(name: string, options?: Object, callback?: (err: Error, html: string) => void): void;

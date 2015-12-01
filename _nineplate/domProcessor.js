@@ -18,7 +18,7 @@
     else {
         parser = require('./utils/parser/amd');
     }
-    var svgNamespace = 'http://www.w3.org/2000/svg';
+    let svgNamespace = 'http://www.w3.org/2000/svg';
     var TargetType;
     (function (TargetType) {
         TargetType[TargetType["Attr"] = 0] = "Attr";
@@ -301,7 +301,7 @@
                         .addVar(amdModuleVar, parentRenderer
                         .expression('require')
                         .invoke(parentRenderer.literal(mid)));
-                    var chunk = new JavascriptRenderer_1.Chunk(parentRenderer);
+                    let chunk = new JavascriptRenderer_1.Chunk(parentRenderer);
                     defaultCondition = chunk.renderer.addCondition(renderer.expression(amdModuleVar).member('default'));
                     defaultCondition.renderer.addAssignment(amdModuleVar, renderer.expression(amdModuleVar).member('default'));
                     parentRenderer.addStatementAtBeginning(chunk);
@@ -901,8 +901,8 @@
             parentRenderer
                 .addVar('fn', parentRenderer
                 .expression('require')
-                .invoke(parentRenderer.literal((options.ninejsPrefix || 'ninejs') + "/_nineplate/utils/functions")));
-            amdPathMapping[((options.ninejsPrefix || 'ninejs') + "/_nineplate/utils/functions")] = 'fn';
+                .invoke(parentRenderer.literal(`${options.ninejsPrefix || 'ninejs'}/_nineplate/utils/functions`)));
+            amdPathMapping[`${options.ninejsPrefix || 'ninejs'}/_nineplate/utils/functions`] = 'fn';
         }
         renderer
             .addVar('r', renderer.raw('{}'));

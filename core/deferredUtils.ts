@@ -1,5 +1,3 @@
-/// <reference path="./extend.ts" />
-
 import extend from './extend'
 import bluebird from './bluebird'
 

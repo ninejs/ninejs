@@ -586,8 +586,8 @@
     };
     exports.SaxParser = function (eventhandlerfactory) {
         var eventhandler = Object.create({});
-        var thehandler = (function () {
-            function thehandler() {
+        class thehandler {
+            constructor() {
                 this.onStartDocument = function (funct) {
                     eventhandler.onStartDocument = funct;
                 };
@@ -616,8 +616,7 @@
                     eventhandler.onError = funct;
                 };
             }
-            return thehandler;
-        })();
+        }
         eventhandlerfactory(new thehandler());
         this.m_hndDoc = eventhandler;
         this.m_hndErr = eventhandler;
@@ -919,8 +918,8 @@
         iE = iE || strD.length;
         return strD.toString().substring(iB, iE).split(strF).join(strR);
     };
-    var Stack = (function () {
-        function Stack() {
+    class Stack {
+        constructor() {
             this.clear = function () {
                 this.m_arr = new Array();
             };
@@ -949,8 +948,7 @@
             };
             this.m_arr = new Array();
         }
-        return Stack;
-    })();
+    }
     ;
     function isEmpty(str) {
         return (str == null) || (str.length == 0);

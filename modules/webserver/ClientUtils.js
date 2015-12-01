@@ -1,8 +1,3 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 (function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -15,18 +10,17 @@ var __extends = (this && this.__extends) || function (d, b) {
     var fs = require('fs');
     var path = require('path');
     var extend_1 = require('../../core/extend');
-    var CacheManifest = (function (_super) {
-        __extends(CacheManifest, _super);
-        function CacheManifest(args) {
-            _super.call(this, args);
+    class CacheManifest extends Properties_1.default {
+        constructor(args) {
+            super(args);
             this.defaultCreationDate = new Date();
             this.networkResources = [];
             this.cacheResources = [];
             this.offlineResources = [];
             this.config = {};
         }
-        CacheManifest.prototype.addToCache = function (collection, url, prefix, filter) {
-            var fileStat, baseName, self = this, filter = filter || (function (url) { return true; });
+        addToCache(collection, url, prefix, filter) {
+            var fileStat, baseName, self = this, filter = filter || ((url) => { return true; });
             if (prefix) {
                 baseName = path.basename(url);
                 fileStat = fs.statSync(url);
@@ -43,14 +37,14 @@ var __extends = (this && this.__extends) || function (d, b) {
             else {
                 this.cacheResources.push(url);
             }
-        };
-        CacheManifest.prototype.cache = function (url, prefix, filter) {
+        }
+        cache(url, prefix, filter) {
             return this.addToCache(this.cacheResources, url, prefix, filter);
-        };
-        CacheManifest.prototype.network = function (url, prefix, filter) {
+        }
+        network(url, prefix, filter) {
             return this.addToCache(this.networkResources, url, prefix, filter);
-        };
-        CacheManifest.prototype.handler = function (req, res) {
+        }
+        handler(req, res) {
             var r = [], result;
             r.push('CACHE MANIFEST\n\n\n');
             r.push('# App cache manifest. Date: ' + (this.config.cacheDate || this.defaultCreationDate) + '\n\n');
@@ -75,12 +69,11 @@ var __extends = (this && this.__extends) || function (d, b) {
                 this.cacheEndpoint.applyETag(res, result);
             }
             res.end(result);
-        };
-        return CacheManifest;
-    })(Properties_1.default);
+        }
+    }
     exports.CacheManifest = CacheManifest;
-    var Utils = (function () {
-        function Utils() {
+    class Utils {
+        constructor() {
             this.amdPaths = {
                 'ninejs': path.resolve(__dirname, '../../')
             };
@@ -101,7 +94,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             this.appCache = new CacheManifest(undefined);
         }
-        Utils.prototype.init = function (webServer) {
+        init(webServer) {
             this.logger = webServer.get('logger');
             this.webServer = webServer;
             this.appCache.set('baseUrl', webServer.baseUrl);
@@ -125,31 +118,31 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.appCache.cacheEndpoint = this.cacheEndpoint;
             webServer.add(this.cacheEndpoint);
             this.addBoot('ninejs/modules/clientBoot');
-        };
-        Utils.prototype.addAmdPath = function (prefix, path) {
+        }
+        addAmdPath(prefix, path) {
             this.amdPaths[prefix] = path;
-        };
-        Utils.prototype.addAmdAlias = function (moduleName, alias) {
+        }
+        addAmdAlias(moduleName, alias) {
             this.aliases.push([moduleName, alias]);
-        };
-        Utils.prototype.addBoot = function (target) {
+        }
+        addBoot(target) {
             if (this.boot.indexOf(target) < 0) {
                 this.boot.push(target);
             }
-        };
-        Utils.prototype.addModule = function (name, target) {
+        }
+        addModule(name, target) {
             this.modules[name] = target;
-        };
-        Utils.prototype.getUnit = function (name) {
+        }
+        getUnit(name) {
             if (!this.units[name]) {
                 this.units[name] = {};
             }
             return this.units[name];
-        };
-        Utils.prototype.addPostAction = function (action) {
+        }
+        addPostAction(action) {
             this.postActions.push(action);
-        };
-        Utils.prototype.requireJsConfigHandler = function (req, res) {
+        }
+        requireJsConfigHandler(req, res) {
             var r = ['window.requireJsConfig = '], result, cfg, packages = this.amdPaths, modules = this.modules, units = this.units, p;
             cfg = {
                 parseOnLoad: false,
@@ -201,11 +194,9 @@ var __extends = (this && this.__extends) || function (d, b) {
             result = r.join('');
             this.requireJsConfigEndpoint.applyETag(res, result);
             res.end(result);
-        };
-        return Utils;
-    })();
+        }
+    }
     exports.Utils = Utils;
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Utils;
 });
 //# sourceMappingURL=ClientUtils.js.map

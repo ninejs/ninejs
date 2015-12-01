@@ -1,8 +1,3 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 (function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -16,10 +11,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     var bunyan = require('bunyan');
     var njs = require('../lib/ninejs');
     var packageJson = require('../package.json');
-    var NineJs = (function (_super) {
-        __extends(NineJs, _super);
-        function NineJs(args) {
-            _super.call(this, args);
+    class NineJs extends Module_1.default {
+        constructor(args) {
+            super(args);
             var provide = {
                 id: 'ninejs',
                 version: packageJson.version,
@@ -36,14 +30,14 @@ var __extends = (this && this.__extends) || function (d, b) {
                 provide.features['harmony'] = true;
             }
         }
-        NineJs.prototype.configGetter = function () {
+        configGetter() {
             var r = null;
             if (this.config) {
                 r = this.config['ninejs'];
             }
             return r;
-        };
-        NineJs.prototype.loggerGetter = function (name) {
+        }
+        loggerGetter(name) {
             function createLogger(config) {
                 var loggingConfig = (config || {}).logging || [];
                 var cnt;
@@ -85,8 +79,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                 this.logger[name] = createLogger(this.config);
             }
             return this.logger[name];
-        };
-        NineJs.prototype.init = function (name, config) {
+        }
+        init(name, config) {
             if (name === 'ninejs') {
                 this.config = config;
                 var log = this.get('logger');
@@ -94,12 +88,10 @@ var __extends = (this && this.__extends) || function (d, b) {
                     log.info(data.message);
                 });
             }
-        };
-        return NineJs;
-    })(Module_1.default);
+        }
+    }
     exports.NineJs = NineJs;
     var result = new NineJs(undefined);
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = result;
 });
 //# sourceMappingURL=ninejs-server.js.map

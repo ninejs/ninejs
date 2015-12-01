@@ -1,12 +1,11 @@
-/// <reference path="./extend.ts" />
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './bluebird'], factory);
     }
-})(["require", "exports", './bluebird'], function (require, exports) {
+})(function (require, exports) {
     var bluebird_1 = require('./bluebird');
     var nativePromise = typeof (Promise) === 'function';
     ;
@@ -36,13 +35,13 @@
                 pResolve = resolve;
                 pReject = reject;
             });
-            p.resolve = function (v) {
-                setTimeout(function () {
+            p.resolve = (v) => {
+                setTimeout(() => {
                     pResolve(v);
                 }, 0);
             };
-            p.reject = function (v) {
-                setTimeout(function () {
+            p.reject = (v) => {
+                setTimeout(() => {
                     pReject(v);
                 }, 0);
             };
@@ -52,7 +51,7 @@
             }
             return p;
         };
-        _when = function (v, success, reject, fin) {
+        _when = (v, success, reject, fin) => {
             if (isPromise(v)) {
                 return v.then(success, reject);
             }
@@ -102,7 +101,7 @@
                 return Q.defer();
             }
         };
-        _when = function (v, success, reject, fin) {
+        _when = (v, success, reject, fin) => {
             var r;
             if (isPromise(v)) {
                 r = v.then(success, reject);
@@ -154,16 +153,12 @@
     exports.all = _all;
     exports.series = _series;
     function resolve(val) {
-        var d = exports.defer();
+        let d = exports.defer();
         d.resolve(val);
         return d.promise;
     }
     exports.resolve = resolve;
-    function ncall(fn, self) {
-        var args = [];
-        for (var _i = 2; _i < arguments.length; _i++) {
-            args[_i - 2] = arguments[_i];
-        }
+    function ncall(fn, self, ...args) {
         var d = exports.defer();
         function callback(err, result) {
             if (err) {
@@ -184,11 +179,7 @@
         return d.promise;
     }
     exports.ncall = ncall;
-    function nfcall(fn) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
+    function nfcall(fn, ...args) {
         var d = exports.defer();
         function callback(err, result) {
             if (err) {

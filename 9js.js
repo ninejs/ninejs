@@ -3,9 +3,11 @@
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", './client', './config', './core', './css', './modernizer', './modules', './nineplate', './request', './ui', './_css', './_nineplate'], factory);
+        define(["require", "exports", './_css', './_nineplate', './client', './config', './core', './css', './modernizer', './modules', './nineplate', './request', './ui'], factory);
     }
 })(function (require, exports) {
+    exports._css = require('./_css');
+    exports._nineplate = require('./_nineplate');
     exports.client = require('./client');
     exports.config = require('./config');
     exports.core = require('./core');
@@ -15,7 +17,5 @@
     exports.nineplate = require('./nineplate');
     exports.request = require('./request');
     exports.ui = require('./ui');
-    exports._css = require('./_css');
-    exports._nineplate = require('./_nineplate');
 });
 //# sourceMappingURL=9js.js.map

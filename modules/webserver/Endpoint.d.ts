@@ -15,7 +15,7 @@ declare class Endpoint extends Properties {
     parserOptions: any;
     on(eventType: string, callback: (ev: any) => void): any;
     emit(eventType: string, data: any): any;
-    handler(req: Request, res: Response): void;
+    handler(req: Request, res: Response, next?: () => void): void;
     constructor(args: any);
 }
 export { Endpoint };

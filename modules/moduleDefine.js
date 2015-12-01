@@ -1,16 +1,11 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-(function (deps, factory) {
+(function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(deps, factory);
+        define(["require", "exports", './Module', '../core/deferredUtils'], factory);
     }
-})(["require", "exports", './Module', '../core/deferredUtils'], function (require, exports) {
+})(function (require, exports) {
     var Module_1 = require('./Module');
     var deferredUtils_1 = require('../core/deferredUtils');
     function define(consumes, callback) {
@@ -25,31 +20,30 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             return item;
         });
-        var ThisModule = (function (_super) {
-            __extends(ThisModule, _super);
-            function ThisModule() {
-                _super.call(this);
+        class ThisModule extends Module_1.default {
+            constructor() {
+                super();
                 this.consumes = consumes;
             }
-            ThisModule.prototype.doInit = function (name, config) {
+            doInit(name, config) {
                 if (typeof (provideMap[name]) !== 'undefined') {
                     var args = [config], self = this;
-                    var consumers = this.consumes.map(function (item) {
-                        var unit = self.getUnit(item.id);
+                    let consumers = this.consumes.map(item => {
+                        let unit = self.getUnit(item.id);
                         args.push(unit);
                         return unit;
                     });
-                    return deferredUtils_1.when(deferredUtils_1.all(consumers), function () {
+                    return deferredUtils_1.when(deferredUtils_1.all(consumers), () => {
                         var unitObj = provideMap[name].apply(null, args);
                         if (unitObj) {
                             if (deferredUtils_1.isPromise(unitObj.init)) {
                                 return unitObj.init;
                             }
                             else if (typeof (unitObj.init) === 'function') {
-                                return deferredUtils_1.when(unitObj.init(), function (d) {
+                                return deferredUtils_1.when(unitObj.init(), (d) => {
                                     delete unitObj.init;
                                     return d;
-                                }, function (err) {
+                                }, (err) => {
                                     throw err;
                                 });
                             }
@@ -62,22 +56,20 @@ var __extends = (this && this.__extends) || function (d, b) {
                         }
                     });
                 }
-            };
-            ThisModule.prototype.getProvides = function (name) {
+            }
+            getProvides(name) {
                 if (typeof (provideMap[name]) !== 'undefined') {
                     return provideInstances[name];
                 }
-            };
-            ThisModule.prototype.init = function () {
-                var _this = this;
-                var x = Module_1.default.prototype.init.call(this);
-                var args = arguments;
-                return deferredUtils_1.when(x, function () {
-                    return _this.doInit.apply(_this, args);
+            }
+            init() {
+                let x = Module_1.default.prototype.init.call(this);
+                let args = arguments;
+                return deferredUtils_1.when(x, () => {
+                    return this.doInit.apply(this, args);
                 });
-            };
-            return ThisModule;
-        })(Module_1.default);
+            }
+        }
         ThisModule.prototype.provides = [];
         var provideMap = {}, provideInstances = {};
         var provide = function (item, callback) {
@@ -87,11 +79,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 };
             }
             ThisModule.prototype.provides.push(item);
-            provideMap[item.id] = function () {
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i - 0] = arguments[_i];
-                }
+            provideMap[item.id] = function (...args) {
                 if (typeof (provideInstances[item.id]) === 'undefined') {
                     provideInstances[item.id] = callback.apply(null, args);
                 }
