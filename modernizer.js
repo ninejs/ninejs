@@ -2661,7 +2661,7 @@ A NineJS custom build of Modernizr
 				return rv;
 			}
 		});
-		Modernizr.add('dom-addeventlistener', !Modernizr.ietrident && !!document.addEventListener);
+		Modernizr.add('dom-addeventlistener', (!Modernizr.ietrident || (Modernize.ietrident >= 10)) && !!document.addEventListener);
 		Modernizr.add('touch', 'ontouchstart' in document || window.navigator.msMaxTouchPoints > 0);
 
 		Modernizr.addTest('ietrident', function () {
