@@ -1,3 +1,5 @@
+'use strict';
+
 import * as extend from './core/extend'
 import * as def from './core/deferredUtils'
 import { processCss, AMDPrefixesType } from './_css/builder'
@@ -140,7 +142,7 @@ export class StyleObject implements StyleType {
 		else {
 			document = parent.ownerDocument;
 		}
-		var cssText = '' + this.data + '';
+		var cssText = '\n' + this.data + '';
 		if ((!this.data) && this.path) {
 			if (!externalCssCache[this.path]) {
 				linkNode = document.createElement('link');

@@ -1,3 +1,5 @@
+'use strict';
+
 var append: {
 	(parentNode: HTMLElement, node: any, position?: string): HTMLElement;
 	create: (node: string) => HTMLElement;

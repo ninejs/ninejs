@@ -11,6 +11,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         define(["require", "exports", '../Module'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var Module_1 = require('../Module');
     var Container = (function () {
         function Container() {

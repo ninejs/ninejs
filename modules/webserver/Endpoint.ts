@@ -1,4 +1,4 @@
-/// <reference path="../../typings/express/express.d.ts" />
+'use strict';
 
 import Properties from '../../core/ext/Properties';
 import Evented from '../../core/ext/Evented';

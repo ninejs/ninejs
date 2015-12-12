@@ -1,5 +1,3 @@
-/// <reference path="../../typings/node/node.d.ts" />
-/// <reference path="../../typings/express/express.d.ts" />
 import { Endpoint } from './Endpoint';
 import { Request, Response } from './WebServer';
 declare class NonCachedStaticResource extends Endpoint {

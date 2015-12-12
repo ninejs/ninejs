@@ -1,4 +1,6 @@
-/* 
+'use strict';
+
+/*
 	Dojo Toolkit's dojo/aspect as of jan 2014
 */
 export interface AdviserType {

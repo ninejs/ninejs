@@ -1,2 +1,2 @@
 
-.njsFullScreenFrame > *{display:none;}@media print{.njsFullScreenFrame > *{display:none}}.njsFullScreenFrame > .active{display:block;}.njsFullScreenFrame > .active.tableFrame{display:table}@media print{.njsFullScreenFrame > .active{display:block}.njsFullScreenFrame > .active.tableFrame{display:table}}
+.njsFullScreenFrame > *{display:none !important;}@media print{.njsFullScreenFrame > *{display:none !important}}.njsFullScreenFrame > .active{display:block !important;}.njsFullScreenFrame > .active.tableFrame{display:table !important}@media print{.njsFullScreenFrame > .active{display:block !important}.njsFullScreenFrame > .active.tableFrame{display:table !important}}

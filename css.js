@@ -6,6 +6,7 @@
         define(["require", "exports", './core/deferredUtils', './_css/builder', './request'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var def = require('./core/deferredUtils');
     var builder_1 = require('./_css/builder');
     var request = require('./request');
@@ -107,7 +108,7 @@
             else {
                 document = parent.ownerDocument;
             }
-            var cssText = '' + this.data + '';
+            var cssText = '\n' + this.data + '';
             if ((!this.data) && this.path) {
                 if (!externalCssCache[this.path]) {
                     linkNode = document.createElement('link');

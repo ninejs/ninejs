@@ -1,3 +1,5 @@
+'use strict';
+
 import extend from '../core/extend';
 import Properties from '../core/ext/Properties';
 import { moduleRegistry } from './moduleRegistry';

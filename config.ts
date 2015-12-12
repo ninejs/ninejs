@@ -1,3 +1,5 @@
+'use strict';
+
 declare var define:{
 	(deps:string[], callback:(...rest:any[]) => any): void;
 	amd: any;
@@ -25,7 +27,7 @@ if (isDojo) {
  @exports config
  */
 var r: any;
-if (isNode) {
+if (!isNode) {
 	_global = window;
 }
 if (dojoConfig) {

@@ -1,3 +1,5 @@
+'use strict';
+
 import * as xml from './node-xml';
 import * as Q from '../../../core/bluebird';
 

@@ -6,6 +6,7 @@
         define(["require", "exports", '../css'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var css = require('../css');
     function load() {
         var args = [];

@@ -16,8 +16,8 @@ export declare class Router extends Properties implements RouterBase {
     loadAction: (args: any, evt: any) => any;
     on(type: string, listener: (e?: any) => any): any;
     emit(...arglist: any[]): any;
-    register(route: any, action?: (evt: any) => void): Route;
-    go(route: string, replace: boolean): PromiseType<any>;
+    register(route: any, action?: (evt: any) => void, opts?: any): Route;
+    go(route: string, replace?: boolean): PromiseType<any>;
     addRoute(route: Route): Route;
     removeRoute(route: Route): any;
     destroy(): void;

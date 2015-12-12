@@ -1,10 +1,17 @@
+'use strict';
+
 import * as extend from '../core/extend';
 import Properties from '../core/ext/Properties';
-import config from './config';
+import modulesConfig from './config'
+import ninejsConfig from '../config';
 import { PromiseType, when, all, mapToPromises, defer } from '../core/deferredUtils';
 
 declare var require: any;
 var req = require;
+
+var config: any = {};
+extend.mixinRecursive(config, modulesConfig);
+extend.mixinRecursive(config, ninejsConfig.ninejs);
 
 function getConfigObject(m: any, config: any) {
 	var cfgObj: { [ name: string ]: any } = {}, cnt: number;

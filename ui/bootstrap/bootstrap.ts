@@ -1,16 +1,18 @@
-/// <amd-dependency path="../../css!./less/bootstrap.css" />
-/// <amd-dependency path="../../css!./vresponsive.css" />
-/// <amd-dependency path="../../css!./vresponsive-device.css" />
-/// <amd-dependency path="../../css!../css/common.css" />
-/// <amd-dependency path="../../css!./gridMax.css" />
+/// <amd-dependency path="./less/bootstrap.ncss" />
+/// <amd-dependency path="./vresponsive.ncss" />
+/// <amd-dependency path="./vresponsive-device.ncss" />
+/// <amd-dependency path="../css/common.ncss" />
+/// <amd-dependency path="./gridMax.ncss" />
+
+'use strict';
 
 import { StyleObject, StyleInstance } from '../../css';
 
-var bootstrapCss: StyleObject = require('../../css!./less/bootstrap.css'),
-	verticalResponsiveCss: StyleObject = require('../../css!./vresponsive.css'),
-	verticalResponsiveDeviceCss: StyleObject = require('../../css!./vresponsive-device.css'),
-	commonCss: StyleObject = require('../../css!../css/common.css'),
-	gridMaxCss: StyleObject = require('../../css!./gridMax.css');
+var bootstrapCss: StyleObject = require('./less/bootstrap.ncss'),
+	verticalResponsiveCss: StyleObject = require('./vresponsive.ncss'),
+	verticalResponsiveDeviceCss: StyleObject = require('./vresponsive-device.ncss'),
+	commonCss: StyleObject = require('../css/common.ncss'),
+	gridMaxCss: StyleObject = require('./gridMax.ncss');
 
 export class BootstrapProto {
 	map: { [name: string]: string };

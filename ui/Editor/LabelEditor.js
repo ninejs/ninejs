@@ -9,7 +9,7 @@
  * @return {ninejs/ui/Editor/LabelEditor}   Returns a new LabelEditor.
  */
 define(['../../core/array',
-	'../../core/extend', '../Editor', '../utils/append', '../utils/setText', '../utils/setClass', '../../core/on', '../../css!./LabelEditor.css!enable'], function(array, extend, Editor, append, setText, setClass, on) {
+	'../../core/extend', '../Editor', '../utils/append', '../utils/setText', '../utils/setClass', '../../core/on', './LabelEditor.ncss'], function(array, extend, Editor, append, setText, setClass, on, css) {
 	'use strict';
 	extend = extend.default;
 	Editor = Editor.default;
@@ -17,6 +17,7 @@ define(['../../core/array',
 	setText = setText.default;
 	setClass = setClass.default;
 	on = on.default;
+	css.enable();
 	function identity(v) {
 		return v;
 	}

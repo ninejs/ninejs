@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 (function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -6,6 +11,7 @@
         define(["require", "exports", './Endpoint', 'crypto'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var Endpoint_1 = require('./Endpoint');
     var crypto = require('crypto');
     var parseCacheControl = function (str) {
@@ -16,11 +22,12 @@
         }
         return obj;
     };
-    class NonCachedStaticResource extends Endpoint_1.Endpoint {
-        constructor(args) {
-            super(args);
+    var NonCachedStaticResource = (function (_super) {
+        __extends(NonCachedStaticResource, _super);
+        function NonCachedStaticResource(args) {
+            _super.call(this, args);
         }
-        handler(req, res) {
+        NonCachedStaticResource.prototype.handler = function (req, res) {
             var props = this.props || {}, p;
             res.set('Content-Type', this.contentType);
             for (p in props) {
@@ -41,17 +48,19 @@
             else {
                 res.status(404);
             }
-        }
-    }
+        };
+        return NonCachedStaticResource;
+    })(Endpoint_1.Endpoint);
     exports.NonCachedStaticResource = NonCachedStaticResource;
     NonCachedStaticResource.prototype.type = 'static';
     NonCachedStaticResource.prototype.contentType = 'text/plain; charset=utf-8';
     NonCachedStaticResource.prototype.content = '';
-    class StaticResource extends NonCachedStaticResource {
-        constructor(args) {
-            super(args);
+    var StaticResource = (function (_super) {
+        __extends(StaticResource, _super);
+        function StaticResource(args) {
+            _super.call(this, args);
         }
-        applyETag(res, content) {
+        StaticResource.prototype.applyETag = function (res, content) {
             if (!this.etag) {
                 var alg = crypto.createHash('sha256'), digest;
                 alg.update(content);
@@ -59,8 +68,8 @@
                 this.etag = content.length + '-' + digest;
             }
             res.set('ETag', this.etag);
-        }
-        mustRevalidate(req, res) {
+        };
+        StaticResource.prototype.mustRevalidate = function (req, res) {
             function checkCacheControl(res, cookie, cc) {
                 return res.get('set-cookie') || (res.get('content-range')) || cookie || cc['no-cache'] || cc['no-store'] || cc['private'] || cc['must-revalidate'];
             }
@@ -75,8 +84,8 @@
                 result = true;
             }
             return result;
-        }
-        handler(req, res) {
+        };
+        StaticResource.prototype.handler = function (req, res) {
             if (req.method === 'GET' || req.method === 'HEAD') {
                 if (this.mustRevalidate(req, res)) {
                     if (!this.lastModifiedSince) {
@@ -89,7 +98,7 @@
                         res.set('Cache-Control', this.cacheType + ', max-age=' + (this.maxAge / 1000));
                         res.set('Expires', new Date(Date.now() + this.maxAge).toUTCString());
                     }
-                    return super.handler(req, res);
+                    return _super.prototype.handler.call(this, req, res);
                 }
                 else {
                     res.writeHead(304, {});
@@ -97,13 +106,15 @@
                 }
             }
             else {
-                return super.handler(req, res);
+                return _super.prototype.handler.call(this, req, res);
             }
-        }
-    }
+        };
+        return StaticResource;
+    })(NonCachedStaticResource);
     exports.StaticResource = StaticResource;
     StaticResource.prototype.maxAge = 10 * 86400 * 1000;
     StaticResource.prototype.cacheType = 'public';
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = StaticResource;
 });
 //# sourceMappingURL=StaticResource.js.map

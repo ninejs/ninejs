@@ -6,6 +6,8 @@
         define(["require", "exports"], factory);
     }
 })(function (require, exports) {
+    'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = (function (window) {
         var _window = (typeof (window) !== 'undefined') ? window : {}, _document = window.document;
         var Modernizr = (function (window, document) {
@@ -108,8 +110,11 @@
                     }
                     var args = slice.call(arguments, 1), bound = function () {
                         if (this instanceof bound) {
-                            class F {
-                            }
+                            var F = (function () {
+                                function F() {
+                                }
+                                return F;
+                            })();
                             F.prototype = target.prototype;
                             var self = new F();
                             var result = target.apply(self, args.concat(slice.call(arguments)));
@@ -594,7 +599,7 @@
             docElement.className = docElement.className.replace(/(^|\s)no-js(\s|$)/, '$1$2') +
                 (enableClasses ? " mdrn-js mdrn-" + classes.join(" mdrn-") : '');
             return Modernizr;
-        }).call(this, this, this.document);
+        }).call(_window, _window, _window.document);
         if (typeof (process) !== 'undefined') {
             return Modernizr;
         }
@@ -734,7 +739,7 @@
                     e.setAttribute(j, d[j]);
                 g || (n.parentNode.insertBefore(e, n), m(c, 0));
             };
-        })(this, document);
+        })(_window, document);
         Modernizr.load = function () {
             _window.yepnope.apply(window, [].slice.call(arguments, 0));
         };

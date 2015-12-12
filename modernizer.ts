@@ -1,3 +1,5 @@
+'use strict';
+
 /*
 A NineJS custom build of Modernizr
 */
@@ -883,7 +885,7 @@ export default (function(window: any) {
 
 		return Modernizr;
 
-	}).call(this, this, this.document);
+	}).call(_window, _window, _window.document);
 	if (typeof(process) !== 'undefined') {
 		return Modernizr;
 	}
@@ -1055,7 +1057,7 @@ export default (function(window: any) {
 			for (j in d) e.setAttribute(j, d[j]);
 			g || (n.parentNode.insertBefore(e, n), m(c, 0))
 		}
-	})(this, document);
+	})(_window, document);
 	Modernizr.load = function() {
 		_window.yepnope.apply(window, [].slice.call(arguments, 0));
 	};

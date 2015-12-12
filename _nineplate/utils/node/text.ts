@@ -1,4 +1,5 @@
-/// <reference path="../../../typings/node/node.d.ts" />
+'use strict';
+
 declare var require: any;
 let fs: any;
 

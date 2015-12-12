@@ -1,3 +1,5 @@
+'use strict';
+
 export interface ArrayLike {
 	length: number,
 	[name: string]: any

@@ -1,5 +1,8 @@
+'use strict';
+
 import { indexOf, forEach } from '../core/array';
 import { when, PromiseType, defer, PromiseConstructorType } from '../core/deferredUtils';
+import extend from '../core/extend';
 import Evented from '../core/ext/Evented';
 import Properties from '../core/ext/Properties';
 import hash from './hash';
@@ -92,11 +95,12 @@ export class Router extends Properties implements RouterBase {
 	emit (...arglist: any[]/*type, event*/){
 		return Evented.emit.apply(this, arguments);
 	}
-	register (route: any, action?: (evt: any) => void) {
+	register (route: any, action?: (evt: any) => void, opts?: any) {
 		var options = prepareArguments(route, action);
+		extend.mixinRecursive(options, opts || {});
 		return new Route(options, this);
 	}
-	go (route: string, replace: boolean) {
+	go (route: string, replace?: boolean) {
 		var current = getRoute();
 		route = cleanRoute(route);
 		if (activeRouteDefer) {

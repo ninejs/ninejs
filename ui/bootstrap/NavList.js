@@ -1,4 +1,4 @@
-define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./NavList.html', '../utils/setClass', '../utils/append', '../utils/setText', '../../core/array', '../../core/on', '../../css!./NavList.css'], function(extend, Widget, Skin, template, setClass, append, setText, array, on, css) {
+define(['../../core/extend', '../Widget', '../Skin', './NavList.9plate', '../utils/setClass', '../utils/append', '../utils/setText', '../../core/array', '../../core/on', './NavList.ncss'], function(extend, Widget, Skin, template, setClass, append, setText, array, on, css) {
 	'use strict';
 	extend = extend.default;
 	Widget = Widget.default;

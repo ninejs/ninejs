@@ -6,6 +6,7 @@
         define(["require", "exports"], factory);
     }
 })(function (require, exports) {
+    'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = ((((require || {}).s || {}).contexts || {})._ || {}).config || {};
 });

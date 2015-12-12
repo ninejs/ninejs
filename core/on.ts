@@ -3,12 +3,15 @@
 
 Dojo Toolkit's dojo/on as of jan 2014
 */
-import has from '../modernizer';
+///<amd-dependency path="../modernizer" />
+'use strict';
+
 import * as aspect from './aspect';
 
 declare var process: any;
 declare var jQuery: any;
 declare var dojo: any;
+declare var require: any;
 
 var isNode = (typeof(process) !== 'undefined') && (process.toString() === '[object process]');
 function getSelector() {
@@ -50,6 +53,13 @@ function getSelector() {
 		return dojo.query;
 	}
 	return null;
+}
+let has: any;
+if (!isNode) {
+	has = require('../modernizer').default;
+}
+else {
+	has = () => false;
 }
 var _dojoIEListeners_: ((e?: any) => void) [],
 	_window: any = (typeof(window) !== 'undefined')? window : {};

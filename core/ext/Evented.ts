@@ -2,6 +2,8 @@
 @module ninejs/core/ext/Evented 
 @author Eduardo Burgos <eburgos@gmail.com>
 */
+'use strict';
+
 import { default as coreOn, RemovableType } from '../on';
 
 declare var define:{

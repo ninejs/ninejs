@@ -1,4 +1,4 @@
-define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./Tabbable.html', '../utils/setClass', '../utils/append', '../utils/setText', '../../core/array', '../../core/on'], function(extend, Widget, Skin, template, setClass, append, setText, array, on) {
+define(['../../core/extend', '../Widget', '../Skin', './Tabbable.9plate', '../utils/setClass', '../utils/append', '../utils/setText', '../../core/array', '../../core/on'], function(extend, Widget, Skin, template, setClass, append, setText, array, on) {
 	'use strict';
 	extend = extend.default;
 	Widget = Widget.default;

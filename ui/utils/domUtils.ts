@@ -1,4 +1,6 @@
-/// <amd-dependency path="../../css!../css/common.css" />
+/// <amd-dependency path="../css/common.ncss" />
+
+'use strict';
 
 import _setClass from './setClass';
 import _setText from './setText';
@@ -9,7 +11,7 @@ import extend from '../../core/extend';
 
 declare var require: any;
 
-var commonCss: any = require('../../css!../css/common.css');
+var commonCss: any = require('../css/common.ncss');
 
 commonCss.enable();
 has.add('scopedCss', function (){

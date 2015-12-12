@@ -6,6 +6,7 @@
         define(["require", "exports"], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var decoratorList = {};
     function isArray(obj) {
         return Object.prototype.toString.call(obj) === '[object Array]';
@@ -38,7 +39,7 @@
     }
     exports.mixinRecursive = mixinRecursive;
     function registerDecorator(decoratorName, decoratorFn) {
-        extend.decorators[decoratorName] = (() => {
+        extend.decorators[decoratorName] = (function () {
             var dec = function () {
                 var decorator = decoratorFn.apply(this, arguments);
                 decorator.$$ninejsType = decoratorName;
@@ -59,7 +60,7 @@
         }
         targetType.prototype[name] = toInjectMethod;
     }
-    var extend = (() => {
+    var extend = (function () {
         var extend = function () {
             var idx = 0, SuperClass, njsType, typeArgs = [];
             var fillArguments = function (args) {
@@ -69,7 +70,7 @@
                 }
             };
             fillArguments.call(this, arguments);
-            njsType = (() => {
+            njsType = (function () {
                 var njsType = function () {
                     var idx = 0, current, currentFn;
                     if (!this.$njsConstructors) {
@@ -173,6 +174,7 @@
     exports.after = after;
     exports.before = before;
     exports.around = around;
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = extend;
 });
 //# sourceMappingURL=extend.js.map

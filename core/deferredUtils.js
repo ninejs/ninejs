@@ -6,6 +6,7 @@
         define(["require", "exports", './bluebird'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var bluebird_1 = require('./bluebird');
     var nativePromise = typeof (Promise) === 'function';
     ;
@@ -35,13 +36,13 @@
                 pResolve = resolve;
                 pReject = reject;
             });
-            p.resolve = (v) => {
-                setTimeout(() => {
+            p.resolve = function (v) {
+                setTimeout(function () {
                     pResolve(v);
                 }, 0);
             };
-            p.reject = (v) => {
-                setTimeout(() => {
+            p.reject = function (v) {
+                setTimeout(function () {
                     pReject(v);
                 }, 0);
             };
@@ -51,7 +52,7 @@
             }
             return p;
         };
-        _when = (v, success, reject, fin) => {
+        _when = function (v, success, reject, fin) {
             if (isPromise(v)) {
                 return v.then(success, reject);
             }
@@ -101,7 +102,7 @@
                 return Q.defer();
             }
         };
-        _when = (v, success, reject, fin) => {
+        _when = function (v, success, reject, fin) {
             var r;
             if (isPromise(v)) {
                 r = v.then(success, reject);
@@ -153,12 +154,16 @@
     exports.all = _all;
     exports.series = _series;
     function resolve(val) {
-        let d = exports.defer();
+        var d = exports.defer();
         d.resolve(val);
         return d.promise;
     }
     exports.resolve = resolve;
-    function ncall(fn, self, ...args) {
+    function ncall(fn, self) {
+        var args = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            args[_i - 2] = arguments[_i];
+        }
         var d = exports.defer();
         function callback(err, result) {
             if (err) {
@@ -179,7 +184,11 @@
         return d.promise;
     }
     exports.ncall = ncall;
-    function nfcall(fn, ...args) {
+    function nfcall(fn) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
         var d = exports.defer();
         function callback(err, result) {
             if (err) {

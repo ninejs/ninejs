@@ -1,3 +1,5 @@
+'use strict';
+
 import * as css from '../css';
 
 export function load(...args: any[]) {

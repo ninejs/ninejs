@@ -11,6 +11,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         define(["require", "exports", '../core/extend', '../core/ext/Properties', '../core/on', '../core/deferredUtils', './utils/setClass', './utils/append', '../core/objUtils'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var extend_1 = require('../core/extend');
     var Properties_1 = require('../core/ext/Properties');
     var on_1 = require('../core/on');
@@ -234,7 +235,11 @@ var __extends = (this && this.__extends) || function (d, b) {
             var _defer = deferredUtils_1.defer();
             this.set('skin', _defer.promise);
             require([name], function (skin) {
-                _defer.resolve(skin);
+                if (skin.default) {
+                    skin = skin.default;
+                }
+                var result = skin;
+                _defer.resolve(result);
             });
             return _defer.promise;
         };

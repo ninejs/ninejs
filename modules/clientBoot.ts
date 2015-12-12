@@ -1,4 +1,6 @@
-import clientConfig from './config'
+'use strict';
+
+import clientConfig from '../config'
 import { moduleRegistry  as registry } from './moduleRegistry'
 import Module from './Module'
 import extend from '../core/extend'
@@ -18,9 +20,9 @@ modules must have:
 	mid: 'ninejs/sampleModule' //The AMD moduleID
 }
 */
-var modules = clientConfig.modules || {},
+var modules = clientConfig.ninejs.modules || {},
 	moduleArray: any[] = [],
-	prefix = clientConfig.prefix || 'ninejs',
+	prefix = clientConfig.ninejs.prefix || 'ninejs',
 	onDemandModules = {
 		'ninejs': prefix + '/modules/ninejs-client',
 		'router': prefix + '/modules/client/router',
@@ -47,26 +49,18 @@ require(moduleArray, function() {
 		unitCfg = modules[moduleArray[cnt]];
 		extend.mixinRecursive(allUnitsCfg, unitCfg);
 	}
-	extend.mixinRecursive(clientConfig, { units: {} });
-	extend.mixinRecursive(allUnitsCfg, clientConfig.units);
-	extend.mixinRecursive(clientConfig.units, allUnitsCfg);
+	extend.mixinRecursive(clientConfig.ninejs, { units: {} });
+	extend.mixinRecursive(allUnitsCfg, clientConfig.ninejs.units);
+	extend.mixinRecursive(clientConfig.ninejs.units, allUnitsCfg);
 	let arr = Array.prototype.map.call(arguments, (current: any) => {
 		if (current.default) {
 			current = current.default;
 		}
-		Module.prototype.enable.call(current, clientConfig.units);
+		Module.prototype.enable.call(current, clientConfig.ninejs.units);
 	});
 	when(all(arr), () => {
 		moduleLoadPromise.resolve(true);
 	});
-	//for (cnt = 0; cnt < arguments.length; cnt += 1) {
-	//	current = arguments[cnt];
-	//	if (current.default) {
-	//		current = current.default;
-	//	}
-	//	Module.prototype.enable.call(current, clientConfig.units);
-	//}
-	//moduleLoadPromise.resolve(true);
 });
 export { PromiseType };
 export default when(moduleLoadPromise.promise, function(){

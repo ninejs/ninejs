@@ -1,4 +1,6 @@
 ///<amd-dependency path="./utils/parser/amd" />
+'use strict';
+
 declare var require: any;
 import * as functions from './utils/functions';
 import * as def from '../core/deferredUtils';

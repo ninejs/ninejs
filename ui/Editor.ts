@@ -1,3 +1,5 @@
+'use strict';
+
 import { default as Widget, WidgetConstructor } from './Widget'
 import extend from '../core/extend'
 import Properties from '../core/ext/Properties'

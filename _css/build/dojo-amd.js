@@ -69,13 +69,14 @@
 		}
 		return result;
 	}
-	function buildAppender (text, name, src, packages, baseUrl, noWrap) {
+	function buildAppender (text, name, src, packages, baseUrl, noWrap, options) {
 		/* jshint evil: true */
+		options = options || { toBase64: true, sizeLimit: 30000 };
 		var cssText = text;
 		var functionBody = 'define([\'' + thisModuleMid + '\', \'' + configMid + '\'], function(style, config) {\n';
 		var cssResult;
 
-		builder.processCss(cssText, name, src, packages, baseUrl, { toBase64: true }/* toBase64 */, function(result) {
+		builder.processCss(cssText, name, src, packages, baseUrl, options, function(result) {
 			if (!result.children) {
 				delete result.children;
 			}

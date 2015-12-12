@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 (function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -6,6 +11,7 @@
         define(["require", "exports", './Module', '../core/deferredUtils'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var Module_1 = require('./Module');
     var deferredUtils_1 = require('../core/deferredUtils');
     function define(consumes, callback) {
@@ -20,30 +26,31 @@
             }
             return item;
         });
-        class ThisModule extends Module_1.default {
-            constructor() {
-                super();
+        var ThisModule = (function (_super) {
+            __extends(ThisModule, _super);
+            function ThisModule() {
+                _super.call(this);
                 this.consumes = consumes;
             }
-            doInit(name, config) {
+            ThisModule.prototype.doInit = function (name, config) {
                 if (typeof (provideMap[name]) !== 'undefined') {
                     var args = [config], self = this;
-                    let consumers = this.consumes.map(item => {
-                        let unit = self.getUnit(item.id);
+                    var consumers = this.consumes.map(function (item) {
+                        var unit = self.getUnit(item.id);
                         args.push(unit);
                         return unit;
                     });
-                    return deferredUtils_1.when(deferredUtils_1.all(consumers), () => {
+                    return deferredUtils_1.when(deferredUtils_1.all(consumers), function () {
                         var unitObj = provideMap[name].apply(null, args);
                         if (unitObj) {
                             if (deferredUtils_1.isPromise(unitObj.init)) {
                                 return unitObj.init;
                             }
                             else if (typeof (unitObj.init) === 'function') {
-                                return deferredUtils_1.when(unitObj.init(), (d) => {
+                                return deferredUtils_1.when(unitObj.init(), function (d) {
                                     delete unitObj.init;
                                     return d;
-                                }, (err) => {
+                                }, function (err) {
                                     throw err;
                                 });
                             }
@@ -56,20 +63,22 @@
                         }
                     });
                 }
-            }
-            getProvides(name) {
+            };
+            ThisModule.prototype.getProvides = function (name) {
                 if (typeof (provideMap[name]) !== 'undefined') {
                     return provideInstances[name];
                 }
-            }
-            init() {
-                let x = Module_1.default.prototype.init.call(this);
-                let args = arguments;
-                return deferredUtils_1.when(x, () => {
-                    return this.doInit.apply(this, args);
+            };
+            ThisModule.prototype.init = function () {
+                var _this = this;
+                var x = Module_1.default.prototype.init.call(this);
+                var args = arguments;
+                return deferredUtils_1.when(x, function () {
+                    return _this.doInit.apply(_this, args);
                 });
-            }
-        }
+            };
+            return ThisModule;
+        })(Module_1.default);
         ThisModule.prototype.provides = [];
         var provideMap = {}, provideInstances = {};
         var provide = function (item, callback) {
@@ -79,7 +88,11 @@
                 };
             }
             ThisModule.prototype.provides.push(item);
-            provideMap[item.id] = function (...args) {
+            provideMap[item.id] = function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
                 if (typeof (provideInstances[item.id]) === 'undefined') {
                     provideInstances[item.id] = callback.apply(null, args);
                 }

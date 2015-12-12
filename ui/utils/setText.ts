@@ -1,7 +1,10 @@
-var setText: {
+'use strict';
+
+let setText: {
 	(node: HTMLElement, text: string): HTMLElement;
 	emptyNode: (node: HTMLElement) => void;
-} = (() => {
+};
+setText = (() => {
 	function emptyNode(node: HTMLElement) {
 		var c = node.lastChild;
 		while (c) {

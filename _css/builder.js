@@ -6,10 +6,11 @@
         define(["require", "exports", '../request'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var request = require('../request');
     var req = require;
     var isNode = typeof (window) === 'undefined', isAmd = (typeof (define) !== 'undefined') && (define.amd), isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
-    function resolveUrl(url, path, prefixes, baseUrl, toBase64) {
+    function resolveUrl(url, path, prefixes, baseUrl, toBase64, sizeLimit) {
         function attachBaseUrl(baseUrl, r) {
             if (baseUrl) {
                 if (!/\:/.test(r) && !/^\//.test(r)) {
@@ -69,7 +70,7 @@
         }
         r = attachBaseUrl(baseUrl, r);
         if (toBase64) {
-            var b64String = convertToBase64Url(r, path);
+            var b64String = convertToBase64Url(r, path, sizeLimit);
             if (b64String) {
                 r = b64String;
             }
@@ -87,7 +88,7 @@
             pathModule = req('path');
         }
     }
-    function convertToBase64Url(url, path) {
+    function convertToBase64Url(url, path, sizeLimit) {
         if (/^data:/.test(url)) {
             return url;
         }
@@ -95,7 +96,6 @@
         if (suffixIdx >= 0) {
             url = url.substr(0, suffixIdx);
         }
-        var sizeLimit = 30000;
         var mimeTypes = {
             '.gif': 'image/gif',
             '.png': 'image/png',
@@ -122,7 +122,7 @@
         }
         return null;
     }
-    function embedUrls(data, path, prefixes, baseUrl, toBase64) {
+    function embedUrls(data, path, prefixes, baseUrl, toBase64, sizeLimit) {
         var r = data;
         r = r.replace(/(embed)?url\s*\(\s*['"]?([^'"\)]*)['"]?\s*\)/g, function ($0) {
             var matches = [];
@@ -130,9 +130,9 @@
                 matches[_i - 1] = arguments[_i];
             }
             var url = matches[1];
-            var newUrl = resolveUrl(url, path, prefixes, baseUrl, false);
+            var newUrl = resolveUrl(url, path, prefixes, baseUrl, false, sizeLimit);
             if (toBase64) {
-                var embedded = convertToBase64Url(newUrl, path);
+                var embedded = convertToBase64Url(newUrl, path, sizeLimit);
                 if (embedded) {
                     url = embedded;
                 }
@@ -149,7 +149,7 @@
         return src.match(localRegex);
     }
     function processCss(data, path, realPath, prefixes, baseUrl, options, callback) {
-        function addImports(data, path, prefixes, baseUrl, toBase64) {
+        function addImports(data, path, prefixes, baseUrl, toBase64, embedSizeLimit) {
             var children = [];
             data = data.replace(/\@import\s*url\s*\(\s*['"]?([^'"\)]*)['"]?\s*\)/g, function ($0) {
                 var matches = [];
@@ -157,7 +157,7 @@
                     matches[_i - 1] = arguments[_i];
                 }
                 var url = matches[0];
-                var realUrl = resolveUrl(url, realPath, prefixes, baseUrl, toBase64);
+                var realUrl = resolveUrl(url, realPath, prefixes, baseUrl, toBase64, embedSizeLimit);
                 function loadHandler(childData) {
                     var childOptions = {};
                     for (var p in options) {
@@ -186,7 +186,7 @@
             options = {};
         }
         var toBase64 = !!options.toBase64;
-        data = embedUrls(data, realPath, prefixes, baseUrl, toBase64);
+        data = embedUrls(data, realPath, prefixes, baseUrl, toBase64, options.sizeLimit || 30000);
         path = path.split('\\').join('/');
         options.path = path;
         if (options.parentPath) {
@@ -195,7 +195,7 @@
         var r = {
             path: options.path
         };
-        var importResult = addImports(data, path, prefixes, baseUrl, toBase64);
+        var importResult = addImports(data, path, prefixes, baseUrl, toBase64, options.sizeLimit || 30000);
         r.data = importResult.css;
         r.children = importResult.children;
         var tr = r;

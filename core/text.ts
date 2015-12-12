@@ -1,3 +1,5 @@
+'use strict';
+
 import cache from './cache';
 /*
 Dojo Toolkit's dojo/text as of jan 2014

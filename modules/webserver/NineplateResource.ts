@@ -1,4 +1,5 @@
-/// <reference path="../../typings/express/express.d.ts" />
+'use strict';
+
 import StaticResource from './StaticResource';
 import express = require('express');
 import { Request, Response } from './WebServer';

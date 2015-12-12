@@ -6,6 +6,7 @@
         define(["require", "exports"], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var isNode = typeof (window) === 'undefined', isAmd = (typeof (define) !== 'undefined') && (define.amd), isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
     var fs;
     if (!isNode) {
@@ -586,8 +587,8 @@
     };
     exports.SaxParser = function (eventhandlerfactory) {
         var eventhandler = Object.create({});
-        class thehandler {
-            constructor() {
+        var thehandler = (function () {
+            function thehandler() {
                 this.onStartDocument = function (funct) {
                     eventhandler.onStartDocument = funct;
                 };
@@ -616,7 +617,8 @@
                     eventhandler.onError = funct;
                 };
             }
-        }
+            return thehandler;
+        })();
         eventhandlerfactory(new thehandler());
         this.m_hndDoc = eventhandler;
         this.m_hndErr = eventhandler;
@@ -918,8 +920,8 @@
         iE = iE || strD.length;
         return strD.toString().substring(iB, iE).split(strF).join(strR);
     };
-    class Stack {
-        constructor() {
+    var Stack = (function () {
+        function Stack() {
             this.clear = function () {
                 this.m_arr = new Array();
             };
@@ -948,7 +950,8 @@
             };
             this.m_arr = new Array();
         }
-    }
+        return Stack;
+    })();
     ;
     function isEmpty(str) {
         return (str == null) || (str.length == 0);

@@ -1,16 +1,26 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 (function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../core/extend', '../core/ext/Properties', './config', '../core/deferredUtils'], factory);
+        define(["require", "exports", '../core/extend', '../core/ext/Properties', './config', '../config', '../core/deferredUtils'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var extend = require('../core/extend');
     var Properties_1 = require('../core/ext/Properties');
     var config_1 = require('./config');
+    var config_2 = require('../config');
     var deferredUtils_1 = require('../core/deferredUtils');
     var req = require;
+    var config = {};
+    extend.mixinRecursive(config, config_1.default);
+    extend.mixinRecursive(config, config_2.default.ninejs);
     function getConfigObject(m, config) {
         var cfgObj = {}, cnt;
         for (cnt = 0; cnt < m.provides.length; cnt += 1) {
@@ -99,9 +109,10 @@
         }
         return source === target;
     }
-    class ModuleRegistry extends Properties_1.default {
-        constructor() {
-            super();
+    var ModuleRegistry = (function (_super) {
+        __extends(ModuleRegistry, _super);
+        function ModuleRegistry() {
+            _super.call(this);
             extend.mixin(this, {
                 providesList: {}
             });
@@ -146,6 +157,7 @@
                 };
             };
             this.validate = function (m, enableOnDemand) {
+                var _this = this;
                 function errorIfNoDependencies() {
                     if (!len) {
                         for (cnt = 0; cnt < m.provides.length; cnt += 1) {
@@ -166,7 +178,7 @@
                         if (!moduleSet[current.id].get('enabled')) {
                             var tryModule = m.getModuleDefinition(current.id);
                             if (tryModule) {
-                                return self.Module.prototype.enable.call(tryModule, getConfigObject(tryModule, config_1.default));
+                                return self.Module.prototype.enable.call(tryModule, getConfigObject(tryModule, config));
                             }
                         }
                     }
@@ -194,22 +206,22 @@
                     }
                 }
                 var consumes = m.consumes, messages = '', len = 0, cnt;
-                let defs = consumes.map((current) => {
+                var defs = consumes.map(function (current) {
                     len += 1;
-                    if (!this.providesList[current.id]) {
-                        var onDemandModules = this.get('onDemandModules') || {}, onDemand;
-                        if (onDemandModules[current.id] && !this.hasProvide(current.id)) {
+                    if (!_this.providesList[current.id]) {
+                        var onDemandModules = _this.get('onDemandModules') || {}, onDemand;
+                        if (onDemandModules[current.id] && !_this.hasProvide(current.id)) {
                             onDemand = req(onDemandModules[current.id]).default;
-                            this.addModule(onDemand);
+                            _this.addModule(onDemand);
                         }
                     }
-                    return deferredUtils_1.when(processOnDemand(this, current), () => {
-                        if (this.providesList[current.id]) {
-                            if (!areVersionsCompatible(this.providesList[current.id].version, current.version)) {
-                                messages += 'incompatible versions on module "' + current.id + '". Your version is "' + this.providesList[current.id].version + '". Required version is: "' + current.version + '"\n';
+                    return deferredUtils_1.when(processOnDemand(_this, current), function () {
+                        if (_this.providesList[current.id]) {
+                            if (!areVersionsCompatible(_this.providesList[current.id].version, current.version)) {
+                                messages += 'incompatible versions on module "' + current.id + '". Your version is "' + _this.providesList[current.id].version + '". Required version is: "' + current.version + '"\n';
                             }
                             else {
-                                processConsumesFeatures(this, current);
+                                processConsumesFeatures(_this, current);
                             }
                         }
                         else {
@@ -217,7 +229,7 @@
                         }
                     });
                 });
-                return deferredUtils_1.when(deferredUtils_1.all(defs), () => {
+                return deferredUtils_1.when(deferredUtils_1.all(defs), function () {
                     errorIfNoDependencies();
                     return messages;
                 });
@@ -226,7 +238,7 @@
                 var currentModule, cnt, pArray = [];
                 for (cnt = 0; cnt < moduleList.length; cnt += 1) {
                     currentModule = moduleList[cnt];
-                    pArray.push(this.Module.prototype.enable.call(currentModule, getConfigObject(currentModule, config_1.default)));
+                    pArray.push(this.Module.prototype.enable.call(currentModule, getConfigObject(currentModule, config)));
                 }
                 return deferredUtils_1.when(deferredUtils_1.all(deferredUtils_1.mapToPromises(pArray)), function () {
                     for (cnt = 0; cnt < moduleList.length; cnt += 1) {
@@ -240,7 +252,7 @@
             };
             this.initUnit = function (unitId) {
                 if (!this.enabledUnits[unitId]) {
-                    var unitConfig = config_1.default.units[unitId];
+                    var unitConfig = config.units[unitId];
                     var _defer = deferredUtils_1.defer(), self = this;
                     this.enabledUnits[unitId] = _defer.promise;
                     deferredUtils_1.when(moduleSet[unitId].init(unitId, unitConfig), function (r) {
@@ -271,10 +283,11 @@
                 });
             };
         }
-        hasProvide(id) {
+        ModuleRegistry.prototype.hasProvide = function (id) {
             return !!this.providesList[id];
-        }
-    }
+        };
+        return ModuleRegistry;
+    })(Properties_1.default);
     exports.ModuleRegistry = ModuleRegistry;
     exports.moduleRegistry = new ModuleRegistry;
 });

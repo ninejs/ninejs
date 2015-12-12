@@ -6,6 +6,7 @@
         define(["require", "exports", './config', '../core/extend', 'path', 'fs', '../core/deferredUtils', './moduleRegistry'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var config_1 = require('./config');
     var extend_1 = require('../core/extend');
     var path = require('path');

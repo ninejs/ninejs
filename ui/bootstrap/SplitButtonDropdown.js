@@ -1,4 +1,4 @@
-define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./SplitButtonDropdown.html', '../utils/append', '../utils/setClass', '../utils/setText', '../../core/on', '../../css!./SplitButtonDropdown.css'], function (extend, Widget, Skin, template, append, setClass, setText, on, css) {
+define(['../../core/extend', '../Widget', '../Skin', './SplitButtonDropdown.9plate', '../utils/append', '../utils/setClass', '../utils/setText', '../../core/on', './SplitButtonDropdown.ncss'], function (extend, Widget, Skin, template, append, setClass, setText, on, css) {
 	'use strict';
 	extend = extend.default;
 	Widget = Widget.default;

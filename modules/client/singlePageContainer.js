@@ -6,6 +6,7 @@
         define(["require", "exports", '../moduleDefine', './FullScreenFrame', '../../ui/bootstrap/bootstrap'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var moduleDefine_1 = require('../moduleDefine');
     var FullScreenFrame_1 = require('./FullScreenFrame');
     var bootstrap_1 = require('../../ui/bootstrap/bootstrap');

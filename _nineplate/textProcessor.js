@@ -6,6 +6,7 @@
         define(["require", "exports", "./utils/parser/amd", '../core/deferredUtils', './baseProcessor'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var deferredUtils = require('../core/deferredUtils');
     var baseProcessor_1 = require('./baseProcessor');
     var parser, req = require, isNode = typeof (window) === 'undefined', isAmd = (typeof (define) !== 'undefined') && (!!define.amd);

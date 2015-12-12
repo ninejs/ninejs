@@ -1,5 +1,4 @@
-/// <reference path="../../../typings/node/node.d.ts" />
-/// <reference path="../../../typings/express/express.d.ts" />
+'use strict';
 
 import NineplateResource from '../NineplateResource';
 import path = require('path');
@@ -9,7 +8,7 @@ import { Request, Response } from '../WebServer';
 
 
 
-export default class SinglePageContainer extends NineplateResource {
+class SinglePageContainer extends NineplateResource {
 	context: any;
 	handler (req: Request, res: Response) {
 		this.context.jsBase = this.server.baseUrl + this.server.jsUrl;
@@ -47,3 +46,5 @@ SinglePageContainer.prototype.context = {
 		}
 	}
 };
+
+export default SinglePageContainer;

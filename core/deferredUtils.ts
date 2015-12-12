@@ -1,3 +1,5 @@
+'use strict';
+
 import extend from './extend'
 import bluebird from './bluebird'
 

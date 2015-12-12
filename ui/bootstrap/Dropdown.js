@@ -1,4 +1,4 @@
-define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./Dropdown.html', '../utils/append', '../utils/setClass', '../utils/setText', '../../core/on'], function(extend, Widget, Skin, template, append, setClass, setText, on) {
+define(['../../core/extend', '../Widget', '../Skin', './Dropdown.9plate', '../utils/append', '../utils/setClass', '../utils/setText', '../../core/on'], function(extend, Widget, Skin, template, append, setClass, setText, on) {
 	'use strict';
 	extend = extend.default;
 	Widget = Widget.default;

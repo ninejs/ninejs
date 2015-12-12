@@ -1,6 +1,4 @@
-/// <reference path="../typings/node/node.d.ts" />
-/// <reference path="../typings/bunyan/bunyan.d.ts" />
-
+'use strict';
 
 import extend from '../core/extend';
 import Module from './Module';

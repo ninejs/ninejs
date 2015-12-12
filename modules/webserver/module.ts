@@ -1,3 +1,5 @@
+'use strict';
+
 import Module from '../Module';
 import WebServer from './WebServer';
 var packageJson = require('../../package.json');

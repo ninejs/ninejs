@@ -1,4 +1,4 @@
-/// <reference path="../typings/tsd.d.ts" />
+'use strict';
 
 import config from './config';
 import extend from '../core/extend';

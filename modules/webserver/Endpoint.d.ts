@@ -1,4 +1,3 @@
-/// <reference path="../../typings/express/express.d.ts" />
 import Properties from '../../core/ext/Properties';
 import WebServer from './WebServer';
 import { Request, Response, Application } from './WebServer';

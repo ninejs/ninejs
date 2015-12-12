@@ -6,6 +6,7 @@
         define(["require", "exports"], factory);
     }
 })(function (require, exports) {
+    'use strict';
     function hash(newHash, replace) {
         if (!arguments.length) {
             return window.location.hash;

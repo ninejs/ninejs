@@ -1,3 +1,5 @@
+'use strict';
+
 import * as extend from '../core/extend';
 import { InternalNode, parse } from './utils/node/xmlParser';
 

@@ -1,3 +1,5 @@
+'use strict';
+
 export interface DecoratorFunction {
 	(fn: Function): any,
 	$$ninejsType: string,

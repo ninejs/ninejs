@@ -1,5 +1,3 @@
-/// <reference path="../typings/node/node.d.ts" />
-/// <reference path="../typings/bunyan/bunyan.d.ts" />
 import Module from './Module';
 export declare class NineJs extends Module {
     logger: {

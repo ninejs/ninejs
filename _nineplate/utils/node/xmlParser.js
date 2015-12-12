@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 (function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -6,16 +11,19 @@
         define(["require", "exports", './node-xml', '../../../core/bluebird'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var xml = require('./node-xml');
     var Q = require('../../../core/bluebird');
     var defer = function () {
         return Q.defer();
     };
-    class XmlParserError extends Error {
-        constructor(msg) {
-            super(msg);
+    var XmlParserError = (function (_super) {
+        __extends(XmlParserError, _super);
+        function XmlParserError(msg) {
+            _super.call(this, msg);
         }
-    }
+        return XmlParserError;
+    })(Error);
     exports.XmlParserError = XmlParserError;
     function getAttributeNS(node, prefix) {
         if (node.namespaces.length) {

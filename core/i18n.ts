@@ -1,4 +1,4 @@
-/// <reference path="../typings/node/node.d.ts" />
+'use strict';
 
 import extend from './extend';
 import Evented from './ext/Evented';

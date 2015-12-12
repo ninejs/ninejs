@@ -1,3 +1,5 @@
+'use strict';
+
 import * as extend from '../core/extend'
 import Properties from '../core/ext/Properties'
 import { Template, ResultFunction, default as nineplate } from '../nineplate'

@@ -1,4 +1,6 @@
 ///<amd-dependency path="./utils/parser/amd" />
+'use strict';
+
 import * as deferredUtils from '../core/deferredUtils';
 import { XmlNode, getParsedXml, InternalNode, TextParseContext, safeFilter, trim, ExpressionToken, ParserType } from './baseProcessor';
 declare var define: any;

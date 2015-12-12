@@ -6,6 +6,7 @@
         define(["require", "exports"], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var append;
     append = (function () {
         var append = function (parentNode, node, position) {

@@ -4,6 +4,7 @@ declare var define:{
 	(deps:string[], callback:(...rest:any[]) => any): void;
 	amd: any;
 };
+'use strict';
 import extend from './core/extend';
 import Properties from './core/ext/Properties';
 import * as def from './core/deferredUtils';

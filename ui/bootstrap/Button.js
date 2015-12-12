@@ -1,4 +1,4 @@
-define(['../../core/extend', '../Widget', '../Skin', '../../nineplate!./Button.html'], function(extend, Widget, Skin, template) {
+define(['../../core/extend', '../Widget', '../Skin', './Button.9plate'], function(extend, Widget, Skin, template) {
 	'use strict';
 	extend = extend.default;
 	Widget = Widget.default;

@@ -6,6 +6,7 @@
         define(["require", "exports", './core/extend', './modules/config'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var extend = require('./core/extend');
     var moduleConfig = require('./modules/config');
     var isAmd = (typeof (define) !== 'undefined') && define.amd;
@@ -23,7 +24,7 @@
         }
     }
     var r;
-    if (isNode) {
+    if (!isNode) {
         _global = window;
     }
     if (dojoConfig) {

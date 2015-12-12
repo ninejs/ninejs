@@ -1,4 +1,5 @@
-/// <reference path="../typings/tsd.d.ts" />
+'use strict';
+
 /*
 Dojo Toolkit's dojo/text as of jan 2014
 */

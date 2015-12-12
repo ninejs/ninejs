@@ -1,6 +1,3 @@
-/// <reference path="../../typings/node/node.d.ts" />
-/// <reference path="../../typings/method-override/method-override.d.ts" />
-/// <reference path="../../typings/morgan/morgan.d.ts" />
 import Properties from '../../core/ext/Properties';
 import Endpoint from './Endpoint';
 import StaticResource from './StaticResource';

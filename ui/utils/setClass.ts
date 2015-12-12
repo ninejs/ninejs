@@ -1,5 +1,9 @@
 ///<amd-dependency path="../../modernizer" />
+
+'use strict';
+
 declare var require: any;
+
 var modernizer: any = require('../../modernizer');
 
 var ietrident: boolean = modernizer.ietrident;

@@ -1,5 +1,4 @@
-/// <reference path="../../typings/node/node.d.ts" />
-/// <reference path="../../typings/express/express.d.ts" />
+'use strict';
 
 import Properties from '../../core/ext/Properties';
 import WebServer from './WebServer';

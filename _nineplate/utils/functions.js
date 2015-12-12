@@ -6,6 +6,7 @@
         define(["require", "exports"], factory);
     }
 })(function (require, exports) {
+    'use strict';
     exports.t = function appendText(e, text, doc) {
         return e.appendChild(doc.createTextNode(text));
     };

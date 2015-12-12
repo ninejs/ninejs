@@ -1,3 +1,5 @@
+'use strict';
+
 import { define } from '../moduleDefine';
 import Module from '../Module';
 import FullScreenFrame from './FullScreenFrame';

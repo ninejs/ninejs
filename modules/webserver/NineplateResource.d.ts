@@ -1,4 +1,3 @@
-/// <reference path="../../typings/express/express.d.ts" />
 import StaticResource from './StaticResource';
 import { Request, Response } from './WebServer';
 declare class NineplateResource extends StaticResource {

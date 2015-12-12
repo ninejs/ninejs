@@ -6,6 +6,7 @@
         define(["require", "exports", "../../modernizer"], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var modernizer = require('../../modernizer');
     var ietrident = modernizer.ietrident;
     function localTrim() {

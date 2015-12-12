@@ -1,3 +1,5 @@
+'use strict';
+
 import extend from '../core/extend';
 import Module from './Module';
 import { when, isPromise, defer, all, resolve } from '../core/deferredUtils';

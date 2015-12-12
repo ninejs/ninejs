@@ -1,3 +1,5 @@
+'use strict';
+
 export default function hash(newHash?: string, replace?: boolean) {
 	// getter
 	if (!arguments.length) {

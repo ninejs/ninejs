@@ -6,6 +6,7 @@
         define(["require", "exports", "./utils/parser/amd", './utils/functions', '../core/deferredUtils', './baseProcessor', '../core/objUtils', './renderers/JavascriptRenderer'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var functions = require('./utils/functions');
     var def = require('../core/deferredUtils');
     var baseProcessor_1 = require('./baseProcessor');
@@ -18,7 +19,7 @@
     else {
         parser = require('./utils/parser/amd');
     }
-    let svgNamespace = 'http://www.w3.org/2000/svg';
+    var svgNamespace = 'http://www.w3.org/2000/svg';
     var TargetType;
     (function (TargetType) {
         TargetType[TargetType["Attr"] = 0] = "Attr";
@@ -301,7 +302,7 @@
                         .addVar(amdModuleVar, parentRenderer
                         .expression('require')
                         .invoke(parentRenderer.literal(mid)));
-                    let chunk = new JavascriptRenderer_1.Chunk(parentRenderer);
+                    var chunk = new JavascriptRenderer_1.Chunk(parentRenderer);
                     defaultCondition = chunk.renderer.addCondition(renderer.expression(amdModuleVar).member('default'));
                     defaultCondition.renderer.addAssignment(amdModuleVar, renderer.expression(amdModuleVar).member('default'));
                     parentRenderer.addStatementAtBeginning(chunk);
@@ -901,8 +902,8 @@
             parentRenderer
                 .addVar('fn', parentRenderer
                 .expression('require')
-                .invoke(parentRenderer.literal(`${options.ninejsPrefix || 'ninejs'}/_nineplate/utils/functions`)));
-            amdPathMapping[`${options.ninejsPrefix || 'ninejs'}/_nineplate/utils/functions`] = 'fn';
+                .invoke(parentRenderer.literal((options.ninejsPrefix || 'ninejs') + "/_nineplate/utils/functions")));
+            amdPathMapping[((options.ninejsPrefix || 'ninejs') + "/_nineplate/utils/functions")] = 'fn';
         }
         renderer
             .addVar('r', renderer.raw('{}'));

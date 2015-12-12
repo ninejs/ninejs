@@ -6,6 +6,7 @@
         define(["require", "exports", './utils/node/xmlParser'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var xmlParser_1 = require('./utils/node/xmlParser');
     var isNode = typeof (window) === 'undefined';
     function manualTrim(str) {
@@ -18,34 +19,34 @@
         }
         return str;
     }
-    class XmlNode {
-        constructor(parsedXmlNode) {
+    var XmlNode = (function () {
+        function XmlNode(parsedXmlNode) {
             this.node = parsedXmlNode;
         }
-        nodeType() {
+        XmlNode.prototype.nodeType = function () {
             return this.node.nodeType;
-        }
-        value() {
+        };
+        XmlNode.prototype.value = function () {
             return this.node.value;
-        }
-        nodeValue() {
+        };
+        XmlNode.prototype.nodeValue = function () {
             return this.node.nodeValue;
-        }
-        getAttributes() {
+        };
+        XmlNode.prototype.getAttributes = function () {
             var cnt, attributes = this.node.attributes, len = attributes.length, r = [];
             for (cnt = 0; cnt < len; cnt += 1) {
                 r.push(new XmlNode(attributes[cnt]));
             }
             return r;
-        }
-        getChildNodes() {
+        };
+        XmlNode.prototype.getChildNodes = function () {
             var cnt, children = isNode ? this.node.children : this.node.childNodes, len = children.length, r = [];
             for (cnt = 0; cnt < len; cnt += 1) {
                 r.push(new XmlNode(children[cnt]));
             }
             return r;
-        }
-        hasVariableTagName() {
+        };
+        XmlNode.prototype.hasVariableTagName = function () {
             var attributes = this.getAttributes(), cnt;
             for (cnt = 0; cnt < attributes.length; cnt += 1) {
                 if (attributes[cnt].nodeName() === 'data-ninejs-tagName') {
@@ -53,8 +54,8 @@
                 }
             }
             return false;
-        }
-        getVariableTagName(callback) {
+        };
+        XmlNode.prototype.getVariableTagName = function (callback) {
             var attributes = this.getAttributes(), found, cnt;
             for (cnt = 0; cnt < attributes.length; cnt += 1) {
                 if (attributes[cnt].nodeName() === 'data-ninejs-tagName') {
@@ -67,51 +68,53 @@
             else {
                 return callback(null);
             }
-        }
-        nodeName() {
+        };
+        XmlNode.prototype.nodeName = function () {
             return this.node.nodeName;
-        }
-        nodeLocalName() {
+        };
+        XmlNode.prototype.nodeLocalName = function () {
             return this.node.localName || this.node.nodeName;
-        }
-        namespaceUri() {
+        };
+        XmlNode.prototype.namespaceUri = function () {
             return this.node.namespaceURI || this.node.namespaceUri || '';
-        }
-        parentNode() {
+        };
+        XmlNode.prototype.parentNode = function () {
             if (!this.node.parentNode) {
                 return null;
             }
             else {
                 return new XmlNode(this.node.parentNode);
             }
-        }
-        set(n, v) {
+        };
+        XmlNode.prototype.set = function (n, v) {
             this.node[n] = v;
-        }
-        get(n) {
+        };
+        XmlNode.prototype.get = function (n) {
             return this.node[n];
-        }
-    }
+        };
+        return XmlNode;
+    })();
     exports.XmlNode = XmlNode;
-    class TextParseContext {
-        constructor() {
+    var TextParseContext = (function () {
+        function TextParseContext() {
             this.r = [];
             this.lineBuffer = [];
         }
-        append(line) {
+        TextParseContext.prototype.append = function (line) {
             this.appendLine();
             this.r.push(line);
-        }
-        appendLine() {
+        };
+        TextParseContext.prototype.appendLine = function () {
             if (this.lineBuffer.length) {
                 this.r.push('result.push(\'' + this.lineBuffer.join('') + '\');\n');
                 this.lineBuffer = [];
             }
-        }
-        getText() {
+        };
+        TextParseContext.prototype.getText = function () {
             return this.r.join('');
-        }
-    }
+        };
+        return TextParseContext;
+    })();
     exports.TextParseContext = TextParseContext;
     function trim(content) {
         if (!content) {

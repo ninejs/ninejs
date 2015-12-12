@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 (function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -6,12 +11,14 @@
         define(["require", "exports", './StaticResource'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var StaticResource_1 = require('./StaticResource');
-    class NineplateResource extends StaticResource_1.default {
-        constructor(arg) {
-            super(arg);
+    var NineplateResource = (function (_super) {
+        __extends(NineplateResource, _super);
+        function NineplateResource(arg) {
+            _super.call(this, arg);
         }
-        handler(req, res) {
+        NineplateResource.prototype.handler = function (req, res) {
             var props = this.props || {}, p, self = this;
             res.set('Content-Type', this.contentType);
             for (p in props) {
@@ -30,12 +37,14 @@
                     res.end(result);
                 }
             });
-        }
-    }
+        };
+        return NineplateResource;
+    })(StaticResource_1.default);
     NineplateResource.prototype.type = 'endpoint';
     NineplateResource.prototype.contentType = 'text/html; charset=utf-8';
     NineplateResource.prototype.doctype = 'html';
     NineplateResource.prototype.context = {};
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = NineplateResource;
 });
 //# sourceMappingURL=NineplateResource.js.map

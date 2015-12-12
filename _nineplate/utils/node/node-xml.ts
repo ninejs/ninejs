@@ -1,4 +1,5 @@
-/// <reference path="../../../typings/tsd.d.ts" />
+'use strict';
+
 declare var define:{
 	(deps:string[], callback:(...rest:any[]) => any): void;
 	amd: any;

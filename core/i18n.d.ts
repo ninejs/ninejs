@@ -1,4 +1,3 @@
-/// <reference path="../typings/node/node.d.ts" />
 import { PromiseType } from './deferredUtils';
 export interface I18nResource {
     loadResource: (locale: string, require: any, load: (data: any) => void) => any;

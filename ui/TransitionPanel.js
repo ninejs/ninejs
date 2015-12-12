@@ -1,6 +1,7 @@
 define(['../core/deferredUtils',
-	'../core/extend', './utils/setClass', './Widget', '../css!./css/common.css'], function(def, extend, setClass, Widget, commonCss) {
+	'../core/extend', './utils/setClass', './Widget', './css/common.ncss'], function(def, extend, setClass, Widget, commonCss) {
 	'use strict';
+
 	extend = extend.default;
 	setClass = setClass.default;
 	Widget = Widget.default;

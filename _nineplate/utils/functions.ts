@@ -1,3 +1,5 @@
+'use strict';
+
 export var t = function appendText(e: HTMLElement, text: string, doc: HTMLDocument) {
 	return e.appendChild(doc.createTextNode(text));
 }

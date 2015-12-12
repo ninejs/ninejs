@@ -1,6 +1,4 @@
-/// <reference path="../../typings/node/node.d.ts" />
-/// <reference path="../../typings/method-override/method-override.d.ts" />
-/// <reference path="../../typings/morgan/morgan.d.ts" />
+'use strict';
 
 import Properties from '../../core/ext/Properties';
 import express = require('express');

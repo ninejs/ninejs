@@ -6,6 +6,7 @@
         define(["require", "exports"], factory);
     }
 })(function (require, exports) {
+    'use strict';
     function stripFunctionName(fstring) {
         var idx = fstring.indexOf('(');
         if (idx > 9) {
@@ -62,8 +63,11 @@
     }
     exports.deepToString = deepToString;
     function protoClone(obj) {
-        class A {
-        }
+        var A = (function () {
+            function A() {
+            }
+            return A;
+        })();
         A.prototype = obj;
         return new A();
     }

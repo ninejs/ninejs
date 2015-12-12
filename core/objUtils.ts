@@ -1,3 +1,4 @@
+'use strict';
 
 /*
  strips out the function name after 'function '

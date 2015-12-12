@@ -6,6 +6,7 @@
         define(["require", "exports"], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var map = (function () {
         var map;
         if (typeof (Array.prototype.map) === 'function') {

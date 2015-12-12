@@ -3,10 +3,11 @@
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", './config', './moduleRegistry', './Module', '../core/extend', '../core/deferredUtils', './client/router', './ninejs-client', './client/container', './client/singlePageContainer'], factory);
+        define(["require", "exports", '../config', './moduleRegistry', './Module', '../core/extend', '../core/deferredUtils', './client/router', './ninejs-client', './client/container', './client/singlePageContainer'], factory);
     }
 })(function (require, exports) {
-    var config_1 = require('./config');
+    'use strict';
+    var config_1 = require('../config');
     var moduleRegistry_1 = require('./moduleRegistry');
     var Module_1 = require('./Module');
     var extend_1 = require('../core/extend');
@@ -15,7 +16,7 @@
     require('./ninejs-client');
     require('./client/container');
     require('./client/singlePageContainer');
-    var modules = config_1.default.modules || {}, moduleArray = [], prefix = config_1.default.prefix || 'ninejs', onDemandModules = {
+    var modules = config_1.default.ninejs.modules || {}, moduleArray = [], prefix = config_1.default.ninejs.prefix || 'ninejs', onDemandModules = {
         'ninejs': prefix + '/modules/ninejs-client',
         'router': prefix + '/modules/client/router',
         'container': prefix + '/modules/client/container',
@@ -38,14 +39,14 @@
             unitCfg = modules[moduleArray[cnt]];
             extend_1.default.mixinRecursive(allUnitsCfg, unitCfg);
         }
-        extend_1.default.mixinRecursive(config_1.default, { units: {} });
-        extend_1.default.mixinRecursive(allUnitsCfg, config_1.default.units);
-        extend_1.default.mixinRecursive(config_1.default.units, allUnitsCfg);
+        extend_1.default.mixinRecursive(config_1.default.ninejs, { units: {} });
+        extend_1.default.mixinRecursive(allUnitsCfg, config_1.default.ninejs.units);
+        extend_1.default.mixinRecursive(config_1.default.ninejs.units, allUnitsCfg);
         var arr = Array.prototype.map.call(arguments, function (current) {
             if (current.default) {
                 current = current.default;
             }
-            Module_1.default.prototype.enable.call(current, config_1.default.units);
+            Module_1.default.prototype.enable.call(current, config_1.default.ninejs.units);
         });
         deferredUtils_1.when(deferredUtils_1.all(arr), function () {
             moduleLoadPromise.resolve(true);

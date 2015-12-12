@@ -6,6 +6,7 @@
         define(["require", "exports", '../request'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var request = require('../request');
     var isAmd = (typeof (define) !== 'undefined') && define.amd;
     var isDojo = isAmd && (define.amd.vendor === 'dojotoolkit.org');

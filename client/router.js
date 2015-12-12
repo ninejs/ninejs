@@ -8,10 +8,12 @@ var __extends = (this && this.__extends) || function (d, b) {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../core/deferredUtils', '../core/ext/Evented', '../core/ext/Properties', './hash', '../core/on'], factory);
+        define(["require", "exports", '../core/deferredUtils', '../core/extend', '../core/ext/Evented', '../core/ext/Properties', './hash', '../core/on'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var deferredUtils_1 = require('../core/deferredUtils');
+    var extend_1 = require('../core/extend');
     var Evented_1 = require('../core/ext/Evented');
     var Properties_1 = require('../core/ext/Properties');
     var hash_1 = require('./hash');
@@ -81,8 +83,9 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             return Evented_1.default.emit.apply(this, arguments);
         };
-        Router.prototype.register = function (route, action) {
+        Router.prototype.register = function (route, action, opts) {
             var options = prepareArguments(route, action);
+            extend_1.default.mixinRecursive(options, opts || {});
             return new Route(options, this);
         };
         Router.prototype.go = function (route, replace) {

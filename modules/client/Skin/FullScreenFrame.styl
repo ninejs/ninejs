@@ -1,20 +1,20 @@
 .njsFullScreenFrame {
 	> {
 		* {
-			display: none;
+			display: none !important;
 			@media print {
-				display: none;
+				display: none !important;
 			}
 		}
 		.active {
-			display: block;
+			display: block !important;
             &.tableFrame {
-                display: table;
+                display: table !important;
             }
 			@media print {
-				display: block;
+				display: block !important;
                 &.tableFrame {
-                    display: table;
+                    display: table !important;
                 }
 			}
 		}

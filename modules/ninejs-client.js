@@ -6,6 +6,7 @@
         define(["require", "exports", './Module'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var Module_1 = require('./Module');
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = new Module_1.default({

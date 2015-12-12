@@ -1,4 +1,3 @@
-/// <reference path="../typings/node/node.d.ts" />
 export interface AMDPrefixesType {
     name: string;
     location: string;
@@ -12,6 +11,7 @@ export interface ProcessCssOptionsType {
     path?: string;
     parentPath?: string;
     toBase64?: boolean;
+    sizeLimit?: number;
     [name: string]: any;
 }
 export interface ProcessCssImportType {

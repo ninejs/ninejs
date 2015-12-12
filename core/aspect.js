@@ -6,6 +6,7 @@
         define(["require", "exports"], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var nextId = 0;
     function advise(dispatcher, type, advice, receiveArguments) {
         var previous = dispatcher[type];
@@ -79,7 +80,11 @@
         return function (target, methodName, advice, receiveArguments) {
             var existing = target[methodName], dispatcher, results;
             if (!existing || existing.target !== target) {
-                target[methodName] = dispatcher = function (...args) {
+                target[methodName] = dispatcher = function () {
+                    var args = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        args[_i - 0] = arguments[_i];
+                    }
                     var executionId = nextId;
                     var before = dispatcher.before;
                     while (before) {

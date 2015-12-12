@@ -7,6 +7,7 @@
  represent it and evaluate it over a collection of data or a service.
  @exports ninejs/core/logic/Expression
  */
+'use strict';
 
 import Properties from '../ext/Properties';
 import { isArray, isFunction, isString } from '../objUtils';

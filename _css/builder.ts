@@ -1,4 +1,5 @@
-///<reference path='../typings/node/node.d.ts'/>
+'use strict';
+
 import * as request from '../request';
 
 export interface AMDPrefixesType {
@@ -14,6 +15,7 @@ export interface ProcessCssOptionsType {
 	path?: string;
 	parentPath?: string;
 	toBase64?: boolean;
+	sizeLimit?: number;
 	[name: string]: any;
 }
 export interface ProcessCssImportType {
@@ -28,7 +30,7 @@ let isNode = typeof(window) === 'undefined',
 	isAmd = (typeof(define) !== 'undefined') && (define.amd),
 	isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
 
-function resolveUrl(url: string, path: string, prefixes: AMDPrefixesType[], baseUrl: string, toBase64: boolean) {
+function resolveUrl(url: string, path: string, prefixes: AMDPrefixesType[], baseUrl: string, toBase64: boolean, sizeLimit: number) {
 	function attachBaseUrl(baseUrl: string, r: string) {
 		if (baseUrl) {
 			if (!/\:/.test(r) && !/^\//.test(r)){
@@ -90,7 +92,7 @@ function resolveUrl(url: string, path: string, prefixes: AMDPrefixesType[], base
 	r = attachBaseUrl(baseUrl, r);
 
 	if (toBase64) {
-		var b64String = convertToBase64Url(r, path /*resolveRealPath(r, path, prefixes, baseUrl)*/);
+		var b64String = convertToBase64Url(r, path /*resolveRealPath(r, path, prefixes, baseUrl)*/, sizeLimit);
 		if (b64String) {
 			r = b64String;
 		}
@@ -114,7 +116,7 @@ if (isNode) {
 		pathModule = req('path');
 	}
 }
-function convertToBase64Url(url:string, path: string) {
+function convertToBase64Url(url:string, path: string, sizeLimit: number) {
 	if (/^data:/.test(url)){
 		return url;
 	}
@@ -122,7 +124,6 @@ function convertToBase64Url(url:string, path: string) {
 	if (suffixIdx >= 0) {
 		url = url.substr(0, suffixIdx);
 	}
-	var sizeLimit = 30000;
 	var mimeTypes: { [name: string]: string } = {
 		'.gif': 'image/gif',
 		'.png': 'image/png',
@@ -151,14 +152,14 @@ function convertToBase64Url(url:string, path: string) {
 	return null;
 }
 
-function embedUrls(data: string, path: string, prefixes: AMDPrefixesType[], baseUrl: string, toBase64: boolean) {
+function embedUrls(data: string, path: string, prefixes: AMDPrefixesType[], baseUrl: string, toBase64: boolean, sizeLimit: number) {
 	var r = data;
 	/* jshint unused: true */
 	r = r.replace(/(embed)?url\s*\(\s*['"]?([^'"\)]*)['"]?\s*\)/g, function($0: string, ...matches: string[]){
 		var url = matches[1];
-		var newUrl = resolveUrl(url, path, prefixes, baseUrl, false);
+		var newUrl = resolveUrl(url, path, prefixes, baseUrl, false, sizeLimit);
 		if (toBase64) {
-			var embedded = convertToBase64Url(newUrl, path);
+			var embedded = convertToBase64Url(newUrl, path, sizeLimit);
 			if (embedded) {
 				url = embedded;
 			}
@@ -176,13 +177,13 @@ function isLocalFs(src: string) {
 	return src.match(localRegex);
 }
 export function processCss(data: string, path: string, realPath: string, prefixes: AMDPrefixesType[], baseUrl: string, options: ProcessCssOptionsType, callback: (t: ProcessedCssType) => void) {
-	function addImports(data: string, path: string, prefixes: AMDPrefixesType[], baseUrl: string, toBase64: boolean) {
+	function addImports(data: string, path: string, prefixes: AMDPrefixesType[], baseUrl: string, toBase64: boolean, embedSizeLimit: number) {
 		var children: ProcessedCssType[] = [];
 		/* jshint unused: true */
 		data = data.replace(/\@import\s*url\s*\(\s*['"]?([^'"\)]*)['"]?\s*\)/g, ($0: string, ...matches: string[]) => {
 			var url: string = matches[0];
 
-			var realUrl = resolveUrl(url, realPath, prefixes, baseUrl, toBase64);
+			var realUrl = resolveUrl(url, realPath, prefixes, baseUrl, toBase64, embedSizeLimit);
 
 			function loadHandler (childData: any) {
 				var childOptions: ProcessCssOptionsType = {};
@@ -213,7 +214,8 @@ export function processCss(data: string, path: string, realPath: string, prefixe
 	}
 	var toBase64 = !!options.toBase64;
 
-	data = embedUrls(data, realPath, prefixes, baseUrl, toBase64);
+
+	data = embedUrls(data, realPath, prefixes, baseUrl, toBase64, options.sizeLimit || 30000);
 
 	path = path.split('\\').join('/');
 	options.path = path;
@@ -223,7 +225,7 @@ export function processCss(data: string, path: string, realPath: string, prefixe
 	var r: any = {
 		path: options.path
 	};
-	var importResult = addImports(data, path, prefixes, baseUrl, toBase64);
+	var importResult = addImports(data, path, prefixes, baseUrl, toBase64, options.sizeLimit || 30000);
 	r.data = importResult.css;
 	r.children = importResult.children;
 	var tr: ProcessedCssType = r;

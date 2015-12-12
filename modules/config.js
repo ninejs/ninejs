@@ -6,12 +6,13 @@
         define(["require", "exports"], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var isAmd = (typeof (define) !== 'undefined') && define.amd;
     var isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
     var isNode = (typeof (window) === 'undefined');
     var req = require;
     var dojoConfig;
-    let _global = ((typeof (global) !== 'undefined') ? global : window) || {};
+    var _global = ((typeof (global) !== 'undefined') ? global : window) || {};
     if (isDojo) {
         if (!isNode) {
             dojoConfig = _global.dojoConfig || {};
@@ -65,6 +66,7 @@
             mixin(config, njsConfig);
         }
     }
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = config;
 });
 //# sourceMappingURL=config.js.map

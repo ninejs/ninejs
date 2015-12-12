@@ -3,10 +3,10 @@
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../modernizer', './aspect'], factory);
+        define(["require", "exports", "../modernizer", './aspect'], factory);
     }
 })(function (require, exports) {
-    var modernizer_1 = require('../modernizer');
+    'use strict';
     var aspect = require('./aspect');
     var isNode = (typeof (process) !== 'undefined') && (process.toString() === '[object process]');
     function getSelector() {
@@ -43,13 +43,20 @@
         }
         return null;
     }
+    var has;
+    if (!isNode) {
+        has = require('../modernizer').default;
+    }
+    else {
+        has = function () { return false; };
+    }
     var _dojoIEListeners_, _window = (typeof (window) !== 'undefined') ? window : {};
     var major = _window.ScriptEngineMajorVersion;
     if (!isNode) {
-        modernizer_1.default.add('jscript', major && (major() + _window.ScriptEngineMinorVersion() / 10));
-        modernizer_1.default.add('event-orientationchange', modernizer_1.default('touch') && !modernizer_1.default('android'));
-        modernizer_1.default.add('event-stopimmediatepropagation', _window.Event && !!_window.Event.prototype && !!_window.Event.prototype.stopImmediatePropagation);
-        modernizer_1.default.add('event-focusin', function () {
+        has.add('jscript', major && (major() + _window.ScriptEngineMinorVersion() / 10));
+        has.add('event-orientationchange', has('touch') && !has('android'));
+        has.add('event-stopimmediatepropagation', _window.Event && !!_window.Event.prototype && !!_window.Event.prototype.stopImmediatePropagation);
+        has.add('event-focusin', function () {
             var doc = window.document, element = doc.createElement('input');
             return 'onfocusin' in element || (element.addEventListener && (function () {
                 var hasFocusInEvent = false;
@@ -73,32 +80,35 @@
             })());
         });
     }
-    class EventHandler {
-        constructor(owner, collection, action) {
+    var EventHandler = (function () {
+        function EventHandler(owner, collection, action) {
+            var _this = this;
             this.owner = owner;
             this.action = action;
             collection.push(this);
-            this.stopPropagation = () => {
-                this.bubbles = false;
-                this.cancelled = true;
+            this.stopPropagation = function () {
+                _this.bubbles = false;
+                _this.cancelled = true;
             };
-            this.remove = () => {
-                var index = collection.indexOf(this);
+            this.remove = function () {
+                var index = collection.indexOf(_this);
                 if (index >= 0) {
                     collection.splice(index, 1);
                 }
                 return null;
             };
         }
-    }
+        return EventHandler;
+    })();
     exports.EventHandler = EventHandler;
-    class IESignal {
-        constructor(handle) {
+    var IESignal = (function () {
+        function IESignal(handle) {
             this.handle = handle;
         }
-    }
+        return IESignal;
+    })();
     var on;
-    on = (() => {
+    on = (function () {
         var on = function (target, type, listener, dontFix) {
             if (typeof target.on === 'function' && typeof type !== 'function' && !target.nodeType) {
                 return target.on(type, listener);
@@ -157,11 +167,11 @@
                 selector = selector[1];
                 return on.selector(selector, type).call(matchesTarget, target, listener);
             }
-            if (modernizer_1.default('touch')) {
+            if (has('touch')) {
                 if (touchEvents.test(type)) {
                     listener = fixTouchListener(listener);
                 }
-                if (!modernizer_1.default('event-orientationchange') && (type === 'orientationchange')) {
+                if (!has('event-orientationchange') && (type === 'orientationchange')) {
                     type = 'resize';
                     target = window;
                     listener = fixTouchListener(listener);
@@ -247,11 +257,11 @@
             } while (event && event.bubbles && (target = target.parentNode));
             return event && event.cancelable && event;
         };
-        var captures = modernizer_1.default('event-focusin') ? {} : {
+        var captures = has('event-focusin') ? {} : {
             focusin: 'focus',
             focusout: 'blur'
         };
-        if (!modernizer_1.default('event-stopimmediatepropagation')) {
+        if (!has('event-stopimmediatepropagation')) {
             var stopImmediatePropagation = function () {
                 this.immediatelyStopped = true;
                 this.modified = true;
@@ -265,7 +275,7 @@
                 };
             };
         }
-        if (modernizer_1.default('dom-addeventlistener')) {
+        if (has('dom-addeventlistener')) {
             on.emit = function (target, type, event) {
                 if (target.dispatchEvent && window.document.createEvent) {
                     var ownerDocument = target.ownerDocument || window.document;
@@ -351,7 +361,7 @@
             var fixAttach = function (target, type, listener) {
                 listener = fixListener(listener);
                 if (((target.ownerDocument ? target.ownerDocument.parentWindow : target.parentWindow || target.window || window) !== window.top ||
-                    modernizer_1.default('jscript') < 5.8) && !modernizer_1.default('config-_allow_leaks')) {
+                    has('jscript') < 5.8) && !has('config-_allow_leaks')) {
                     if (typeof _dojoIEListeners_ === 'undefined') {
                         _dojoIEListeners_ = [];
                     }
@@ -392,9 +402,12 @@
                 this.modified = true;
             };
         }
-        if (modernizer_1.default('touch')) {
-            class Event {
-            }
+        if (has('touch')) {
+            var Event_1 = (function () {
+                function Event_1() {
+                }
+                return Event_1;
+            })();
             ;
             var windowOrientation = window.orientation;
             var fixTouchListener = function (listener) {
@@ -407,7 +420,7 @@
                         }
                         catch (e) { }
                         if (originalEvent.type) {
-                            if (modernizer_1.default('mozilla')) {
+                            if (has('mozilla')) {
                                 var event = {};
                                 for (var name in originalEvent) {
                                     if (originalEvent.hasOwnProperty(name)) {
@@ -416,8 +429,8 @@
                                 }
                             }
                             else {
-                                Event.prototype = originalEvent;
-                                event = new Event();
+                                Event_1.prototype = originalEvent;
+                                event = new Event_1();
                             }
                             event.preventDefault = function () {
                                 originalEvent.preventDefault();
@@ -462,6 +475,7 @@
     exports.emit = on.emit;
     exports.pausable = on.pausable;
     exports.once = on.once;
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = on;
 });
 //# sourceMappingURL=on.js.map

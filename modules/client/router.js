@@ -11,6 +11,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         define(["require", "exports", '../Module', '../../client/router', '../../client/hash', '../config'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var Module_1 = require('../Module');
     var router = require('../../client/router');
     var hash_1 = require('../../client/hash');

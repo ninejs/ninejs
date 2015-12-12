@@ -8,8 +8,8 @@ function exports(grunt) {
 		testFiles = ['**/tests/**/*.js', '!coverage/**', '!**/tests/**/phantom*.js', '!node_modules/**', '!out/**', '!nineplate/tests/template-generated.js'],
 		phantomWatch = ['nineplate/tests/phantomTest.js'],
 		stylusFiles = [ '**/*.styl', '!node_modules/**', '!ui/bootstrap/extension.styl' ],
-		lessFiles = ['ui/bootstrap/less/bootstrap.less', 'ui/bootstrap/less/responsive.less'],
-		ncssFiles = ['ui/bootstrap/less/bootstrap.ncss', 'ui/bootstrap/less/responsive.ncss'],
+		lessFiles = ['ui/bootstrap/less/bootstrap.less'],
+		ncssFiles = ['ui/bootstrap/less/bootstrap.ncss'],
 		tsfiles = ['**/*.ts', '!**/*.d.ts', '!node_modules/**/*.ts'],
 		Q = require('kew');
 
@@ -61,44 +61,6 @@ function exports(grunt) {
 			//}
 
 		},
-		jshint: {
-			files: jsFiles,
-			options: {
-				bitwise : true,
-				camelcase : true,
-				forin : true,
-				indent : true,
-				noempty : true,
-				nonew : true,
-				plusplus : true,
-				maxdepth : 8,
-				maxcomplexity : 10,
-				regexp : true,
-				unused : 'strict',
-				curly : true,
-				eqeqeq : true,
-				immed : true,
-				latedef : true,
-				newcap : true,
-				noarg : true,
-				sub : true,
-				undef : true,
-				boss : true,
-				eqnull : true,
-				node : true,
-				dojo : false,
-				passfail : false,
-				trailing : true,
-				scripturl : true,
-				shadow : true,
-				browser : false,
-				smarttabs : true,
-				globals : {
-					localStorage : true,
-					define : true
-				}
-			}
-		},
 		stylus:
 		{
 			files: stylusFiles,
@@ -142,7 +104,7 @@ function exports(grunt) {
 					},
 					prefix: '',
 					externals: false,
-					referenceExternals: true,
+					referenceExternals: false,
 					verbose: false,
 					removeSource: false
 				}
@@ -172,6 +134,7 @@ function exports(grunt) {
 			},
 			main: {
 				src: [
+					'./typings/tsd.d.ts',
 					'*.ts',
 					'**/*.ts',
 					'!9js.d.ts', '!9js.ts', '!ninejs.d.ts',
@@ -191,6 +154,26 @@ function exports(grunt) {
 					'!ui/Skins.*',
 					'!node_modules/**',
 					'!typings/**']
+			}
+		},
+		nineplate: {
+			html: {
+				mode: 'html',
+				pattern: '\\.html$',
+				src: [
+					'ui/css',
+					'!ui/tests/logic/FilterBuilder/demo.html',
+					'modules'
+				]
+			},
+			css: {
+				mode: 'css',
+				pattern: '\\.css$',
+				extension: 'ncss.js',
+				src: [
+					'ui',
+					'modules'
+				]
 			}
 		}
 	});
@@ -242,10 +225,36 @@ function exports(grunt) {
 		});
 	});
 
+	var childProcess = require('child_process'),
+			path = require('path');
+
+	grunt.registerMultiTask('nineplate', 'Generates nineplate and css functions', function () {
+		console.log('Running nineplate ');
+		var done = this.async();
+		var files = this.filesSrc;
+		var pattern = '';
+		var extension = '';
+		if (this.data.pattern) {
+			pattern = ' --pattern=' + this.data.pattern;
+		}
+		if (this.data.extension) {
+			extension = ' --extension=' + this.data.extension;
+		}
+
+		console.log('nineplate ' + files.length + ' files');
+
+		files.forEach(function(file) {
+			childProcess.execSync('node ./bin/nineplate ' + file + ' --target=amd --css --toBase64 --baseUrl=' + path.resolve(process.cwd()) + pattern + extension, {
+				stdio: 'inherit'
+			});
+		});
+		done();
+	});
+
 	grunt.registerTask('test', ['mochaTest:normal', 'mocha']);
 	grunt.registerTask('css', ['less', 'ncss', 'stylus']);
 	// Default task.
-	grunt.registerTask('default', ['tsd', 'globaltsd', 'ts', 'dts_bundle', 'typedoc', 'css', 'generateParsers', 'test']);
+	grunt.registerTask('default', ['css', 'nineplate', 'tsd', 'ts', 'typedoc', 'generateParsers', 'nineplate', 'test']);
 
 }
 

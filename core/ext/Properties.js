@@ -6,6 +6,7 @@
         define(["require", "exports", '../extend', '../objUtils'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var extend_1 = require('../extend');
     var objUtils_1 = require('../objUtils');
     var emitToWatchList;
@@ -106,9 +107,13 @@
             }
         }
     };
-    class Properties {
-        constructor(...argslist) {
-            var args = argslist[0], self = this, me = this, execute = () => {
+    var Properties = (function () {
+        function Properties() {
+            var argslist = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                argslist[_i - 0] = arguments[_i];
+            }
+            var args = argslist[0], self = this, me = this, execute = function () {
                 if (typeof (args) === 'object') {
                     for (var p in args) {
                         if (args.hasOwnProperty(p)) {
@@ -127,7 +132,7 @@
                 execute();
             }
         }
-        get(name) {
+        Properties.prototype.get = function (name) {
             var getter = this[name + 'Getter'], args;
             if (typeof (getter) === 'function') {
                 args = sliceArguments(arguments, 1);
@@ -136,8 +141,12 @@
             else {
                 return this[name];
             }
-        }
-        set(name, ...values) {
+        };
+        Properties.prototype.set = function (name) {
+            var values = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                values[_i - 1] = arguments[_i];
+            }
             var result, value = values[0];
             if (typeof (name) === 'string') {
                 var sname = name, old = this.get(sname), newValue = value, setter = this[sname + 'Setter'], args;
@@ -167,8 +176,8 @@
                 result = this;
             }
             return result;
-        }
-        watch(name, action) {
+        };
+        Properties.prototype.watch = function (name, action) {
             var currentWatch = this.$njsWatch[name], result;
             if (!currentWatch) {
                 currentWatch = this.$njsWatch[name] = [];
@@ -176,26 +185,28 @@
             result = new WatchHandleConstructor(action, currentWatch);
             currentWatch.push(result);
             return result;
-        }
-        mixinProperties(target) {
+        };
+        Properties.prototype.mixinProperties = function (target) {
             Properties.mixin(this)(target);
             return this;
-        }
-        mixinRecursive(target) {
+        };
+        Properties.prototype.mixinRecursive = function (target) {
             mixRecursive(this, target);
             return this;
-        }
-        static mixin(target) {
-            return (args) => {
+        };
+        Properties.mixin = function (target) {
+            return function (args) {
                 for (var p in args) {
                     if (args.hasOwnProperty(p)) {
                         Properties.prototype.set.call(target, p, args[p]);
                     }
                 }
             };
-        }
-    }
-    exports.Properties = Properties;
+        };
+        return Properties;
+    })();
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Properties;
     ;
     emitToWatchList = function (self, name, oldValue, newValue) {
         var watchList = self.$njsWatch, watchProp, cnt;

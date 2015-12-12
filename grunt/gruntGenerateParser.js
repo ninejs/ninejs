@@ -3,7 +3,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('generateParsers', 'Generate Nineplate parsers', function () {
 		var done = this.async();
 
-		var grammar = require('../nineplate/utils/parser/grammar').grammar;
+		var grammar = require('../_nineplate/utils/parser/grammar').grammar;
 
 		var Jison, Parser;
 		Jison = require('jison');
@@ -17,11 +17,11 @@ module.exports = function(grunt) {
 		};
 		var gen = new Jison.Generator(grammar, options);
 		var parserSource = gen.generate();
-		grunt.file.write(__dirname + '/../nineplate/utils/parser/generated/commonjs.js', parserSource);
+		grunt.file.write(__dirname + '/../_nineplate/utils/parser/generated/commonjs.js', parserSource);
 		options.moduleType = 'amd';
 		gen = new Jison.Generator(grammar, options);
 		parserSource = gen.generate();
-		grunt.file.write(__dirname + '/../nineplate/utils/parser/generated/amd.js', parserSource);
+		grunt.file.write(__dirname + '/../_nineplate/utils/parser/generated/amd.js', parserSource);
 		done();
 	});
 };

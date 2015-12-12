@@ -1,3 +1,5 @@
+'use strict';
+
 import Module from './Module';
 export default new Module({
 	provides: [

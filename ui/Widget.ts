@@ -1,3 +1,5 @@
+'use strict';
+
 /* global window */
 import extend from '../core/extend';
 import Properties from '../core/ext/Properties';
@@ -298,8 +300,12 @@ class Widget extends Properties {
 	loadSkin (name: string) {
 		var _defer = defer<Skin>();
 		this.set('skin', _defer.promise);
-		require([name], function (skin: Skin) {
-			_defer.resolve(skin);
+		require([name], function (skin: any) {
+			if (skin.default) {
+				skin = skin.default;
+			}
+			var result: Skin = skin as Skin;
+			_defer.resolve(result);
 		});
 		return _defer.promise;
 	}

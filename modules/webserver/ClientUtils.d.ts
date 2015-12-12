@@ -1,5 +1,3 @@
-/// <reference path="../../typings/node/node.d.ts" />
-/// <reference path="../../typings/express/express.d.ts" />
 import Properties from '../../core/ext/Properties';
 import WebServer from './WebServer';
 import StaticResource from './StaticResource';

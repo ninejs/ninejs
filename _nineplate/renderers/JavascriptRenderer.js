@@ -6,6 +6,7 @@
         define(["require", "exports", '../../core/objUtils'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var objUtils = require('../../core/objUtils');
     function render(obj) {
         if (obj) {
@@ -20,8 +21,8 @@
             return '';
         }
     }
-    class VarContext {
-        constructor(parentContext, debugMode) {
+    var VarContext = (function () {
+        function VarContext(parentContext, debugMode) {
             var variables = {}, parameters = {}, globals = {}, varNameFilter;
             varNameFilter = function (n) {
                 if ((!variables.hasOwnProperty(n)) && (!parameters.hasOwnProperty(n))) {
@@ -95,10 +96,11 @@
                 }
             };
         }
-    }
+        return VarContext;
+    })();
     exports.VarContext = VarContext;
-    class Expression {
-        constructor(expr, parenthesis, renderer) {
+    var Expression = (function () {
+        function Expression(expr, parenthesis, renderer) {
             var r = [], varNameFilter = function (n) {
                 return renderer.varName(n);
             };
@@ -224,10 +226,11 @@
                 return this.render.apply(this, arguments);
             };
         }
-    }
+        return Expression;
+    })();
     exports.Expression = Expression;
-    class Chunk {
-        constructor(parent) {
+    var Chunk = (function () {
+        function Chunk(parent) {
             this.renderer = new JavascriptRenderer(parent.debugMode, parent.context, null, parent.indent, parent);
             this.clear = function () {
                 this.renderer.clear();
@@ -236,10 +239,11 @@
                 return this.renderer.renderBody();
             };
         }
-    }
+        return Chunk;
+    })();
     exports.Chunk = Chunk;
-    class Condition {
-        constructor(expr, parent) {
+    var Condition = (function () {
+        function Condition(expr, parent) {
             var elseIfs = [];
             var lastElse = null;
             this.renderer = new JavascriptRenderer(parent.debugMode, parent.context, null, parent.indent + 1, parent);
@@ -272,19 +276,21 @@
                 return r.join('') + parent.lineSeparator;
             };
         }
-    }
+        return Condition;
+    })();
     exports.Condition = Condition;
-    class ForLoop {
-        constructor(init, cond, iter, parent) {
+    var ForLoop = (function () {
+        function ForLoop(init, cond, iter, parent) {
             this.renderer = new JavascriptRenderer(parent.debugMode, parent.context, null, parent.indent + 1, parent);
             this.render = function () {
                 return [parent.getIndent() + 'for (' + render(init || '') + '; ' + render(cond || '') + '; ' + render(iter || '') + '){', this.renderer.renderBody(), parent.getIndent() + '}'].join(parent.lineSeparator);
             };
         }
-    }
+        return ForLoop;
+    })();
     exports.ForLoop = ForLoop;
-    class ForIn {
-        constructor(propName, expr, parent) {
+    var ForIn = (function () {
+        function ForIn(propName, expr, parent) {
             this.renderer = new JavascriptRenderer(parent.debugMode, parent.context, null, parent.indent + 1, parent);
             this.render = function () {
                 return [
@@ -296,10 +302,11 @@
                 ].join(parent.lineSeparator);
             };
         }
-    }
+        return ForIn;
+    })();
     exports.ForIn = ForIn;
-    class JsArray {
-        constructor(init) {
+    var JsArray = (function () {
+        function JsArray(init) {
             var elements = init || [];
             Expression.call(this);
             this.add = function (expr) {
@@ -317,10 +324,13 @@
                 return this.render.apply(this, arguments);
             };
         }
-    }
+        return JsArray;
+    })();
     exports.JsArray = JsArray;
-    class JavascriptRenderer {
-        constructor(debugMode = false, context, parentContext, indent = 0, parentRenderer) {
+    var JavascriptRenderer = (function () {
+        function JavascriptRenderer(debugMode, context, parentContext, indent, parentRenderer) {
+            if (debugMode === void 0) { debugMode = false; }
+            if (indent === void 0) { indent = 0; }
             var initStatements = [], context = context || (new VarContext(parentContext, debugMode)), statements = [], statementSeparator = ';' + ((!!debugMode) ? '\n' : ''), lineSeparator = ((!!debugMode) ? '\n' : ''), varNameFilter = function (n) {
                 return context.varNameFilter(n);
             };
@@ -356,8 +366,8 @@
                 }
             }
             this.getIndent = getIndent;
-            class Statement {
-                constructor(st) {
+            var Statement = (function () {
+                function Statement(st) {
                     this.render = function () {
                         if (st && typeof (st.render) === 'function') {
                             return getIndent() + st.render() + statementSeparator;
@@ -370,7 +380,8 @@
                         return this.render.apply(this, arguments);
                     };
                 }
-            }
+                return Statement;
+            })();
             function getStatements() {
                 var cnt, len = statements.length, st, r = [];
                 for (cnt = 0; cnt < len; cnt += 1) {
@@ -400,8 +411,8 @@
                 }
                 return this;
             };
-            class Comment {
-                constructor(msg) {
+            var Comment = (function () {
+                function Comment(msg) {
                     this.render = function () {
                         if (!debugMode) {
                             return '';
@@ -412,7 +423,8 @@
                         return this.render.apply(this, arguments);
                     };
                 }
-            }
+                return Comment;
+            })();
             this.comment = function (msg, prepend) {
                 if (prepend) {
                     statements.unshift(new Comment(msg));
@@ -568,7 +580,8 @@
                 return this.render();
             };
         }
-    }
+        return JavascriptRenderer;
+    })();
     exports.JavascriptRenderer = JavascriptRenderer;
 });
 //# sourceMappingURL=JavascriptRenderer.js.map

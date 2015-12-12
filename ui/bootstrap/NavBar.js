@@ -1,5 +1,5 @@
 define(['../../core/deferredUtils',
-	'../../core/extend', '../Widget', '../Skin', '../../nineplate!./NavBar.html', '../../css!./NavBar.css', '../utils/append', '../utils/setText', '../utils/setClass', '../../core/on'], function(def, extend, Widget, Skin, template, css, append, setText, setClass, on) {
+	'../../core/extend', '../Widget', '../Skin', './NavBar.9plate', './NavBar.ncss', '../utils/append', '../utils/setText', '../utils/setClass', '../../core/on'], function(def, extend, Widget, Skin, template, css, append, setText, setClass, on) {
 	'use strict';
 	extend = extend.default;
 	Widget = Widget.default;

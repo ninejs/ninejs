@@ -6,6 +6,7 @@
         define(["require", "exports", "reqwest/reqwest", './core/deferredUtils'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var deferredUtils_1 = require('./core/deferredUtils');
     var req = require, isNode = typeof (window) === 'undefined', isAmd = typeof (define) === 'function' && define.amd, isDojo = isAmd && (define.amd.vendor === 'dojotoolkit.org');
     var request;
@@ -52,7 +53,9 @@
         return d.promise;
     }
     exports.raw = raw;
-    function fn() {
+    var result;
+    var fn;
+    fn = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i - 0] = arguments[_i];
@@ -60,9 +63,7 @@
         return raw.apply(null, args).then(function (r) {
             return r.response;
         });
-    }
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = fn;
+    };
     var verb = function (v, args) {
         var obj;
         if (typeof (args[0]) === 'object') {
@@ -123,5 +124,13 @@
         return verb('patch', args);
     }
     exports.patch = patch;
+    fn.get = get;
+    fn.post = post;
+    fn.put = put;
+    fn.del = del;
+    fn.patch = patch;
+    result = fn;
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = result;
 });
 //# sourceMappingURL=request.js.map

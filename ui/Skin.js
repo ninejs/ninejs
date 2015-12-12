@@ -11,6 +11,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         define(["require", "exports", '../core/extend', '../core/ext/Properties', '../nineplate', '../core/deferredUtils'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var extend = require('../core/extend');
     var Properties_1 = require('../core/ext/Properties');
     var nineplate_1 = require('../nineplate');

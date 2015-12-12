@@ -6,7 +6,8 @@
         define(["require", "exports"], factory);
     }
 })(function (require, exports) {
-    let fs;
+    'use strict';
+    var fs;
     function load(name, req, onLoad) {
         if (!fs) {
             fs = require('fs');

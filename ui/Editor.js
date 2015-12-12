@@ -11,6 +11,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         define(["require", "exports", './Widget', '../core/extend', './Skins/Editor/Default', '../core/deferredUtils', '../modernizer', '../core/array', '../core/objUtils', '../core/on', './utils/domUtils', '../config'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var _this = this;
     var Widget_1 = require('./Widget');
     var extend_1 = require('../core/extend');

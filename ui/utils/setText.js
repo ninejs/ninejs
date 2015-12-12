@@ -6,7 +6,9 @@
         define(["require", "exports"], factory);
     }
 })(function (require, exports) {
-    var setText = (function () {
+    'use strict';
+    var setText;
+    setText = (function () {
         function emptyNode(node) {
             var c = node.lastChild;
             while (c) {

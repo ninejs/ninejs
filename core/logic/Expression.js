@@ -11,6 +11,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         define(["require", "exports", "../i18n!./nls/Expression.json", '../ext/Properties', '../objUtils', '../i18n', '../array'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var Properties_1 = require('../ext/Properties');
     var objUtils_1 = require('../objUtils');
     var i18n_1 = require('../i18n');

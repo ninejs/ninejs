@@ -6,6 +6,7 @@
         define(["require", "exports", './cache'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var cache_1 = require('./cache');
     var getText = cache_1.default.getText;
     var notFound = {}, pending = {};

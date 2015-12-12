@@ -3,12 +3,13 @@
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "../../../nineplate!./Default.html", "../../../css!./Default.css", '../../Skin'], factory);
+        define(["require", "exports", "./Default.9plate", "./Default.ncss", '../../Skin'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var Skin_1 = require('../../Skin');
-    var template = require('../../../nineplate!./Default.html');
-    var css = require('../../../css!./Default.css');
+    var template = require('./Default.9plate');
+    var css = require('./Default.ncss');
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = new Skin_1.default({
         template: template,

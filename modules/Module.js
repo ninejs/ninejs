@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 (function (factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
@@ -6,6 +11,7 @@
         define(["require", "exports", '../core/ext/Properties', './moduleRegistry', '../core/ext/Evented', '../core/deferredUtils'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var Properties_1 = require('../core/ext/Properties');
     var moduleRegistry_1 = require('./moduleRegistry');
     var Evented_1 = require('../core/ext/Evented');
@@ -25,25 +31,30 @@
             this.consumes = [];
         }
     };
-    class Module extends Properties_1.default {
-        constructor(args) {
-            super(args);
+    var Module = (function (_super) {
+        __extends(Module, _super);
+        function Module(args) {
+            _super.call(this, args);
             postConstruct.call(this);
         }
-        on(type, listener) {
+        Module.prototype.on = function (type, listener) {
             var _on;
             _on = Evented_1.default.on;
             return _on.call(this, type, listener);
-        }
-        emit(type, data) {
+        };
+        Module.prototype.emit = function (type, data) {
             var _emit;
             _emit = Evented_1.default.emit;
             return _emit.call(this, type, data);
-        }
-        getProvides(name, ...args) {
+        };
+        Module.prototype.getProvides = function (name) {
+            var args = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                args[_i - 1] = arguments[_i];
+            }
             return this;
-        }
-        getFeature(id, name) {
+        };
+        Module.prototype.getFeature = function (id, name) {
             var provides = this.provides, cnt, found;
             for (cnt = 0; cnt < provides.length; cnt += 1) {
                 if (provides[cnt].id === id) {
@@ -64,11 +75,11 @@
                 }
             }
             return false;
-        }
-        init(name, config) {
+        };
+        Module.prototype.init = function (name, config) {
             this.config[name] = config;
-        }
-        consumesModule(name) {
+        };
+        Module.prototype.consumesModule = function (name) {
             var cnt, arr = this.consumes;
             for (cnt = 0; cnt < arr.length; cnt += 1) {
                 if (arr[cnt].id === name) {
@@ -76,8 +87,8 @@
                 }
             }
             return false;
-        }
-        providesModule(name) {
+        };
+        Module.prototype.providesModule = function (name) {
             var cnt, arr = this.provides;
             for (cnt = 0; cnt < arr.length; cnt += 1) {
                 if (arr[cnt].id === name) {
@@ -85,20 +96,21 @@
                 }
             }
             return false;
-        }
-        enable(config) {
+        };
+        Module.prototype.enable = function (config) {
+            var _this = this;
             if (!this.get('enabled')) {
                 var error = moduleRegistry_1.moduleRegistry.validate(this, true), errorProvides = [], cnt;
-                return deferredUtils_1.when(error, (error) => {
+                return deferredUtils_1.when(error, function (error) {
                     if (error) {
-                        for (cnt = 0; cnt < this.provides.length; cnt += 1) {
-                            errorProvides.push(this.provides[cnt].id);
+                        for (cnt = 0; cnt < _this.provides.length; cnt += 1) {
+                            errorProvides.push(_this.provides[cnt].id);
                         }
                         throw new Error('Error while trying to enable module with provides: "' + errorProvides.join(',') + '": \n' + error);
                     }
                     else {
-                        var self = this;
-                        return deferredUtils_1.when(deferredUtils_1.all(this.consumes.map(function (unit) {
+                        var self = _this;
+                        return deferredUtils_1.when(deferredUtils_1.all(_this.consumes.map(function (unit) {
                             if (!moduleRegistry_1.moduleRegistry.enabledUnits[unit.id]) {
                                 return moduleRegistry_1.moduleRegistry.initUnit(unit.id);
                             }
@@ -112,7 +124,7 @@
                                     moduleRegistry_1.moduleRegistry.enabledUnits[item.id] = _defer.promise;
                                     deferredUtils_1.when(self.init(item.id, config[item.id]), function () {
                                         _defer.resolve(true);
-                                    }, (err) => {
+                                    }, function (err) {
                                         _defer.reject(err);
                                     });
                                     return moduleRegistry_1.moduleRegistry.enabledUnits[item.id];
@@ -138,9 +150,11 @@
                 t.resolve(true);
                 return t.promise;
             }
-        }
-    }
+        };
+        return Module;
+    })(Properties_1.default);
     moduleRegistry_1.moduleRegistry.Module = Module;
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Module;
 });
 //# sourceMappingURL=Module.js.map

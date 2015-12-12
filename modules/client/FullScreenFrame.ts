@@ -1,3 +1,5 @@
+'use strict';
+
 import Widget from '../../ui/Widget';
 import defaultSkin from './Skin/FullScreenFrame';
 import append from '../../ui/utils/append';

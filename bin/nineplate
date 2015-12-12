@@ -8,8 +8,11 @@ var nineplate = require('../nineplate').default,
 	def = require('../core/deferredUtils');
 function generate (text, args) {
 	var options = {};
-	if (args.sourceExtension === '.css') {
-		var fn = cssBuilder.buildAppender(text, path.relative(args.baseUrl || '', args.sourcePath).split('\\').join('/'), args.sourcePath, args.cssPrefixes || {}, path.dirname(args.sourcePath), {}, true);
+	if (args.css || (args.sourceExtension === '.css')) {
+		for (var p in args) {
+			options[p] = args[p];
+		}
+		var fn = cssBuilder.buildAppender(text, path.relative(args.baseUrl || '', args.sourcePath).split('\\').join('/'), args.sourcePath, args.cssPrefixes || {}, path.dirname(args.sourcePath), {}, options);
 		var defer = def.defer();
 		defer.resolve(fn);
 		return defer.promise;
@@ -101,7 +104,7 @@ process.on('beforeExit', function () {
 						}
 						else {
 							var fileExtension = path.extname(realPath);
-							generate(text, {target: argv.target || 'amd', sourcePath: realPath, sourceExtension: fileExtension, sourceName: path.basename(realPath), baseUrl: argv.baseUrl }).then(function (text) {
+							generate(text, { target: argv.target || 'amd', sourcePath: realPath, sourceExtension: fileExtension, sourceName: path.basename(realPath), baseUrl: argv.baseUrl, toBase64: argv.toBase64, sizeLimit: argv.sizeLimit, css: argv.css }).then(function (text) {
 								var defaultExt = (fileExtension === '.css')? 'css.js' : '9plate.js';
 								var extension = argv.extension || defaultExt;
 								var newPath = path.resolve(path.dirname(realPath), path.basename(realPath, path.extname(realPath)) + '.' + extension);
@@ -110,13 +113,17 @@ process.on('beforeExit', function () {
 								}
 								fs.writeFile(newPath, text, function (err) {
 									if (err) {
+										console.log('ERROR');
+										console.log(err);
 										console.error(err);
 										hasErrors += 1;
 									}
 								});
 							}, function (err) {
 								console.error('Error generating ' + realPath);
-								console.error(err);
+								//console.error(err);
+								console.log((new Error()).stack);
+								//console.log(err.stack);
 								hasErrors += 1;
 							});
 						}

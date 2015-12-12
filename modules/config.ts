@@ -1,3 +1,5 @@
+'use strict';
+
 /*
 	sample config file:
 	{

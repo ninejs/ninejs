@@ -11,6 +11,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         define(["require", "exports", '../../ui/Widget', './Skin/FullScreenFrame', '../../ui/utils/append', '../../ui/utils/setClass', '../../core/on', '../../core/deferredUtils', '../../core/array'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var Widget_1 = require('../../ui/Widget');
     var FullScreenFrame_1 = require('./Skin/FullScreenFrame');
     var append_1 = require('../../ui/utils/append');

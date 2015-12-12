@@ -1,3 +1,5 @@
+'use strict';
+
 import Module from '../Module';
 import extend from '../../core/extend';
 import * as router from '../../client/router';

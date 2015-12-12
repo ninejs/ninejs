@@ -6,6 +6,7 @@
         define(["require", "exports", './extend', './ext/Evented', './text', './deferredUtils'], factory);
     }
 })(function (require, exports) {
+    'use strict';
     var extend_1 = require('./extend');
     var Evented_1 = require('./ext/Evented');
     var amdText = require('./text');
