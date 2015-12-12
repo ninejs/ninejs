@@ -234,6 +234,7 @@ function exports(grunt) {
 		var files = this.filesSrc;
 		var pattern = '';
 		var extension = '';
+		var data = this.data;
 		if (this.data.pattern) {
 			pattern = ' --pattern=' + this.data.pattern;
 		}
@@ -244,7 +245,7 @@ function exports(grunt) {
 		console.log('nineplate ' + files.length + ' files');
 
 		files.forEach(function(file) {
-			childProcess.execSync('node ./bin/nineplate ' + file + ' --target=amd --css --toBase64 --baseUrl=' + path.resolve(process.cwd()) + pattern + extension, {
+			childProcess.execSync('node ./bin/nineplate ' + file + ' --target=amd --mode=' + data.mode + ' --toBase64 --baseUrl=' + path.resolve(process.cwd()) + pattern + extension, {
 				stdio: 'inherit'
 			});
 		});

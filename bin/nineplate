@@ -8,7 +8,7 @@ var nineplate = require('../nineplate').default,
 	def = require('../core/deferredUtils');
 function generate (text, args) {
 	var options = {};
-	if (args.css || (args.sourceExtension === '.css')) {
+	if ((args.mode === 'css') || (args.sourceExtension === '.css')) {
 		for (var p in args) {
 			options[p] = args[p];
 		}
@@ -104,7 +104,7 @@ process.on('beforeExit', function () {
 						}
 						else {
 							var fileExtension = path.extname(realPath);
-							generate(text, { target: argv.target || 'amd', sourcePath: realPath, sourceExtension: fileExtension, sourceName: path.basename(realPath), baseUrl: argv.baseUrl, toBase64: argv.toBase64, sizeLimit: argv.sizeLimit, css: argv.css }).then(function (text) {
+							generate(text, { target: argv.target || 'amd', sourcePath: realPath, sourceExtension: fileExtension, sourceName: path.basename(realPath), baseUrl: argv.baseUrl, toBase64: argv.toBase64, sizeLimit: argv.sizeLimit, mode: argv.mode }).then(function (text) {
 								var defaultExt = (fileExtension === '.css')? 'css.js' : '9plate.js';
 								var extension = argv.extension || defaultExt;
 								var newPath = path.resolve(path.dirname(realPath), path.basename(realPath, path.extname(realPath)) + '.' + extension);
@@ -121,9 +121,8 @@ process.on('beforeExit', function () {
 								});
 							}, function (err) {
 								console.error('Error generating ' + realPath);
-								//console.error(err);
-								console.log((new Error()).stack);
-								//console.log(err.stack);
+								console.error(err);
+								console.log(err.stack);
 								hasErrors += 1;
 							});
 						}
