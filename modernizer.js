@@ -2664,15 +2664,6 @@ A NineJS custom build of Modernizr
 		Modernizr.add('dom-addeventlistener', (!Modernizr.ietrident || (Modernize.ietrident >= 10)) && !!document.addEventListener);
 		Modernizr.add('touch', 'ontouchstart' in document || window.navigator.msMaxTouchPoints > 0);
 
-		Modernizr.addTest('ietrident', function () {
-			var ua = navigator.userAgent,
-				rv;
-			var re  = new RegExp('Trident/.*rv:([0-9]{1,}[\\.0-9]{0,})');
-			if (re.exec(ua) != null) {
-				rv = parseFloat(RegExp.$1);
-				return rv;
-			}
-		});
 		return Modernizr;
 	}).call(window);
 });
