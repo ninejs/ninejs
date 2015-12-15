@@ -366,7 +366,7 @@ represent it and evaluate it over a collection of data or a service.
 			 */
 			expressionList : null,
 
-			_formatValue : function(val, isVariable) {
+			_formatValue : function(val, isVariable, forDisplay) {
 				if ((val === null) || ((( typeof val) === 'number') && isNaN(val))) {
 					return null;
 				}
@@ -379,8 +379,8 @@ represent it and evaluate it over a collection of data or a service.
 						return '{' + toDateString(val, {
 							selector : 'date'
 						}) + '}';
-					} else if (isString(val)) {
-						return '\'' + val + '\'';
+					} else if (isString(val) && forDisplay) {
+						return '\'' + val + '\'';					
 					} else {
 						return val.toString();
 					}
@@ -393,6 +393,9 @@ represent it and evaluate it over a collection of data or a service.
 
 			targetValueGetter : function() {
 				return isFunction(this.target) ? this._formatValue(this.target(), true) : this._formatValue(this.target);
+			},
+			targetValueForDisplay : function() {
+				return isFunction(this.target) ? this._formatValue(this.target(), true, true) : this._formatValue(this.target, undefined, true);
 			},
 
 			// _targetValueGetter : function() {
@@ -436,7 +439,7 @@ represent it and evaluate it over a collection of data or a service.
 					result += ' ' + (resources[this.operator] || this.operator) + ' ';
 
 					//getting right value
-					var rval = this.get('targetValue');//_getTargetValue();
+					var rval =  this.targetValueForDisplay();
 
 					var rsummary = null;
 
