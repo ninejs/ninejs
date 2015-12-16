@@ -314,14 +314,14 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
         };
         Widget.prototype.on = function (type, action, persistEvent) {
-            var r;
+            var r, self = this;
             if (!this.$njsEventListeners[type]) {
                 this.$njsEventListeners[type] = [];
             }
             r = new on_1.EventHandler(this, this.$njsEventListeners[type], function (e) {
-                action.apply(this.owner, arguments);
-                if (this.owner.domNode && e.bubbles && (!e.cancelled)) {
-                    on_1.default.emit(this.owner.domNode, type, e);
+                action.apply(self, arguments);
+                if (self.domNode && e.bubbles && (!e.cancelled)) {
+                    on_1.default.emit(self.domNode, type, e);
                 }
             });
             if (persistEvent) {

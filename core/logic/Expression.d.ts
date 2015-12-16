@@ -32,9 +32,11 @@ declare class Expression extends Properties {
     expressionList: Expression[];
     where: Expression;
     ambiguous: boolean;
-    _formatValue(val: any, isVariable?: boolean): any;
+    _formatValue(val: any, isVariable?: boolean, forDisplay?: boolean): any;
     sourceValueGetter(): any;
+    sourceValueForDisplay(): any;
     targetValueGetter(): any;
+    targetValueForDisplay(): any;
     toString(): any;
     _buildGetterFunction(src: string): (data: any, recordContextStack: RecordContext[], where: Expression) => any;
     sourceFieldSetter(src: string): void;

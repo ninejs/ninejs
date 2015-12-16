@@ -370,7 +370,7 @@ class Expression extends Properties {
 
 	ambiguous: boolean;
 
-	_formatValue (val: any, isVariable?: boolean) {
+	_formatValue (val: any, isVariable?: boolean, forDisplay?: boolean) {
 		if ((val === null) || ((( typeof val) === 'number') && isNaN(val))) {
 			return null;
 		}
@@ -383,7 +383,7 @@ class Expression extends Properties {
 				return '{' + toDateString(val, {
 					selector : SelectorOptions.date
 				}) + '}';
-			} else if (isString(val)) {
+			} else if (isString(val) && forDisplay) {
 				return '\'' + val + '\'';
 			} else {
 				return val.toString();
@@ -395,13 +395,17 @@ class Expression extends Properties {
 		return isFunction(this.source) ? this._formatValue(this.source(), true) : this._formatValue(this.source);
 	}
 
+	sourceValueForDisplay () {
+		return isFunction(this.source) ? this._formatValue(this.source(), true, true) : this._formatValue(this.source, undefined, true);
+	}
+
 	targetValueGetter () {
 		return isFunction(this.target) ? this._formatValue(this.target(), true) : this._formatValue(this.target);
 	}
 
-	// _targetValueGetter : function() {
-	// 	return isFunction(this.target) ? this.target() : this.target;
-	// },
+	targetValueForDisplay () {
+		return isFunction(this.target) ? this._formatValue(this.target(), true, true) : this._formatValue(this.target, undefined, true);
+	}
 
 	toString () {
 		var result = '';
@@ -421,7 +425,7 @@ class Expression extends Properties {
 		function appendWhenSingleExpression() {
 			var result = '';
 			//getting left value
-			var lval = this.get('sourceValue');//_getSourceValue();
+			var lval = this.sourceValueForDisplay();
 
 			var lsummary: string = null;
 			if (this.sourceSummary) {
@@ -440,7 +444,7 @@ class Expression extends Properties {
 			result += ' ' + (resources[this.operator] || this.operator) + ' ';
 
 			//getting right value
-			var rval = this.get('targetValue');//_getTargetValue();
+			var rval = this.targetValueForDisplay();
 
 			var rsummary: string = null;
 

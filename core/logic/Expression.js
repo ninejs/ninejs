@@ -273,7 +273,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.ambiguous = false;
             _super.call(this, args);
         }
-        Expression.prototype._formatValue = function (val, isVariable) {
+        Expression.prototype._formatValue = function (val, isVariable, forDisplay) {
             if ((val === null) || (((typeof val) === 'number') && isNaN(val))) {
                 return null;
             }
@@ -286,7 +286,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                         selector: SelectorOptions.date
                     }) + '}';
                 }
-                else if (objUtils_1.isString(val)) {
+                else if (objUtils_1.isString(val) && forDisplay) {
                     return '\'' + val + '\'';
                 }
                 else {
@@ -297,8 +297,14 @@ var __extends = (this && this.__extends) || function (d, b) {
         Expression.prototype.sourceValueGetter = function () {
             return objUtils_1.isFunction(this.source) ? this._formatValue(this.source(), true) : this._formatValue(this.source);
         };
+        Expression.prototype.sourceValueForDisplay = function () {
+            return objUtils_1.isFunction(this.source) ? this._formatValue(this.source(), true, true) : this._formatValue(this.source, undefined, true);
+        };
         Expression.prototype.targetValueGetter = function () {
             return objUtils_1.isFunction(this.target) ? this._formatValue(this.target(), true) : this._formatValue(this.target);
+        };
+        Expression.prototype.targetValueForDisplay = function () {
+            return objUtils_1.isFunction(this.target) ? this._formatValue(this.target(), true, true) : this._formatValue(this.target, undefined, true);
         };
         Expression.prototype.toString = function () {
             var result = '';
@@ -317,7 +323,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             function appendWhenSingleExpression() {
                 var result = '';
-                var lval = this.get('sourceValue');
+                var lval = this.sourceValueForDisplay();
                 var lsummary = null;
                 if (this.sourceSummary) {
                     lsummary = (resources[this.sourceSummary] || this.sourceSummary);
@@ -332,7 +338,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     result += lval;
                 }
                 result += ' ' + (resources[this.operator] || this.operator) + ' ';
-                var rval = this.get('targetValue');
+                var rval = this.targetValueForDisplay();
                 var rsummary = null;
                 if (this.targetSummary) {
                     rsummary = (resources[this.targetSummary] || this.targetSummary);

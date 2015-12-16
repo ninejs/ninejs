@@ -241,11 +241,11 @@ class WebServer extends Properties {
 		let server: any;
 		if (this.ip) {
 			server = this.app.listen(this.port, this.ip);
-			this.logger.info(`wev server "${this.serverName}" listening on port ${this.port} with ip ${this.ip}`);
+			this.logger.info(`web server "${this.serverName}" listening on port ${this.port} with ip ${this.ip}`);
 		}
 		else {
 			server = this.app.listen(this.port);
-			this.logger.info(`wev server "${this.serverName}" listening on port ${this.port}`);
+			this.logger.info(`web server "${this.serverName}" listening on port ${this.port}`);
 		}
 		if (typeof(this.timeout) !== 'undefined') {
 			server.timeout = this.timeout;

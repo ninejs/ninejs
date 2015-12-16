@@ -141,8 +141,10 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-not-exported"><a href="_core_logic_expression_.expression.html#reset" class="tsd-kind-icon">reset</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported"><a href="_core_logic_expression_.expression.html#set" class="tsd-kind-icon">set</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-not-exported"><a href="_core_logic_expression_.expression.html#sourcefieldsetter" class="tsd-kind-icon">source<wbr>Field<wbr>Setter</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-not-exported"><a href="_core_logic_expression_.expression.html#sourcevaluefordisplay" class="tsd-kind-icon">source<wbr>Value<wbr>For<wbr>Display</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-not-exported"><a href="_core_logic_expression_.expression.html#sourcevaluegetter" class="tsd-kind-icon">source<wbr>Value<wbr>Getter</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-not-exported"><a href="_core_logic_expression_.expression.html#targetfieldsetter" class="tsd-kind-icon">target<wbr>Field<wbr>Setter</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-not-exported"><a href="_core_logic_expression_.expression.html#targetvaluefordisplay" class="tsd-kind-icon">target<wbr>Value<wbr>For<wbr>Display</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-not-exported"><a href="_core_logic_expression_.expression.html#targetvaluegetter" class="tsd-kind-icon">target<wbr>Value<wbr>Getter</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-not-exported"><a href="_core_logic_expression_.expression.html#tojson" class="tsd-kind-icon">to<wbr>Json</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-not-exported"><a href="_core_logic_expression_.expression.html#tostring" class="tsd-kind-icon">to<wbr>String</a></li>
@@ -416,7 +418,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L498">core/logic/Expression.ts:498</a></li>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L502">core/logic/Expression.ts:502</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -433,7 +435,7 @@
 					<a name="_formatvalue" class="tsd-anchor"></a>
 					<h3>_format<wbr>Value</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">_format<wbr>Value<span class="tsd-signature-symbol">(</span>val<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, isVariable<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						<li class="tsd-signature tsd-kind-icon">_format<wbr>Value<span class="tsd-signature-symbol">(</span>val<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, isVariable<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span>, forDisplay<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -450,6 +452,9 @@
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> isVariable: <span class="tsd-signature-type">boolean</span></h5>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> forDisplay: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
@@ -465,7 +470,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L593">core/logic/Expression.ts:593</a></li>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L597">core/logic/Expression.ts:597</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -488,7 +493,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L729">core/logic/Expression.ts:729</a></li>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L733">core/logic/Expression.ts:733</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="_core_logic_expression_.expression.html" class="tsd-signature-type">Expression</a></h4>
@@ -505,7 +510,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L607">core/logic/Expression.ts:607</a></li>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L611">core/logic/Expression.ts:611</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -531,7 +536,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L596">core/logic/Expression.ts:596</a></li>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L600">core/logic/Expression.ts:600</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -557,7 +562,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L774">core/logic/Expression.ts:774</a></li>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L778">core/logic/Expression.ts:778</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -604,7 +609,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L801">core/logic/Expression.ts:801</a></li>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L805">core/logic/Expression.ts:805</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -621,7 +626,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L813">core/logic/Expression.ts:813</a></li>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L817">core/logic/Expression.ts:817</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -638,7 +643,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L686">core/logic/Expression.ts:686</a></li>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L690">core/logic/Expression.ts:690</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -655,7 +660,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L825">core/logic/Expression.ts:825</a></li>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L829">core/logic/Expression.ts:829</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -720,7 +725,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L715">core/logic/Expression.ts:715</a></li>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L719">core/logic/Expression.ts:719</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -764,7 +769,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L586">core/logic/Expression.ts:586</a></li>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L590">core/logic/Expression.ts:590</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -774,6 +779,23 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
+					<a name="sourcevaluefordisplay" class="tsd-anchor"></a>
+					<h3>source<wbr>Value<wbr>For<wbr>Display</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">source<wbr>Value<wbr>For<wbr>Display<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L398">core/logic/Expression.ts:398</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -804,7 +826,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L590">core/logic/Expression.ts:590</a></li>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L594">core/logic/Expression.ts:594</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -818,6 +840,23 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
+					<a name="targetvaluefordisplay" class="tsd-anchor"></a>
+					<h3>target<wbr>Value<wbr>For<wbr>Display</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">target<wbr>Value<wbr>For<wbr>Display<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L406">core/logic/Expression.ts:406</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
 					<a name="targetvaluegetter" class="tsd-anchor"></a>
 					<h3>target<wbr>Value<wbr>Getter</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
@@ -827,7 +866,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L398">core/logic/Expression.ts:398</a></li>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L402">core/logic/Expression.ts:402</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -844,7 +883,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L747">core/logic/Expression.ts:747</a></li>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L751">core/logic/Expression.ts:751</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -861,7 +900,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L406">core/logic/Expression.ts:406</a></li>
+									<li>Defined in <a href="https://github.com/ninejs/ninejs/blob/master/core/logic/Expression.ts#L410">core/logic/Expression.ts:410</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -1060,10 +1099,16 @@
 								<a href="_core_logic_expression_.expression.html#sourcefieldsetter" class="tsd-kind-icon">source<wbr>Field<wbr>Setter</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
+								<a href="_core_logic_expression_.expression.html#sourcevaluefordisplay" class="tsd-kind-icon">source<wbr>Value<wbr>For<wbr>Display</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
 								<a href="_core_logic_expression_.expression.html#sourcevaluegetter" class="tsd-kind-icon">source<wbr>Value<wbr>Getter</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
 								<a href="_core_logic_expression_.expression.html#targetfieldsetter" class="tsd-kind-icon">target<wbr>Field<wbr>Setter</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
+								<a href="_core_logic_expression_.expression.html#targetvaluefordisplay" class="tsd-kind-icon">target<wbr>Value<wbr>For<wbr>Display</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
 								<a href="_core_logic_expression_.expression.html#targetvaluegetter" class="tsd-kind-icon">target<wbr>Value<wbr>Getter</a>

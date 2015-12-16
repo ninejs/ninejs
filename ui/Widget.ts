@@ -402,14 +402,15 @@ class Widget extends Properties {
 	 * @throws {Error} If domNode is not defined
 	 */
 	on (type: string, action: (e?: any) => any, persistEvent?: boolean) {
-		var r: RemovableType;
+		var r: RemovableType,
+			self = this;
 		if (!this.$njsEventListeners[type]) {
 			this.$njsEventListeners[type] = [];
 		}
 		r = new EventHandler(this, this.$njsEventListeners[type], function (e) {
-			action.apply(this.owner, arguments);
-			if (this.owner.domNode && e.bubbles && (!e.cancelled)) {
-				on.emit(this.owner.domNode, type, e);
+			action.apply(self, arguments);
+			if (self.domNode && e.bubbles && (!e.cancelled)) {
+				on.emit(self.domNode, type, e);
 			}
 		});
 		if (persistEvent) {
