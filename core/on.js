@@ -238,6 +238,7 @@ Dojo Toolkit's dojo/on as of jan 2014
 			if (fixAttach && target.attachEvent) {
 				return fixAttach(target, type, listener);
 			}
+			debugger;
 			throw new Error('Target must be an event emitter. Event = on' + type);
 		}
 
@@ -397,6 +398,116 @@ Dojo Toolkit's dojo/on as of jan 2014
 				};
 			};
 		}
+		// Called in Event scope
+		var stopPropagation = function() {
+			this.cancelBubble = true;
+		};
+		// no addEventListener, basically old IE event normalization
+		on._fixEvent = function(evt, sender) {
+			// summary:
+			//		normalizes properties on the event object including event
+			//		bubbling methods, keystroke normalization, and x/y positions
+			// evt:
+			//		native event object
+			// sender:
+			//		node to treat as 'currentTarget'
+			if (!evt) {
+				var w = sender && (sender.ownerDocument || sender.document || sender).parentWindow || window;
+				evt = w.event;
+			}
+			if (!evt) {
+				return evt;
+			}
+			try {
+				if (lastEvent && evt.type === lastEvent.type && evt.srcElement === lastEvent.target) {
+					// should be same event, reuse event object (so it can be augmented);
+					// accessing evt.srcElement rather than evt.target since evt.target not set on IE until fixup below
+					evt = lastEvent;
+				}
+			} catch (e) {
+				// will occur on IE on lastEvent.type reference if lastEvent points to a previous event that already
+				// finished bubbling, but the setTimeout() to clear lastEvent hasn't fired yet
+			}
+			if (!evt.target) { // check to see if it has been fixed yet
+				(function(evt) {
+					evt.target = evt.srcElement;
+					evt.currentTarget = (sender || evt.srcElement);
+					if (evt.type === 'mouseover') {
+						evt.relatedTarget = evt.fromElement;
+					}
+					if (evt.type === 'mouseout') {
+						evt.relatedTarget = evt.toElement;
+					}
+					if (!evt.stopPropagation) {
+						evt.stopPropagation = stopPropagation;
+						evt.preventDefault = preventDefault;
+					}
+					if (evt.type === 'keypress') {
+						var c = ('charCode' in evt ? evt.charCode : evt.keyCode);
+						(function(){
+							if (c === 10) {
+								// CTRL-ENTER is CTRL-ASCII(10) on IE, but CTRL-ENTER on Mozilla
+								c = 0;
+								evt.keyCode = 13;
+							} else if (c === 13 || c === 27) {
+								c = 0; // Mozilla considers ENTER and ESC non-printable
+							} else if (c === 3) {
+								c = 99; // Mozilla maps CTRL-BREAK to CTRL-c
+							}
+						})();
+						// Mozilla sets keyCode to 0 when there is a charCode
+						// but that stops the event on IE.
+						evt.charCode = c;
+						_setKeyChar(evt);
+					}
+				})(evt);
+			}
+			return evt;
+		};
+		var fixListener = function(listener) {
+			// this is a minimal function for closing on the previous listener with as few as variables as possible
+			return function(evt) {
+				evt = on._fixEvent(evt, this);
+				var result = listener.call(this, evt);
+				if (evt.modified) {
+					// cache the last event and reuse it if we can
+					if (!lastEvent) {
+						setTimeout(function() {
+							lastEvent = null;
+						});
+					}
+					lastEvent = evt;
+				}
+				return result;
+			};
+		};
+		var fixAttach = function(target, type, listener) {
+			/* jshint evil: true */
+			listener = fixListener(listener);
+			if (((target.ownerDocument ? target.ownerDocument.parentWindow : target.parentWindow || target.window || window) !== window.top ||
+				has('jscript') < 5.8) && !has('config-_allow_leaks')) {
+				// IE will leak memory on certain handlers in frames (IE8 and earlier) and in unattached DOM nodes for JScript 5.7 and below.
+				// Here we use global redirection to solve the memory leaks
+				if (typeof _dojoIEListeners_ === 'undefined') {
+					_dojoIEListeners_ = [];
+				}
+				var emitter = target[type];
+				if (!emitter || !emitter.listeners) {
+					var oldListener = emitter;
+					emitter = new Function('event', 'var callee = arguments.callee; for(var i = 0; i<callee.listeners.length; i++){var listener = _dojoIEListeners_[callee.listeners[i]]; if(listener){listener.call(this,event);}}');
+					emitter.listeners = [];
+					target[type] = emitter;
+					emitter.global = this;
+					if (oldListener) {
+						emitter.listeners.push(_dojoIEListeners_.push(oldListener) - 1);
+					}
+				}
+				var handle;
+				emitter.listeners.push(handle = (emitter.global._dojoIEListeners_.push(listener) - 1));
+				return new IESignal(handle);
+			}
+			return aspect.after(target, type, listener, true);
+		};
 		if (has('dom-addeventlistener')) {
 			// emitter that works with native event handling
 			on.emit = function(target, type, event) {
@@ -421,127 +532,20 @@ Dojo Toolkit's dojo/on as of jan 2014
 				return syntheticDispatch.apply(on, arguments); // emit for a non-node
 			};
 		} else {
-			// no addEventListener, basically old IE event normalization
-			on._fixEvent = function(evt, sender) {
-				// summary:
-				//		normalizes properties on the event object including event
-				//		bubbling methods, keystroke normalization, and x/y positions
-				// evt:
-				//		native event object
-				// sender:
-				//		node to treat as 'currentTarget'
-				if (!evt) {
-					var w = sender && (sender.ownerDocument || sender.document || sender).parentWindow || window;
-					evt = w.event;
-				}
-				if (!evt) {
-					return evt;
-				}
-				try {
-					if (lastEvent && evt.type === lastEvent.type && evt.srcElement === lastEvent.target) {
-						// should be same event, reuse event object (so it can be augmented);
-						// accessing evt.srcElement rather than evt.target since evt.target not set on IE until fixup below
-						evt = lastEvent;
-					}
-				} catch (e) {
-					// will occur on IE on lastEvent.type reference if lastEvent points to a previous event that already
-					// finished bubbling, but the setTimeout() to clear lastEvent hasn't fired yet
-				}
-				if (!evt.target) { // check to see if it has been fixed yet
-					(function(evt) {
-						evt.target = evt.srcElement;
-						evt.currentTarget = (sender || evt.srcElement);
-						if (evt.type === 'mouseover') {
-							evt.relatedTarget = evt.fromElement;
-						}
-						if (evt.type === 'mouseout') {
-							evt.relatedTarget = evt.toElement;
-						}
-						if (!evt.stopPropagation) {
-							evt.stopPropagation = stopPropagation;
-							evt.preventDefault = preventDefault;
-						}
-						if (evt.type === 'keypress') {
-							var c = ('charCode' in evt ? evt.charCode : evt.keyCode);
-							(function(){
-								if (c === 10) {
-									// CTRL-ENTER is CTRL-ASCII(10) on IE, but CTRL-ENTER on Mozilla
-									c = 0;
-									evt.keyCode = 13;
-								} else if (c === 13 || c === 27) {
-									c = 0; // Mozilla considers ENTER and ESC non-printable
-								} else if (c === 3) {
-									c = 99; // Mozilla maps CTRL-BREAK to CTRL-c
-								}
-							})();
-							// Mozilla sets keyCode to 0 when there is a charCode
-							// but that stops the event on IE.
-							evt.charCode = c;
-							_setKeyChar(evt);
-						}
-					})(evt);
-				}
-				return evt;
-			};
+
 			var lastEvent, IESignal = function(handle) {
 					this.handle = handle;
 				};
 			IESignal.prototype.remove = function() {
 				delete _dojoIEListeners_[this.handle];
 			};
-			var fixListener = function(listener) {
-				// this is a minimal function for closing on the previous listener with as few as variables as possible
-				return function(evt) {
-					evt = on._fixEvent(evt, this);
-					var result = listener.call(this, evt);
-					if (evt.modified) {
-						// cache the last event and reuse it if we can
-						if (!lastEvent) {
-							setTimeout(function() {
-								lastEvent = null;
-							});
-						}
-						lastEvent = evt;
-					}
-					return result;
-				};
-			};
-			var fixAttach = function(target, type, listener) {
-				/* jshint evil: true */
-				listener = fixListener(listener);
-				if (((target.ownerDocument ? target.ownerDocument.parentWindow : target.parentWindow || target.window || window) !== window.top ||
-					has('jscript') < 5.8) && !has('config-_allow_leaks')) {
-					// IE will leak memory on certain handlers in frames (IE8 and earlier) and in unattached DOM nodes for JScript 5.7 and below.
-					// Here we use global redirection to solve the memory leaks
-					if (typeof _dojoIEListeners_ === 'undefined') {
-						_dojoIEListeners_ = [];
-					}
-					var emitter = target[type];
-					if (!emitter || !emitter.listeners) {
-						var oldListener = emitter;
-						emitter = new Function('event', 'var callee = arguments.callee; for(var i = 0; i<callee.listeners.length; i++){var listener = _dojoIEListeners_[callee.listeners[i]]; if(listener){listener.call(this,event);}}');
-						emitter.listeners = [];
-						target[type] = emitter;
-						emitter.global = this;
-						if (oldListener) {
-							emitter.listeners.push(_dojoIEListeners_.push(oldListener) - 1);
-						}
-					}
-					var handle;
-					emitter.listeners.push(handle = (emitter.global._dojoIEListeners_.push(listener) - 1));
-					return new IESignal(handle);
-				}
-				return aspect.after(target, type, listener, true);
-			};
+
 
 			var _setKeyChar = function(evt) {
 				evt.keyChar = evt.charCode ? String.fromCharCode(evt.charCode) : '';
 				evt.charOrCode = evt.keyChar || evt.keyCode; // TODO: remove for 2.0
 			};
-			// Called in Event scope
-			var stopPropagation = function() {
-				this.cancelBubble = true;
-			};
+
 			var preventDefault = on._preventDefault = function() {
 				// Setting keyCode to 0 is the only way to prevent certain keypresses (namely
 				// ctrl-combinations that correspond to menu accelerator keys).
