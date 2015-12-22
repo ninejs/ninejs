@@ -14,7 +14,7 @@
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = moduleDefine_1.define(['ninejs', 'container'], function (provide) {
         provide('singlePageContainer', function (config, ninejs, containerModule) {
-            var container = new FullScreenFrame_1.default({});
+            var container = new FullScreenFrame_1.default(config || {}, containerModule);
             container.init = container.show(window.document.body);
             containerModule.setContainer('singlePageContainer', container);
             return container;

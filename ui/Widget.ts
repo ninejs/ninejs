@@ -59,7 +59,15 @@ let collectReduce = (previous: { array: any[], data: any }, current: (data: any)
 	return previous;
 };
 
-class Widget extends Properties {
+export interface WidgetArgs {
+	skin?: any;
+	waitSkin?: any;
+	class?: string;
+	id?: string;
+	style?: string;
+}
+
+export class Widget extends Properties {
 	$njsWidget: boolean;
 	$njsChildWidgets: Widget[];
 	$njsCollect: { [ name: string]: ((data: any) => any)[] }
@@ -497,7 +505,7 @@ class Widget extends Properties {
 	 *
 	 * @return {undefined}
 	 */
-	constructor (args: any) {
+	constructor (args: WidgetArgs) {
 		super(args);
 		this.skin = this.skin || [];
 		this.skinContract = this.skinContract || {};

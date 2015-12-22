@@ -112,7 +112,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var ModuleRegistry = (function (_super) {
         __extends(ModuleRegistry, _super);
         function ModuleRegistry() {
-            _super.call(this);
+            _super.call(this, {});
             extend.mixin(this, {
                 providesList: {}
             });

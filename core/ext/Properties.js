@@ -67,7 +67,7 @@
             return evArray;
         }
         else if (typeof (element) === 'object') {
-            properties = new Properties();
+            properties = new Properties({});
             mixRecursive(properties, element);
             return properties;
         }
@@ -96,7 +96,7 @@
                     }
                     else if (typeof (tgt[p]) === 'object') {
                         if (typeof (src[p]) === 'undefined') {
-                            src[p] = new Properties();
+                            src[p] = new Properties({});
                         }
                         mixRecursive(src[p], tgt[p]);
                     }
@@ -108,12 +108,12 @@
         }
     };
     var Properties = (function () {
-        function Properties() {
+        function Properties(props) {
             var argslist = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                argslist[_i - 0] = arguments[_i];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                argslist[_i - 1] = arguments[_i];
             }
-            var args = argslist[0], self = this, me = this, execute = function () {
+            var self = this, me = this, args = props, execute = function () {
                 if (typeof (args) === 'object') {
                     for (var p in args) {
                         if (args.hasOwnProperty(p)) {

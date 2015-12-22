@@ -216,7 +216,7 @@ export class Router extends Properties implements RouterBase {
 		});
 	}
 	constructor () {
-		super();
+		super({});
 		this.routes = [];
 	}
 }
@@ -303,8 +303,7 @@ export class Route extends Properties implements RouterBase {
 	routeRegex: RegExp
 	parameterNames: string[]
 	constructor (options: RouteOptions, router: RouterBase) {
-		super();
-		Properties.mixin(this).call(null, options);
+		super(options);
 		this.routeRegex = convertRouteToRegExp(options.route);
 		this.parameterNames = getParameterNames(options.route);
 		this.parentRouter = router;

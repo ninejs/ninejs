@@ -25,6 +25,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         }
         return Container;
     })();
+    exports.Container = Container;
     var container = new Container();
     var ContainerModule = (function (_super) {
         __extends(ContainerModule, _super);

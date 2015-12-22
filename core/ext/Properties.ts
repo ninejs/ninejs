@@ -81,7 +81,7 @@ function getMixedElement(element: any): any {
 		return evArray;
 	}
 	else if (typeof(element) === 'object') {
-		properties = new Properties();
+		properties = new Properties({});
 		mixRecursive(properties, element);
 		return properties;
 	}
@@ -112,7 +112,7 @@ mixRecursive = function (src: any, tgt: any) {
 				}
 				else if (typeof(tgt[p]) === 'object') {
 					if (typeof(src[p]) === 'undefined') {
-						src[p] = new Properties();
+						src[p] = new Properties({});
 					}
 					mixRecursive(src[p], tgt[p]);
 				}
@@ -195,10 +195,10 @@ export default class Properties {
 		[ name: string ]: { action: (name: string, oldValue: any, newValue: any) => void, remove: () => void }[]
 	}
 	$njsConstructors: ((args: any) => void)[];
-	constructor (...argslist: any[]){
-		var args = argslist[0],
-			self = this,
+	constructor (props: {}, ...argslist: any[]){
+		var self = this,
 			me: any = this,
+			args: any = props,
 			execute = () => {
 				if (typeof(args) === 'object'){
 					for (var p in args) {

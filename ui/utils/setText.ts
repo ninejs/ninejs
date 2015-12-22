@@ -28,5 +28,5 @@ setText = (() => {
 	return setText;
 })();
 export default setText;
-
+export var emptyNode = setText.emptyNode;
 

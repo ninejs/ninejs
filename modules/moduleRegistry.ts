@@ -124,7 +124,7 @@ export class ModuleRegistry extends Properties {
 	}
 
 	constructor() {
-		super();
+		super({});
 		extend.mixin(this, {
 			providesList: {}
 		});

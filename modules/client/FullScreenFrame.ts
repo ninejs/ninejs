@@ -1,12 +1,13 @@
 'use strict';
 
-import Widget from '../../ui/Widget';
-import defaultSkin from './Skin/FullScreenFrame';
-import append from '../../ui/utils/append';
-import setClass from '../../ui/utils/setClass';
-import on from '../../core/on';
-import { when, PromiseType } from '../../core/deferredUtils';
-import { filter } from '../../core/array';
+import Widget from '../../ui/Widget'
+import defaultSkin from './Skin/FullScreenFrame'
+import append from '../../ui/utils/append'
+import setClass from '../../ui/utils/setClass'
+import on from '../../core/on'
+import { when, PromiseType } from '../../core/deferredUtils'
+import { filter } from '../../core/array'
+import { Container } from './container'
 
 
 function isNumber(n: any) {
@@ -15,6 +16,7 @@ function isNumber(n: any) {
 class FullScreenFrame extends Widget {
 	init: PromiseType<HTMLElement>
 	containerNode: HTMLElement
+	container: Container;
 	selectedSetter (idx: any) {
 		var cnt: number,
 			arr = filter(this.containerNode.childNodes, (node: Element) => { return node.nodeType === 1; /* Element */ }),
@@ -78,6 +80,10 @@ class FullScreenFrame extends Widget {
 		else {
 			return doAddChild(this.containerNode, child);
 		}
+	}
+	constructor (args: any, containerModule: Container) {
+		super(args);
+		this.container = containerModule;
 	}
 }
 

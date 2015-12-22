@@ -192,7 +192,10 @@ var __extends = (this && this.__extends) || function (d, b) {
                 }
             }
             extend_1.default.mixinRecursive(cfg.has, this.has);
-            cfg.aliases = this.aliases;
+            cfg.map = { '*': {} };
+            this.aliases.forEach(function (alias) {
+                cfg.map['*'][alias[0]] = alias[1];
+            });
             r.push(JSON.stringify(cfg));
             r.push(';');
             r.push('require.config(window.requireJsConfig);');

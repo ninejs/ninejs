@@ -3,3 +3,4 @@ declare let setText: {
     emptyNode: (node: HTMLElement) => void;
 };
 export default setText;
+export declare var emptyNode: (node: HTMLElement) => void;

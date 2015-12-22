@@ -2,7 +2,14 @@ import Properties from '../core/ext/Properties';
 import { EventHandler, RemovableType } from '../core/on';
 import { PromiseType, PromiseConstructorType } from '../core/deferredUtils';
 import Skin from './Skin';
-declare class Widget extends Properties {
+export interface WidgetArgs {
+    skin?: any;
+    waitSkin?: any;
+    class?: string;
+    id?: string;
+    style?: string;
+}
+export declare class Widget extends Properties {
     $njsWidget: boolean;
     $njsChildWidgets: Widget[];
     $njsCollect: {
@@ -43,7 +50,7 @@ declare class Widget extends Properties {
     subscribe(type: string, action: (data: any) => any): void;
     collect(type: string, data: any): any[];
     wait(_defer: PromiseType<any>): PromiseType<void>;
-    constructor(args: any);
+    constructor(args: WidgetArgs);
 }
 export default Widget;
 export interface WidgetConstructor {

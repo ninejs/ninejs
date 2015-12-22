@@ -24,8 +24,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     }
     var FullScreenFrame = (function (_super) {
         __extends(FullScreenFrame, _super);
-        function FullScreenFrame() {
-            _super.apply(this, arguments);
+        function FullScreenFrame(args, containerModule) {
+            _super.call(this, args);
+            this.container = containerModule;
         }
         FullScreenFrame.prototype.selectedSetter = function (idx) {
             var cnt, arr = array_1.filter(this.containerNode.childNodes, function (node) { return node.nodeType === 1; }), len = arr.length, target, current;

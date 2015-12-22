@@ -390,6 +390,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         };
         return Widget;
     })(Properties_1.default);
+    exports.Widget = Widget;
     Widget.prototype.$njsWidget = true;
     Widget.prototype.waiting = false;
     Object.defineProperty(exports, "__esModule", { value: true });

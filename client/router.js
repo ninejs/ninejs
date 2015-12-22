@@ -70,7 +70,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Router = (function (_super) {
         __extends(Router, _super);
         function Router() {
-            _super.call(this);
+            _super.call(this, {});
             this.routes = [];
         }
         Router.prototype.on = function (type, listener) {
@@ -197,8 +197,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Route = (function (_super) {
         __extends(Route, _super);
         function Route(options, router) {
-            _super.call(this);
-            Properties_1.default.mixin(this).call(null, options);
+            _super.call(this, options);
             this.routeRegex = convertRouteToRegExp(options.route);
             this.parameterNames = getParameterNames(options.route);
             this.parentRouter = router;

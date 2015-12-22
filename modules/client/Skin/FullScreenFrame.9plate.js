@@ -30,16 +30,65 @@ var fn = require('ninejs/_nineplate/utils/functions'),
     t = fn.t,
     av,
     result,
-    v;
+    v,
+    _0 = 	function (node) {
+/* Here starts a live expression with attribute */ 
+av = '';
+av = av + 'njsFullScreenFrame col-max ';
+putValue = context['frameMode'];
+if (av !== ''){
+	av = av + ((putValue) || '');
+
+} else {
+	av = ((putValue) || '');
+
+}
+node.className = av;
+return node;
+/* Here ends the live expression */ 
+
+},
+    _1,
+    _2;
 if (!document){
 	document = window.document;
 
 }
 node = document.createElement('div');
 nodes.push(node);
-av = '';
-av = av + 'njsFullScreenFrame col-max';
-node.className = av;
+_1 = _0(node);
+/* Add trigger events here */ 
+_2 = 	function () {
+	var freeze = {},
+	    freezeNode = _1,
+	    wfn = 		function (name,oldValue,newValue) {
+		var temps = {},
+		    p;
+		if (!(oldValue === newValue)){
+			for (p in freeze){
+			if (freeze.hasOwnProperty(p)) {
+				temps[p] = context[p];
+				context[p] = freeze[p];
+
+			}
+			}			_0(freezeNode);
+			for (p in freeze){
+			if (freeze.hasOwnProperty(p)) {
+				context[p] = temps[p];
+
+			}
+			}
+		}
+
+};
+	return wfn;
+
+};
+ctxTemp = context;
+if (ctxTemp.watch){
+	ctxTemp.watch('frameMode',_2());
+
+}
 attachTemp = r['containerNode'];
 if (attachTemp){
 	if (Object.prototype.toString.call(attachTemp) === '[object Array]'){

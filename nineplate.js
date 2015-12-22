@@ -28,7 +28,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     }
     var Nineplate = extend_1.default({
         buildTemplate: function (val) {
-            var template = new Template();
+            var template = new Template({});
             template.set('text', val);
             return template;
         },

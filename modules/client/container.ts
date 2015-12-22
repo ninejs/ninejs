@@ -3,7 +3,7 @@
 import Module from '../Module';
 
 
-class Container {
+export class Container {
 	containerList: { [name: string]: any } = {};
 	setContainer = function(name: string, obj: any) {
 		this.containerList[name] = obj;

@@ -211,7 +211,10 @@ export class Utils {
 			}
 		}
 		extend.mixinRecursive(cfg.has, this.has);
-		cfg.aliases = this.aliases;
+		cfg.map = { '*': {} };
+		this.aliases.forEach((alias: string[]) => {
+			cfg.map['*'][alias[0]] = alias[1];
+		});
 		r.push(JSON.stringify(cfg));
 		r.push(';');
 		r.push('require.config(window.requireJsConfig);');

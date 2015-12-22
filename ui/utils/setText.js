@@ -31,5 +31,6 @@
     })();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = setText;
+    exports.emptyNode = setText.emptyNode;
 });
 //# sourceMappingURL=setText.js.map

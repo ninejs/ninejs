@@ -1,3 +1,21 @@
+body.flexFrame {
+	display: flex;
+	.njsFullScreenFrame {
+		display: flex;
+		> {
+			.active {
+				&.flexFrame {
+					display: flex !important;
+				}
+				@media print {
+					&.flexFrame {
+						display: flex !important;
+					}
+				}
+			}
+		}
+	}
+}
 .njsFullScreenFrame {
 	> {
 		* {

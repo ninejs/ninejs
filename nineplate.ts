@@ -38,7 +38,7 @@ export interface NineplateType {
 
 var Nineplate = extend<NineplateType>({
 	buildTemplate: function(val: string) {
-		var template = new Template();
+		var template = new Template({});
 		template.set('text', val);
 		return template;
 	},
