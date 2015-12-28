@@ -17,11 +17,11 @@ export declare class Router extends Properties implements RouterBase {
     on(type: string, listener: (e?: any) => any): any;
     emit(...arglist: any[]): any;
     register(route: any, action?: (evt: any) => void, opts?: any): Route;
-    go(route: string, replace?: boolean): PromiseType<any>;
+    go(route: string, replace?: boolean): Promise<any>;
     addRoute(route: Route): Route;
     removeRoute(route: Route): any;
     destroy(): void;
-    dispatchRoute(evt: any): PromiseType<any>;
+    dispatchRoute(evt: any): Promise<any>;
     hashHandler: {
         remove: () => void;
     };
@@ -39,7 +39,7 @@ export declare class Route extends Properties implements RouterBase {
     removeRoute(): any;
     register(): Route;
     titleGetter(): any;
-    execute(args: any, evt: any): PromiseType<any>;
+    execute(args: any, evt: any): Promise<any>;
     action: (evt: any) => void;
     loadAction: (args: any, evt: any) => any;
     initAction(): any;
@@ -51,7 +51,7 @@ export { PromiseType };
 export declare function on(type: string, listener: (e?: any) => any): any;
 export declare function emit(...arglist: any[]): any;
 export declare function register(route: any, action?: (evt: any) => void): Route;
-export declare function go(route: string, replace?: boolean): PromiseType<any>;
+export declare function go(route: string, replace?: boolean): Promise<any>;
 export declare function addRoute(route: Route): Route;
 export declare function removeRoute(route: Route): any;
 export declare function startup(): void;

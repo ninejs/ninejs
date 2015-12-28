@@ -10,7 +10,6 @@
     var bluebird_1 = require('./bluebird');
     var nativePromise = typeof (Promise) === 'function';
     ;
-    ;
     var Q = bluebird_1.default;
     function isPromise(valueOrPromise) {
         return valueOrPromise && (typeof (valueOrPromise.then) === 'function');
@@ -31,28 +30,28 @@
             }
             return result;
         };
-        _defer = function (r) {
+        _defer = function () {
             var pResolve, pReject, p = new Promise(function (resolve, reject) {
                 pResolve = resolve;
                 pReject = reject;
-            });
-            p.resolve = function (v) {
+            }), a = p, r;
+            var resolve = function (v) {
                 setTimeout(function () {
                     pResolve(v);
                 }, 0);
             };
-            p.reject = function (v) {
+            a.resolve = resolve;
+            var reject = function (v) {
                 setTimeout(function () {
                     pReject(v);
                 }, 0);
             };
-            p.promise = p;
-            if (arguments.length) {
-                p.resolve(r);
-            }
-            return p;
+            a.reject = reject;
+            a.promise = p;
+            r = a;
+            return r;
         };
-        _when = function (v, success, reject, fin) {
+        _when = function (v, success, reject) {
             if (isPromise(v)) {
                 return v.then(success, reject);
             }
@@ -92,17 +91,10 @@
             }
             return result;
         };
-        _defer = function (r) {
-            if (typeof (r) !== 'undefined') {
-                var d = Q.defer();
-                d.resolve(r);
-                return d;
-            }
-            else {
-                return Q.defer();
-            }
+        _defer = function () {
+            return Q.defer();
         };
-        _when = function (v, success, reject, fin) {
+        _when = function (v, success, reject) {
             var r;
             if (isPromise(v)) {
                 r = v.then(success, reject);
@@ -110,12 +102,7 @@
             else {
                 r = resolve(v).then(success, reject);
             }
-            if (typeof (fin) === 'function') {
-                return r.fin(fin);
-            }
-            else {
-                return r;
-            }
+            return r;
         };
         _all = function () {
             return Q.all.apply(Q, arguments);

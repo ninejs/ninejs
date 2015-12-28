@@ -3,7 +3,7 @@ export interface RawResponse {
     response: any;
     body: any;
 }
-export declare function raw(...args: any[]): PromiseType<RawResponse>;
+export declare function raw(...args: any[]): Promise<RawResponse>;
 declare let result: {
     (...args: any[]): PromiseType<any>;
     get: (...args: any[]) => PromiseType<any>;

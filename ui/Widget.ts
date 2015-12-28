@@ -4,7 +4,7 @@
 import extend from '../core/extend';
 import Properties from '../core/ext/Properties';
 import { default as on, EventHandler, RemovableType } from '../core/on';
-import { PromiseType, PromiseConstructorType, when, defer, isPromise } from '../core/deferredUtils';
+import { PromiseType, PromiseConstructorType, when, defer, isPromise, resolve } from '../core/deferredUtils';
 import setClass from './utils/setClass';
 import append from './utils/append';
 import { isArray, isHTMLElement } from '../core/objUtils';
@@ -22,7 +22,6 @@ let widgetSpecialEvents: { [name: string]: boolean } = {
 window.setTimeout(function () {
 	on(window.document.body, 'click', function (/*evt*/) {
 		on.emit(window.document.body, '9jsclosewidgets', { target: null });
-		//evt.stopPropagation();
 	});
 }, 0);
 function createWaitNode (parent: HTMLElement, self: Widget) {
@@ -350,7 +349,7 @@ export class Widget extends Properties {
 			if (parent) {
 				parent.appendChild(domNode);
 			}
-			return defer(domNode).promise;
+			return resolve(domNode);
 		}
 		if (this.waitSkin) {
 			if (parentNode) {

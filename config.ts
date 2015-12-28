@@ -7,7 +7,7 @@ declare var define:{
 declare var require: any;
 declare var global: any;
 import * as extend from './core/extend';
-import * as moduleConfig from './modules/config';
+import moduleConfig from './modules/config';
 var isAmd = (typeof(define) !== 'undefined') && define.amd;
 var isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
 var isNode = (typeof(window) === 'undefined');

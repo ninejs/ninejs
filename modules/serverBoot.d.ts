@@ -1,3 +1,2 @@
-import { PromiseType } from '../core/deferredUtils';
-declare var _default: PromiseType<{}>;
+declare var _default: Promise<{}>;
 export default _default;

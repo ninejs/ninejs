@@ -78,10 +78,10 @@
         });
     }
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = deferredUtils_1.defer(moduleLoadPromise).promise.then(function () {
+    exports.default = deferredUtils_1.resolve(moduleLoadPromise).then(function () {
         var _defer = deferredUtils_1.defer();
         process.nextTick(function () {
-            deferredUtils_1.defer(moduleRegistry_1.moduleRegistry.enableModules()).promise
+            deferredUtils_1.resolve(moduleRegistry_1.moduleRegistry.enableModules())
                 .then(function (val) {
                 _defer.resolve(val);
             }, function (err) {

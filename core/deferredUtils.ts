@@ -3,7 +3,6 @@
 import extend from './extend'
 import bluebird from './bluebird'
 
-declare var Promise: any;
 /**
 @module ninejs/core/deferredUtils 
 @author Eduardo Burgos <eburgos@gmail.com>
@@ -11,19 +10,16 @@ declare var Promise: any;
 
 var nativePromise = typeof(Promise) === 'function';
 
-export interface PromiseType<T> {
-	then<U>(resolve: (v: T) => U | PromiseType<U>, onrejected?: (reason: any) => any) : PromiseType<U>;
-	catch(onrejected?: (reason: any) => any): PromiseType<T>;
-	fin(act: () => void) : PromiseType<T>
-};
+export type PromiseType<T> = Promise<T>
+
 export interface PromiseConstructorType<T> {
 	promise: PromiseType<T>;
 	resolve: (v: T | PromiseType<T>) => T;
 	reject: (e: Error) => void;
 };
 export interface PromiseManagerType {
-	when:<T, U> (v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void, fin?: () => void) => PromiseType<U>,
-	defer:<T> (v?: T) => PromiseConstructorType<T>,
+	when:<T, U> (v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void) => PromiseType<U>,
+	defer:<T> () => PromiseConstructorType<T>,
 	all: (arr: any[]) => PromiseType<any[]>,
 	delay: (ms: number) => PromiseType<any>
 }
@@ -32,8 +28,8 @@ export function isPromise<T>(valueOrPromise: any): valueOrPromise is PromiseType
 	return valueOrPromise && (typeof(valueOrPromise.then) === 'function');
 }
 var _mapToPromises: (arr: any[]) => PromiseType<any>[];
-var _defer: <T> (v?: T) => PromiseConstructorType<T>;
-var _when: <T, U> (v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void, fin?: () => void) => PromiseType<U>;
+var _defer: <T> () => PromiseConstructorType<T>;
+var _when: <T, U> (v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void) => PromiseType<U>;
 var _all: (arr: any[]) => PromiseType<any[]>;
 var _delay: (ms: number) => PromiseType<any>;
 var _series: (taskList: any[]) => PromiseType<any>;
@@ -50,30 +46,32 @@ if (nativePromise) {
 		}
 		return result;
 	};
-	_defer = function (r?: any) {
+	_defer = function <T>() {
 		var pResolve: (tgt: any) => any,
 			pReject: (err: any) => void,
 			p = new Promise(function (resolve: (tgt: any) => any, reject: (err: any) => void) {
 				pResolve = resolve;
 				pReject = reject;
-			});
-		p.resolve = (v: any) => {
+			}),
+			a: any = p,
+			r: PromiseConstructorType<T>;
+		let resolve = (v: any) => {
 			setTimeout ( () => {
 				pResolve(v);
 			}, 0);
 		};
-		p.reject = (v: any) => {
+		a.resolve = resolve;
+		let reject = (v: any) => {
 			setTimeout ( () => {
 				pReject(v);
 			}, 0);
 		};
-		p.promise = p;
-		if (arguments.length) {
-			p.resolve(r);
-		}
-		return p;
+		a.reject = reject;
+		a.promise = p;
+		r = a;
+		return r;
 	};
-	_when = <T, U> (v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void, fin?: () => void) => {
+	_when = <T, U> (v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void) => {
 		if (isPromise<T>(v)) {
 			return v.then(success, reject);
 		}
@@ -117,18 +115,11 @@ else {
 		}
 		return result;
 	};
-	_defer = function (r?: any) {
-		if (typeof(r) !== 'undefined') {
-			var d = Q.defer();
-			d.resolve(r);
-			return d;
-		}
-		else {
-			return Q.defer();
-		}
+	_defer = function () {
+		return Q.defer();
 	};
 	/* jshint unused: true */
-	_when = <T, U> (v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void, fin?: () => void) => {
+	_when = <T, U> (v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => PromiseType<any>) => {
 		var r: PromiseType<U>;
 		if (isPromise(v)) {
 			r = v.then(success, reject);
@@ -136,12 +127,7 @@ else {
 		else {
 			r = resolve(v).then(success, reject);
 		}
-		if (typeof(fin) === 'function') {
-			return r.fin(fin);
-		}
-		else {
-			return r;
-		}
+		return r;
 	};
 	_all = function () {
 		return Q.all.apply(Q, arguments);
@@ -188,8 +174,8 @@ _series = function (taskList: any[]) {
 };
 export var delay: (ms: number) => PromiseType<any> = _delay;
 export var mapToPromises: (arr: any[]) => PromiseType<any>[] = _mapToPromises;
-export var defer: <T> (v?: T) => PromiseConstructorType<T> = _defer;
-export var when: <T, U> (v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void, fin?: () => void) => PromiseType<U> = _when;
+export var defer: <T> () => PromiseConstructorType<T> = _defer;
+export var when: <T, U> (v: T | PromiseType<T>, success: (v?: T) => U | PromiseType<U>, reject?: (e?: Error) => void) => PromiseType<U> = _when;
 export var all: (arr: any[]) => PromiseType<any[]> = _all;
 export var series: (taskList: any[]) => PromiseType<any> = _series;
 export function resolve<T>(val: T) {

@@ -265,7 +265,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 if (parent) {
                     parent.appendChild(domNode);
                 }
-                return deferredUtils_1.defer(domNode).promise;
+                return deferredUtils_1.resolve(domNode);
             }
             if (this.waitSkin) {
                 if (parentNode) {

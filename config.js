@@ -8,7 +8,7 @@
 })(function (require, exports) {
     'use strict';
     var extend = require('./core/extend');
-    var moduleConfig = require('./modules/config');
+    var config_1 = require('./modules/config');
     var isAmd = (typeof (define) !== 'undefined') && define.amd;
     var isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
     var isNode = (typeof (window) === 'undefined');
@@ -38,7 +38,7 @@
     }
     r.ninejs = r.ninejs || {};
     extend.mixinRecursive(r.ninejs, _global.ninejsConfig || {});
-    extend.mixinRecursive(r.ninejs, moduleConfig || {});
+    extend.mixinRecursive(r.ninejs, config_1.default || {});
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = r;
 });

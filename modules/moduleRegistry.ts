@@ -4,7 +4,7 @@ import * as extend from '../core/extend';
 import Properties from '../core/ext/Properties';
 import modulesConfig from './config'
 import ninejsConfig from '../config';
-import { PromiseType, when, all, mapToPromises, defer } from '../core/deferredUtils';
+import { PromiseType, when, all, mapToPromises, defer, resolve } from '../core/deferredUtils';
 
 declare var require: any;
 var req = require;
@@ -15,8 +15,9 @@ extend.mixinRecursive(config, ninejsConfig.ninejs);
 
 function getConfigObject(m: any, config: any) {
 	var cfgObj: { [ name: string ]: any } = {}, cnt: number;
+	let units = ninejsConfig.ninejs.units || {};
 	for (cnt = 0; cnt < m.provides.length; cnt += 1) {
-		cfgObj[m.provides[cnt].id] = config.units[m.provides[cnt].id] || {};
+		cfgObj[m.provides[cnt].id] = units[m.provides[cnt].id] || {};
 	}
 	return cfgObj;
 }
@@ -288,7 +289,7 @@ export class ModuleRegistry extends Properties {
 				return _defer.promise;
 			}
 			else {
-				return defer(this.enabledUnits[unitId]).promise;
+				return resolve(this.enabledUnits[unitId]);
 			}
 		};
 		this.build = function () {

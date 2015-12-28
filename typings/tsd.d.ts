@@ -10,3 +10,4 @@
 /// <reference path="node/node.d.ts" />
 /// <reference path="serve-favicon/serve-favicon.d.ts" />
 /// <reference path="serve-static/serve-static.d.ts" />
+/// <reference path="bluebird/bluebird.d.ts" />

@@ -16,7 +16,7 @@ export declare class ControlBase extends Widget {
     focus(): void;
     valueSetter(v: any): void;
     valueGetter(): any;
-    nameSetter(v: string): PromiseType<any>;
+    nameSetter(v: string): Promise<any>;
     constructor(args: any);
 }
 export declare class NativeNumberTextBox extends ControlBase {
@@ -54,7 +54,7 @@ declare class Editor extends Widget {
     CheckBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
     TextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
     SelectControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
-    _clearDataTypeClasses(): PromiseType<void>;
+    _clearDataTypeClasses(): Promise<void>;
     onUpdatedSkin(): void;
     dataType: string;
     control: Widget | PromiseType<Widget>;
@@ -71,24 +71,24 @@ declare class Editor extends Widget {
     max: number;
     required: boolean;
     autocomplete: boolean;
-    controlClassSetter(v: string): PromiseType<void>;
-    placeholderSetter(v: string): PromiseType<void>;
-    nameSetter(v: string): PromiseType<void>;
-    autocompleteSetter(v: boolean): PromiseType<void>;
-    inputTypeSetter(v: string): PromiseType<void>;
-    requiredSetter(v: boolean): PromiseType<void>;
-    minSetter(v: number): PromiseType<void>;
-    maxSetter(v: number): PromiseType<void>;
-    maxLengthSetter(v: number): PromiseType<void>;
-    titleSetter(v: string): PromiseType<void>;
-    patternSetter(v: string): PromiseType<void>;
+    controlClassSetter(v: string): Promise<void>;
+    placeholderSetter(v: string): Promise<void>;
+    nameSetter(v: string): Promise<void>;
+    autocompleteSetter(v: boolean): Promise<void>;
+    inputTypeSetter(v: string): Promise<void>;
+    requiredSetter(v: boolean): Promise<void>;
+    minSetter(v: number): Promise<void>;
+    maxSetter(v: number): Promise<void>;
+    maxLengthSetter(v: number): Promise<void>;
+    titleSetter(v: string): Promise<void>;
+    patternSetter(v: string): Promise<void>;
     onBlur(): void;
     bind(target: Properties, name: string): Editor;
-    focus(): PromiseType<void>;
-    dataTypeSetter(val: string): PromiseType<Widget>;
-    nullValueSetter(val: any): PromiseType<void>;
-    valueSetter(val: any, stopPropagate?: boolean): PromiseType<void>;
-    optionsSetter(values: any[]): PromiseType<void>;
+    focus(): Promise<void>;
+    dataTypeSetter(val: string): Promise<Widget>;
+    nullValueSetter(val: any): Promise<void>;
+    valueSetter(val: any, stopPropagate?: boolean): Promise<void>;
+    optionsSetter(values: any[]): Promise<void>;
     constructor(args: any);
 }
 export { Editor };

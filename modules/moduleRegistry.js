@@ -23,8 +23,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     extend.mixinRecursive(config, config_2.default.ninejs);
     function getConfigObject(m, config) {
         var cfgObj = {}, cnt;
+        var units = config_2.default.ninejs.units || {};
         for (cnt = 0; cnt < m.provides.length; cnt += 1) {
-            cfgObj[m.provides[cnt].id] = config.units[m.provides[cnt].id] || {};
+            cfgObj[m.provides[cnt].id] = units[m.provides[cnt].id] || {};
         }
         return cfgObj;
     }
@@ -262,7 +263,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     return _defer.promise;
                 }
                 else {
-                    return deferredUtils_1.defer(this.enabledUnits[unitId]).promise;
+                    return deferredUtils_1.resolve(this.enabledUnits[unitId]);
                 }
             };
             this.build = function () {

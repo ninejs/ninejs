@@ -41,6 +41,7 @@
     "./modules/webserver/NineplateResource.ts",
     "./modules/webserver/StaticResource.ts",
     "./modules/webserver/WebServer.ts",
+    "./modules/webserver/Rest.ts",
     "./modules/webserver/SinglePage/SinglePageContainer.ts",
     "./_css/builder.ts",
     "./_css/styleEnable.ts",

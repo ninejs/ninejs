@@ -4,7 +4,7 @@ import config from './config';
 import extend from '../core/extend';
 import path = require('path');
 import fs = require('fs');
-import { all, nfcall, defer, PromiseType } from '../core/deferredUtils';
+import { all, nfcall, resolve, defer, PromiseType } from '../core/deferredUtils';
 import { moduleRegistry as registry } from './moduleRegistry';
 
 //trying to autodiscover modules from the /9js/modules folder
@@ -78,10 +78,10 @@ if (fs.existsSync(njsModulesPath)) {
 		throw error;
 	});
 }
-export default defer(moduleLoadPromise).promise.then(function(){
+export default resolve(moduleLoadPromise).then(function(){
 	var _defer = defer();
 	process.nextTick(function() {
-		defer(registry.enableModules()).promise
+		resolve(registry.enableModules())
 			.then(function(val: any) {
 				_defer.resolve(val);
 			}, function (err: any) {
