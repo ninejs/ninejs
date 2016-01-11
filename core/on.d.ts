@@ -14,7 +14,7 @@ export interface PausableResult extends RemovableType {
     pause: () => void;
     resume: () => void;
 }
-declare var on: {
+export declare var on: {
     (target: any, type: string, listener: (e: any) => any, dontFix?: boolean): RemovableType;
     pausable: (target: any, type: string, listener: (e: any) => any, dontFix?: boolean) => PausableResult;
     once: (target: any, type: string, listener: (e: any) => any, dontFix?: boolean) => RemovableType;

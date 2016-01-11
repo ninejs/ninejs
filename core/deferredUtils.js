@@ -3,12 +3,13 @@
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", './bluebird'], factory);
+        define(["require", "exports", './bluebird', '../config'], factory);
     }
 })(function (require, exports) {
     'use strict';
     var bluebird_1 = require('./bluebird');
-    var nativePromise = typeof (Promise) === 'function';
+    var config_1 = require('../config');
+    var nativePromise = (typeof (Promise) === 'function') && !((((config_1.default.ninejs || {}).core || {}).deferredUtils || {}).skipNativePromise);
     ;
     var Q = bluebird_1.default;
     function isPromise(valueOrPromise) {

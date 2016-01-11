@@ -505,7 +505,6 @@ export class Widget extends Properties {
 	 * @return {undefined}
 	 */
 	constructor (args: WidgetArgs) {
-		super(args);
 		this.skin = this.skin || [];
 		this.skinContract = this.skinContract || {};
 		this.$njsEventListeners = {};
@@ -520,6 +519,7 @@ export class Widget extends Properties {
 			this.$njsShowDefer.resolve(this.domNode);
 			this.$njsShowDefer = null;
 		}
+		super(args);
 	}
 }
 

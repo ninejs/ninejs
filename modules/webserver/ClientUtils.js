@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../../core/ext/Properties', 'fs', 'path', '../../core/extend'], factory);
+        define(["require", "exports", '../../core/ext/Properties', 'fs', 'path', '../../core/extend', '../../core/ext/Evented'], factory);
     }
 })(function (require, exports) {
     'use strict';
@@ -16,6 +16,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var fs = require('fs');
     var path = require('path');
     var extend_1 = require('../../core/extend');
+    var Evented_1 = require('../../core/ext/Evented');
     var CacheManifest = (function (_super) {
         __extends(CacheManifest, _super);
         function CacheManifest(args) {
@@ -102,6 +103,12 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             this.appCache = new CacheManifest(undefined);
         }
+        Utils.prototype.on = function (type, listener) {
+            return Evented_1.default.on.apply(this, arguments);
+        };
+        Utils.prototype.emit = function (type, data) {
+            return Evented_1.default.emit.apply(this, arguments);
+        };
         Utils.prototype.init = function (webServer) {
             this.logger = webServer.get('logger');
             this.webServer = webServer;
@@ -196,6 +203,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.aliases.forEach(function (alias) {
                 cfg.map['*'][alias[0]] = alias[1];
             });
+            this.emit('config', cfg);
             r.push(JSON.stringify(cfg));
             r.push(';');
             r.push('require.config(window.requireJsConfig);');

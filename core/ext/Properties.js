@@ -50,6 +50,10 @@
         this.action = action;
         this.watchList = watchList;
     });
+    var excludedProperties = {
+        '$njsConstructors': true,
+        '$njsWatch': true
+    };
     var EventedArrayConstructor = extend_1.default(Array, function (arr) {
         var cnt, len;
         if (arr && arr.length) {
@@ -202,6 +206,39 @@
                     }
                 }
             };
+        };
+        Properties.getObject = function (obj) {
+            var r = {};
+            var arr;
+            for (var p in obj) {
+                if (obj.hasOwnProperty(p) && (!excludedProperties[p])) {
+                    var t = obj[p];
+                    if (objUtils_1.isArrayLike(t)) {
+                        arr = [];
+                        Array.prototype.forEach.call(t, function (item) {
+                            if (typeof (item) === 'object') {
+                                arr.push(Properties.getObject(item));
+                            }
+                            else {
+                                arr.push(item);
+                            }
+                        });
+                        r[p] = arr;
+                    }
+                    else if (typeof (t) === 'object') {
+                        if (t === null) {
+                            r[p] = null;
+                        }
+                        else {
+                            r[p] = Properties.getObject(t);
+                        }
+                    }
+                    else {
+                        r[p] = t;
+                    }
+                }
+            }
+            return r;
         };
         return Properties;
     })();

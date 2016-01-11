@@ -134,7 +134,7 @@ class IESignal {
 		this.handle = handle;
 	}
 }
-var on: {
+export var on: {
 	(target: any, type: string, listener: (e: any) => any, dontFix?: boolean): RemovableType;
 	pausable: (target: any, type: string, listener: (e: any) => any, dontFix?: boolean) => PausableResult;
 	once: (target: any, type: string, listener: (e: any) => any, dontFix?: boolean) => RemovableType;
@@ -143,8 +143,7 @@ var on: {
 	emit: (target: any, type: string, event: any) => any;
 	_fixEvent: (evt: any, sender: any) => any;
 	_preventDefault: () => void;
-}
-on = (() => {
+} = (() => {
 	var on: any = function(target: any, type: string, listener: (e: any) => any, dontFix?: boolean): RemovableType {
 		// summary:
 		//		A function that provides core event listening functionality. With this function

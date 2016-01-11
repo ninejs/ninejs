@@ -2,13 +2,14 @@
 
 import extend from './extend'
 import bluebird from './bluebird'
+import config from '../config'
 
 /**
 @module ninejs/core/deferredUtils 
 @author Eduardo Burgos <eburgos@gmail.com>
 */
 
-var nativePromise = typeof(Promise) === 'function';
+var nativePromise = (typeof(Promise) === 'function') && !((((config.ninejs || {}).core || {}).deferredUtils || {}).skipNativePromise);
 
 export type PromiseType<T> = Promise<T>
 

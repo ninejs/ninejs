@@ -40,6 +40,8 @@ export declare class Utils {
     logger: {
         [name: string]: Logger;
     };
+    on(type: string, listener: (e?: any) => any): any;
+    emit(type: string, data: any): any;
     init(webServer: WebServer): void;
     addAmdPath(prefix: string, path: string): void;
     addAmdAlias(moduleName: string, alias: string): void;

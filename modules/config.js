@@ -10,7 +10,6 @@
     var isAmd = (typeof (define) !== 'undefined') && define.amd;
     var isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
     var isNode = (typeof (window) === 'undefined');
-    var req = require;
     var dojoConfig;
     var _global = ((typeof (global) !== 'undefined') ? global : window) || {};
     if (isDojo) {
@@ -58,12 +57,17 @@
         }
     }
     if (isNode) {
-        var fs = req('fs'), path = req('path'), njsConfigPath = path.resolve(process.cwd(), '9js.config.json'), njsConfig = {}, finalConfig = { modules: [], units: {} };
-        if (fs.existsSync(njsConfigPath)) {
-            njsConfig = require(njsConfigPath);
-            readConfigModules(njsConfig, finalConfig);
-            mixin(config, finalConfig);
-            mixin(config, njsConfig);
+        try {
+            var req = (isDojo && isNode) ? global.require : require;
+            var fs = req('fs'), path = req('path'), njsConfigPath = path.resolve(process.cwd(), '9js.config.json'), njsConfig = {}, finalConfig = { modules: [], units: {} };
+            if (fs.existsSync(njsConfigPath)) {
+                njsConfig = require(njsConfigPath);
+                readConfigModules(njsConfig, finalConfig);
+                mixin(config, finalConfig);
+                mixin(config, njsConfig);
+            }
+        }
+        catch (e) {
         }
     }
     Object.defineProperty(exports, "__esModule", { value: true });

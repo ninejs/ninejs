@@ -9,6 +9,8 @@ import express = require('express');
 import extend from '../../core/extend';
 import { Logger } from '../ninejs-server'
 import { Request, Response, Application } from './WebServer'
+import { RemovableType } from '../../core/on'
+import Evented from '../../core/ext/Evented'
 
 
 export class CacheManifest extends Properties {
@@ -108,6 +110,12 @@ export class Utils {
 	postActions: string[];
 	has: { [ name: string ]: any };
 	logger: { [ name: string ]: Logger };
+	on (type: string, listener: (e?: any) => any) {
+		return Evented.on.apply(this, arguments);
+	}
+	emit (type: string, data: any) {
+		return Evented.emit.apply(this, arguments);
+	}
 	init (webServer: WebServer) {
 		this.logger = webServer.get('logger');
 		this.webServer = webServer;
@@ -215,6 +223,7 @@ export class Utils {
 		this.aliases.forEach((alias: string[]) => {
 			cfg.map['*'][alias[0]] = alias[1];
 		});
+		this.emit('config', cfg);
 		r.push(JSON.stringify(cfg));
 		r.push(';');
 		r.push('require.config(window.requireJsConfig);');

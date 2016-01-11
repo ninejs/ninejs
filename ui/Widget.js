@@ -63,7 +63,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Widget = (function (_super) {
         __extends(Widget, _super);
         function Widget(args) {
-            _super.call(this, args);
             this.skin = this.skin || [];
             this.skinContract = this.skinContract || {};
             this.$njsEventListeners = {};
@@ -78,6 +77,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 this.$njsShowDefer.resolve(this.domNode);
                 this.$njsShowDefer = null;
             }
+            _super.call(this, args);
         }
         Widget.extend = function () {
             var args = [];

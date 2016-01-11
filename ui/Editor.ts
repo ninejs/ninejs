@@ -89,7 +89,7 @@ let setName = (node: HTMLElement) => {
 	(node as HTMLInputElement).name = this.value;
 };
 
-let controlBaseSetValue = (node: HTMLElement) => {
+function controlBaseSetValue (node: HTMLElement) {
 	let input = node as HTMLInputElement,
 		v = this.value;
 	if (v && (input.type === 'time')) {
@@ -101,7 +101,7 @@ let controlBaseSetValue = (node: HTMLElement) => {
 	}
 	this.self.value = v;
 	input.value = v;
-};
+}
 
 function controlBaseOnChange (node: HTMLElement) {
 	this.own(

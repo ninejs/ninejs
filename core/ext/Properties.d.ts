@@ -26,4 +26,5 @@ export default class Properties {
     $njsConstructors: ((args: any) => void)[];
     constructor(props: {}, ...argslist: any[]);
     static mixin(target: any): (args: any) => void;
+    static getObject(obj: Properties): any;
 }

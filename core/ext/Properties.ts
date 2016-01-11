@@ -61,6 +61,10 @@ var WatchHandleConstructor = extend<WatchHandle>({
 	this.action = action;
 	this.watchList = watchList;
 });
+let excludedProperties: { [name: string]: boolean } = {
+	'$njsConstructors': true,
+	'$njsWatch': true
+};
 var EventedArrayConstructor: { new (...rest: any[] ): EventedArray } = extend<EventedArray>(Array, function (arr: any[]) {
 		var cnt: number,
 			len: number;
@@ -227,6 +231,39 @@ export default class Properties {
 			}
 		};
 	}
+	static getObject (obj: Properties): any {
+		let r: any = {};
+		var arr: any[];
+		for (let p in obj) {
+			if (obj.hasOwnProperty(p) && (!excludedProperties[p])) {
+				let t = obj[p];
+				if (isArrayLike(t)) {
+					arr = [];
+					Array.prototype.forEach.call(t, (item: any) => {
+						if (typeof(item) === 'object') {
+							arr.push(Properties.getObject(item));
+						}
+						else {
+							arr.push(item);
+						}
+					});
+					r[p] = arr;
+				}
+				else if (typeof(t) === 'object') {
+					if (t === null) {
+						r[p] = null;
+					}
+					else {
+						r[p] = Properties.getObject(t);
+					}
+				}
+				else {
+					r[p] = t;
+				}
+			}
+		}
+		return r;
+	}
 };
 
 
@@ -242,4 +279,4 @@ emitToWatchList = function (self: Properties, name: string, oldValue: any, newVa
 			}
 		}
 	}
-}
+};

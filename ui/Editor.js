@@ -54,8 +54,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     var setName = function (node) {
         node.name = _this.value;
     };
-    var controlBaseSetValue = function (node) {
-        var input = node, v = _this.value;
+    function controlBaseSetValue(node) {
+        var input = node, v = this.value;
         if (v && (input.type === 'time')) {
             var d = new Date(v);
             if (isNaN(d.valueOf())) {
@@ -63,9 +63,9 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
             v = padTime('' + d.getHours()) + ':' + padTime('' + d.getMinutes()) + ':' + padTime('' + d.getSeconds());
         }
-        _this.self.value = v;
+        this.self.value = v;
         input.value = v;
-    };
+    }
     function controlBaseOnChange(node) {
         var _this = this;
         this.own(on_1.default(node, 'change', function (e) {

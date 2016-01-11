@@ -107,8 +107,7 @@
         }
         return IESignal;
     })();
-    var on;
-    on = (function () {
+    exports.on = (function () {
         var on = function (target, type, listener, dontFix) {
             if (typeof target.on === 'function' && typeof type !== 'function' && !target.nodeType) {
                 return target.on(type, listener);
@@ -472,10 +471,10 @@
         }
         return on;
     })();
-    exports.emit = on.emit;
-    exports.pausable = on.pausable;
-    exports.once = on.once;
+    exports.emit = exports.on.emit;
+    exports.pausable = exports.on.pausable;
+    exports.once = exports.on.once;
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = on;
+    exports.default = exports.on;
 });
 //# sourceMappingURL=on.js.map
