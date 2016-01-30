@@ -103,6 +103,33 @@ function controlBaseSetValue (node: HTMLElement) {
 	input.value = v;
 }
 
+function selectSetValue (node: HTMLElement) {
+	let input = node as HTMLSelectElement,
+		v = this.value,
+		arr = input.options;
+
+	when(v, ((v) => {
+		for (let cnt = 0; cnt < arr.length; cnt += 1) {
+			let opt = arr[cnt];
+			opt.selected = (opt.value == v);
+		}
+		this.self.value = v;
+	}));
+	return v;
+}
+
+function selectGetValue (node: HTMLElement) {
+	let input = node as HTMLSelectElement,
+		arr = input.options;
+	for (let cnt = 0; cnt < arr.length; cnt += 1) {
+		let opt = arr[cnt];
+		if (opt.selected) {
+			return opt.value;
+		}
+	}
+	return undefined;
+}
+
 function controlBaseOnChange (node: HTMLElement) {
 	this.own(
 		on(node, 'change', (e) => {
@@ -341,7 +368,7 @@ function getValue (item: any) {
 	return value;
 }
 
-let setOptions = (domNode: HTMLElement) => {
+let setOptions = function (domNode: HTMLElement) {
 	var node = domNode,
 		self = this.self,
 		v = this.value;
@@ -374,6 +401,12 @@ export class NativeSelect extends ControlBase {
 	}
 	optionsSetter (v: any[]) {
 		applyToNode(this.domNode, setOptions, { self: this, value: v });
+	}
+	valueSetter (v: any) {
+		applyToNode(this.domNode, selectSetValue, { self: this, value: v });
+	}
+	valueGetter () {
+		return selectGetValue.call({ self: this }, this.domNode);
 	}
 }
 TimeTextBox = getTimeTextBoxConstructor();

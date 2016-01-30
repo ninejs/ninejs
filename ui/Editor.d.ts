@@ -40,6 +40,8 @@ export declare class NativeTextBox extends ControlBase {
 export declare class NativeSelect extends ControlBase {
     constructor(args: any);
     optionsSetter(v: any[]): void;
+    valueSetter(v: any): void;
+    valueGetter(): any;
 }
 declare class Editor extends Widget {
     SelectControlSetter: (c: any) => void;

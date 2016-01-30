@@ -66,6 +66,28 @@ var __extends = (this && this.__extends) || function (d, b) {
         this.self.value = v;
         input.value = v;
     }
+    function selectSetValue(node) {
+        var _this = this;
+        var input = node, v = this.value, arr = input.options;
+        deferredUtils_1.when(v, (function (v) {
+            for (var cnt = 0; cnt < arr.length; cnt += 1) {
+                var opt = arr[cnt];
+                opt.selected = (opt.value == v);
+            }
+            _this.self.value = v;
+        }));
+        return v;
+    }
+    function selectGetValue(node) {
+        var input = node, arr = input.options;
+        for (var cnt = 0; cnt < arr.length; cnt += 1) {
+            var opt = arr[cnt];
+            if (opt.selected) {
+                return opt.value;
+            }
+        }
+        return undefined;
+    }
     function controlBaseOnChange(node) {
         var _this = this;
         this.own(on_1.default(node, 'change', function (e) {
@@ -307,7 +329,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         return value;
     }
     var setOptions = function (domNode) {
-        var node = domNode, self = _this.self, v = _this.value;
+        var node = domNode, self = this.self, v = this.value;
         domUtils_1.setText.emptyNode(node);
         if (v) {
             array_1.forEach(v, function (item) {
@@ -332,6 +354,12 @@ var __extends = (this && this.__extends) || function (d, b) {
         }
         NativeSelect.prototype.optionsSetter = function (v) {
             applyToNode(this.domNode, setOptions, { self: this, value: v });
+        };
+        NativeSelect.prototype.valueSetter = function (v) {
+            applyToNode(this.domNode, selectSetValue, { self: this, value: v });
+        };
+        NativeSelect.prototype.valueGetter = function () {
+            return selectGetValue.call({ self: this }, this.domNode);
         };
         return NativeSelect;
     })(ControlBase);

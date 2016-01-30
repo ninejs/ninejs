@@ -14,8 +14,15 @@ results
 
 npm-debug.log
 node_modules
+tscommand*
 /coverage.html
 .idea
+.tscache
+.gitattributes
+.npmignore
+listts.js
+grunt
+coverage.js
 covreporter.html
 jsdoc.json
 coverage.ignore
