@@ -8,6 +8,7 @@ import nineplate from '../../nineplate';
 import NineplateResource from './NineplateResource';
 import SinglePageContainer from './SinglePage/SinglePageContainer';
 import ClientUtils from './ClientUtils';
+import { mixinRecursive } from '../../core/extend';
 import { when } from '../../core/deferredUtils';
 import { Logger } from '../ninejs-server';
 import morgan = require('morgan'); //Express logger
@@ -97,7 +98,16 @@ class WebServer extends Properties {
 		}
 		var self = this, config = this.config,
 			app: express.Application = <express.Application> self.app;
-		this.add(new SinglePageContainer({ route: '/', method: 'get' }));
+		if (config.singlePageContainer !== false) {
+			let singleCfg: any = {route: '/', method: 'get'};
+			mixinRecursive(singleCfg, config.singlePageContainer || {});
+			this.add(new SinglePageContainer(singleCfg));
+		}
+		if (config.clientUtils && config.clientUtils.amdPaths) {
+			for (let p in config.clientUtils.amdPaths) {
+				this.clientUtils.addAmdPath(p, path.resolve(config.clientUtils.amdPaths[p]));
+			}
+		}
 		this.app.engine('9plate', nineplate.__express);
 		this.app.enable('view cache');
 

@@ -66,7 +66,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
         };
         return Mod;
-    })(Module_1.default);
+    }(Module_1.default));
     var result = new Mod(undefined);
     result.on('modulesEnabled', function () {
         process.nextTick(function () {

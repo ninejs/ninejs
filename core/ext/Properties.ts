@@ -128,6 +128,11 @@ mixRecursive = function (src: any, tgt: any) {
 	}
 };
 
+function nonSettersSetterFactory (self: any, obj: any) {
+	return function (key: string) {
+		self[key] = obj[key];
+	}
+}
 export default class Properties {
 	[name: string]: any;
 	get(name: string) {
@@ -199,7 +204,7 @@ export default class Properties {
 		[ name: string ]: { action: (name: string, oldValue: any, newValue: any) => void, remove: () => void }[]
 	}
 	$njsConstructors: ((args: any) => void)[];
-	constructor (props: {}, ...argslist: any[]){
+	constructor (props: {}, nonSetters?: {}){
 		var self = this,
 			me: any = this,
 			args: any = props,
@@ -212,6 +217,9 @@ export default class Properties {
 					}
 				}
 			};
+		if (nonSetters) {
+			Object.keys(nonSetters).forEach(nonSettersSetterFactory(this, nonSetters));
+		}
 		this.$njsWatch = { };
 		if (me.$njsInstanceDepth) {
 			this.$njsConstructors.push(function(args: any) {

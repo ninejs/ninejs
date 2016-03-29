@@ -44,15 +44,15 @@ var __extends = (this && this.__extends) || function (d, b) {
                 }
             }
             if (this.template) {
-                var template;
+                var template_1;
                 if (typeof (this.template) === 'string') {
                     var templateString = this.template;
                     nTemplate = nineplate_1.default.buildTemplate(templateString);
-                    template = nTemplate.compileDom(true);
-                    this.template = template;
+                    template_1 = nTemplate.compileDom(true);
+                    this.template = template_1;
                 }
                 else {
-                    template = this.template;
+                    template_1 = this.template;
                 }
                 var parentNode;
                 var oldNode;
@@ -61,7 +61,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     oldNode = widget.domNode;
                 }
                 var afterLoadDeps = function () {
-                    templateResult = template(widget);
+                    templateResult = template_1(widget);
                     if (widget.mixinProperties) {
                         widget.mixinProperties(templateResult);
                     }
@@ -73,8 +73,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                     }
                     defer.resolve(true);
                 };
-                if (template.amdDependencies && template.amdDependencies.length) {
-                    require(template.amdDependencies || [], afterLoadDeps);
+                if (template_1.amdDependencies && template_1.amdDependencies.length) {
+                    require(template_1.amdDependencies || [], afterLoadDeps);
                 }
                 else {
                     afterLoadDeps();
@@ -93,7 +93,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         Skin.prototype.updated = function (control) {
         };
         return Skin;
-    })(Properties_1.default);
+    }(Properties_1.default));
     Skin.prototype.cssList = [];
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Skin;

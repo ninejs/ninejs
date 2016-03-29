@@ -192,7 +192,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             });
         };
         return Router;
-    })(Properties_1.default);
+    }(Properties_1.default));
     exports.Router = Router;
     var Route = (function (_super) {
         __extends(Route, _super);
@@ -264,7 +264,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
         };
         return Route;
-    })(Properties_1.default);
+    }(Properties_1.default));
     exports.Route = Route;
     var router = new Router();
     function on(type, listener) {

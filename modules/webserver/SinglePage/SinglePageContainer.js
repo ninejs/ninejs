@@ -21,6 +21,18 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.on('result', function (evt) {
                 this.applyETag(evt.response, evt.data);
             });
+            this.context = {
+                html: {
+                    lang: 'en',
+                    manifest: 'manifest.appcache',
+                    head: {
+                        meta: {
+                            charset: 'utf-8'
+                        }
+                    },
+                    body: {}
+                }
+            };
         }
         SinglePageContainer.prototype.handler = function (req, res) {
             this.context.jsBase = this.server.baseUrl + this.server.jsUrl;
@@ -30,28 +42,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             _super.prototype.handler.call(this, req, res);
         };
         return SinglePageContainer;
-    })(NineplateResource_1.default);
-    SinglePageContainer.prototype.context = {
-        html: {
-            lang: 'en',
-            manifest: 'manifest.appcache',
-            head: {
-                meta: {
-                    charset: 'utf-8'
-                }
-            },
-            body: {
-                callbackScript: function () {
-                    if (this.boot) {
-                        return 'require.s.contexts._.config.callback = function() { require([\'' + this.boot + '\'], function() {  }); };';
-                    }
-                    else {
-                        return '';
-                    }
-                }
-            }
-        }
-    };
+    }(NineplateResource_1.default));
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = SinglePageContainer;
 });

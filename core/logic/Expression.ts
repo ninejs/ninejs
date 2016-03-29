@@ -311,18 +311,19 @@ export interface RecordContext {
 class Expression extends Properties {
 
 	constructor (args: any) {
-		this.operator = null;
-		this.operatorList = initialOperatorList;
-		this.summaryList = initialSummaryList;
-		this.isNegative = false;
-		this.source = null;
-		this.sourceSummary = null;
-		this.target = null;
-		this.targetSummary = null;
-		this.expressionList = null;
-		this.where = null;
-		this.ambiguous = false;
-		super(args);
+		let init: any = {};
+		init.operator = null;
+		init.operatorList = initialOperatorList;
+		init.summaryList = initialSummaryList;
+		init.isNegative = false;
+		init.source = null;
+		init.sourceSummary = null;
+		init.target = null;
+		init.targetSummary = null;
+		init.expressionList = null;
+		init.where = null;
+		init.ambiguous = false;
+		super(args, init);
 	}
 	/*
 	 * Possible values:

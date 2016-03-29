@@ -39,7 +39,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             });
         };
         return NineplateResource;
-    })(StaticResource_1.default);
+    }(StaticResource_1.default));
     NineplateResource.prototype.type = 'endpoint';
     NineplateResource.prototype.contentType = 'text/html; charset=utf-8';
     NineplateResource.prototype.doctype = 'html';

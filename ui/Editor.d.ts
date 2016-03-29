@@ -17,7 +17,7 @@ export declare class ControlBase extends Widget {
     valueSetter(v: any): void;
     valueGetter(): any;
     nameSetter(v: string): Promise<any>;
-    constructor(args: any);
+    constructor(args: any, init?: any);
 }
 export declare class NativeNumberTextBox extends ControlBase {
     stepSetter(p: number): void;

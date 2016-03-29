@@ -7,8 +7,5 @@
 	<body>
 		<script src="${jsBase}/requirejs/require.js"> </script>
 		<script src="${jsBase}/requireJsConfig.js"> </script>
-		<script type="text/javascript">
-			${html.body.callbackScript()}
-		</script>
 	</body>
 </html>

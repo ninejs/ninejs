@@ -106,7 +106,7 @@ function controlBaseSetValue (node: HTMLElement) {
 function selectSetValue (node: HTMLElement) {
 	let input = node as HTMLSelectElement,
 		v = this.value,
-		arr = input.options;
+		arr: any = input.options;
 
 	when(v, ((v) => {
 		for (let cnt = 0; cnt < arr.length; cnt += 1) {
@@ -120,7 +120,7 @@ function selectSetValue (node: HTMLElement) {
 
 function selectGetValue (node: HTMLElement) {
 	let input = node as HTMLSelectElement,
-		arr = input.options;
+		arr: any = input.options;
 	for (let cnt = 0; cnt < arr.length; cnt += 1) {
 		let opt = arr[cnt];
 		if (opt.selected) {
@@ -177,8 +177,8 @@ export class ControlBase extends Widget {
 		this.name = v;
 		return applyToNode(this.domNode, setName, { value: v });
 	}
-	constructor (args: any) {
-		super(args);
+	constructor (args: any, init?: any) {
+		super(args, init);
 		applyToNode(this.domNode, controlBaseOnChange, this);
 	}
 }
@@ -206,8 +206,8 @@ export class NativeNumberTextBox extends ControlBase {
 				previousValue = this.value;
 			}
 		});
-		this.domNode = node;
-		super(args);
+		let init = { domNode: node };
+		super(args, init);
 	}
 }
 function getNumberTextBoxConstructor() {
@@ -245,8 +245,8 @@ export class NativeDateTextBox extends ControlBase {
 	constructor (args: any) {
 		let node = append.create('input') as HTMLInputElement;
 		node.type = 'date';
-		this.domNode = node;
-		super(args);
+		let init = { domNode: node };
+		super(args, init);
 	}
 	valueSetter (val: any) {
 		let value: string,
@@ -287,8 +287,8 @@ export class NativeTimeTextBox extends ControlBase {
 	constructor (args: any) {
 		let node = append.create('input') as HTMLInputElement;
 		node.type = 'time';
-		this.domNode = node;
-		super(args);
+		let init = { domNode: node };
+		super(args, init);
 	}
 }
 function getTimeTextBoxConstructor() {
@@ -321,8 +321,8 @@ export class NativeCheckBox extends ControlBase {
 		let node = append.create('input') as HTMLInputElement;
 		node.type = 'checkbox';
 		node.checked = false;
-		this.domNode = node;
-		super(args);
+		let init = { domNode: node };
+		super(args, init);
 	}
 	valueSetter (v: boolean) {
 		super.valueSetter(v);
@@ -332,9 +332,10 @@ export class NativeCheckBox extends ControlBase {
 export class NativeTextBox extends ControlBase {
 	constructor (args: any) {
 		let node = append.create('input') as HTMLInputElement;
-		node.type = 'text'
-		this.domNode = node;
-		super(args);
+		node.type = 'text';
+		let init: any = {};
+		init.domNode = node;
+		super(args, init);
 	}
 }
 
@@ -396,8 +397,9 @@ let setOptions = function (domNode: HTMLElement) {
 
 export class NativeSelect extends ControlBase {
 	constructor (args: any) {
-		this.domNode = append.create('select');
-		super(args);
+		let init: any = {};
+		init.domNode = append.create('select');
+		super(args, init);
 	}
 	optionsSetter (v: any[]) {
 		applyToNode(this.domNode, setOptions, { self: this, value: v });
@@ -997,13 +999,12 @@ class Editor extends Widget {
 		});
 	}
 	constructor (args: any) {
-		this.dataType = null;
 		super(args);
 		this.controlDefer = defer<Widget>();
 		this.control = this.controlDefer.promise;
 	}
 }
-
+Editor.prototype.dataType = null;
 Editor.prototype.skin = defaultSkin;
 Editor.prototype.SelectControlSetter = getControlSetter('SelectControl');
 Editor.prototype.TextBoxControlSetter = getControlSetter('TextBoxControl');

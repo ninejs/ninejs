@@ -1,66 +1,67 @@
- /**
- *
- * @author   Eduardo Burgos
- * @version  0.1
- *
- * @id LabelEditor
- * @alias LabelEditor
- * @classDescription Extends Editor such that it looks like a label until you click on it.
- * @return {ninejs/ui/Editor/LabelEditor}   Returns a new LabelEditor.
- */
-define(['../../core/array',
-	'../../core/extend', '../Editor', '../utils/append', '../utils/setText', '../utils/setClass', '../../core/on', './LabelEditor.ncss'], function(array, extend, Editor, append, setText, setClass, on, css) {
-	'use strict';
-	extend = extend.default;
-	Editor = Editor.default;
-	append = append.default;
-	setText = setText.default;
-	setClass = setClass.default;
-	on = on.default;
-	css.enable();
-	function identity(v) {
-		return v;
-	}
-	return Editor.extend({
-		labelSetter: function(v) {
-			this.label = v;
-			setText(this.labelNode, (this.labelFilter || identity).call(this, v));
-		},
-		labelGetter: function() {
-			return this.label;
-		},
-		isLabelSetter: function(v) {
-			this.isLabel = !!v;
-			if (!!v) {
-				setClass(this.domNode, 'isLabel');
-			}
-			else {
-				setClass(this.domNode, '!isLabel');
-			}
-		},
-		onUpdatedSkin: extend.after(function() {
-			var self = this;
-			setClass(this.domNode, 'labelEditor');
-			this.labelNode = setClass(append(this.domNode, 'div'), 'njsLabel');
-			array.forEach((this.labelClass || '').split(' '), function (cl) {
-				setClass(self.labelNode, cl);
-			});
-			this.bind(this, 'label');
-			setClass(this.domNode, 'isLabel');
-			this.own(
-				on(this.labelNode, 'click', function() {
-					self.set('isLabel', false);
-					self.focus();
-				}),
-				this.on('blur', function() {
-					self.set('isLabel', true);
-				})
-			);
-			setTimeout(function() {
-				setText(self.labelNode, self.get('value') || self.get('placeholder') || '');
-			});
-		})
-	}, function() {
-		
-	});
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+(function (factory) {
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === 'function' && define.amd) {
+        define(["require", "exports", "./LabelEditor.ncss", '../Editor', '../utils/append', '../utils/setText', '../utils/setClass', '../../core/on', '../../core/deferredUtils'], factory);
+    }
+})(function (require, exports, css) {
+    'use strict';
+    var Editor_1 = require('../Editor');
+    var append_1 = require('../utils/append');
+    var setText_1 = require('../utils/setText');
+    var setClass_1 = require('../utils/setClass');
+    var on_1 = require('../../core/on');
+    var deferredUtils_1 = require('../../core/deferredUtils');
+    css.enable();
+    function identity(v) {
+        return v;
+    }
+    var LabelEditor = (function (_super) {
+        __extends(LabelEditor, _super);
+        function LabelEditor() {
+            _super.apply(this, arguments);
+        }
+        LabelEditor.prototype.labelSetter = function (v) {
+            this.label = v;
+            setText_1.default(this.labelNode, (this.labelFilter || identity).call(this, v));
+        };
+        LabelEditor.prototype.isLabelSetter = function (v) {
+            this.isLabel = !!v;
+            var cls = "{(v)?'':'!'}isLabel";
+            deferredUtils_1.when(this.domNode, function (domNode) {
+                setClass_1.default(domNode, cls);
+            });
+        };
+        LabelEditor.prototype.onUpdatedSkin = function () {
+            var _this = this;
+            _super.prototype.onUpdatedSkin.call(this);
+            var domNode = this.domNode;
+            setClass_1.default(domNode, 'labelEditor');
+            this.labelNode = setClass_1.default(append_1.default(domNode, 'div'), 'njsLabel');
+            (this.labelClass || '').split(' ').forEach(function (cl) {
+                setClass_1.default(_this.labelNode, cl);
+            });
+            this.bind(this, 'label');
+            setClass_1.default(domNode, 'isLabel');
+            this.own(on_1.default(this.labelNode, 'click', function () {
+                _this.set('isLabel', false);
+                _this.focus();
+            }), this.on('blur', function () {
+                _this.set('isLabel', true);
+            }));
+            setTimeout(function () {
+                setText_1.default(_this.labelNode, _this.get('value') || _this.get('placeholder') || '');
+            });
+        };
+        return LabelEditor;
+    }(Editor_1.default));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = LabelEditor;
 });
+//# sourceMappingURL=LabelEditor.js.map

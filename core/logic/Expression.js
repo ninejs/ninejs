@@ -260,18 +260,19 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Expression = (function (_super) {
         __extends(Expression, _super);
         function Expression(args) {
-            this.operator = null;
-            this.operatorList = initialOperatorList;
-            this.summaryList = initialSummaryList;
-            this.isNegative = false;
-            this.source = null;
-            this.sourceSummary = null;
-            this.target = null;
-            this.targetSummary = null;
-            this.expressionList = null;
-            this.where = null;
-            this.ambiguous = false;
-            _super.call(this, args);
+            var init = {};
+            init.operator = null;
+            init.operatorList = initialOperatorList;
+            init.summaryList = initialSummaryList;
+            init.isNegative = false;
+            init.source = null;
+            init.sourceSummary = null;
+            init.target = null;
+            init.targetSummary = null;
+            init.expressionList = null;
+            init.where = null;
+            init.ambiguous = false;
+            _super.call(this, args, init);
         }
         Expression.prototype._formatValue = function (val, isVariable, forDisplay) {
             if ((val === null) || (((typeof val) === 'number') && isNaN(val))) {
@@ -690,7 +691,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             return valid;
         };
         return Expression;
-    })(Properties_1.default);
+    }(Properties_1.default));
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Expression;
 });

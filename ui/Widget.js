@@ -62,22 +62,23 @@ var __extends = (this && this.__extends) || function (d, b) {
     };
     var Widget = (function (_super) {
         __extends(Widget, _super);
-        function Widget(args) {
-            this.skin = this.skin || [];
-            this.skinContract = this.skinContract || {};
-            this.$njsEventListeners = {};
-            this.$njsEventListenerHandlers = [];
-            this.$njsCollect = {};
-            this.$njsChildWidgets = [];
-            this.$njsShowDefer = deferredUtils_1.defer();
-            if (!this.domNode) {
-                this.domNode = this.$njsShowDefer.promise;
+        function Widget(args, init) {
+            init = init || {};
+            init.skin = init.skin || [];
+            init.skinContract = init.skinContract || {};
+            init.$njsEventListeners = {};
+            init.$njsEventListenerHandlers = [];
+            init.$njsCollect = {};
+            init.$njsChildWidgets = [];
+            init.$njsShowDefer = deferredUtils_1.defer();
+            if (!init.domNode) {
+                init.domNode = init.$njsShowDefer.promise;
             }
-            else {
-                this.$njsShowDefer.resolve(this.domNode);
-                this.$njsShowDefer = null;
+            else if (init.$njsShowDefer) {
+                init.$njsShowDefer.resolve(init.domNode);
+                init.$njsShowDefer = null;
             }
-            _super.call(this, args);
+            _super.call(this, args, init);
         }
         Widget.extend = function () {
             var args = [];
@@ -389,7 +390,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             return d.promise;
         };
         return Widget;
-    })(Properties_1.default);
+    }(Properties_1.default));
     exports.Widget = Widget;
     Widget.prototype.$njsWidget = true;
     Widget.prototype.waiting = false;

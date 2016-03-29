@@ -99,14 +99,14 @@
             };
         }
         return EventHandler;
-    })();
+    }());
     exports.EventHandler = EventHandler;
     var IESignal = (function () {
         function IESignal(handle) {
             this.handle = handle;
         }
         return IESignal;
-    })();
+    }());
     exports.on = (function () {
         var on = function (target, type, listener, dontFix) {
             if (typeof target.on === 'function' && typeof type !== 'function' && !target.nodeType) {
@@ -406,7 +406,7 @@
                 function Event_1() {
                 }
                 return Event_1;
-            })();
+            }());
             ;
             var windowOrientation = window.orientation;
             var fixTouchListener = function (listener) {

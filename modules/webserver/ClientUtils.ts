@@ -131,8 +131,12 @@ export class Utils {
 			}
 		}
 		//Adding requireJsConfig.js
-		this.requireJsConfigEndpoint = new webServer.StaticResource({ type: 'endpoint', contentType: 'application/javascript', route: webServer.jsUrl + '/requireJsConfig.js', action: function() {
-				self.requireJsConfigHandler.apply(self, arguments);
+		this.requireJsConfigEndpoint = new webServer.StaticResource({
+			type: 'endpoint',
+			contentType: 'application/javascript',
+			route: webServer.jsUrl + '/requireJsConfig.js',
+			action: function(req: Request, res: Response) {
+				return self.requireJsConfigHandler(req, res);
 			}
 		});
 		webServer.add(this.requireJsConfigEndpoint);
@@ -192,7 +196,6 @@ export class Utils {
 			selectorEngine: 'css3',
 			isAsync: true,
 			async: true,
-			deps: this.boot,
 			applicationUrl: this.webServer.baseUrl,
 			packages: [
 			],
@@ -224,9 +227,26 @@ export class Utils {
 			cfg.map['*'][alias[0]] = alias[1];
 		});
 		this.emit('config', cfg);
-		r.push(JSON.stringify(cfg));
-		r.push(';');
-		r.push('require.config(window.requireJsConfig);');
+		r.push(JSON.stringify(cfg, null, '  '));
+		r.push(';\n');
+		let hasReleaseBoot = (this.webServer.config.clientUtils.boot && this.webServer.config.clientUtils.boot.length);
+		let hasModuleBoot = (this.boot && this.boot.length);
+		if (hasReleaseBoot || hasModuleBoot) {
+			r.push('window.requireJsConfig.callback = function() {\n');
+
+			if (hasReleaseBoot) {
+				r.push(`require(['${this.webServer.config.clientUtils.boot}\'], function() {\n`);
+			}
+			if (hasModuleBoot) {
+				r.push(`require([${this.boot.map((mid) => `'${mid}'`).join(',')}], function() {\n`);
+				r.push('});\n')
+			}
+			if (hasReleaseBoot) {
+				r.push(`});\n`);
+			}
+			r.push('};\n');
+		}
+		r.push('setTimeout(function () { \n  require.config(window.requireJsConfig);\n});');
 		this.postActions.forEach(function(item) {
 			r.push('(' + item.toString() + ').apply();');
 		});

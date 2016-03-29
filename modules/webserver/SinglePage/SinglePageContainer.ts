@@ -22,29 +22,21 @@ class SinglePageContainer extends NineplateResource {
 		this.on('result', function(evt) {
 			this.applyETag(evt.response, evt.data);
 		});
+		this.context = {
+			html: {
+				lang: 'en',
+				manifest: 'manifest.appcache',
+				head: {
+					meta: {
+						charset: 'utf-8'
+					}
+				},
+				body: {
+					
+				}
+			}
+		};
 	}
 }
-
-SinglePageContainer.prototype.context = {
-	html: {
-		lang: 'en',
-			manifest: 'manifest.appcache',
-			head: {
-			meta: {
-				charset: 'utf-8'
-			}
-		},
-		body: {
-			callbackScript: function() {
-				if (this.boot) {
-					return 'require.s.contexts._.config.callback = function() { require([\'' + this.boot + '\'], function() {  }); };';
-				}
-				else {
-					return '';
-				}
-			}
-		}
-	}
-};
 
 export default SinglePageContainer;

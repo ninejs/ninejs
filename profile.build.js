@@ -19,14 +19,28 @@ var amdIgnore = [
 	'ninejs/modules/webserver', 
 	'ninejs/modules/serverBoot', 
 	'ninejs/modules/ninejs-server', 
-	'ninejs/listts', 
-	'ninejs/docs'
+	'ninejs/grunt',
+	'ninejs/ui/ComboButton',
+	'ninejs/ui/menu/VerticalMenu',
+	'ninejs/ui/logic/FilterBuilder',
+	'ninejs/_css/build/',
+	'ninejs/_nineplate/tests',
+	'ninejs/_nineplate/utils/parser/grammar',
+	'ninejs/_nineplate/utils/parser/commonjs',
+	'ninejs/_nineplate/utils/parser/generated/commonjs',
+	'ninejs/docs',
+	'ninejs/profile.build',
+	'ninejs/out',
+	'ninejs/coverage',
+	'ninejs/Gruntfile',
+	'ninejs/core/tests',
+	'ninejs/lib'
 ];
 
 var profile = {
 	resourceTags: {
-		ignore: function(filename){
-			var t = (/node_modules/).test(filename);
+		ignore: function(filename, mid){
+			var t = (/node_modules/).test(mid);
 			if (!t) {
 				var cnt, excluded = !(/\.js(on)?$/).test(filename);
 				for (cnt=0;(cnt < amdIgnore.length) && !excluded; cnt += 1){

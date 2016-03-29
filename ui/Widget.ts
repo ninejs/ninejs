@@ -504,22 +504,23 @@ export class Widget extends Properties {
 	 *
 	 * @return {undefined}
 	 */
-	constructor (args: WidgetArgs) {
-		this.skin = this.skin || [];
-		this.skinContract = this.skinContract || {};
-		this.$njsEventListeners = {};
-		this.$njsEventListenerHandlers = [];
-		this.$njsCollect = {};
-		this.$njsChildWidgets = [];
-		this.$njsShowDefer = defer<HTMLElement>();
-		if (!this.domNode) {
-			this.domNode = this.$njsShowDefer.promise;
+	constructor (args: WidgetArgs, init?: any) {
+		init = init || {};
+		init.skin = init.skin || [];
+		init.skinContract = init.skinContract || {};
+		init.$njsEventListeners = {};
+		init.$njsEventListenerHandlers = [];
+		init.$njsCollect = {};
+		init.$njsChildWidgets = [];
+		init.$njsShowDefer = defer<HTMLElement>();
+		if (!init.domNode) {
+			init.domNode = init.$njsShowDefer.promise;
 		}
-		else {
-			this.$njsShowDefer.resolve(this.domNode);
-			this.$njsShowDefer = null;
+		else if (init.$njsShowDefer) {
+			init.$njsShowDefer.resolve(init.domNode);
+			init.$njsShowDefer = null;
 		}
-		super(args);
+		super(args, init);
 	}
 }
 

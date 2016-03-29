@@ -18,14 +18,14 @@ var request: any;
 if (isAmd) {
 	if (isNode) {
 		if (isDojo) {
-			request = require.nodeRequire('request');
+			request = req.nodeRequire('request');
 		}
 		else {
-			request = require('request');
+			request = req('request');
 		}
 	}
 	else {
-		request = require('reqwest/reqwest');
+		request = req('reqwest/reqwest');
 	}
 }
 else if (typeof(exports) === 'object') {

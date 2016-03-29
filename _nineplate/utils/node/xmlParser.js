@@ -23,7 +23,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             _super.call(this, msg);
         }
         return XmlParserError;
-    })(Error);
+    }(Error));
     exports.XmlParserError = XmlParserError;
     function getAttributeNS(node, prefix) {
         if (node.namespaces.length) {

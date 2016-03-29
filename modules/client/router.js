@@ -51,7 +51,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
         };
         return HashRouter;
-    })(Module_1.default);
+    }(Module_1.default));
     var result = new HashRouter();
     result.on('modulesEnabled', function () {
         router.startup();

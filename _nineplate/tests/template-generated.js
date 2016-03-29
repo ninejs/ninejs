@@ -1,11 +1,17 @@
-(function (deps, factory) { 
-	if (typeof module === 'object' && typeof module.exports === 'object') { 
-		var v = factory(require, exports); if (v !== undefined) module.exports = v; 
-	} 
-	else if (typeof define === 'function' && define.amd) { 
-		define(deps, factory); 
-	} 
-})(['require', 'module', 'ninejs/_nineplate/utils/functions','ninejs/_nineplate/utils/functions'], function (require, module) {
+(function (factory) {
+					if (typeof module === 'object' && typeof module.exports === 'object') { 
+
+						var v = factory(require, exports); if (v !== undefined) module.exports = v; 
+
+					} 
+
+					else if (typeof define === 'function' && define.amd) { 
+
+						define(['require', 'module', 'ninejs/_nineplate/utils/functions'], factory); 
+
+					} 
+
+				})(function (require, module) {
 /* jshint -W074 */
 /* globals window: true */
 'use strict';

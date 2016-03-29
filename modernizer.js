@@ -114,7 +114,7 @@
                                 function F() {
                                 }
                                 return F;
-                            })();
+                            }());
                             F.prototype = target.prototype;
                             var self = new F();
                             var result = target.apply(self, args.concat(slice.call(arguments)));

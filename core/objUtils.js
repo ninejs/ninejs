@@ -67,7 +67,7 @@
             function A() {
             }
             return A;
-        })();
+        }());
         A.prototype = obj;
         return new A();
     }

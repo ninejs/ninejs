@@ -111,12 +111,13 @@
             }
         }
     };
+    function nonSettersSetterFactory(self, obj) {
+        return function (key) {
+            self[key] = obj[key];
+        };
+    }
     var Properties = (function () {
-        function Properties(props) {
-            var argslist = [];
-            for (var _i = 1; _i < arguments.length; _i++) {
-                argslist[_i - 1] = arguments[_i];
-            }
+        function Properties(props, nonSetters) {
             var self = this, me = this, args = props, execute = function () {
                 if (typeof (args) === 'object') {
                     for (var p in args) {
@@ -126,6 +127,9 @@
                     }
                 }
             };
+            if (nonSetters) {
+                Object.keys(nonSetters).forEach(nonSettersSetterFactory(this, nonSetters));
+            }
             this.$njsWatch = {};
             if (me.$njsInstanceDepth) {
                 this.$njsConstructors.push(function (args) {
@@ -241,7 +245,7 @@
             return r;
         };
         return Properties;
-    })();
+    }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Properties;
     ;

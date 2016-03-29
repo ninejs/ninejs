@@ -89,7 +89,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
         };
         return FullScreenFrame;
-    })(Widget_1.default);
+    }(Widget_1.default));
     FullScreenFrame.prototype.skin = FullScreenFrame_1.default;
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = FullScreenFrame;

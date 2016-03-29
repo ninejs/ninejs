@@ -1,167 +1,199 @@
-define(['../core/deferredUtils',
-	'../core/extend', './utils/setClass', './Widget', './css/common.ncss'], function(def, extend, setClass, Widget, commonCss) {
-	'use strict';
-
-	extend = extend.default;
-	setClass = setClass.default;
-	Widget = Widget.default;
-	commonCss.enable();
-	function insertAfter(node, ref) {
-		var parent = ref.parentNode;
-		if(parent){
-			if(parent.lastChild === ref){
-				parent.appendChild(node);
-			}else{
-				parent.insertBefore(node, ref.nextSibling);
-			}
-		}
-	}
-	function insertBefore(node, ref) {
-		var parent = ref.parentNode;
-		if(parent){
-			parent.insertBefore(node, ref);
-		}
-	}
-	var transitionClass = 'njsTransition750ms',
-		defaultTransitionClasses = {
-			active: 'njsTransitionActive',
-			prev: 'njsTransitionPrev',
-			next: 'njsTransitionNext',
-			left: 'njsTransitionLeft',
-			right: 'njsTransitionRight'
-		};
-	var TransitionPanel = extend(Widget, {
-		transitionDuration: 750,
-		transitionClass: transitionClass,
-		activeTransitionClass: defaultTransitionClasses.active,
-		previousTransitionClass: defaultTransitionClasses.prev,
-		nextTransitionClass: defaultTransitionClasses['next'],
-		leftTransitionClass: defaultTransitionClasses.left,
-		rightTransitionClass: defaultTransitionClasses.right,
-		show: extend.after(function() {
-			var self = this;
-			def.when(this.domNode, function () {
-				setClass(self.domNode, self.transitionClass);
-			});
-		}),
-		activeSetter: function(value) {
-			var self = this;
-			this.active = value;
-			if (value) {
-				def.when(this.domNode, function () {
-					setClass(self.domNode, self.activeTransitionClass);
-					self.emit('show', {});
-				});
-			}
-			else {
-				def.when(this.domNode, function () {
-					setClass(self.domNode, '!' + self.activeTransitionClass);
-					self.emit('hide', {});
-				});
-			}
-		},
-		previousPanelSetter: function(value) {
-			var oldPrev = this.previousPanel;
-			this.previousPanel = value;
-			if (this.previousPanel) {
-				if (oldPrev) {
-					oldPrev.nextPanel = this.previousPanel;
-					this.previousPanel.previousPanel = oldPrev;
-				}
-				this.previousPanel.nextPanel = this;
-				this.show();
-				this.previousPanel.show();
-				this.setPreviousBefore();
-			}
-		},
-		nextPanelSetter: function(value) {
-			var oldNext = this.nextPanel;
-			this.nextPanel = value;
-			if (this.nextPanel) {
-				if (oldNext) {
-					oldNext.previousPanel = this.nextPanel;
-					this.nextPanel.nextPanel = oldNext;
-				}
-				this.nextPanel.previousPanel = this;
-				this.show();
-				this.nextPanel.show();
-				this.setNextAfter();
-			}
-		},
-		setNextAfter: function() {
-			if (!this.nextPanel.domNode) {
-				this.nextPanel.show(this.domNode.parentNode);
-			}
-			if (this.nextPanel.domNode.parentNode && (this.domNode.parentNode !== this.nextPanel.domNode.parentNode)) {
-				setClass(this.domNode, this.nextTransitionClass);
-				insertBefore(this.domNode, this.nextPanel.domNode);
-				if (this.get('active')) {
-					setClass(this.nextPanel.domNode, this.nextPanel.nextTransitionClass);
-				}
-			}
-		},
-		setPreviousBefore: function() {
-			if (!this.previousPanel.domNode) {
-				this.previousPanel.show(this.domNode.parentNode);
-			}
-			if (this.previousPanel.domNode.parentNode && (this.domNode.parentNode !== this.previousPanel.domNode.parentNode)) {
-				setClass(this.domNode, this.nextTransitionClass);
-				insertAfter(this.domNode, this.previousPanel.domNode);
-				if (this.get('active')) {
-					setClass(this.previousPanel.domNode, this.previousPanel.previousTransitionClass);
-				}
-			}
-		},
-		next: function() {
-			if (!this.nextPanel){
-				throw new Error('TransitionPanel must have an assigned nextPanel');
-			}
-			if (this.previousPanel) {
-				this.previousPanel.set('isLeft', false);
-			}
-//			setClass(this.domNode, this.transitionClass, '!' + this.nextTransitionClass, '!' + this.activeTransitionClass, this.previousTransitionClass);
-//			setClass(this.nextPanel.domNode, '!' + this.nextTransitionClass, '!' + this.previousTransitionClass, this.activeTransitionClass);
-			var self = this;
-			setClass(this.domNode, this.leftTransitionClass);
-			setClass(this.nextPanel.domNode, this.nextTransitionClass, this.leftTransitionClass);
-			setTimeout(function() {
-				setClass(self.domNode, '!' + self.leftTransitionClass, '!' + self.activeTransitionClass);
-				setClass(self.nextPanel.domNode, '!' + self.nextTransitionClass, '!' + self.leftTransitionClass, self.activeTransitionClass);
-			}, this.transitionDuration);
-			this.active = false;//didn't call setter to avoid transitioning
-			this.nextPanel.active = true;
-//			if (this.nextPanel.nextPanel) {
-//				this.nextPanel.nextPanel.set('isRight', true);
-//			}
-			this.emit('hide', {});
-			this.nextPanel.emit('show', {});
-			return this.nextPanel;
-		},
-		previous: function() {
-			if (!this.previousPanel){
-				throw new Error('TransitionPanel must have an assigned previousPanel');
-			}
-			if (this.nextPanel) {
-				this.nextPanel.set('isRight', false);
-			}
-//			setClass(this.previousPanel.domNode, '!' + this.nextTransitionClass, '!' + this.previousTransitionClass, this.activeTransitionClass);
-//			setClass(this.domNode, '!' + this.previousTransitionClass, '!' + this.activeTransitionClass, this.nextTransitionClass);
-			var self = this;
-			setClass(this.domNode, this.rightTransitionClass);
-			setClass(this.previousPanel.domNode, this.previousTransitionClass, this.rightTransitionClass);
-			setTimeout(function() {
-				setClass(self.domNode, '!' + self.rightTransitionClass, '!' + self.activeTransitionClass);
-				setClass(self.previousPanel.domNode, '!' + self.previousTransitionClass, '!' + self.rightTransitionClass, self.activeTransitionClass);
-			}, this.transitionDuration);
-			this.active = false;//didn't call setter to avoid transitioning
-			this.previousPanel.active = true;
-//			if (this.previousPanel.previousPanel) {
-//				this.previousPanel.previousPanel.set('isLeft', true);
-//			}
-			this.emit('hide', {});
-			this.previousPanel.emit('show', {});
-			return this.previousPanel;
-		}
-	});
-	return TransitionPanel;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+(function (factory) {
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === 'function' && define.amd) {
+        define(["require", "exports", "./css/common.ncss", '../core/deferredUtils', './utils/setClass', './Widget'], factory);
+    }
+})(function (require, exports, commonCss) {
+    'use strict';
+    var deferredUtils_1 = require('../core/deferredUtils');
+    var setClass_1 = require('./utils/setClass');
+    var Widget_1 = require('./Widget');
+    commonCss.enable();
+    function insertAfter(node, ref) {
+        var parent = ref.parentNode;
+        if (parent) {
+            if (parent.lastChild === ref) {
+                parent.appendChild(node);
+            }
+            else {
+                parent.insertBefore(node, ref.nextSibling);
+            }
+        }
+    }
+    function insertBefore(node, ref) {
+        var parent = ref.parentNode;
+        if (parent) {
+            parent.insertBefore(node, ref);
+        }
+    }
+    var transitionClass = 'njsTransition750ms', defaultTransitionClasses = {
+        active: 'njsTransitionActive',
+        prev: 'njsTransitionPrev',
+        next: 'njsTransitionNext',
+        left: 'njsTransitionLeft',
+        right: 'njsTransitionRight'
+    };
+    TransitionPanel.prototype.transitionDuration = 750;
+    TransitionPanel.prototype.transitionClass = transitionClass;
+    TransitionPanel.prototype.activeTransitionClass = defaultTransitionClasses.active;
+    TransitionPanel.prototype.previousTransitionClass = defaultTransitionClasses.prev;
+    TransitionPanel.prototype.nextTransitionClass = defaultTransitionClasses['next'];
+    TransitionPanel.prototype.leftTransitionClass = defaultTransitionClasses.left;
+    TransitionPanel.prototype.rightTransitionClass = defaultTransitionClasses.right;
+    var TransitionPanel = (function (_super) {
+        __extends(TransitionPanel, _super);
+        function TransitionPanel() {
+            _super.apply(this, arguments);
+        }
+        TransitionPanel.prototype.show = function (parent) {
+            var _this = this;
+            return deferredUtils_1.when(_super.prototype.show.call(this, parent), function () {
+                var domNode = _this.domNode;
+                setClass_1.default(domNode, _this.transitionClass);
+                return domNode;
+            });
+        };
+        TransitionPanel.prototype.activeSetter = function (value) {
+            var _this = this;
+            this.active = value;
+            return deferredUtils_1.when(this.domNode, function (domNode) {
+                setClass_1.default(domNode, ((value) ? '' : '!') + _this.activeTransitionClass);
+                if (value) {
+                    _this.emit('show', {});
+                }
+                else {
+                    _this.emit('hide', {});
+                }
+            });
+        };
+        TransitionPanel.prototype.previousPanelSetter = function (value) {
+            var _this = this;
+            var oldPrev = this.previousPanel;
+            this.previousPanel = value;
+            if (this.previousPanel) {
+                if (oldPrev) {
+                    oldPrev.nextPanel = this.previousPanel;
+                    this.previousPanel.previousPanel = oldPrev;
+                }
+                this.previousPanel.nextPanel = this;
+                return deferredUtils_1.when(this.show(), function () {
+                    return deferredUtils_1.when(_this.previousPanel.show(), function (previousDomNode) {
+                        _this.setPreviousBefore();
+                        return previousDomNode;
+                    });
+                });
+            }
+            else {
+                return deferredUtils_1.resolve(this.domNode);
+            }
+        };
+        TransitionPanel.prototype.nextPanelSetter = function (value) {
+            var _this = this;
+            var oldNext = this.nextPanel;
+            this.nextPanel = value;
+            if (this.nextPanel) {
+                if (oldNext) {
+                    oldNext.previousPanel = this.nextPanel;
+                    this.nextPanel.nextPanel = oldNext;
+                }
+                this.nextPanel.previousPanel = this;
+                return deferredUtils_1.when(this.show(), function () {
+                    return deferredUtils_1.when(_this.nextPanel.show(), function (nextDomNode) {
+                        _this.setNextAfter();
+                        return nextDomNode;
+                    });
+                });
+            }
+            else {
+                return deferredUtils_1.resolve(this.domNode);
+            }
+        };
+        TransitionPanel.prototype.setNextAfter = function () {
+            var _this = this;
+            return deferredUtils_1.when(this.domNode, function (domNode) {
+                return deferredUtils_1.when(_this.nextPanel.show(domNode.parentElement), function () {
+                    var nextDomNode = _this.nextPanel.domNode;
+                    if (nextDomNode.parentNode && (domNode.parentNode !== nextDomNode.parentNode)) {
+                        setClass_1.default(domNode, _this.nextTransitionClass);
+                        insertBefore(domNode, nextDomNode);
+                        if (_this.active) {
+                            setClass_1.default(nextDomNode, _this.nextPanel.nextTransitionClass);
+                        }
+                    }
+                });
+            });
+        };
+        TransitionPanel.prototype.setPreviousBefore = function () {
+            var _this = this;
+            return deferredUtils_1.when(this.domNode, function (domNode) {
+                return deferredUtils_1.when(_this.nextPanel.show(domNode.parentElement), function () {
+                    var previousDomNode = _this.previousPanel.domNode;
+                    if (previousDomNode.parentNode && (domNode.parentNode !== previousDomNode.parentNode)) {
+                        setClass_1.default(domNode, _this.previousTransitionClass);
+                        insertAfter(domNode, previousDomNode);
+                        if (_this.active) {
+                            setClass_1.default(previousDomNode, _this.previousPanel.previousTransitionClass);
+                        }
+                    }
+                });
+            });
+        };
+        TransitionPanel.prototype.next = function () {
+            var _this = this;
+            if (!this.nextPanel) {
+                throw new Error('TransitionPanel must have an assigned nextPanel');
+            }
+            if (this.previousPanel) {
+                this.previousPanel.set('isLeft', false);
+            }
+            return deferredUtils_1.when(this.domNode, function (domNode) {
+                setClass_1.default(domNode, _this.leftTransitionClass);
+                var nextDomNode = _this.nextPanel.domNode;
+                setClass_1.default(nextDomNode, _this.nextTransitionClass, _this.leftTransitionClass);
+                setTimeout(function () {
+                    setClass_1.default(domNode, '!' + _this.leftTransitionClass, '!' + _this.activeTransitionClass);
+                    setClass_1.default(nextDomNode, '!' + _this.nextTransitionClass, '!' + _this.leftTransitionClass, _this.activeTransitionClass);
+                }, _this.transitionDuration);
+                _this.active = false;
+                _this.nextPanel.active = true;
+                _this.emit('hide', {});
+                _this.nextPanel.emit('show', {});
+                return _this.nextPanel;
+            });
+        };
+        TransitionPanel.prototype.previous = function () {
+            var _this = this;
+            if (!this.previousPanel) {
+                throw new Error('TransitionPanel must have an assigned previousPanel');
+            }
+            if (this.nextPanel) {
+                this.nextPanel.set('isRight', false);
+            }
+            return deferredUtils_1.when(this.domNode, function (domNode) {
+                setClass_1.default(domNode, _this.rightTransitionClass);
+                var previousDomNode = _this.previousPanel.domNode;
+                setClass_1.default(previousDomNode, _this.previousTransitionClass, _this.rightTransitionClass);
+                setTimeout(function () {
+                    setClass_1.default(domNode, '!' + _this.rightTransitionClass, '!' + _this.activeTransitionClass);
+                    setClass_1.default(previousDomNode, '!' + _this.previousTransitionClass, '!' + _this.rightTransitionClass, _this.activeTransitionClass);
+                }, _this.transitionDuration);
+                _this.active = false;
+                _this.previousPanel.active = true;
+                _this.emit('hide', {});
+                _this.previousPanel.emit('show', {});
+                return _this.previousPanel;
+            });
+        };
+        return TransitionPanel;
+    }(Widget_1.default));
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = TransitionPanel;
 });
+//# sourceMappingURL=TransitionPanel.js.map

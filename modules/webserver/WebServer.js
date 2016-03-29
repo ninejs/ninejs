@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../../core/ext/Properties', 'express', './Endpoint', './StaticResource', '../../nineplate', './NineplateResource', './SinglePage/SinglePageContainer', './ClientUtils', '../../core/deferredUtils', 'morgan', 'serve-favicon', 'compression', 'cookie-parser', 'express-session', 'method-override', 'body-parser', 'path'], factory);
+        define(["require", "exports", '../../core/ext/Properties', 'express', './Endpoint', './StaticResource', '../../nineplate', './NineplateResource', './SinglePage/SinglePageContainer', './ClientUtils', '../../core/extend', '../../core/deferredUtils', 'morgan', 'serve-favicon', 'compression', 'cookie-parser', 'express-session', 'method-override', 'body-parser', 'path'], factory);
     }
 })(function (require, exports) {
     'use strict';
@@ -20,6 +20,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var NineplateResource_1 = require('./NineplateResource');
     var SinglePageContainer_1 = require('./SinglePage/SinglePageContainer');
     var ClientUtils_1 = require('./ClientUtils');
+    var extend_1 = require('../../core/extend');
     var deferredUtils_1 = require('../../core/deferredUtils');
     var morgan = require('morgan');
     var favicon = require('serve-favicon');
@@ -69,7 +70,16 @@ var __extends = (this && this.__extends) || function (d, b) {
                 return (a.order || 0) - (b.order || 0);
             }
             var self = this, config = this.config, app = self.app;
-            this.add(new SinglePageContainer_1.default({ route: '/', method: 'get' }));
+            if (config.singlePageContainer !== false) {
+                var singleCfg = { route: '/', method: 'get' };
+                extend_1.mixinRecursive(singleCfg, config.singlePageContainer || {});
+                this.add(new SinglePageContainer_1.default(singleCfg));
+            }
+            if (config.clientUtils && config.clientUtils.amdPaths) {
+                for (var p in config.clientUtils.amdPaths) {
+                    this.clientUtils.addAmdPath(p, path.resolve(config.clientUtils.amdPaths[p]));
+                }
+            }
             this.app.engine('9plate', nineplate_1.default.__express);
             this.app.enable('view cache');
             (function checkLogger(self) {
@@ -223,7 +233,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
         };
         return WebServer;
-    })(Properties_1.default);
+    }(Properties_1.default));
     WebServer.prototype.Endpoint = Endpoint_1.default;
     WebServer.prototype.StaticResource = StaticResource_1.default;
     WebServer.prototype.NineplateResource = NineplateResource_1.default;

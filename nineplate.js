@@ -14,9 +14,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     'use strict';
     var extend_1 = require('./core/extend');
     var Properties_1 = require('./core/ext/Properties');
-    var def = require('./core/deferredUtils');
-    var _domProcessor = require('./_nineplate/domProcessor');
-    var _textProcessor = require('./_nineplate/textProcessor');
+    var deferredUtils_1 = require('./core/deferredUtils');
+    var domProcessor_1 = require('./_nineplate/domProcessor');
+    var textProcessor_1 = require('./_nineplate/textProcessor');
     require('./_nineplate/utils/node/text');
     var requireText, req = require;
     var isNode = typeof (window) === 'undefined', isAmd = (typeof (define) !== 'undefined') && (define.amd), isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
@@ -81,8 +81,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     exports.load = load;
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = result;
-    exports.domProcessor = _domProcessor;
-    exports.textProcessor = _textProcessor;
     var Template = (function (_super) {
         __extends(Template, _super);
         function Template() {
@@ -92,19 +90,9 @@ var __extends = (this && this.__extends) || function (d, b) {
         Template.prototype.toAmd = function (sync, options) {
             if (options === void 0) { options = {}; }
             var prefix = options.ninejsPrefix || 'ninejs';
-            var preText = '(function (deps, factory) { \n' +
-                '	if (typeof module === \'object\' && typeof module.exports === \'object\') { \n' +
-                '		var v = factory(require, exports); if (v !== undefined) module.exports = v; \n' +
-                '	} \n' +
-                '	else if (typeof define === \'function\' && define.amd) { \n' +
-                '		define(deps, factory); \n' +
-                '	} \n' +
-                '})([\'require\', \'module\'', prePostText = '], function (require, module) {\n/* jshint -W074 */\n/* globals window: true */\n\'use strict\';\nvar r = ', postText = ';\nmodule.exports = r;	});\n';
+            var preText = "(function (factory) {\n\t\t\t\t\tif (typeof module === 'object' && typeof module.exports === 'object') { \n\n\t\t\t\t\t\tvar v = factory(require, exports); if (v !== undefined) module.exports = v; \n\n\t\t\t\t\t} \n\n\t\t\t\t\telse if (typeof define === 'function' && define.amd) { \n\n\t\t\t\t\t\tdefine(['require', 'module'", prePostText = "], factory); \n\n\t\t\t\t\t} \n\n\t\t\t\t})(function (require, module) {\n/* jshint -W074 */\n/* globals window: true */\n'use strict';\nvar r = ", postText = ';\nmodule.exports = r;	});\n';
             if (isNode && !sync) {
-                return def.when(this.compileDom(false, options), function (fn) {
-                    if (!options.standalone) {
-                        fn.amdDependencies.push(prefix + "/_nineplate/utils/functions");
-                    }
+                return deferredUtils_1.when(this.compileDom(false, options), function (fn) {
                     var depsText = (fn.amdDependencies || []).map(function (item) {
                         return '\'' + item + '\'';
                     }).join(',');
@@ -126,7 +114,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     return preText + this.compileText(false) + postText;
                 }
                 else {
-                    return def.when(this.compileText(false), function (value) {
+                    return deferredUtils_1.when(this.compileText(false), function (value) {
                         return preText + value + postText;
                     });
                 }
@@ -137,7 +125,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             if (this.compiledDomVersion) {
                 return this.compiledDomVersion;
             }
-            var result = exports.domProcessor.compileDom(this.text, true, options || { ignoreHtmlOptimization: true });
+            var result = domProcessor_1.compileDom(this.text, true, options || { ignoreHtmlOptimization: true });
             this.compiledDomVersion = result;
             return result;
         };
@@ -148,7 +136,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             else {
                 var result = this.compiledDomVersion, self = this;
                 if (!result) {
-                    result = def.when(exports.domProcessor.compileDom(this.text, sync, options || { ignoreHtmlOptimization: true }), function (val) {
+                    result = deferredUtils_1.when(domProcessor_1.compileDom(this.text, sync, options || { ignoreHtmlOptimization: true }), function (val) {
                         self.compiledDomVersion = val;
                         return val;
                     }, function (err) {
@@ -167,7 +155,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                 return this.compiledTextVersion;
             }
             else {
-                return exports.textProcessor.compileText(this.text, true);
+                return textProcessor_1.compileText(this.text, true);
             }
         };
         Template.prototype.compileText = function (sync) {
@@ -177,12 +165,12 @@ var __extends = (this && this.__extends) || function (d, b) {
             else {
                 var result = this.compiledTextVersion, self = this;
                 if (!result) {
-                    result = exports.textProcessor.compileText(this.text, sync);
+                    result = textProcessor_1.compileText(this.text, sync);
                     if (sync) {
                         this.compiledTextVersion = result;
                     }
                     else {
-                        result = def.when(result, function (val) {
+                        result = deferredUtils_1.when(result, function (val) {
                             self.compiledTextVersion = val;
                             return val;
                         });
@@ -196,7 +184,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             return compiled(context);
         };
         return Template;
-    })(Properties_1.default);
+    }(Properties_1.default));
     exports.Template = Template;
 });
 //# sourceMappingURL=nineplate.js.map

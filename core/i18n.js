@@ -47,7 +47,7 @@
                         function Constr() {
                         }
                         return Constr;
-                    })();
+                    }());
                     ;
                     Constr.prototype = parent;
                     result = new Constr();

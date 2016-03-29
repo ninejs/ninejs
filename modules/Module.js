@@ -110,15 +110,15 @@ var __extends = (this && this.__extends) || function (d, b) {
                     }
                     else {
                         var self = _this;
-                        return deferredUtils_1.when(deferredUtils_1.all(_this.consumes.map(function (unit) {
+                        return deferredUtils_1.all(_this.consumes.map(function (unit) {
                             if (!moduleRegistry_1.moduleRegistry.enabledUnits[unit.id]) {
                                 return moduleRegistry_1.moduleRegistry.initUnit(unit.id);
                             }
                             else {
                                 return moduleRegistry_1.moduleRegistry.enabledUnits[unit.id];
                             }
-                        })), function () {
-                            return deferredUtils_1.when(deferredUtils_1.all(self.provides.map(function (item) {
+                        })).then(function () {
+                            return deferredUtils_1.all(self.provides.map(function (item) {
                                 if (!moduleRegistry_1.moduleRegistry.enabledUnits[item.id]) {
                                     var _defer = deferredUtils_1.defer();
                                     moduleRegistry_1.moduleRegistry.enabledUnits[item.id] = _defer.promise;
@@ -132,15 +132,15 @@ var __extends = (this && this.__extends) || function (d, b) {
                                 else {
                                     return moduleRegistry_1.moduleRegistry.enabledUnits[item.id];
                                 }
-                            })), function () {
+                            })).then(function () {
                                 self.set('enabled', true);
                             }, function (err) {
                                 console.log('Error while enabling some modules');
-                                throw new Error(err);
+                                throw err;
                             });
                         }, function (err) {
                             console.log('Error while enabling some modules');
-                            throw new Error(err);
+                            throw err;
                         });
                     }
                 });
@@ -152,7 +152,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
         };
         return Module;
-    })(Properties_1.default);
+    }(Properties_1.default));
     moduleRegistry_1.moduleRegistry.Module = Module;
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Module;

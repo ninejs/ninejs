@@ -97,7 +97,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
         };
         return NineJs;
-    })(Module_1.default);
+    }(Module_1.default));
     exports.NineJs = NineJs;
     var result = new NineJs(undefined);
     Object.defineProperty(exports, "__esModule", { value: true });

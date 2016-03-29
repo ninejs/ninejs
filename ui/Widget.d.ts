@@ -50,7 +50,7 @@ export declare class Widget extends Properties {
     subscribe(type: string, action: (data: any) => any): void;
     collect(type: string, data: any): any[];
     wait(_defer: PromiseType<any>): Promise<void>;
-    constructor(args: WidgetArgs);
+    constructor(args: WidgetArgs, init?: any);
 }
 export default Widget;
 export interface WidgetConstructor {

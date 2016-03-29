@@ -97,7 +97,7 @@
             };
         }
         return VarContext;
-    })();
+    }());
     exports.VarContext = VarContext;
     var Expression = (function () {
         function Expression(expr, parenthesis, renderer) {
@@ -227,7 +227,7 @@
             };
         }
         return Expression;
-    })();
+    }());
     exports.Expression = Expression;
     var Chunk = (function () {
         function Chunk(parent) {
@@ -240,7 +240,7 @@
             };
         }
         return Chunk;
-    })();
+    }());
     exports.Chunk = Chunk;
     var Condition = (function () {
         function Condition(expr, parent) {
@@ -277,7 +277,7 @@
             };
         }
         return Condition;
-    })();
+    }());
     exports.Condition = Condition;
     var ForLoop = (function () {
         function ForLoop(init, cond, iter, parent) {
@@ -287,7 +287,7 @@
             };
         }
         return ForLoop;
-    })();
+    }());
     exports.ForLoop = ForLoop;
     var ForIn = (function () {
         function ForIn(propName, expr, parent) {
@@ -303,7 +303,7 @@
             };
         }
         return ForIn;
-    })();
+    }());
     exports.ForIn = ForIn;
     var JsArray = (function () {
         function JsArray(init) {
@@ -325,7 +325,7 @@
             };
         }
         return JsArray;
-    })();
+    }());
     exports.JsArray = JsArray;
     var JavascriptRenderer = (function () {
         function JavascriptRenderer(debugMode, context, parentContext, indent, parentRenderer) {
@@ -381,7 +381,7 @@
                     };
                 }
                 return Statement;
-            })();
+            }());
             function getStatements() {
                 var cnt, len = statements.length, st, r = [];
                 for (cnt = 0; cnt < len; cnt += 1) {
@@ -424,7 +424,7 @@
                     };
                 }
                 return Comment;
-            })();
+            }());
             this.comment = function (msg, prepend) {
                 if (prepend) {
                     statements.unshift(new Comment(msg));
@@ -581,7 +581,7 @@
             };
         }
         return JavascriptRenderer;
-    })();
+    }());
     exports.JavascriptRenderer = JavascriptRenderer;
 });
 //# sourceMappingURL=JavascriptRenderer.js.map

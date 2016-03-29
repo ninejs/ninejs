@@ -106,8 +106,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     };
     var ControlBase = (function (_super) {
         __extends(ControlBase, _super);
-        function ControlBase(args) {
-            _super.call(this, args);
+        function ControlBase(args, init) {
+            _super.call(this, args, init);
             applyToNode(this.domNode, controlBaseOnChange, this);
         }
         ControlBase.prototype.on = function (type, action, persistEvent) {
@@ -134,7 +134,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             return applyToNode(this.domNode, setName, { value: v });
         };
         return ControlBase;
-    })(Widget_1.default);
+    }(Widget_1.default));
     exports.ControlBase = ControlBase;
     var goodNumber = /^(\+|-)?((\d+(\.\d+)?)|(\.\d+))$/, goodPrefix = /^(\+|-)?((\d*(\.?\d*)?)|(\.\d*))$/;
     var NativeNumberTextBox = (function (_super) {
@@ -156,15 +156,15 @@ var __extends = (this && this.__extends) || function (d, b) {
                     previousValue = _this.value;
                 }
             });
-            this.domNode = node;
-            _super.call(this, args);
+            var init = { domNode: node };
+            _super.call(this, args, init);
         }
         NativeNumberTextBox.prototype.stepSetter = function (p) {
             var node = this.domNode;
             applyToNode(node, setStep, { value: p });
         };
         return NativeNumberTextBox;
-    })(ControlBase);
+    }(ControlBase));
     exports.NativeNumberTextBox = NativeNumberTextBox;
     function getNumberTextBoxConstructor() {
         var NumberTextBox;
@@ -197,8 +197,8 @@ var __extends = (this && this.__extends) || function (d, b) {
         function NativeDateTextBox(args) {
             var node = domUtils_1.append.create('input');
             node.type = 'date';
-            this.domNode = node;
-            _super.call(this, args);
+            var init = { domNode: node };
+            _super.call(this, args, init);
         }
         NativeDateTextBox.prototype.valueSetter = function (val) {
             var value, node = this.domNode;
@@ -213,7 +213,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             applyToNode(node, inputSetValue, { value: value });
         };
         return NativeDateTextBox;
-    })(ControlBase);
+    }(ControlBase));
     exports.NativeDateTextBox = NativeDateTextBox;
     function getDateTextBoxConstructor() {
         var DateTextBox;
@@ -241,11 +241,11 @@ var __extends = (this && this.__extends) || function (d, b) {
         function NativeTimeTextBox(args) {
             var node = domUtils_1.append.create('input');
             node.type = 'time';
-            this.domNode = node;
-            _super.call(this, args);
+            var init = { domNode: node };
+            _super.call(this, args, init);
         }
         return NativeTimeTextBox;
-    })(ControlBase);
+    }(ControlBase));
     exports.NativeTimeTextBox = NativeTimeTextBox;
     function getTimeTextBoxConstructor() {
         if (!modernizer_1.default['inputtypes'].time) {
@@ -278,26 +278,27 @@ var __extends = (this && this.__extends) || function (d, b) {
             var node = domUtils_1.append.create('input');
             node.type = 'checkbox';
             node.checked = false;
-            this.domNode = node;
-            _super.call(this, args);
+            var init = { domNode: node };
+            _super.call(this, args, init);
         }
         NativeCheckBox.prototype.valueSetter = function (v) {
             _super.prototype.valueSetter.call(this, v);
             applyToNode(this.domNode, setChecked, { value: v });
         };
         return NativeCheckBox;
-    })(ControlBase);
+    }(ControlBase));
     exports.NativeCheckBox = NativeCheckBox;
     var NativeTextBox = (function (_super) {
         __extends(NativeTextBox, _super);
         function NativeTextBox(args) {
             var node = domUtils_1.append.create('input');
             node.type = 'text';
-            this.domNode = node;
-            _super.call(this, args);
+            var init = {};
+            init.domNode = node;
+            _super.call(this, args, init);
         }
         return NativeTextBox;
-    })(ControlBase);
+    }(ControlBase));
     exports.NativeTextBox = NativeTextBox;
     function isValue(val) {
         return (val !== undefined) && (val !== null);
@@ -349,8 +350,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     var NativeSelect = (function (_super) {
         __extends(NativeSelect, _super);
         function NativeSelect(args) {
-            this.domNode = domUtils_1.append.create('select');
-            _super.call(this, args);
+            var init = {};
+            init.domNode = domUtils_1.append.create('select');
+            _super.call(this, args, init);
         }
         NativeSelect.prototype.optionsSetter = function (v) {
             applyToNode(this.domNode, setOptions, { self: this, value: v });
@@ -362,18 +364,18 @@ var __extends = (this && this.__extends) || function (d, b) {
             return selectGetValue.call({ self: this }, this.domNode);
         };
         return NativeSelect;
-    })(ControlBase);
+    }(ControlBase));
     exports.NativeSelect = NativeSelect;
     TimeTextBox = getTimeTextBoxConstructor();
     function getControlSetter(propName) {
         return function (c) {
             var self = this;
             if (typeof (c) === 'string') {
-                var deferred = deferredUtils_1.defer();
-                self[propName] = deferred.promise;
+                var deferred_1 = deferredUtils_1.defer();
+                self[propName] = deferred_1.promise;
                 require([c], function (Control) {
                     self[propName] = Control;
-                    deferred.resolve(Control);
+                    deferred_1.resolve(Control);
                 });
             }
             else {
@@ -552,7 +554,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Editor = (function (_super) {
         __extends(Editor, _super);
         function Editor(args) {
-            this.dataType = null;
             _super.call(this, args);
             this.controlDefer = deferredUtils_1.defer();
             this.control = this.controlDefer.promise;
@@ -864,8 +865,9 @@ var __extends = (this && this.__extends) || function (d, b) {
             });
         };
         return Editor;
-    })(Widget_1.default);
+    }(Widget_1.default));
     exports.Editor = Editor;
+    Editor.prototype.dataType = null;
     Editor.prototype.skin = Default_1.default;
     Editor.prototype.SelectControlSetter = getControlSetter('SelectControl');
     Editor.prototype.TextBoxControlSetter = getControlSetter('TextBoxControl');

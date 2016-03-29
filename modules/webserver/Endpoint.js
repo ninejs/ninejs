@@ -29,7 +29,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         Endpoint.prototype.handler = function (req, res, next) {
         };
         return Endpoint;
-    })(Properties_1.default);
+    }(Properties_1.default));
     exports.Endpoint = Endpoint;
     Endpoint.prototype.type = 'endpoint';
     Endpoint.prototype.method = 'get';

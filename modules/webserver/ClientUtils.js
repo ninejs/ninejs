@@ -79,7 +79,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             res.end(result);
         };
         return CacheManifest;
-    })(Properties_1.default);
+    }(Properties_1.default));
     exports.CacheManifest = CacheManifest;
     var Utils = (function () {
         function Utils() {
@@ -120,8 +120,12 @@ var __extends = (this && this.__extends) || function (d, b) {
                     webServer.add(directory);
                 }
             }
-            this.requireJsConfigEndpoint = new webServer.StaticResource({ type: 'endpoint', contentType: 'application/javascript', route: webServer.jsUrl + '/requireJsConfig.js', action: function () {
-                    self.requireJsConfigHandler.apply(self, arguments);
+            this.requireJsConfigEndpoint = new webServer.StaticResource({
+                type: 'endpoint',
+                contentType: 'application/javascript',
+                route: webServer.jsUrl + '/requireJsConfig.js',
+                action: function (req, res) {
+                    return self.requireJsConfigHandler(req, res);
                 }
             });
             webServer.add(this.requireJsConfigEndpoint);
@@ -173,7 +177,6 @@ var __extends = (this && this.__extends) || function (d, b) {
                 selectorEngine: 'css3',
                 isAsync: true,
                 async: true,
-                deps: this.boot,
                 applicationUrl: this.webServer.baseUrl,
                 packages: [],
                 ninejs: {
@@ -204,9 +207,25 @@ var __extends = (this && this.__extends) || function (d, b) {
                 cfg.map['*'][alias[0]] = alias[1];
             });
             this.emit('config', cfg);
-            r.push(JSON.stringify(cfg));
-            r.push(';');
-            r.push('require.config(window.requireJsConfig);');
+            r.push(JSON.stringify(cfg, null, '  '));
+            r.push(';\n');
+            var hasReleaseBoot = (this.webServer.config.clientUtils.boot && this.webServer.config.clientUtils.boot.length);
+            var hasModuleBoot = (this.boot && this.boot.length);
+            if (hasReleaseBoot || hasModuleBoot) {
+                r.push('window.requireJsConfig.callback = function() {\n');
+                if (hasReleaseBoot) {
+                    r.push("require(['" + this.webServer.config.clientUtils.boot + "'], function() {\n");
+                }
+                if (hasModuleBoot) {
+                    r.push("require([" + this.boot.map(function (mid) { return ("'" + mid + "'"); }).join(',') + "], function() {\n");
+                    r.push('});\n');
+                }
+                if (hasReleaseBoot) {
+                    r.push("});\n");
+                }
+                r.push('};\n');
+            }
+            r.push('setTimeout(function () { \n  require.config(window.requireJsConfig);\n});');
             this.postActions.forEach(function (item) {
                 r.push('(' + item.toString() + ').apply();');
             });
@@ -215,7 +234,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             res.end(result);
         };
         return Utils;
-    })();
+    }());
     exports.Utils = Utils;
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Utils;

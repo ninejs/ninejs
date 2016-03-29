@@ -184,7 +184,7 @@
             return this.enable().disable();
         };
         return StyleObject;
-    })();
+    }());
     exports.StyleObject = StyleObject;
     var StyleInstance = (function () {
         function StyleInstance() {
@@ -200,7 +200,7 @@
             return this;
         };
         return StyleInstance;
-    })();
+    }());
     exports.StyleInstance = StyleInstance;
     function style(processResult) {
         var r = new StyleObject(), cnt;

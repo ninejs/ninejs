@@ -618,7 +618,7 @@
                 };
             }
             return thehandler;
-        })();
+        }());
         eventhandlerfactory(new thehandler());
         this.m_hndDoc = eventhandler;
         this.m_hndErr = eventhandler;
@@ -951,7 +951,7 @@
             this.m_arr = new Array();
         }
         return Stack;
-    })();
+    }());
     ;
     function isEmpty(str) {
         return (str == null) || (str.length == 0);

@@ -288,7 +288,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             return !!this.providesList[id];
         };
         return ModuleRegistry;
-    })(Properties_1.default);
+    }(Properties_1.default));
     exports.ModuleRegistry = ModuleRegistry;
     exports.moduleRegistry = new ModuleRegistry;
 });

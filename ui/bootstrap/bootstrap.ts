@@ -8,6 +8,8 @@
 
 import { StyleObject, StyleInstance } from '../../css';
 
+declare var require: any;
+
 var bootstrapCss: StyleObject = require('./less/bootstrap.ncss'),
 	verticalResponsiveCss: StyleObject = require('./vresponsive.ncss'),
 	verticalResponsiveDeviceCss: StyleObject = require('./vresponsive-device.ncss'),

@@ -142,7 +142,7 @@
             }
         };
         return BootstrapProto;
-    })();
+    }());
     exports.BootstrapProto = BootstrapProto;
     var bootstrap = new BootstrapProto();
     bootstrap.enable('commonCss');

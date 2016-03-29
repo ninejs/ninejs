@@ -50,7 +50,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
         };
         return NonCachedStaticResource;
-    })(Endpoint_1.Endpoint);
+    }(Endpoint_1.Endpoint));
     exports.NonCachedStaticResource = NonCachedStaticResource;
     NonCachedStaticResource.prototype.type = 'static';
     NonCachedStaticResource.prototype.contentType = 'text/plain; charset=utf-8';
@@ -110,7 +110,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             }
         };
         return StaticResource;
-    })(NonCachedStaticResource);
+    }(NonCachedStaticResource));
     exports.StaticResource = StaticResource;
     StaticResource.prototype.maxAge = 10 * 86400 * 1000;
     StaticResource.prototype.cacheType = 'public';

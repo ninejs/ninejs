@@ -93,7 +93,7 @@
             return this.node[n];
         };
         return XmlNode;
-    })();
+    }());
     exports.XmlNode = XmlNode;
     var TextParseContext = (function () {
         function TextParseContext() {
@@ -114,7 +114,7 @@
             return this.r.join('');
         };
         return TextParseContext;
-    })();
+    }());
     exports.TextParseContext = TextParseContext;
     function trim(content) {
         if (!content) {

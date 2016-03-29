@@ -121,15 +121,15 @@ class Module extends Properties {
 				}
 				else {
 					var self = this;
-					return when(all(this.consumes.map(function (unit) {
+					return all(this.consumes.map(function (unit) {
 						if (!moduleRegistry.enabledUnits[unit.id]) {
 							return moduleRegistry.initUnit(unit.id);
 						}
 						else {
 							return moduleRegistry.enabledUnits[unit.id];
 						}
-					})), function () {
-						return when(all(self.provides.map(function (item) {
+					})).then(() => {
+						return all(self.provides.map(function (item) {
 							if (!moduleRegistry.enabledUnits[item.id]) {
 								var _defer = defer();
 								moduleRegistry.enabledUnits[item.id] = _defer.promise;
@@ -143,15 +143,15 @@ class Module extends Properties {
 							else {
 								return moduleRegistry.enabledUnits[item.id];
 							}
-						})), function () {
+						})).then(() => {
 							self.set('enabled', true);
-						}, function (err: any) {
+						}, (err: any) => {
 							console.log('Error while enabling some modules');
-							throw new Error(err);
+							throw err;
 						});
-					}, function (err: any) {
+					}, (err:any) => {
 						console.log('Error while enabling some modules');
-						throw new Error(err);
+						throw err;
 					});
 				}
 			});

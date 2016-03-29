@@ -24,7 +24,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             };
         }
         return Container;
-    })();
+    }());
     exports.Container = Container;
     var container = new Container();
     var ContainerModule = (function (_super) {
@@ -49,7 +49,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             return null;
         };
         return ContainerModule;
-    })(Module_1.default);
+    }(Module_1.default));
     var result = new ContainerModule();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = result;
