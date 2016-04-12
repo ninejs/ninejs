@@ -49,6 +49,9 @@ var __extends = (this && this.__extends) || function (d, b) {
                 for (p in config) {
                     if (config.hasOwnProperty(p)) {
                         var server = new WebServer_1.default({});
+                        server.getServer = function (name) {
+                            return servers[name];
+                        };
                         server.set('logger', this.getUnit('ninejs').get('logger'));
                         server.init(config[p]);
                         servers[p] = server;

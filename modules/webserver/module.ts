@@ -19,6 +19,9 @@ class Mod extends Module {
 			for (p in config) {
 				if (config.hasOwnProperty(p)) {
 					var server = new WebServer({});
+					server.getServer = (name: string) => {
+						return servers[name];
+					};
 					server.set('logger', this.getUnit('ninejs').get('logger'));
 					server.init(config[p]);
 					servers[p] = server;

@@ -19,6 +19,7 @@ declare class WebServer extends Properties {
     SinglePageContainer: {
         new (args: any): SinglePageContainer;
     };
+    getServer: (name: string) => WebServer;
     logger: Logger;
     app: Application;
     config: any;
