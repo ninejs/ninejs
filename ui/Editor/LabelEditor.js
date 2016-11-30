@@ -3,21 +3,21 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "./LabelEditor.ncss", '../Editor', '../utils/append', '../utils/setText', '../utils/setClass', '../../core/on', '../../core/deferredUtils'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports, css) {
+})(["require", "exports", "./LabelEditor.ncss", "../Editor", "../utils/append", "../utils/setText", "../utils/setClass", "../../core/on", "../../core/deferredUtils"], function (require, exports, css) {
     'use strict';
-    var Editor_1 = require('../Editor');
-    var append_1 = require('../utils/append');
-    var setText_1 = require('../utils/setText');
-    var setClass_1 = require('../utils/setClass');
-    var on_1 = require('../../core/on');
-    var deferredUtils_1 = require('../../core/deferredUtils');
+    var Editor_1 = require("../Editor");
+    var append_1 = require("../utils/append");
+    var setText_1 = require("../utils/setText");
+    var setClass_1 = require("../utils/setClass");
+    var on_1 = require("../../core/on");
+    var deferredUtils_1 = require("../../core/deferredUtils");
     css.enable();
     function identity(v) {
         return v;
@@ -25,7 +25,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var LabelEditor = (function (_super) {
         __extends(LabelEditor, _super);
         function LabelEditor() {
-            _super.apply(this, arguments);
+            return _super.apply(this, arguments) || this;
         }
         LabelEditor.prototype.labelSetter = function (v) {
             this.label = v;

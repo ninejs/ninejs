@@ -229,7 +229,7 @@ export class Utils {
 		this.emit('config', cfg);
 		r.push(JSON.stringify(cfg, null, '  '));
 		r.push(';\n');
-		let hasReleaseBoot = (this.webServer.config.clientUtils.boot && this.webServer.config.clientUtils.boot.length);
+		let hasReleaseBoot = (this.webServer.config.clientUtils && this.webServer.config.clientUtils.boot && this.webServer.config.clientUtils.boot.length);
 		let hasModuleBoot = (this.boot && this.boot.length);
 		if (hasReleaseBoot || hasModuleBoot) {
 			r.push('window.requireJsConfig.callback = function() {\n');

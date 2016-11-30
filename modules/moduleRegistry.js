@@ -3,20 +3,20 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../core/extend', '../core/ext/Properties', './config', '../config', '../core/deferredUtils'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../core/extend", "../core/ext/Properties", "./config", "../config", "../core/deferredUtils"], function (require, exports) {
     'use strict';
-    var extend = require('../core/extend');
-    var Properties_1 = require('../core/ext/Properties');
-    var config_1 = require('./config');
-    var config_2 = require('../config');
-    var deferredUtils_1 = require('../core/deferredUtils');
+    var extend = require("../core/extend");
+    var Properties_1 = require("../core/ext/Properties");
+    var config_1 = require("./config");
+    var config_2 = require("../config");
+    var deferredUtils_1 = require("../core/deferredUtils");
     var req = require;
     var config = {};
     extend.mixinRecursive(config, config_1.default);
@@ -113,14 +113,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     var ModuleRegistry = (function (_super) {
         __extends(ModuleRegistry, _super);
         function ModuleRegistry() {
-            _super.call(this, {});
-            extend.mixin(this, {
+            var _this = _super.call(this, {}) || this;
+            extend.mixin(_this, {
                 providesList: {}
             });
             var moduleList = [];
             var moduleSet = {};
-            this.enabledUnits = {};
-            this.addModule = function (m) {
+            _this.enabledUnits = {};
+            _this.addModule = function (m) {
                 var p, currentProvides = {}, cnt, self = this;
                 if ((!m.provides) && (m.default)) {
                     m = m.default;
@@ -157,7 +157,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     }
                 };
             };
-            this.validate = function (m, enableOnDemand) {
+            _this.validate = function (m, enableOnDemand) {
                 var _this = this;
                 function errorIfNoDependencies() {
                     if (!len) {
@@ -235,7 +235,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     return messages;
                 });
             };
-            this.enableModules = function () {
+            _this.enableModules = function () {
                 var currentModule, cnt, pArray = [];
                 for (cnt = 0; cnt < moduleList.length; cnt += 1) {
                     currentModule = moduleList[cnt];
@@ -251,7 +251,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     throw err;
                 });
             };
-            this.initUnit = function (unitId) {
+            _this.initUnit = function (unitId) {
                 if (!this.enabledUnits[unitId]) {
                     var unitConfig = config.units[unitId];
                     var _defer = deferredUtils_1.defer(), self = this;
@@ -266,7 +266,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     return deferredUtils_1.resolve(this.enabledUnits[unitId]);
                 }
             };
-            this.build = function () {
+            _this.build = function () {
                 var cnt, pArray = [], tempPromiseArray, currentModule, t;
                 for (cnt = 0; cnt < moduleList.length; cnt += 1) {
                     currentModule = moduleList[cnt];
@@ -283,6 +283,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     throw error;
                 });
             };
+            return _this;
         }
         ModuleRegistry.prototype.hasProvide = function (id) {
             return !!this.providesList[id];

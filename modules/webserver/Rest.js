@@ -1,24 +1,25 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", './Endpoint', '../../core/deferredUtils'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "./Endpoint", "../../core/deferredUtils"], function (require, exports) {
     'use strict';
-    var Endpoint_1 = require('./Endpoint');
-    var deferredUtils_1 = require('../../core/deferredUtils');
+    var Endpoint_1 = require("./Endpoint");
+    var deferredUtils_1 = require("../../core/deferredUtils");
+    var ResponseType;
     (function (ResponseType) {
         ResponseType[ResponseType["JSON"] = 0] = "JSON";
         ResponseType[ResponseType["RAW"] = 1] = "RAW";
-    })(exports.ResponseType || (exports.ResponseType = {}));
-    var ResponseType = exports.ResponseType;
+    })(ResponseType = exports.ResponseType || (exports.ResponseType = {}));
     function any(method, description, action) {
         var endpoint = new Endpoint_1.default({
             children: [],
             route: description.route,
             method: method,
+            handleAs: description.handleAs || 'json',
             handler: function (req, res) {
                 deferredUtils_1.when(description.inputMap(req), function (inputArgs) {
                     try {

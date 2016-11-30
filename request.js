@@ -1,13 +1,13 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "reqwest/reqwest", './core/deferredUtils'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "reqwest/reqwest", "./core/deferredUtils"], function (require, exports) {
     'use strict';
-    var deferredUtils_1 = require('./core/deferredUtils');
+    var deferredUtils_1 = require("./core/deferredUtils");
     var req = require, isNode = typeof (window) === 'undefined', isAmd = typeof (define) === 'function' && define.amd, isDojo = isAmd && (define.amd.vendor === 'dojotoolkit.org');
     var request;
     if (isAmd) {

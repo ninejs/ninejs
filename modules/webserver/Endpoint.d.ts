@@ -1,7 +1,7 @@
 import Properties from '../../core/ext/Properties';
 import WebServer from './WebServer';
 import { Request, Response, Application } from './WebServer';
-declare class Endpoint extends Properties {
+export declare class Endpoint extends Properties {
     type: string;
     method: string;
     children: Endpoint[];
@@ -15,7 +15,17 @@ declare class Endpoint extends Properties {
     on(eventType: string, callback: (ev: any) => void): any;
     emit(eventType: string, data: any): any;
     handler(req: Request, res: Response, next?: () => void): void;
-    constructor(args: any);
+    constructor(args: EndpointArgs);
 }
-export { Endpoint };
+export interface EndpointArgs {
+    type?: string;
+    method?: string;
+    children?: Endpoint[];
+    route: string;
+    order?: number;
+    validate?: (req: Request, res: Response) => any;
+    handleAs?: string;
+    parserOptions?: any;
+    handler?: (req: Request, res: Response, next?: () => void) => void;
+}
 export default Endpoint;

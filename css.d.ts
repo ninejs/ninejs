@@ -1,3 +1,4 @@
+/// <reference types="es6-promise" />
 export interface StyleType {
     enable: (parent?: any) => StyleType;
     disable: () => StyleType;

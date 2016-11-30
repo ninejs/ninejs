@@ -1,13 +1,14 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "../client/bluebird"], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../client/bluebird"], function (require, exports) {
     'use strict';
     var bluebird = require('../client/bluebird');
+	console.log(bluebird);
     var defer = bluebird.defer;
     exports.defer = defer;
     Object.defineProperty(exports, "__esModule", { value: true });

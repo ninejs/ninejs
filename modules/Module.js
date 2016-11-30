@@ -3,19 +3,19 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../core/ext/Properties', './moduleRegistry', '../core/ext/Evented', '../core/deferredUtils'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../core/ext/Properties", "./moduleRegistry", "../core/ext/Evented", "../core/deferredUtils"], function (require, exports) {
     'use strict';
-    var Properties_1 = require('../core/ext/Properties');
-    var moduleRegistry_1 = require('./moduleRegistry');
-    var Evented_1 = require('../core/ext/Evented');
-    var deferredUtils_1 = require('../core/deferredUtils');
+    var Properties_1 = require("../core/ext/Properties");
+    var moduleRegistry_1 = require("./moduleRegistry");
+    var Evented_1 = require("../core/ext/Evented");
+    var deferredUtils_1 = require("../core/deferredUtils");
     var isAmd = (typeof (define) !== 'undefined') && define.amd;
     var isNode = (typeof (window) === 'undefined');
     var req = require;
@@ -34,8 +34,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Module = (function (_super) {
         __extends(Module, _super);
         function Module(args) {
-            _super.call(this, args);
-            postConstruct.call(this);
+            var _this = _super.call(this, args) || this;
+            postConstruct.call(_this);
+            return _this;
         }
         Module.prototype.on = function (type, listener) {
             var _on;

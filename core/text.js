@@ -1,13 +1,13 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", './cache'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "./cache"], function (require, exports) {
     'use strict';
-    var cache_1 = require('./cache');
+    var cache_1 = require("./cache");
     var getText = cache_1.default.getText;
     var notFound = {}, pending = {};
     exports.dynamic = true;

@@ -1,14 +1,14 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../extend', '../objUtils'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../extend", "../objUtils"], function (require, exports) {
     'use strict';
-    var extend_1 = require('../extend');
-    var objUtils_1 = require('../objUtils');
+    var extend_1 = require("../extend");
+    var objUtils_1 = require("../objUtils");
     var emitToWatchList;
     function sliceArguments(arr, refIndex) {
         var r = [];

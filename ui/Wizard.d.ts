@@ -1,3 +1,4 @@
+/// <reference types="es6-promise" />
 import Widget from './Widget';
 import Button from './bootstrap/Button';
 import TransitionPanel from './TransitionPanel';

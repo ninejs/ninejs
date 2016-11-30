@@ -1,14 +1,14 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "./utils/parser/amd", '../core/deferredUtils', './baseProcessor'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "./utils/parser/amd", "../core/deferredUtils", "./baseProcessor"], function (require, exports) {
     'use strict';
-    var deferredUtils = require('../core/deferredUtils');
-    var baseProcessor_1 = require('./baseProcessor');
+    var deferredUtils = require("../core/deferredUtils");
+    var baseProcessor_1 = require("./baseProcessor");
     var parser, req = require, isNode = typeof (window) === 'undefined', isAmd = (typeof (define) !== 'undefined') && (!!define.amd);
     if (!isAmd) {
         parser = req('./utils/parser/commonjs');

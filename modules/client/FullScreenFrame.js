@@ -3,30 +3,31 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../../ui/Widget', './Skin/FullScreenFrame', '../../ui/utils/append', '../../ui/utils/setClass', '../../core/on', '../../core/deferredUtils', '../../core/array'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../../ui/Widget", "./Skin/FullScreenFrame", "../../ui/utils/append", "../../ui/utils/setClass", "../../core/on", "../../core/deferredUtils", "../../core/array"], function (require, exports) {
     'use strict';
-    var Widget_1 = require('../../ui/Widget');
-    var FullScreenFrame_1 = require('./Skin/FullScreenFrame');
-    var append_1 = require('../../ui/utils/append');
-    var setClass_1 = require('../../ui/utils/setClass');
-    var on_1 = require('../../core/on');
-    var deferredUtils_1 = require('../../core/deferredUtils');
-    var array_1 = require('../../core/array');
+    var Widget_1 = require("../../ui/Widget");
+    var FullScreenFrame_1 = require("./Skin/FullScreenFrame");
+    var append_1 = require("../../ui/utils/append");
+    var setClass_1 = require("../../ui/utils/setClass");
+    var on_1 = require("../../core/on");
+    var deferredUtils_1 = require("../../core/deferredUtils");
+    var array_1 = require("../../core/array");
     function isNumber(n) {
         return !isNaN(parseFloat(n)) && isFinite(n);
     }
     var FullScreenFrame = (function (_super) {
         __extends(FullScreenFrame, _super);
         function FullScreenFrame(args, containerModule) {
-            _super.call(this, args);
-            this.container = containerModule;
+            var _this = _super.call(this, args) || this;
+            _this.container = containerModule;
+            return _this;
         }
         FullScreenFrame.prototype.selectedSetter = function (idx) {
             var cnt, arr = array_1.filter(this.containerNode.childNodes, function (node) { return node.nodeType === 1; }), len = arr.length, target, current;

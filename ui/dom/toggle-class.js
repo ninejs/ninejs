@@ -1,15 +1,15 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../../core/on', '../utils/setClass', '../../core/objUtils'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../../core/on", "../utils/setClass", "../../core/objUtils"], function (require, exports) {
     'use strict';
-    var on_1 = require('../../core/on');
-    var setClass_1 = require('../utils/setClass');
-    var objUtils_1 = require('../../core/objUtils');
+    var on_1 = require("../../core/on");
+    var setClass_1 = require("../utils/setClass");
+    var objUtils_1 = require("../../core/objUtils");
     function default_1(node, context, value, options) {
         var classes = (value || '').split(/,| /).filter(function (s) {
             return !!s;

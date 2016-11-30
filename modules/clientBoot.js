@@ -1,21 +1,21 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../config', './moduleRegistry', './Module', '../core/extend', '../core/deferredUtils', './client/router', './ninejs-client', './client/container', './client/singlePageContainer'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../config", "./moduleRegistry", "./Module", "../core/extend", "../core/deferredUtils", "./client/router", "./ninejs-client", "./client/container", "./client/singlePageContainer"], function (require, exports) {
     'use strict';
-    var config_1 = require('../config');
-    var moduleRegistry_1 = require('./moduleRegistry');
-    var Module_1 = require('./Module');
-    var extend_1 = require('../core/extend');
-    var deferredUtils_1 = require('../core/deferredUtils');
-    require('./client/router');
-    require('./ninejs-client');
-    require('./client/container');
-    require('./client/singlePageContainer');
+    var config_1 = require("../config");
+    var moduleRegistry_1 = require("./moduleRegistry");
+    var Module_1 = require("./Module");
+    var extend_1 = require("../core/extend");
+    var deferredUtils_1 = require("../core/deferredUtils");
+    require("./client/router");
+    require("./ninejs-client");
+    require("./client/container");
+    require("./client/singlePageContainer");
     var modules = config_1.default.ninejs.modules || {}, moduleArray = [], prefix = config_1.default.ninejs.prefix || 'ninejs', onDemandModules = {
         'ninejs': prefix + '/modules/ninejs-client',
         'router': prefix + '/modules/client/router',

@@ -1,13 +1,13 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../../core/objUtils'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../../core/objUtils"], function (require, exports) {
     'use strict';
-    var objUtils = require('../../core/objUtils');
+    var objUtils = require("../../core/objUtils");
     function render(obj) {
         if (obj) {
             if (typeof (obj.render) === 'function') {

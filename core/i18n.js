@@ -1,16 +1,16 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", './extend', './ext/Evented', './text', './deferredUtils'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "./extend", "./ext/Evented", "./text", "./deferredUtils"], function (require, exports) {
     'use strict';
-    var extend_1 = require('./extend');
-    var Evented_1 = require('./ext/Evented');
-    var amdText = require('./text');
-    var deferredUtils_1 = require('./deferredUtils');
+    var extend_1 = require("./extend");
+    var Evented_1 = require("./ext/Evented");
+    var amdText = require("./text");
+    var deferredUtils_1 = require("./deferredUtils");
     var isAmd = (typeof (define) !== 'undefined' && define.amd), isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org', isNode = (typeof (window) === 'undefined'), req = require;
     function getFile(src, require, load, config) {
         var obj;

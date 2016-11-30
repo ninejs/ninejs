@@ -3,24 +3,24 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", './node-xml', '../../../core/bluebird'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "./node-xml", "../../../core/bluebird"], function (require, exports) {
     'use strict';
-    var xml = require('./node-xml');
-    var Q = require('../../../core/bluebird');
+    var xml = require("./node-xml");
+    var Q = require("../../../core/bluebird");
     var defer = function () {
         return Q.defer();
     };
     var XmlParserError = (function (_super) {
         __extends(XmlParserError, _super);
         function XmlParserError(msg) {
-            _super.call(this, msg);
+            return _super.call(this, msg) || this;
         }
         return XmlParserError;
     }(Error));

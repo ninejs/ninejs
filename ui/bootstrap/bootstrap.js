@@ -1,11 +1,11 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "./less/bootstrap.ncss", "./vresponsive.ncss", "./vresponsive-device.ncss", "../css/common.ncss", "./gridMax.ncss"], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "./less/bootstrap.ncss", "./vresponsive.ncss", "./vresponsive-device.ncss", "../css/common.ncss", "./gridMax.ncss"], function (require, exports) {
     'use strict';
     var bootstrapCss = require('./less/bootstrap.ncss'), verticalResponsiveCss = require('./vresponsive.ncss'), verticalResponsiveDeviceCss = require('./vresponsive-device.ncss'), commonCss = require('../css/common.ncss'), gridMaxCss = require('./gridMax.ncss');
     var BootstrapProto = (function () {

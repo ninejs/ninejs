@@ -1,13 +1,13 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../css'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../css"], function (require, exports) {
     'use strict';
-    var css = require('../css');
+    var css = require("../css");
     function load() {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {

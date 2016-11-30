@@ -3,25 +3,25 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../NineplateResource', 'path'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../NineplateResource", "path"], function (require, exports) {
     'use strict';
-    var NineplateResource_1 = require('../NineplateResource');
-    var path = require('path');
+    var NineplateResource_1 = require("../NineplateResource");
+    var path = require("path");
     var SinglePageContainer = (function (_super) {
         __extends(SinglePageContainer, _super);
         function SinglePageContainer(arg) {
-            _super.call(this, arg);
-            this.on('result', function (evt) {
+            var _this = _super.call(this, arg) || this;
+            _this.on('result', function (evt) {
                 this.applyETag(evt.response, evt.data);
             });
-            this.context = {
+            _this.context = {
                 html: {
                     lang: 'en',
                     manifest: 'manifest.appcache',
@@ -33,6 +33,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     body: {}
                 }
             };
+            return _this;
         }
         SinglePageContainer.prototype.handler = function (req, res) {
             this.context.jsBase = this.server.baseUrl + this.server.jsUrl;

@@ -3,18 +3,18 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "./css/common.ncss", '../core/deferredUtils', './utils/setClass', './Widget'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports, commonCss) {
+})(["require", "exports", "./css/common.ncss", "../core/deferredUtils", "./utils/setClass", "./Widget"], function (require, exports, commonCss) {
     'use strict';
-    var deferredUtils_1 = require('../core/deferredUtils');
-    var setClass_1 = require('./utils/setClass');
-    var Widget_1 = require('./Widget');
+    var deferredUtils_1 = require("../core/deferredUtils");
+    var setClass_1 = require("./utils/setClass");
+    var Widget_1 = require("./Widget");
     commonCss.enable();
     function insertAfter(node, ref) {
         var parent = ref.parentNode;
@@ -50,7 +50,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var TransitionPanel = (function (_super) {
         __extends(TransitionPanel, _super);
         function TransitionPanel() {
-            _super.apply(this, arguments);
+            return _super.apply(this, arguments) || this;
         }
         TransitionPanel.prototype.show = function (parent) {
             var _this = this;

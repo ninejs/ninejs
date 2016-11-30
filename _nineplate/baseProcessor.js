@@ -1,13 +1,13 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", './utils/node/xmlParser'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "./utils/node/xmlParser"], function (require, exports) {
     'use strict';
-    var xmlParser_1 = require('./utils/node/xmlParser');
+    var xmlParser_1 = require("./utils/node/xmlParser");
     var isNode = typeof (window) === 'undefined';
     function manualTrim(str) {
         str = str.replace(/^\s+/, '');

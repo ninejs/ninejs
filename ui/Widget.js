@@ -3,22 +3,22 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../core/extend', '../core/ext/Properties', '../core/on', '../core/deferredUtils', './utils/setClass', './utils/append', '../core/objUtils'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../core/extend", "../core/ext/Properties", "../core/on", "../core/deferredUtils", "./utils/setClass", "./utils/append", "../core/objUtils"], function (require, exports) {
     'use strict';
-    var extend_1 = require('../core/extend');
-    var Properties_1 = require('../core/ext/Properties');
-    var on_1 = require('../core/on');
-    var deferredUtils_1 = require('../core/deferredUtils');
-    var setClass_1 = require('./utils/setClass');
-    var append_1 = require('./utils/append');
-    var objUtils_1 = require('../core/objUtils');
+    var extend_1 = require("../core/extend");
+    var Properties_1 = require("../core/ext/Properties");
+    var on_1 = require("../core/on");
+    var deferredUtils_1 = require("../core/deferredUtils");
+    var setClass_1 = require("./utils/setClass");
+    var append_1 = require("./utils/append");
+    var objUtils_1 = require("../core/objUtils");
     var widgetSpecialEvents = {
         'updatedSkin': true,
         'updatingSkin': true,
@@ -63,6 +63,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Widget = (function (_super) {
         __extends(Widget, _super);
         function Widget(args, init) {
+            var _this;
             init = init || {};
             init.skin = init.skin || [];
             init.skinContract = init.skinContract || {};
@@ -78,7 +79,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                 init.$njsShowDefer.resolve(init.domNode);
                 init.$njsShowDefer = null;
             }
-            _super.call(this, args, init);
+            _this = _super.call(this, args, init) || this;
+            return _this;
         }
         Widget.extend = function () {
             var args = [];

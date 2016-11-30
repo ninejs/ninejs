@@ -1,17 +1,17 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "./utils/parser/amd", './utils/functions', '../core/deferredUtils', './baseProcessor', '../core/objUtils', './renderers/JavascriptRenderer'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "./utils/parser/amd", "./utils/functions", "../core/deferredUtils", "./baseProcessor", "../core/objUtils", "./renderers/JavascriptRenderer"], function (require, exports) {
     'use strict';
-    var functions = require('./utils/functions');
-    var def = require('../core/deferredUtils');
-    var baseProcessor_1 = require('./baseProcessor');
-    var objUtils = require('../core/objUtils');
-    var JavascriptRenderer_1 = require('./renderers/JavascriptRenderer');
+    var functions = require("./utils/functions");
+    var def = require("../core/deferredUtils");
+    var baseProcessor_1 = require("./baseProcessor");
+    var objUtils = require("../core/objUtils");
+    var JavascriptRenderer_1 = require("./renderers/JavascriptRenderer");
     var parser, req = require, isAmd = (typeof (define) !== 'undefined') && define.amd, isNode = typeof (window) === 'undefined';
     if (isNode && !isAmd) {
         parser = req('./utils/parser/commonjs');
@@ -903,7 +903,7 @@
                 .addVar('fn', parentRenderer
                 .expression('require')
                 .invoke(parentRenderer.literal((options.ninejsPrefix || 'ninejs') + "/_nineplate/utils/functions")));
-            amdPathMapping[((options.ninejsPrefix || 'ninejs') + "/_nineplate/utils/functions")] = 'fn';
+            amdPathMapping[(options.ninejsPrefix || 'ninejs') + "/_nineplate/utils/functions"] = 'fn';
         }
         renderer
             .addVar('r', renderer.raw('{}'));

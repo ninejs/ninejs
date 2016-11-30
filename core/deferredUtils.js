@@ -1,14 +1,14 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", './bluebird', '../config'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "./bluebird", "../config"], function (require, exports) {
     'use strict';
-    var bluebird_1 = require('./bluebird');
-    var config_1 = require('../config');
+    var bluebird_1 = require("./bluebird");
+    var config_1 = require("../config");
     var nativePromise = (typeof (Promise) === 'function') && !((((config_1.default.ninejs || {}).core || {}).deferredUtils || {}).skipNativePromise);
     ;
     var Q = bluebird_1.default;

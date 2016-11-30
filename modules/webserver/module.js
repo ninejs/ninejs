@@ -3,34 +3,35 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../Module', './WebServer'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../Module", "./WebServer"], function (require, exports) {
     'use strict';
-    var Module_1 = require('../Module');
-    var WebServer_1 = require('./WebServer');
+    var Module_1 = require("../Module");
+    var WebServer_1 = require("./WebServer");
     var packageJson = require('../../package.json');
     var servers = {};
     var Mod = (function (_super) {
         __extends(Mod, _super);
         function Mod(args) {
-            _super.call(this, args);
-            this.consumes = [
+            var _this = _super.call(this, args) || this;
+            _this.consumes = [
                 {
                     id: 'ninejs'
                 }
             ];
-            this.provides = [
+            _this.provides = [
                 {
                     id: 'webserver',
                     version: packageJson.version
                 }
             ];
+            return _this;
         }
         Mod.prototype.getProvides = function (name) {
             var args = [];

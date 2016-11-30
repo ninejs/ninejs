@@ -10,6 +10,7 @@ export interface MethodDescription<T> {
     inputMap: (req: Request) => T | PromiseType<T>;
     responseType?: ResponseType;
     contentType?: string;
+    handleAs?: string;
 }
 export declare function get<IN, OUT>(description: MethodDescription<IN>, action: (input: IN, req?: Request, res?: Response) => PromiseType<OUT>): Endpoint;
 export declare function post<IN, OUT>(description: MethodDescription<IN>, action: (input: IN, req?: Request, res?: Response) => PromiseType<OUT>): Endpoint;

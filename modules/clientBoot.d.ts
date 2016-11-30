@@ -1,3 +1,4 @@
+/// <reference types="es6-promise" />
 import { PromiseType } from '../core/deferredUtils';
 import './client/router';
 import './ninejs-client';

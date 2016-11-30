@@ -3,26 +3,26 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", './Widget', '../core/extend', './Skins/Editor/Default', '../core/deferredUtils', '../modernizer', '../core/array', '../core/objUtils', '../core/on', './utils/domUtils', '../config'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "./Widget", "../core/extend", "./Skins/Editor/Default", "../core/deferredUtils", "../modernizer", "../core/array", "../core/objUtils", "../core/on", "./utils/domUtils", "../config"], function (require, exports) {
     'use strict';
     var _this = this;
-    var Widget_1 = require('./Widget');
-    var extend_1 = require('../core/extend');
-    var Default_1 = require('./Skins/Editor/Default');
-    var deferredUtils_1 = require('../core/deferredUtils');
-    var modernizer_1 = require('../modernizer');
-    var array_1 = require('../core/array');
-    var objUtils_1 = require('../core/objUtils');
-    var on_1 = require('../core/on');
-    var domUtils_1 = require('./utils/domUtils');
-    var config_1 = require('../config');
+    var Widget_1 = require("./Widget");
+    var extend_1 = require("../core/extend");
+    var Default_1 = require("./Skins/Editor/Default");
+    var deferredUtils_1 = require("../core/deferredUtils");
+    var modernizer_1 = require("../modernizer");
+    var array_1 = require("../core/array");
+    var objUtils_1 = require("../core/objUtils");
+    var on_1 = require("../core/on");
+    var domUtils_1 = require("./utils/domUtils");
+    var config_1 = require("../config");
     var editorConfig = (((config_1.default.ninejs || {}).ui || {}).Editor || {}), NumberTextBox, numberTextBoxDefer, timeTextBoxDefer, DateTextBox, dateTextBoxDefer, TimeTextBox, numberTextBoxImpl = editorConfig.NumberTextBox || 'dijit/form/NumberTextBox', dateTextBoxImpl = editorConfig.DateTextBox || 'dijit/form/DateTextBox', timeTextBoxImpl = editorConfig.TimeTextBox || 'dijit/form/TimeTextBox', ENTER = 13;
     var pad = '00';
     var applyToNode = function (node, callback, self) {
@@ -107,8 +107,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     var ControlBase = (function (_super) {
         __extends(ControlBase, _super);
         function ControlBase(args, init) {
-            _super.call(this, args, init);
-            applyToNode(this.domNode, controlBaseOnChange, this);
+            var _this = _super.call(this, args, init) || this;
+            applyToNode(_this.domNode, controlBaseOnChange, _this);
+            return _this;
         }
         ControlBase.prototype.on = function (type, action, persistEvent) {
             var handler = on_1.default(this.domNode, type, action, false);
@@ -140,7 +141,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var NativeNumberTextBox = (function (_super) {
         __extends(NativeNumberTextBox, _super);
         function NativeNumberTextBox(args) {
-            var _this = this;
+            var _this;
             var node = domUtils_1.append.create('input');
             node.type = 'number';
             var previousValue;
@@ -157,7 +158,8 @@ var __extends = (this && this.__extends) || function (d, b) {
                 }
             });
             var init = { domNode: node };
-            _super.call(this, args, init);
+            _this = _super.call(this, args, init) || this;
+            return _this;
         }
         NativeNumberTextBox.prototype.stepSetter = function (p) {
             var node = this.domNode;
@@ -195,10 +197,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     var NativeDateTextBox = (function (_super) {
         __extends(NativeDateTextBox, _super);
         function NativeDateTextBox(args) {
+            var _this;
             var node = domUtils_1.append.create('input');
             node.type = 'date';
             var init = { domNode: node };
-            _super.call(this, args, init);
+            _this = _super.call(this, args, init) || this;
+            return _this;
         }
         NativeDateTextBox.prototype.valueSetter = function (val) {
             var value, node = this.domNode;
@@ -239,10 +243,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     var NativeTimeTextBox = (function (_super) {
         __extends(NativeTimeTextBox, _super);
         function NativeTimeTextBox(args) {
+            var _this;
             var node = domUtils_1.append.create('input');
             node.type = 'time';
             var init = { domNode: node };
-            _super.call(this, args, init);
+            _this = _super.call(this, args, init) || this;
+            return _this;
         }
         return NativeTimeTextBox;
     }(ControlBase));
@@ -275,11 +281,13 @@ var __extends = (this && this.__extends) || function (d, b) {
     var NativeCheckBox = (function (_super) {
         __extends(NativeCheckBox, _super);
         function NativeCheckBox(args) {
+            var _this;
             var node = domUtils_1.append.create('input');
             node.type = 'checkbox';
             node.checked = false;
             var init = { domNode: node };
-            _super.call(this, args, init);
+            _this = _super.call(this, args, init) || this;
+            return _this;
         }
         NativeCheckBox.prototype.valueSetter = function (v) {
             _super.prototype.valueSetter.call(this, v);
@@ -291,11 +299,13 @@ var __extends = (this && this.__extends) || function (d, b) {
     var NativeTextBox = (function (_super) {
         __extends(NativeTextBox, _super);
         function NativeTextBox(args) {
+            var _this;
             var node = domUtils_1.append.create('input');
             node.type = 'text';
             var init = {};
             init.domNode = node;
-            _super.call(this, args, init);
+            _this = _super.call(this, args, init) || this;
+            return _this;
         }
         return NativeTextBox;
     }(ControlBase));
@@ -350,9 +360,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     var NativeSelect = (function (_super) {
         __extends(NativeSelect, _super);
         function NativeSelect(args) {
+            var _this;
             var init = {};
             init.domNode = domUtils_1.append.create('select');
-            _super.call(this, args, init);
+            _this = _super.call(this, args, init) || this;
+            return _this;
         }
         NativeSelect.prototype.optionsSetter = function (v) {
             applyToNode(this.domNode, setOptions, { self: this, value: v });
@@ -554,9 +566,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Editor = (function (_super) {
         __extends(Editor, _super);
         function Editor(args) {
-            _super.call(this, args);
-            this.controlDefer = deferredUtils_1.defer();
-            this.control = this.controlDefer.promise;
+            var _this = _super.call(this, args) || this;
+            _this.controlDefer = deferredUtils_1.defer();
+            _this.control = _this.controlDefer.promise;
+            return _this;
         }
         Editor.prototype._clearDataTypeClasses = function () {
             return deferredUtils_1.when(this.show(), editorFunctions.clearDataTypeClasses);

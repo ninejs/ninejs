@@ -3,19 +3,19 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "../i18n!./nls/Expression.json", '../ext/Properties', '../objUtils', '../i18n', '../array'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../i18n!./nls/Expression.json", "../ext/Properties", "../objUtils", "../i18n", "../array"], function (require, exports) {
     'use strict';
-    var Properties_1 = require('../ext/Properties');
-    var objUtils_1 = require('../objUtils');
-    var i18n_1 = require('../i18n');
-    var array_1 = require('../array');
+    var Properties_1 = require("../ext/Properties");
+    var objUtils_1 = require("../objUtils");
+    var i18n_1 = require("../i18n");
+    var array_1 = require("../array");
     var locale, req = require, isAmd = (typeof (define) !== 'undefined' && define.amd), isNode = (typeof (window) === 'undefined');
     if (isAmd) {
         locale = require('../i18n!./nls/Expression.json');
@@ -260,6 +260,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Expression = (function (_super) {
         __extends(Expression, _super);
         function Expression(args) {
+            var _this;
             var init = {};
             init.operator = null;
             init.operatorList = initialOperatorList;
@@ -272,7 +273,8 @@ var __extends = (this && this.__extends) || function (d, b) {
             init.expressionList = null;
             init.where = null;
             init.ambiguous = false;
-            _super.call(this, args, init);
+            _this = _super.call(this, args, init) || this;
+            return _this;
         }
         Expression.prototype._formatValue = function (val, isVariable, forDisplay) {
             if ((val === null) || (((typeof val) === 'number') && isNaN(val))) {

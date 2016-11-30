@@ -3,33 +3,34 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../Module', '../../client/router', '../../client/hash', '../config'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../Module", "../../client/router", "../../client/hash", "../config"], function (require, exports) {
     'use strict';
-    var Module_1 = require('../Module');
-    var router = require('../../client/router');
-    var hash_1 = require('../../client/hash');
-    var config_1 = require('../config');
+    var Module_1 = require("../Module");
+    var router = require("../../client/router");
+    var hash_1 = require("../../client/hash");
+    var config_1 = require("../config");
     var HashRouter = (function (_super) {
         __extends(HashRouter, _super);
         function HashRouter() {
-            _super.call(this);
-            this.consumes = [
+            var _this = _super.call(this) || this;
+            _this.consumes = [
                 {
                     id: 'ninejs'
                 }
             ];
-            this.provides = [
+            _this.provides = [
                 {
                     id: 'router'
                 }
             ];
+            return _this;
         }
         HashRouter.prototype.getProvides = function (name) {
             if (name === 'router') {

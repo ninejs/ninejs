@@ -3,24 +3,25 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../core/extend', '../core/ext/Properties', '../nineplate', '../core/deferredUtils'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../core/extend", "../core/ext/Properties", "../nineplate", "../core/deferredUtils"], function (require, exports) {
     'use strict';
-    var extend = require('../core/extend');
-    var Properties_1 = require('../core/ext/Properties');
-    var nineplate_1 = require('../nineplate');
-    var def = require('../core/deferredUtils');
+    var extend = require("../core/extend");
+    var Properties_1 = require("../core/ext/Properties");
+    var nineplate_1 = require("../nineplate");
+    var def = require("../core/deferredUtils");
     var Skin = (function (_super) {
         __extends(Skin, _super);
         function Skin() {
-            _super.apply(this, arguments);
-            this.enabled = false;
+            var _this = _super.apply(this, arguments) || this;
+            _this.enabled = false;
+            return _this;
         }
         Skin.prototype.applies = function () {
             return true;

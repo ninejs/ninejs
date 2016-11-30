@@ -3,30 +3,30 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../core/extend', './Module', 'bunyan'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../core/extend", "./Module", "bunyan"], function (require, exports) {
     'use strict';
-    var extend_1 = require('../core/extend');
-    var Module_1 = require('./Module');
-    var bunyan = require('bunyan');
+    var extend_1 = require("../core/extend");
+    var Module_1 = require("./Module");
+    var bunyan = require("bunyan");
     var njs = require('../lib/ninejs');
     var packageJson = require('../package.json');
     var NineJs = (function (_super) {
         __extends(NineJs, _super);
         function NineJs(args) {
-            _super.call(this, args);
+            var _this = _super.call(this, args) || this;
             var provide = {
                 id: 'ninejs',
                 version: packageJson.version,
                 features: {}
             };
-            extend_1.default.mixin(this, {
+            extend_1.default.mixin(_this, {
                 provides: [
                     provide
                 ],
@@ -36,6 +36,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             if ((typeof (global) !== 'undefined') && (typeof (global.Map) === 'function')) {
                 provide.features['harmony'] = true;
             }
+            return _this;
         }
         NineJs.prototype.configGetter = function () {
             var r = null;

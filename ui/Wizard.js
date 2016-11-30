@@ -3,17 +3,17 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "./Skins/Wizard/Default", './Widget', './bootstrap/Button', "../core/deferredUtils"], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports, DefaultSkin) {
+})(["require", "exports", "./Skins/Wizard/Default", "./Widget", "./bootstrap/Button", "../core/deferredUtils"], function (require, exports, DefaultSkin) {
     'use strict';
-    var Widget_1 = require('./Widget');
-    var Button_1 = require('./bootstrap/Button');
+    var Widget_1 = require("./Widget");
+    var Button_1 = require("./bootstrap/Button");
     var deferredUtils_1 = require("../core/deferredUtils");
     function i18n(key) {
         return key;
@@ -21,13 +21,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Wizard = (function (_super) {
         __extends(Wizard, _super);
         function Wizard(args) {
-            _super.call(this, args);
-            var Button = this.ButtonConstructor;
-            this.helpButton = new Button({ label: i18n('Help') });
-            this.previousButton = new Button({ label: '< ' + i18n('Back') });
-            this.nextButton = new Button({ label: i18n('Next') + ' >' });
-            this.finishButton = new Button({ label: i18n('Finish') });
-            this.cancelButton = new Button({ label: i18n('Cancel') });
+            var _this = _super.call(this, args) || this;
+            var Button = _this.ButtonConstructor;
+            _this.helpButton = new Button({ label: i18n('Help') });
+            _this.previousButton = new Button({ label: '< ' + i18n('Back') });
+            _this.nextButton = new Button({ label: i18n('Next') + ' >' });
+            _this.finishButton = new Button({ label: i18n('Finish') });
+            _this.cancelButton = new Button({ label: i18n('Cancel') });
+            return _this;
         }
         Wizard.prototype.addStep = function (panel, beforePanel) {
             var cnt, stepList = this.stepList, current;

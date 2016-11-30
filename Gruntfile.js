@@ -87,7 +87,7 @@ function exports(grunt) {
 			default : {
 				tsconfig: './tsconfig.json',
 				options: {
-					"compiler": "./node_modules/typescript/bin/tsc"
+					"compiler": process.env.TS_COMPILER || "./node_modules/typescript/bin/tsc"
 				}
 			}
 		},
@@ -127,14 +127,13 @@ function exports(grunt) {
 		},
 		typedoc: {
 			options: {
-				tspath: './node_modules/typescript/lib/',
+				tspath: (process.env.TS_COMPILER ? process.env.TS_COMPILER + '/../../lib/' : '') ||'./node_modules/typescript/lib/',
 				out: './docs/',
 				module: 'umd',
 				excludeExternals: true
 			},
 			main: {
 				src: [
-					'./typings/tsd.d.ts',
 					'*.ts',
 					'**/*.ts',
 					'!9js.d.ts', '!9js.ts', '!ninejs.d.ts',
@@ -255,7 +254,7 @@ function exports(grunt) {
 	grunt.registerTask('test', ['mochaTest:normal', 'mocha']);
 	grunt.registerTask('css', ['less', 'ncss', 'stylus']);
 	// Default task.
-	grunt.registerTask('default', ['css', 'nineplate', 'tsd', 'ts', 'typedoc', 'generateParsers', 'nineplate', 'test']);
+	grunt.registerTask('default', ['css', 'nineplate', 'tsd', 'ts', /*'typedoc', */'generateParsers', 'nineplate', 'test']);
 
 }
 

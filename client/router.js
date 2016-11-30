@@ -3,21 +3,21 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../core/deferredUtils', '../core/extend', '../core/ext/Evented', '../core/ext/Properties', './hash', '../core/on'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../core/deferredUtils", "../core/extend", "../core/ext/Evented", "../core/ext/Properties", "./hash", "../core/on"], function (require, exports) {
     'use strict';
-    var deferredUtils_1 = require('../core/deferredUtils');
-    var extend_1 = require('../core/extend');
-    var Evented_1 = require('../core/ext/Evented');
-    var Properties_1 = require('../core/ext/Properties');
-    var hash_1 = require('./hash');
-    var on_1 = require('../core/on');
+    var deferredUtils_1 = require("../core/deferredUtils");
+    var extend_1 = require("../core/extend");
+    var Evented_1 = require("../core/ext/Evented");
+    var Properties_1 = require("../core/ext/Properties");
+    var hash_1 = require("./hash");
+    var on_1 = require("../core/on");
     var idMatch = /:(\w[\w\d]*)/g, idReplacement = '([^\\/]+)', globMatch = /\*(\w[\w\d]*)/, globReplacement = '(.+)';
     var activeRouteDefer = null;
     function nullf() {
@@ -70,8 +70,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Router = (function (_super) {
         __extends(Router, _super);
         function Router() {
-            _super.call(this, {});
-            this.routes = [];
+            var _this = _super.call(this, {}) || this;
+            _this.routes = [];
+            return _this;
         }
         Router.prototype.on = function (type, listener) {
             return Evented_1.default.on.apply(this, arguments);
@@ -197,11 +198,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Route = (function (_super) {
         __extends(Route, _super);
         function Route(options, router) {
-            _super.call(this, options);
-            this.routeRegex = convertRouteToRegExp(options.route);
-            this.parameterNames = getParameterNames(options.route);
-            this.parentRouter = router;
-            this.parentRouter.addRoute(this);
+            var _this = _super.call(this, options) || this;
+            _this.routeRegex = convertRouteToRegExp(options.route);
+            _this.parameterNames = getParameterNames(options.route);
+            _this.parentRouter = router;
+            _this.parentRouter.addRoute(_this);
+            return _this;
         }
         Route.prototype.remove = function () {
             return this.parentRouter.removeRoute(this);

@@ -6,7 +6,7 @@ import WebServer from './WebServer';
 import express = require('express');
 import { Request, Response, Application } from './WebServer'
 
-class Endpoint extends Properties {
+export class Endpoint extends Properties {
 	type: string;
 	method: string;
 	children: Endpoint[];
@@ -25,13 +25,25 @@ class Endpoint extends Properties {
 	}
 	handler (req: Request, res: Response, next?: () => void) {
 	}
-	constructor (args: any) {
+	constructor (args: EndpointArgs) {
 		super(args);
 		this.children = [];
 	}
 }
 
+export interface EndpointArgs {
+	type?: string;
+	method?: string;
+	children?: Endpoint[];
+	route: string;
+	order?: number;
+	validate?: (req: Request, res: Response) => any;
+	handleAs?: string;
+	parserOptions?: any;
+	handler?: (req: Request, res: Response, next?: () => void) => void;
+}
+
 Endpoint.prototype.type = 'endpoint';
 Endpoint.prototype.method = 'get';
-export { Endpoint };
+
 export default Endpoint;

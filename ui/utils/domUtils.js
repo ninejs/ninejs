@@ -1,17 +1,17 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "../css/common.ncss", './setClass', './setText', './append', '../../modernizer', '../../core/on'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../css/common.ncss", "./setClass", "./setText", "./append", "../../modernizer", "../../core/on"], function (require, exports) {
     'use strict';
-    var setClass_1 = require('./setClass');
-    var setText_1 = require('./setText');
-    var append_1 = require('./append');
-    var modernizer_1 = require('../../modernizer');
-    var on_1 = require('../../core/on');
+    var setClass_1 = require("./setClass");
+    var setText_1 = require("./setText");
+    var append_1 = require("./append");
+    var modernizer_1 = require("../../modernizer");
+    var on_1 = require("../../core/on");
     var commonCss = require('../css/common.ncss');
     commonCss.enable();
     modernizer_1.default.add('scopedCss', function () {

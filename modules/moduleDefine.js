@@ -3,17 +3,17 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", './Module', '../core/deferredUtils'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "./Module", "../core/deferredUtils"], function (require, exports) {
     'use strict';
-    var Module_1 = require('./Module');
-    var deferredUtils_1 = require('../core/deferredUtils');
+    var Module_1 = require("./Module");
+    var deferredUtils_1 = require("../core/deferredUtils");
     function define(consumes, callback) {
         consumes = (consumes || []).map(function (item) {
             if (typeof (item) === 'string') {
@@ -29,8 +29,9 @@ var __extends = (this && this.__extends) || function (d, b) {
         var ThisModule = (function (_super) {
             __extends(ThisModule, _super);
             function ThisModule() {
-                _super.call(this);
-                this.consumes = consumes;
+                var _this = _super.call(this) || this;
+                _this.consumes = consumes;
+                return _this;
             }
             ThisModule.prototype.doInit = function (name, config) {
                 if (typeof (provideMap[name]) !== 'undefined') {

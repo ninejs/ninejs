@@ -13,6 +13,7 @@ export interface MethodDescription<T> {
     inputMap: (req: Request) => T | PromiseType<T>;
     responseType?: ResponseType;
     contentType?: string;
+	handleAs?: string;
 }
 
 function any<IN, OUT> (method: string, description: MethodDescription<IN>, action: (input: IN, req?: Request, res?: Response) => PromiseType<OUT>) {
@@ -20,6 +21,7 @@ function any<IN, OUT> (method: string, description: MethodDescription<IN>, actio
         children: [],
         route: description.route,
         method: method,
+		handleAs: description.handleAs || 'json',
         handler: (req: Request, res: Response) => {
             when(description.inputMap(req), (inputArgs) => {
                 try {

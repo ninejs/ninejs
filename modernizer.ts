@@ -1456,7 +1456,7 @@ export default (function(window: any) {
 				 * these have to be appended to document.body, otherwise some browsers can give false negative
 				 * div container gets the doubled testword, separated by the delimiter
 				 * Note: giving a width to div gives false positive in iOS Safari */
-				var dummy = document.createElement('input'),
+				var dummy:any = document.createElement('input'),
 					div = document.createElement('div'),
 					testword = 'lebowski',
 					result = false,

@@ -2,7 +2,7 @@
 
 /* global describe, it */
 describe('nineplate :: Nineplate', function () {
-	describe('-> With Dojo Toolkit in Node.js', function () {
+/*	describe('-> With Dojo Toolkit in Node.js', function () {
 		it('should render a simple template', function (done) {
 			//bootstrapping
 			// Configuration Object for Dojo Loader:
@@ -38,8 +38,8 @@ describe('nineplate :: Nineplate', function () {
 				}
 				var res = require('dojo/dojo.js');
 				var dojorequire = global.require;
-				dojorequire(['ninejs/nineplate!ninejs/_nineplate/tests/template.html', 'dojo/node!assert'], function (template, assert) {
-					var result = template.renderText({
+				dojorequire(['ninejs/_nineplate/tests/template-generated', 'dojo/node!assert'], function (template, assert) {
+					var result = template({
 						title: 'The title',
 						'class': 'container',
 						anObject: {
@@ -74,7 +74,7 @@ describe('nineplate :: Nineplate', function () {
 			}
 		});
 	});
-
+*/
 
 	describe('-> Plain Nineplate in Node.js', function() {
 		var nineplate, assert, Q, fs;

@@ -3,29 +3,30 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../../core/ext/Properties', 'fs', 'path', '../../core/extend', '../../core/ext/Evented'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../../core/ext/Properties", "fs", "path", "../../core/extend", "../../core/ext/Evented"], function (require, exports) {
     'use strict';
-    var Properties_1 = require('../../core/ext/Properties');
-    var fs = require('fs');
-    var path = require('path');
-    var extend_1 = require('../../core/extend');
-    var Evented_1 = require('../../core/ext/Evented');
+    var Properties_1 = require("../../core/ext/Properties");
+    var fs = require("fs");
+    var path = require("path");
+    var extend_1 = require("../../core/extend");
+    var Evented_1 = require("../../core/ext/Evented");
     var CacheManifest = (function (_super) {
         __extends(CacheManifest, _super);
         function CacheManifest(args) {
-            _super.call(this, args);
-            this.defaultCreationDate = new Date();
-            this.networkResources = [];
-            this.cacheResources = [];
-            this.offlineResources = [];
-            this.config = {};
+            var _this = _super.call(this, args) || this;
+            _this.defaultCreationDate = new Date();
+            _this.networkResources = [];
+            _this.cacheResources = [];
+            _this.offlineResources = [];
+            _this.config = {};
+            return _this;
         }
         CacheManifest.prototype.addToCache = function (collection, url, prefix, filter) {
             var fileStat, baseName, self = this, filter = filter || (function (url) { return true; });
@@ -209,7 +210,7 @@ var __extends = (this && this.__extends) || function (d, b) {
             this.emit('config', cfg);
             r.push(JSON.stringify(cfg, null, '  '));
             r.push(';\n');
-            var hasReleaseBoot = (this.webServer.config.clientUtils.boot && this.webServer.config.clientUtils.boot.length);
+            var hasReleaseBoot = (this.webServer.config.clientUtils && this.webServer.config.clientUtils.boot && this.webServer.config.clientUtils.boot.length);
             var hasModuleBoot = (this.boot && this.boot.length);
             if (hasReleaseBoot || hasModuleBoot) {
                 r.push('window.requireJsConfig.callback = function() {\n');
@@ -217,7 +218,7 @@ var __extends = (this && this.__extends) || function (d, b) {
                     r.push("require(['" + this.webServer.config.clientUtils.boot + "'], function() {\n");
                 }
                 if (hasModuleBoot) {
-                    r.push("require([" + this.boot.map(function (mid) { return ("'" + mid + "'"); }).join(',') + "], function() {\n");
+                    r.push("require([" + this.boot.map(function (mid) { return "'" + mid + "'"; }).join(',') + "], function() {\n");
                     r.push('});\n');
                 }
                 if (hasReleaseBoot) {

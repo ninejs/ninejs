@@ -1,13 +1,13 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "../modernizer", './aspect'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../modernizer", "./aspect"], function (require, exports) {
     'use strict';
-    var aspect = require('./aspect');
+    var aspect = require("./aspect");
     var isNode = (typeof (process) !== 'undefined') && (process.toString() === '[object process]');
     function getSelector() {
         if (window.document && window.document.body && window.document.body.querySelectorAll) {

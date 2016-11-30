@@ -3,21 +3,21 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", "./core/text", './core/extend', './core/ext/Properties', './core/deferredUtils', './_nineplate/domProcessor', './_nineplate/textProcessor', './_nineplate/utils/node/text'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "./core/text", "./core/extend", "./core/ext/Properties", "./core/deferredUtils", "./_nineplate/domProcessor", "./_nineplate/textProcessor", "./_nineplate/utils/node/text"], function (require, exports) {
     'use strict';
-    var extend_1 = require('./core/extend');
-    var Properties_1 = require('./core/ext/Properties');
-    var deferredUtils_1 = require('./core/deferredUtils');
-    var domProcessor_1 = require('./_nineplate/domProcessor');
-    var textProcessor_1 = require('./_nineplate/textProcessor');
-    require('./_nineplate/utils/node/text');
+    var extend_1 = require("./core/extend");
+    var Properties_1 = require("./core/ext/Properties");
+    var deferredUtils_1 = require("./core/deferredUtils");
+    var domProcessor_1 = require("./_nineplate/domProcessor");
+    var textProcessor_1 = require("./_nineplate/textProcessor");
+    require("./_nineplate/utils/node/text");
     var requireText, req = require;
     var isNode = typeof (window) === 'undefined', isAmd = (typeof (define) !== 'undefined') && (define.amd), isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
     if ((typeof (window) === 'undefined') && (!isDojo)) {
@@ -84,8 +84,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Template = (function (_super) {
         __extends(Template, _super);
         function Template() {
-            _super.apply(this, arguments);
-            this.text = '';
+            var _this = _super.apply(this, arguments) || this;
+            _this.text = '';
+            return _this;
         }
         Template.prototype.toAmd = function (sync, options) {
             if (options === void 0) { options = {}; }

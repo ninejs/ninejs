@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import Module from './Module';
 export declare class NineJs extends Module {
     logger: {

@@ -1,3 +1,4 @@
+/// <reference types="es6-promise" />
 import { default as Widget } from './Widget';
 import Properties from '../core/ext/Properties';
 import { PromiseConstructorType, PromiseType } from '../core/deferredUtils';

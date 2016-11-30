@@ -1,3 +1,4 @@
+/// <reference types="es6-promise" />
 import Properties from '../core/ext/Properties';
 import { EventHandler, RemovableType } from '../core/on';
 import { PromiseType, PromiseConstructorType } from '../core/deferredUtils';
@@ -49,7 +50,7 @@ export declare class Widget extends Properties {
     emit(type: string, data: any): void;
     subscribe(type: string, action: (data: any) => any): void;
     collect(type: string, data: any): any[];
-    wait(_defer: PromiseType<any>): Promise<void>;
+    wait(_defer: PromiseType<any>): Promise<any>;
     constructor(args: WidgetArgs, init?: any);
 }
 export default Widget;

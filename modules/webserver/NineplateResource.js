@@ -3,20 +3,20 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", './StaticResource'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "./StaticResource"], function (require, exports) {
     'use strict';
-    var StaticResource_1 = require('./StaticResource');
+    var StaticResource_1 = require("./StaticResource");
     var NineplateResource = (function (_super) {
         __extends(NineplateResource, _super);
         function NineplateResource(arg) {
-            _super.call(this, arg);
+            return _super.call(this, arg) || this;
         }
         NineplateResource.prototype.handler = function (req, res) {
             var props = this.props || {}, p, self = this;

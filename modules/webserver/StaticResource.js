@@ -3,17 +3,17 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", './Endpoint', 'crypto'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "./Endpoint", "crypto"], function (require, exports) {
     'use strict';
-    var Endpoint_1 = require('./Endpoint');
-    var crypto = require('crypto');
+    var Endpoint_1 = require("./Endpoint");
+    var crypto = require("crypto");
     var parseCacheControl = function (str) {
         var directives = str.split(','), obj = {};
         for (var i = 0, len = directives.length; i < len; i += 1) {
@@ -25,7 +25,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var NonCachedStaticResource = (function (_super) {
         __extends(NonCachedStaticResource, _super);
         function NonCachedStaticResource(args) {
-            _super.call(this, args);
+            return _super.call(this, args) || this;
         }
         NonCachedStaticResource.prototype.handler = function (req, res) {
             var props = this.props || {}, p;
@@ -58,7 +58,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var StaticResource = (function (_super) {
         __extends(StaticResource, _super);
         function StaticResource(args) {
-            _super.call(this, args);
+            return _super.call(this, args) || this;
         }
         StaticResource.prototype.applyETag = function (res, content) {
             if (!this.etag) {

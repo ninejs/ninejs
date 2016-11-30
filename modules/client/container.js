@@ -3,16 +3,16 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../Module'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../Module"], function (require, exports) {
     'use strict';
-    var Module_1 = require('../Module');
+    var Module_1 = require("../Module");
     var Container = (function () {
         function Container() {
             this.containerList = {};
@@ -30,17 +30,18 @@ var __extends = (this && this.__extends) || function (d, b) {
     var ContainerModule = (function (_super) {
         __extends(ContainerModule, _super);
         function ContainerModule() {
-            _super.call(this);
-            this.consumes = [
+            var _this = _super.call(this) || this;
+            _this.consumes = [
                 {
                     id: 'ninejs'
                 }
             ];
-            this.provides = [
+            _this.provides = [
                 {
                     id: 'container'
                 }
             ];
+            return _this;
         }
         ContainerModule.prototype.getProvides = function (name) {
             if (name === 'container') {

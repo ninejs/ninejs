@@ -1,15 +1,15 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", './core/deferredUtils', './_css/builder', './request'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "./core/deferredUtils", "./_css/builder", "./request"], function (require, exports) {
     'use strict';
-    var def = require('./core/deferredUtils');
-    var builder_1 = require('./_css/builder');
-    var request = require('./request');
+    var def = require("./core/deferredUtils");
+    var builder_1 = require("./_css/builder");
+    var request = require("./request");
     var ielt10 = (function () {
         if (window.navigator.appName.indexOf('Internet Explorer') !== -1) {
             return (window.navigator.appVersion.indexOf('MSIE 9') === -1);

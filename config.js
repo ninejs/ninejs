@@ -1,14 +1,14 @@
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", './core/extend', './modules/config'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "./core/extend", "./modules/config"], function (require, exports) {
     'use strict';
-    var extend = require('./core/extend');
-    var config_1 = require('./modules/config');
+    var extend = require("./core/extend");
+    var config_1 = require("./modules/config");
     var isAmd = (typeof (define) !== 'undefined') && define.amd;
     var isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
     var isNode = (typeof (window) === 'undefined');

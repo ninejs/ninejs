@@ -3,45 +3,46 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-(function (factory) {
+(function (dependencies, factory) {
     if (typeof module === 'object' && typeof module.exports === 'object') {
         var v = factory(require, exports); if (v !== undefined) module.exports = v;
     }
     else if (typeof define === 'function' && define.amd) {
-        define(["require", "exports", '../../core/ext/Properties', 'express', './Endpoint', './StaticResource', '../../nineplate', './NineplateResource', './SinglePage/SinglePageContainer', './ClientUtils', '../../core/extend', '../../core/deferredUtils', 'morgan', 'serve-favicon', 'compression', 'cookie-parser', 'express-session', 'method-override', 'body-parser', 'path'], factory);
+        define(dependencies, factory);
     }
-})(function (require, exports) {
+})(["require", "exports", "../../core/ext/Properties", "express", "./Endpoint", "./StaticResource", "../../nineplate", "./NineplateResource", "./SinglePage/SinglePageContainer", "./ClientUtils", "../../core/extend", "../../core/deferredUtils", "morgan", "serve-favicon", "compression", "cookie-parser", "express-session", "method-override", "body-parser", "path"], function (require, exports) {
     'use strict';
-    var Properties_1 = require('../../core/ext/Properties');
-    var express = require('express');
-    var Endpoint_1 = require('./Endpoint');
-    var StaticResource_1 = require('./StaticResource');
-    var nineplate_1 = require('../../nineplate');
-    var NineplateResource_1 = require('./NineplateResource');
-    var SinglePageContainer_1 = require('./SinglePage/SinglePageContainer');
-    var ClientUtils_1 = require('./ClientUtils');
-    var extend_1 = require('../../core/extend');
-    var deferredUtils_1 = require('../../core/deferredUtils');
-    var morgan = require('morgan');
-    var favicon = require('serve-favicon');
-    var compression = require('compression');
-    var cookieParser = require('cookie-parser');
-    var expressSession = require('express-session');
-    var methodOverride = require('method-override');
-    var bodyParser = require('body-parser');
-    var path = require('path');
+    var Properties_1 = require("../../core/ext/Properties");
+    var express = require("express");
+    var Endpoint_1 = require("./Endpoint");
+    var StaticResource_1 = require("./StaticResource");
+    var nineplate_1 = require("../../nineplate");
+    var NineplateResource_1 = require("./NineplateResource");
+    var SinglePageContainer_1 = require("./SinglePage/SinglePageContainer");
+    var ClientUtils_1 = require("./ClientUtils");
+    var extend_1 = require("../../core/extend");
+    var deferredUtils_1 = require("../../core/deferredUtils");
+    var morgan = require("morgan");
+    var favicon = require("serve-favicon");
+    var compression = require("compression");
+    var cookieParser = require("cookie-parser");
+    var expressSession = require("express-session");
+    var methodOverride = require("method-override");
+    var bodyParser = require("body-parser");
+    var path = require("path");
     var busboy = require('connect-busboy');
     var WebServer = (function (_super) {
         __extends(WebServer, _super);
         function WebServer(args) {
-            _super.call(this, args);
-            this.phases = {
+            var _this = _super.call(this, args) || this;
+            _this.phases = {
                 static: [],
                 utils: [],
                 auth: [],
                 endpoint: []
             };
-            this.clientUtils = new ClientUtils_1.default();
+            _this.clientUtils = new ClientUtils_1.default();
+            return _this;
         }
         WebServer.prototype.init = function (config) {
             this.config = config;

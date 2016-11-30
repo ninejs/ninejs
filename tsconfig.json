@@ -9,10 +9,11 @@
     "isolatedModules": false,
     "moduleResolution": "node",
     "declaration": true,
-    "noLib": true
+    "noLib": true,
+    "typeRoots": ["node_modules/@types"],
+    "types": []
   },
   "files": [
-    "./typings/tsd.d.ts",
 
     "./config.ts",
     "./css.ts",
