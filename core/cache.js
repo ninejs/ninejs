@@ -1,11 +1,12 @@
-(function (dependencies, factory) {
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
     }
-    else if (typeof define === 'function' && define.amd) {
-        define(dependencies, factory);
+    else if (typeof define === "function" && define.amd) {
+        define(["require", "exports", "../request"], factory);
     }
-})(["require", "exports", "../request"], function (require, exports) {
+})(function (require, exports) {
     'use strict';
     var request = require("../request");
     var isAmd = (typeof (define) !== 'undefined') && define.amd;

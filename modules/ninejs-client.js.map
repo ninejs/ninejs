@@ -1,1 +1,1 @@
-{"version":3,"file":"ninejs-client.js","sourceRoot":"","sources":["ninejs-client.ts"],"names":[],"mappings":";;;;;;;;IAAA,YAAY,CAAC;IAEb,mCAA8B;;IAC9B,kBAAe,IAAI,gBAAM,CAAC;QACzB,QAAQ,EAAE;YACT;gBACC,EAAE,EAAE,QAAQ;gBACZ,OAAO,EAAE,OAAO;aAChB;SACD;KACD,CAAC,CAAC"}
+{"version":3,"file":"ninejs-client.js","sourceRoot":"","sources":["ninejs-client.ts"],"names":[],"mappings":";;;;;;;;;IAAA,YAAY,CAAC;IAEb,mCAA8B;;IAC9B,kBAAe,IAAI,gBAAM,CAAC;QACzB,QAAQ,EAAE;YACT;gBACC,EAAE,EAAE,QAAQ;gBACZ,OAAO,EAAE,OAAO;aAChB;SACD;KACD,CAAC,CAAC"}

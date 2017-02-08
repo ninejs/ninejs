@@ -83,6 +83,7 @@ class FullScreenFrame extends Widget {
 	}
 	constructor (args: any, containerModule: Container) {
 		super(args);
+		this.set('skin', defaultSkin);
 		this.container = containerModule;
 	}
 }

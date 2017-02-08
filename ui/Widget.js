@@ -1,16 +1,22 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-(function (dependencies, factory) {
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
     }
-    else if (typeof define === 'function' && define.amd) {
-        define(dependencies, factory);
+    else if (typeof define === "function" && define.amd) {
+        define(["require", "exports", "../core/extend", "../core/ext/Properties", "../core/on", "../core/deferredUtils", "./utils/setClass", "./utils/append", "../core/objUtils"], factory);
     }
-})(["require", "exports", "../core/extend", "../core/ext/Properties", "../core/on", "../core/deferredUtils", "./utils/setClass", "./utils/append", "../core/objUtils"], function (require, exports) {
+})(function (require, exports) {
     'use strict';
     var extend_1 = require("../core/extend");
     var Properties_1 = require("../core/ext/Properties");
@@ -63,7 +69,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Widget = (function (_super) {
         __extends(Widget, _super);
         function Widget(args, init) {
-            var _this;
+            var _this = this;
             init = init || {};
             init.skin = init.skin || [];
             init.skinContract = init.skinContract || {};
@@ -85,7 +91,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         Widget.extend = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
+                args[_i] = arguments[_i];
             }
             args.unshift(this);
             return extend_1.default.apply(null, args);
@@ -249,7 +255,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         Widget.prototype.own = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
+                args[_i] = arguments[_i];
             }
             var cnt, len = args.length;
             for (cnt = 0; cnt < len; cnt += 1) {

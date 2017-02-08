@@ -1,16 +1,22 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-(function (dependencies, factory) {
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
     }
-    else if (typeof define === 'function' && define.amd) {
-        define(dependencies, factory);
+    else if (typeof define === "function" && define.amd) {
+        define(["require", "exports", "./Widget", "../core/extend", "./Skins/Editor/Default", "../core/deferredUtils", "../modernizer", "../core/array", "../core/objUtils", "../core/on", "./utils/domUtils", "../config"], factory);
     }
-})(["require", "exports", "./Widget", "../core/extend", "./Skins/Editor/Default", "../core/deferredUtils", "../modernizer", "../core/array", "../core/objUtils", "../core/on", "./utils/domUtils", "../config"], function (require, exports) {
+})(function (require, exports) {
     'use strict';
     var _this = this;
     var Widget_1 = require("./Widget");
@@ -141,7 +147,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var NativeNumberTextBox = (function (_super) {
         __extends(NativeNumberTextBox, _super);
         function NativeNumberTextBox(args) {
-            var _this;
+            var _this = this;
             var node = domUtils_1.append.create('input');
             node.type = 'number';
             var previousValue;
@@ -197,7 +203,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var NativeDateTextBox = (function (_super) {
         __extends(NativeDateTextBox, _super);
         function NativeDateTextBox(args) {
-            var _this;
+            var _this = this;
             var node = domUtils_1.append.create('input');
             node.type = 'date';
             var init = { domNode: node };
@@ -243,7 +249,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var NativeTimeTextBox = (function (_super) {
         __extends(NativeTimeTextBox, _super);
         function NativeTimeTextBox(args) {
-            var _this;
+            var _this = this;
             var node = domUtils_1.append.create('input');
             node.type = 'time';
             var init = { domNode: node };
@@ -281,7 +287,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var NativeCheckBox = (function (_super) {
         __extends(NativeCheckBox, _super);
         function NativeCheckBox(args) {
-            var _this;
+            var _this = this;
             var node = domUtils_1.append.create('input');
             node.type = 'checkbox';
             node.checked = false;
@@ -299,7 +305,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var NativeTextBox = (function (_super) {
         __extends(NativeTextBox, _super);
         function NativeTextBox(args) {
-            var _this;
+            var _this = this;
             var node = domUtils_1.append.create('input');
             node.type = 'text';
             var init = {};
@@ -360,7 +366,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var NativeSelect = (function (_super) {
         __extends(NativeSelect, _super);
         function NativeSelect(args) {
-            var _this;
+            var _this = this;
             var init = {};
             init.domNode = domUtils_1.append.create('select');
             _this = _super.call(this, args, init) || this;

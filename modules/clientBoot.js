@@ -1,11 +1,12 @@
-(function (dependencies, factory) {
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
     }
-    else if (typeof define === 'function' && define.amd) {
-        define(dependencies, factory);
+    else if (typeof define === "function" && define.amd) {
+        define(["require", "exports", "../config", "./moduleRegistry", "./Module", "../core/extend", "../core/deferredUtils", "./client/router", "./ninejs-client", "./client/container", "./client/singlePageContainer"], factory);
     }
-})(["require", "exports", "../config", "./moduleRegistry", "./Module", "../core/extend", "../core/deferredUtils", "./client/router", "./ninejs-client", "./client/container", "./client/singlePageContainer"], function (require, exports) {
+})(function (require, exports) {
     'use strict';
     var config_1 = require("../config");
     var moduleRegistry_1 = require("./moduleRegistry");

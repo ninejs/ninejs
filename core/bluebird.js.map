@@ -1,1 +1,1 @@
-{"version":3,"file":"bluebird.js","sourceRoot":"","sources":["bluebird.ts"],"names":[],"mappings":";;;;;;;;IACA,YAAY,CAAC;IAIb,IAAI,QAAQ,GAAuB,OAAO,CAAC,oBAAoB,CAAC,CAAC;IACjE,IAAI,KAAK,GAAG,QAAQ,CAAC,KAAK,CAAC;IAClB,sBAAK;;IACd,kBAAe,QAAQ,CAAC"}
+{"version":3,"file":"bluebird.js","sourceRoot":"","sources":["bluebird.ts"],"names":[],"mappings":";;;;;;;;;IACA,YAAY,CAAC;IAIb,IAAI,QAAQ,GAAuB,OAAO,CAAC,oBAAoB,CAAC,CAAC;IACjE,IAAI,KAAK,GAAG,QAAQ,CAAC,KAAK,CAAC;IAClB,sBAAK;;IACd,kBAAe,QAAQ,CAAC"}

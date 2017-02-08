@@ -1,11 +1,12 @@
-(function (dependencies, factory) {
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
     }
-    else if (typeof define === 'function' && define.amd) {
-        define(dependencies, factory);
+    else if (typeof define === "function" && define.amd) {
+        define(["require", "exports", "./extend", "./ext/Evented", "./text", "./deferredUtils"], factory);
     }
-})(["require", "exports", "./extend", "./ext/Evented", "./text", "./deferredUtils"], function (require, exports) {
+})(function (require, exports) {
     'use strict';
     var extend_1 = require("./extend");
     var Evented_1 = require("./ext/Evented");

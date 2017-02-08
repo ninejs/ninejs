@@ -1,11 +1,12 @@
-(function (dependencies, factory) {
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
     }
-    else if (typeof define === 'function' && define.amd) {
-        define(dependencies, factory);
+    else if (typeof define === "function" && define.amd) {
+        define(["require", "exports", "./less/bootstrap.ncss", "./vresponsive.ncss", "./vresponsive-device.ncss", "../css/common.ncss", "./gridMax.ncss"], factory);
     }
-})(["require", "exports", "./less/bootstrap.ncss", "./vresponsive.ncss", "./vresponsive-device.ncss", "../css/common.ncss", "./gridMax.ncss"], function (require, exports) {
+})(function (require, exports) {
     'use strict';
     var bootstrapCss = require('./less/bootstrap.ncss'), verticalResponsiveCss = require('./vresponsive.ncss'), verticalResponsiveDeviceCss = require('./vresponsive-device.ncss'), commonCss = require('../css/common.ncss'), gridMaxCss = require('./gridMax.ncss');
     var BootstrapProto = (function () {
@@ -25,7 +26,7 @@
         BootstrapProto.prototype.enable = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
+                args[_i] = arguments[_i];
             }
             var map = this.map, self = this;
             if (!args.length) {
@@ -47,7 +48,7 @@
         BootstrapProto.prototype.disable = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
+                args[_i] = arguments[_i];
             }
             var map = this.map, self = this;
             if (!args.length) {

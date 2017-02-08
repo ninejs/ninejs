@@ -1,16 +1,22 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-(function (dependencies, factory) {
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
     }
-    else if (typeof define === 'function' && define.amd) {
-        define(dependencies, factory);
+    else if (typeof define === "function" && define.amd) {
+        define(["require", "exports", "../core/deferredUtils", "../core/extend", "../core/ext/Evented", "../core/ext/Properties", "./hash", "../core/on"], factory);
     }
-})(["require", "exports", "../core/deferredUtils", "../core/extend", "../core/ext/Evented", "../core/ext/Properties", "./hash", "../core/on"], function (require, exports) {
+})(function (require, exports) {
     'use strict';
     var deferredUtils_1 = require("../core/deferredUtils");
     var extend_1 = require("../core/extend");
@@ -80,7 +86,7 @@ var __extends = (this && this.__extends) || function (d, b) {
         Router.prototype.emit = function () {
             var arglist = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                arglist[_i - 0] = arguments[_i];
+                arglist[_i] = arguments[_i];
             }
             return Evented_1.default.emit.apply(this, arguments);
         };
@@ -276,7 +282,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function emit() {
         var arglist = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            arglist[_i - 0] = arguments[_i];
+            arglist[_i] = arguments[_i];
         }
         return router.emit.apply(router, arglist);
     }

@@ -1,16 +1,22 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-(function (dependencies, factory) {
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
     }
-    else if (typeof define === 'function' && define.amd) {
-        define(dependencies, factory);
+    else if (typeof define === "function" && define.amd) {
+        define(["require", "exports", "./core/text", "./core/extend", "./core/ext/Properties", "./core/deferredUtils", "./_nineplate/domProcessor", "./_nineplate/textProcessor", "./_nineplate/utils/node/text"], factory);
     }
-})(["require", "exports", "./core/text", "./core/extend", "./core/ext/Properties", "./core/deferredUtils", "./_nineplate/domProcessor", "./_nineplate/textProcessor", "./_nineplate/utils/node/text"], function (require, exports) {
+})(function (require, exports) {
     'use strict';
     var extend_1 = require("./core/extend");
     var Properties_1 = require("./core/ext/Properties");
@@ -84,7 +90,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     var Template = (function (_super) {
         __extends(Template, _super);
         function Template() {
-            var _this = _super.apply(this, arguments) || this;
+            var _this = _super !== null && _super.apply(this, arguments) || this;
             _this.text = '';
             return _this;
         }

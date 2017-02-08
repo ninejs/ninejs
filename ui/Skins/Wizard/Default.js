@@ -1,11 +1,12 @@
-(function (dependencies, factory) {
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
     }
-    else if (typeof define === 'function' && define.amd) {
-        define(dependencies, factory);
+    else if (typeof define === "function" && define.amd) {
+        define(["require", "exports", "./Default.9plate", "./Default.ncss", "../../Skin"], factory);
     }
-})(["require", "exports", "./Default.9plate", "./Default.ncss", "../../Skin"], function (require, exports) {
+})(function (require, exports) {
     'use strict';
     var Skin_1 = require("../../Skin");
     var template = require('./Default.9plate');

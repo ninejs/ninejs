@@ -1,11 +1,12 @@
-(function (dependencies, factory) {
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
     }
-    else if (typeof define === 'function' && define.amd) {
-        define(dependencies, factory);
+    else if (typeof define === "function" && define.amd) {
+        define(["require", "exports", "./config", "../core/extend", "path", "fs", "../core/deferredUtils", "./moduleRegistry"], factory);
     }
-})(["require", "exports", "./config", "../core/extend", "path", "fs", "../core/deferredUtils", "./moduleRegistry"], function (require, exports) {
+})(function (require, exports) {
     'use strict';
     var config_1 = require("./config");
     var extend_1 = require("../core/extend");

@@ -1,11 +1,12 @@
-(function (dependencies, factory) {
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-        var v = factory(require, exports); if (v !== undefined) module.exports = v;
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
     }
-    else if (typeof define === 'function' && define.amd) {
-        define(dependencies, factory);
+    else if (typeof define === "function" && define.amd) {
+        define(["require", "exports", "reqwest/reqwest", "./core/deferredUtils"], factory);
     }
-})(["require", "exports", "reqwest/reqwest", "./core/deferredUtils"], function (require, exports) {
+})(function (require, exports) {
     'use strict';
     var deferredUtils_1 = require("./core/deferredUtils");
     var req = require, isNode = typeof (window) === 'undefined', isAmd = typeof (define) === 'function' && define.amd, isDojo = isAmd && (define.amd.vendor === 'dojotoolkit.org');
@@ -29,7 +30,7 @@
     function raw() {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
+            args[_i] = arguments[_i];
         }
         var d = deferredUtils_1.defer();
         if (isNode) {
@@ -58,7 +59,7 @@
     fn = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
+            args[_i] = arguments[_i];
         }
         return raw.apply(null, args).then(function (r) {
             return r.response;
@@ -87,7 +88,7 @@
     function get() {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
+            args[_i] = arguments[_i];
         }
         return verb('get', args);
     }
@@ -95,7 +96,7 @@
     function post() {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
+            args[_i] = arguments[_i];
         }
         return verb('post', args);
     }
@@ -103,7 +104,7 @@
     function put() {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
+            args[_i] = arguments[_i];
         }
         return verb('put', args);
     }
@@ -111,7 +112,7 @@
     function del() {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
+            args[_i] = arguments[_i];
         }
         return verb('delete', args);
     }
@@ -119,7 +120,7 @@
     function patch() {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
+            args[_i] = arguments[_i];
         }
         return verb('patch', args);
     }
