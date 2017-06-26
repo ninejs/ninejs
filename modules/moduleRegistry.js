@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var extend = require("../core/extend");
     var Properties_1 = require("../core/ext/Properties");
     var config_1 = require("./config");

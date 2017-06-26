@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Properties_1 = require("../core/ext/Properties");
     var moduleRegistry_1 = require("./moduleRegistry");
     var Evented_1 = require("../core/ext/Evented");
@@ -161,7 +162,6 @@ var __extends = (this && this.__extends) || (function () {
         return Module;
     }(Properties_1.default));
     moduleRegistry_1.moduleRegistry.Module = Module;
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Module;
 });
 //# sourceMappingURL=Module.js.map

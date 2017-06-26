@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var append;
     append = (function () {
         var append = function (parentNode, node, position) {
@@ -65,7 +66,6 @@
     exports.toIndex = append.toIndex;
     exports.remove = append.remove;
     exports.create = append.create;
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = append;
 });
 //# sourceMappingURL=append.js.map

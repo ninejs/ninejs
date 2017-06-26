@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Properties_1 = require("../../core/ext/Properties");
     var Evented_1 = require("../../core/ext/Evented");
     var Endpoint = (function (_super) {
@@ -40,7 +41,6 @@ var __extends = (this && this.__extends) || (function () {
     exports.Endpoint = Endpoint;
     Endpoint.prototype.type = 'endpoint';
     Endpoint.prototype.method = 'get';
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Endpoint;
 });
 //# sourceMappingURL=Endpoint.js.map

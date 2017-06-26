@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var cache_1 = require("./cache");
     var getText = cache_1.default.getText;
     var notFound = {}, pending = {};

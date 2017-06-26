@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Module_1 = require("../Module");
     var WebServer_1 = require("./WebServer");
     var packageJson = require('../../package.json');
@@ -102,7 +103,6 @@ var __extends = (this && this.__extends) || (function () {
             }
         });
     });
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = result;
 });
 //# sourceMappingURL=module.js.map

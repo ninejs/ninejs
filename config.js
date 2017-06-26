@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var extend = require("./core/extend");
     var config_1 = require("./modules/config");
     var isAmd = (typeof (define) !== 'undefined') && define.amd;
@@ -40,7 +41,6 @@
     r.ninejs = r.ninejs || {};
     extend.mixinRecursive(r.ninejs, _global.ninejsConfig || {});
     extend.mixinRecursive(r.ninejs, config_1.default || {});
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = r;
 });
 //# sourceMappingURL=config.js.map

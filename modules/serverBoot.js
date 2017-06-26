@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var config_1 = require("./config");
     var extend_1 = require("../core/extend");
     var path = require("path");
@@ -33,7 +34,14 @@
                 }
             }
         }
-        var currentModule = require(path.resolve(dir, 'module')).default, currentConfigPath = path.resolve(dir, '9js.config.json'), currentConfigFile, cnt, id;
+        var configFileName;
+        if (fs.existsSync(path.resolve(dir, '9js.config.json'))) {
+            configFileName = path.resolve(dir, '9js.config.json');
+        }
+        else {
+            configFileName = path.resolve(dir, '9js.config.js');
+        }
+        var currentModule = require(path.resolve(dir, 'module')).default, currentConfigPath = configFileName, currentConfigFile, cnt, id;
         currentModule.loadedFrom = path.resolve(dir, 'module');
         if (currentConfigPath) {
             currentConfigFile = require(currentConfigPath);
@@ -78,7 +86,6 @@
             throw error;
         });
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = deferredUtils_1.resolve(moduleLoadPromise).then(function () {
         var _defer = deferredUtils_1.defer();
         process.nextTick(function () {

@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Properties_1 = require("../../core/ext/Properties");
     var fs = require("fs");
     var path = require("path");
@@ -243,7 +244,6 @@ var __extends = (this && this.__extends) || (function () {
         return Utils;
     }());
     exports.Utils = Utils;
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Utils;
 });
 //# sourceMappingURL=ClientUtils.js.map

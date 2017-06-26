@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var NineplateResource_1 = require("../NineplateResource");
     var path = require("path");
     var SinglePageContainer = (function (_super) {
@@ -50,7 +51,6 @@ var __extends = (this && this.__extends) || (function () {
         };
         return SinglePageContainer;
     }(NineplateResource_1.default));
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = SinglePageContainer;
 });
 //# sourceMappingURL=SinglePageContainer.js.map

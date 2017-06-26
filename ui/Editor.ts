@@ -1000,6 +1000,7 @@ class Editor extends Widget {
 	}
 	constructor (args: any) {
 		super(args);
+		this.set('skin', defaultSkin);
 		this.controlDefer = defer<Widget>();
 		this.control = this.controlDefer.promise;
 	}

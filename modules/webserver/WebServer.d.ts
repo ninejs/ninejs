@@ -1,11 +1,15 @@
+/// <reference types="winston" />
 import Properties from '../../core/ext/Properties';
 import Endpoint from './Endpoint';
 import StaticResource from './StaticResource';
 import NineplateResource from './NineplateResource';
 import SinglePageContainer from './SinglePage/SinglePageContainer';
 import ClientUtils from './ClientUtils';
-import { Logger } from '../ninejs-server';
 import http = require('http');
+import winston = require('winston');
+export interface ResponseError extends Error {
+    statusCode: number;
+}
 declare class WebServer extends Properties {
     Endpoint: {
         new (args: any): Endpoint;
@@ -20,7 +24,7 @@ declare class WebServer extends Properties {
         new (args: any): SinglePageContainer;
     };
     getServer: (name: string) => WebServer;
-    logger: Logger;
+    logger: winston.LoggerInstance;
     app: Application;
     config: any;
     serverName: string;

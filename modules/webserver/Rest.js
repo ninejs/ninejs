@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Endpoint_1 = require("./Endpoint");
     var deferredUtils_1 = require("../../core/deferredUtils");
     var ResponseType;

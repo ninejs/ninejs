@@ -6,8 +6,8 @@ import StaticResource from './StaticResource';
 import fs = require('fs');
 import path = require('path');
 import express = require('express');
+import winston = require('winston');
 import extend from '../../core/extend';
-import { Logger } from '../ninejs-server'
 import { Request, Response, Application } from './WebServer'
 import { RemovableType } from '../../core/on'
 import Evented from '../../core/ext/Evented'
@@ -109,7 +109,7 @@ export class Utils {
 	units: { [ name: string ]: any };
 	postActions: string[];
 	has: { [ name: string ]: any };
-	logger: { [ name: string ]: Logger };
+	logger: { [ name: string ]: winston.LoggerInstance };
 	on (type: string, listener: (e?: any) => any) {
 		return Evented.on.apply(this, arguments);
 	}

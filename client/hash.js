@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     function hash(newHash, replace) {
         if (!arguments.length) {
             return window.location.hash;
@@ -22,7 +23,6 @@
             window.location.href = '#' + newHash;
         }
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = hash;
     ;
 });

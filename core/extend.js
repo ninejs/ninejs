@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var decoratorList = {};
     function isArray(obj) {
         return Object.prototype.toString.call(obj) === '[object Array]';
@@ -19,12 +20,14 @@
                 obj[p] = target[p];
             }
         }
+        return obj;
     }
     exports.mixin = mixin;
     function mixinAll(obj, target) {
         for (var p in target) {
             obj[p] = target[p];
         }
+        return obj;
     }
     function mixinRecursive(obj, target) {
         for (var p in target) {
@@ -175,7 +178,6 @@
     exports.after = after;
     exports.before = before;
     exports.around = around;
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = extend;
 });
 //# sourceMappingURL=extend.js.map

@@ -14,13 +14,14 @@ var __extends = (this && this.__extends) || (function () {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "../core/extend", "./Module", "bunyan"], factory);
+        define(["require", "exports", "../core/extend", "./Module", "winston"], factory);
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var extend_1 = require("../core/extend");
     var Module_1 = require("./Module");
-    var bunyan = require("bunyan");
+    var winston = require("winston");
     var njs = require('../lib/ninejs');
     var packageJson = require('../package.json');
     var NineJs = (function (_super) {
@@ -65,28 +66,18 @@ var __extends = (this && this.__extends) || (function () {
                     }
                 }
                 cfg = cfg || (loggingConfig[0] || {
-                    name: 'ninejs',
-                    streams: [{
-                            level: 'info',
-                            type: 'raw',
-                            stream: {
-                                write: function (data) {
-                                    console.log('[' + data.time.toDateString() + ' ' + data.time.toLocaleTimeString() + '] ' + data.msg);
-                                }
-                            }
-                        }]
+                    transports: [
+                        new (winston.transports.Console)(),
+                    ]
                 });
-                (cfg.streams || []).forEach(function (item) {
-                    if (item.stream === 'console') {
-                        item.type = 'raw';
-                        item.stream = {
-                            write: function (data) {
-                                console.log('[' + data.time.toDateString() + ' ' + data.time.toLocaleTimeString() + '] ' + data.msg);
-                            }
-                        };
+                var transports = winston.transports;
+                cfg.transports = (cfg.transports || []).map(function (item) {
+                    if (transports[item.type]) {
+                        return new (transports[item.type])(item);
                     }
+                    return item;
                 });
-                return bunyan.createLogger(cfg);
+                return new (winston.Logger)(cfg);
             }
             name = name || 'default';
             if (!this.logger[name]) {
@@ -107,7 +98,6 @@ var __extends = (this && this.__extends) || (function () {
     }(Module_1.default));
     exports.NineJs = NineJs;
     var result = new NineJs(undefined);
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = result;
 });
 //# sourceMappingURL=ninejs-server.js.map

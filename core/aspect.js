@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var nextId = 0;
     function advise(dispatcher, type, advice, receiveArguments) {
         var previous = dispatcher[type];

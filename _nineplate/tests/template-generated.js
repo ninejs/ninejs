@@ -727,6 +727,10 @@ if (attachTemp){
 	r['emptyNode'] = node;
 
 }
+((node.addEventListener) || node.on)('mouseover',	function () {
+	return context.mouseOver.apply(context,arguments);
+
+});
 node = nodes.pop();
 nodes.push(node);
 node = e(node,'div',node.ownerDocument);

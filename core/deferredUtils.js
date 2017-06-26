@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var bluebird_1 = require("./bluebird");
     var config_1 = require("../config");
     var nativePromise = (typeof (Promise) === 'function') && !((((config_1.default.ninejs || {}).core || {}).deferredUtils || {}).skipNativePromise);

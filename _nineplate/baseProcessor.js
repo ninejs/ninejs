@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var xmlParser_1 = require("./utils/node/xmlParser");
     var isNode = typeof (window) === 'undefined';
     function manualTrim(str) {

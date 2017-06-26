@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var functions = require("./utils/functions");
     var def = require("../core/deferredUtils");
     var baseProcessor_1 = require("./baseProcessor");
@@ -671,14 +672,16 @@
         }
         function processOnEvent(xmlNode) {
             var eventName = xmlNode.nodeName().substr('data-ninejs-on-'.length), methodName = xmlNode.value(), eventRenderer = renderer.newFunction([]);
-            eventRenderer.addStatement(eventRenderer
+            eventRenderer.addReturn(eventRenderer
                 .expression('context')
                 .member(methodName)
                 .member('apply')
                 .invoke(eventRenderer.expression('context'), eventRenderer.expression('arguments')));
-            renderer.addStatement(renderer
+            renderer.addStatement(renderer.expression(renderer
                 .expression('node')
-                .member('addEventListener')
+                .member('addEventListener').noParenthesis().or(renderer
+                .expression('node')
+                .member('on'))).parenthesis()
                 .invoke(renderer.literal(eventName), eventRenderer));
         }
         function isSubscribeEvent(xmlNode) {

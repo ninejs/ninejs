@@ -10,7 +10,6 @@ import SinglePageContainer from './SinglePage/SinglePageContainer';
 import ClientUtils from './ClientUtils';
 import { mixinRecursive } from '../../core/extend';
 import { when } from '../../core/deferredUtils';
-import { Logger } from '../ninejs-server';
 import morgan = require('morgan'); //Express logger
 import favicon = require('serve-favicon');
 import compression = require('compression');
@@ -20,7 +19,12 @@ import methodOverride = require('method-override');
 import bodyParser = require('body-parser');
 import path = require('path');
 import http = require('http');
+import winston = require('winston');
 var busboy: any = require('connect-busboy');
+
+export interface ResponseError extends Error {
+	statusCode: number;
+}
 
 class WebServer extends Properties {
 	Endpoint: {
@@ -36,7 +40,7 @@ class WebServer extends Properties {
 		new (args: any): SinglePageContainer;
 	};
 	getServer: (name: string) => WebServer;
-	logger: Logger;
+	logger: winston.LoggerInstance;
 	app: Application;
 	config: any;
 	serverName: string;

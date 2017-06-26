@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var deferredUtils_1 = require("./core/deferredUtils");
     var req = require, isNode = typeof (window) === 'undefined', isAmd = typeof (define) === 'function' && define.amd, isDojo = isAmd && (define.amd.vendor === 'dojotoolkit.org');
     var request;
@@ -131,7 +132,6 @@
     fn.del = del;
     fn.patch = patch;
     result = fn;
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = result;
 });
 //# sourceMappingURL=request.js.map

@@ -8,8 +8,8 @@
     }
 })(function (require, exports) {
     'use strict';
-    var Module_1 = require("./Module");
     Object.defineProperty(exports, "__esModule", { value: true });
+    var Module_1 = require("./Module");
     exports.default = new Module_1.default({
         provides: [
             {

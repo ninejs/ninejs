@@ -19,6 +19,7 @@ var __extends = (this && this.__extends) || (function () {
 })(function (require, exports) {
     'use strict';
     var _this = this;
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Widget_1 = require("./Widget");
     var extend_1 = require("../core/extend");
     var Default_1 = require("./Skins/Editor/Default");
@@ -573,6 +574,7 @@ var __extends = (this && this.__extends) || (function () {
         __extends(Editor, _super);
         function Editor(args) {
             var _this = _super.call(this, args) || this;
+            _this.set('skin', Default_1.default);
             _this.controlDefer = deferredUtils_1.defer();
             _this.control = _this.controlDefer.promise;
             return _this;
@@ -894,7 +896,6 @@ var __extends = (this && this.__extends) || (function () {
     Editor.prototype.TimeTextBoxControlSetter = getControlSetter('TimeTextBoxControl');
     Editor.prototype.DateTextBoxControlSetter = getControlSetter('DateTextBoxControl');
     Editor.prototype.NumberTextBoxControlSetter = getControlSetter('NumberTextBoxControl');
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Editor;
 });
 //# sourceMappingURL=Editor.js.map

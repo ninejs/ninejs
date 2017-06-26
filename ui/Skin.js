@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var extend = require("../core/extend");
     var Properties_1 = require("../core/ext/Properties");
     var nineplate_1 = require("../nineplate");
@@ -102,7 +103,6 @@ var __extends = (this && this.__extends) || (function () {
         return Skin;
     }(Properties_1.default));
     Skin.prototype.cssList = [];
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Skin;
 });
 //# sourceMappingURL=Skin.js.map

@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var setText;
     setText = (function () {
         function emptyNode(node) {
@@ -30,7 +31,6 @@
         setText.emptyNode = emptyNode;
         return setText;
     })();
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = setText;
     exports.emptyNode = setText.emptyNode;
 });

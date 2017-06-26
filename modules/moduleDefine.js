@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Module_1 = require("./Module");
     var deferredUtils_1 = require("../core/deferredUtils");
     function define(consumes, callback) {

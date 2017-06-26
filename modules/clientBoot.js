@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var config_1 = require("../config");
     var moduleRegistry_1 = require("./moduleRegistry");
     var Module_1 = require("./Module");
@@ -53,7 +54,6 @@
             moduleLoadPromise.resolve(true);
         });
     });
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = deferredUtils_1.when(moduleLoadPromise.promise, function () {
         var deferred = deferredUtils_1.defer();
         deferredUtils_1.when(moduleRegistry_1.moduleRegistry.enableModules(), function (val) {

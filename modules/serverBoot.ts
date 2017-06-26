@@ -28,8 +28,15 @@ function loadModule (dir: string) {
 			}
 		}
 	}
+	let configFileName: string;
+	if (fs.existsSync(path.resolve(dir, '9js.config.json'))) {
+		configFileName = path.resolve(dir, '9js.config.json');
+	}
+	else {
+		configFileName = path.resolve(dir, '9js.config.js');
+	}
 	var currentModule = require(path.resolve(dir, 'module')).default,
-		currentConfigPath = path.resolve(dir, '9js.config.json'),
+		currentConfigPath = configFileName,
 		currentConfigFile: any,
 		cnt: number,
 		id: string;

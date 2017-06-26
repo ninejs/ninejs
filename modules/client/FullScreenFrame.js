@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Widget_1 = require("../../ui/Widget");
     var FullScreenFrame_1 = require("./Skin/FullScreenFrame");
     var append_1 = require("../../ui/utils/append");
@@ -99,7 +100,6 @@ var __extends = (this && this.__extends) || (function () {
         return FullScreenFrame;
     }(Widget_1.default));
     FullScreenFrame.prototype.skin = FullScreenFrame_1.default;
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = FullScreenFrame;
 });
 //# sourceMappingURL=FullScreenFrame.js.map

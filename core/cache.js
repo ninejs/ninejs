@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var request = require("../request");
     var isAmd = (typeof (define) !== 'undefined') && define.amd;
     var isDojo = isAmd && (define.amd.vendor === 'dojotoolkit.org');
@@ -121,7 +122,6 @@
         cache.getText = getText;
         return cache;
     })();
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = cache;
 });
 //# sourceMappingURL=cache.js.map

@@ -1,7 +1,8 @@
+/// <reference types="winston" />
 import Properties from '../../core/ext/Properties';
 import WebServer from './WebServer';
 import StaticResource from './StaticResource';
-import { Logger } from '../ninejs-server';
+import winston = require('winston');
 import { Request, Response } from './WebServer';
 export declare class CacheManifest extends Properties {
     baseUrl: string;
@@ -38,7 +39,7 @@ export declare class Utils {
         [name: string]: any;
     };
     logger: {
-        [name: string]: Logger;
+        [name: string]: winston.LoggerInstance;
     };
     on(type: string, listener: (e?: any) => any): any;
     emit(type: string, data: any): any;

@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var aspect = require("./aspect");
     var isNode = (typeof (process) !== 'undefined') && (process.toString() === '[object process]');
     function getSelector() {
@@ -475,7 +476,6 @@
     exports.emit = exports.on.emit;
     exports.pausable = exports.on.pausable;
     exports.once = exports.on.once;
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = exports.on;
 });
 //# sourceMappingURL=on.js.map

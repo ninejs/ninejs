@@ -1,4 +1,3 @@
-/// <reference types="es6-promise" />
 export declare type PromiseType<T> = Promise<T>;
 export interface PromiseConstructorType<T> {
     promise: PromiseType<T>;

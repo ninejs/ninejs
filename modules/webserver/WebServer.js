@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Properties_1 = require("../../core/ext/Properties");
     var express = require("express");
     var Endpoint_1 = require("./Endpoint");
@@ -245,7 +246,6 @@ var __extends = (this && this.__extends) || (function () {
     WebServer.prototype.StaticResource = StaticResource_1.default;
     WebServer.prototype.NineplateResource = NineplateResource_1.default;
     WebServer.prototype.SinglePageContainer = SinglePageContainer_1.default;
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = WebServer;
 });
 //# sourceMappingURL=WebServer.js.map

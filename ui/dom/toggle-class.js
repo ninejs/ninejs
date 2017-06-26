@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var on_1 = require("../../core/on");
     var setClass_1 = require("../utils/setClass");
     var objUtils_1 = require("../../core/objUtils");
@@ -77,7 +78,6 @@
             }
         });
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = default_1;
     ;
 });

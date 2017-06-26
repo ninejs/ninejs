@@ -899,7 +899,7 @@ export function compileDom(template: string, sync: boolean, options: any): any {
 		var eventName = xmlNode.nodeName().substr('data-ninejs-on-'.length),
 			methodName = xmlNode.value(),
 			eventRenderer = renderer.newFunction([]);
-		eventRenderer.addStatement(
+		eventRenderer.addReturn(
 			eventRenderer
 				.expression('context')
 				.member(methodName)
@@ -910,9 +910,12 @@ export function compileDom(template: string, sync: boolean, options: any): any {
 				)
 		);
 		renderer.addStatement(
-			renderer
+			renderer.expression(renderer
 				.expression('node')
-				.member('addEventListener')
+				.member('addEventListener').noParenthesis().or(renderer
+				.expression('node')
+				.member('on'))).parenthesis()
+			
 				.invoke(renderer.literal(eventName), eventRenderer)
 		);
 	}

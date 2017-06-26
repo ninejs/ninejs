@@ -73,9 +73,17 @@ if (dojoConfig && dojoConfig.ninejs){
 if (isNode) {
 	try {
 		let req = (isDojo && isNode) ? global.require : require;
-		var fs = req('fs'),
-			path = req('path'),
-			njsConfigPath = path.resolve(process.cwd(), '9js.config.json'),
+		let path = req('path');
+		let fs = req('fs');
+		let dir = process.cwd();
+		let configFileName: string;
+		if (fs.existsSync(path.resolve(dir, '9js.config.json'))) {
+			configFileName = path.resolve(dir, '9js.config.json');
+		}
+		else {
+			configFileName = path.resolve(dir, '9js.config.js');
+		}
+		var njsConfigPath = configFileName,
 			njsConfig:any = {},
 			finalConfig:any = {modules: [], units: {}};
 		if (fs.existsSync(njsConfigPath)) {

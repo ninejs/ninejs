@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports, css) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Editor_1 = require("../Editor");
     var append_1 = require("../utils/append");
     var setText_1 = require("../utils/setText");
@@ -67,7 +68,6 @@ var __extends = (this && this.__extends) || (function () {
         };
         return LabelEditor;
     }(Editor_1.default));
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = LabelEditor;
 });
 //# sourceMappingURL=LabelEditor.js.map

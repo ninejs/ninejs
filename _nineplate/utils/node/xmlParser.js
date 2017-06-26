@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var xml = require("./node-xml");
     var Q = require("../../../core/bluebird");
     var defer = function () {

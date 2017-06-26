@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.t = function appendText(e, text, doc) {
         return e.appendChild(doc.createTextNode(text));
     };

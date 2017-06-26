@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var modernizer = require('../../modernizer');
     var ietrident = modernizer.ietrident;
     function localTrim() {
@@ -134,7 +135,6 @@
         };
         return setClass;
     })();
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = setClass;
 });
 //# sourceMappingURL=setClass.js.map

@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var bootstrapCss = require('./less/bootstrap.ncss'), verticalResponsiveCss = require('./vresponsive.ncss'), verticalResponsiveDeviceCss = require('./vresponsive-device.ncss'), commonCss = require('../css/common.ncss'), gridMaxCss = require('./gridMax.ncss');
     var BootstrapProto = (function () {
         function BootstrapProto() {
@@ -148,7 +149,6 @@
     var bootstrap = new BootstrapProto();
     bootstrap.enable('commonCss');
     bootstrap.enable('gridMax');
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = bootstrap;
 });
 //# sourceMappingURL=bootstrap.js.map

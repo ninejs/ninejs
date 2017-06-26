@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var extend_1 = require("../core/extend");
     var Properties_1 = require("../core/ext/Properties");
     var on_1 = require("../core/on");
@@ -402,7 +403,6 @@ var __extends = (this && this.__extends) || (function () {
     exports.Widget = Widget;
     Widget.prototype.$njsWidget = true;
     Widget.prototype.waiting = false;
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Widget;
 });
 //# sourceMappingURL=Widget.js.map

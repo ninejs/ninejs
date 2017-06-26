@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Module_1 = require("../Module");
     var Container = (function () {
         function Container() {
@@ -58,7 +59,6 @@ var __extends = (this && this.__extends) || (function () {
         return ContainerModule;
     }(Module_1.default));
     var result = new ContainerModule();
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = result;
 });
 //# sourceMappingURL=container.js.map

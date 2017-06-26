@@ -8,10 +8,10 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Skin_1 = require("../../../ui/Skin");
     var css = require('./FullScreenFrame.ncss');
     var template = require('./FullScreenFrame.9plate');
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = new Skin_1.default({
         cssList: [css],
         template: template

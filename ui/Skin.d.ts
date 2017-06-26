@@ -1,4 +1,3 @@
-/// <reference types="es6-promise" />
 import Properties from '../core/ext/Properties';
 import { ResultFunction } from '../nineplate';
 import { StyleType } from '../css';

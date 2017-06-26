@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Module_1 = require("../Module");
     var router = require("../../client/router");
     var hash_1 = require("../../client/hash");
@@ -78,7 +79,6 @@ var __extends = (this && this.__extends) || (function () {
             }
         });
     });
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = result;
 });
 //# sourceMappingURL=router.js.map

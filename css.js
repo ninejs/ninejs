@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var def = require("./core/deferredUtils");
     var builder_1 = require("./_css/builder");
     var request = require("./request");

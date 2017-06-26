@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     function stripFunctionName(fstring) {
         var idx = fstring.indexOf('(');
         if (idx > 9) {

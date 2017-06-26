@@ -1,4 +1,3 @@
-/// <reference types="es6-promise" />
 import Widget from './Widget';
 declare class TransitionPanel extends Widget {
     transitionDuration: number;

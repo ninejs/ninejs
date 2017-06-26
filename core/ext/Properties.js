@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var extend_1 = require("../extend");
     var objUtils_1 = require("../objUtils");
     var emitToWatchList;
@@ -247,7 +248,6 @@
         };
         return Properties;
     }());
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Properties;
     ;
     emitToWatchList = function (self, name, oldValue, newValue) {

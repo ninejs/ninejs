@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Endpoint_1 = require("./Endpoint");
     var crypto = require("crypto");
     var parseCacheControl = function (str) {
@@ -120,7 +121,6 @@ var __extends = (this && this.__extends) || (function () {
     exports.StaticResource = StaticResource;
     StaticResource.prototype.maxAge = 10 * 86400 * 1000;
     StaticResource.prototype.cacheType = 'public';
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = StaticResource;
 });
 //# sourceMappingURL=StaticResource.js.map

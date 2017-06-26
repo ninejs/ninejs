@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports, template) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Widget_1 = require("../Widget");
     var Skin_1 = require("../Skin");
     var buttonSkin = new Skin_1.default({
@@ -32,7 +33,6 @@ var __extends = (this && this.__extends) || (function () {
     }(Widget_1.default));
     Button.prototype.skin = buttonSkin;
     Button.prototype.type = 'button';
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Button;
 });
 //# sourceMappingURL=Button.js.map

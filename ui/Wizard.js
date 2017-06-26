@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports, DefaultSkin) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Widget_1 = require("./Widget");
     var Button_1 = require("./bootstrap/Button");
     var deferredUtils_1 = require("../core/deferredUtils");
@@ -146,7 +147,6 @@ var __extends = (this && this.__extends) || (function () {
     Wizard.prototype.stepList = [];
     Wizard.prototype.ButtonConstructor = Button_1.default;
     Wizard.prototype.i18n = i18n;
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Wizard;
 });
 //# sourceMappingURL=Wizard.js.map

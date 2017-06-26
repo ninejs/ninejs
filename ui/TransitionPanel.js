@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports, commonCss) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var deferredUtils_1 = require("../core/deferredUtils");
     var setClass_1 = require("./utils/setClass");
     var Widget_1 = require("./Widget");
@@ -199,7 +200,6 @@ var __extends = (this && this.__extends) || (function () {
         };
         return TransitionPanel;
     }(Widget_1.default));
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = TransitionPanel;
 });
 //# sourceMappingURL=TransitionPanel.js.map

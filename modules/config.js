@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var isAmd = (typeof (define) !== 'undefined') && define.amd;
     var isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
     var isNode = (typeof (window) === 'undefined');
@@ -60,7 +61,17 @@
     if (isNode) {
         try {
             var req = (isDojo && isNode) ? global.require : require;
-            var fs = req('fs'), path = req('path'), njsConfigPath = path.resolve(process.cwd(), '9js.config.json'), njsConfig = {}, finalConfig = { modules: [], units: {} };
+            var path = req('path');
+            var fs = req('fs');
+            var dir = process.cwd();
+            var configFileName = void 0;
+            if (fs.existsSync(path.resolve(dir, '9js.config.json'))) {
+                configFileName = path.resolve(dir, '9js.config.json');
+            }
+            else {
+                configFileName = path.resolve(dir, '9js.config.js');
+            }
+            var njsConfigPath = configFileName, njsConfig = {}, finalConfig = { modules: [], units: {} };
             if (fs.existsSync(njsConfigPath)) {
                 njsConfig = require(njsConfigPath);
                 readConfigModules(njsConfig, finalConfig);
@@ -71,7 +82,6 @@
         catch (e) {
         }
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = config;
 });
 //# sourceMappingURL=config.js.map

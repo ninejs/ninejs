@@ -8,6 +8,7 @@
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var setClass_1 = require("./setClass");
     var setText_1 = require("./setText");
     var append_1 = require("./append");

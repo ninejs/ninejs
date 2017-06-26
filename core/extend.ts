@@ -16,8 +16,8 @@ export interface Extend {
 	before: Function;
 	around: Function;
 	isArray: (obj: any) => boolean;
-	mixin: (obj: any, target: any) => void;
-	mixinRecursive: (obj: any, target: any) => void;
+	mixin: (obj: any, target: any) => any;
+	mixinRecursive: (obj: any, target: any) => any;
 	postConstruct: (construct: Function) => any;
 	decorators: { [decoratorName: string]: { (fn: Function): any, $$ninejsType: string, method: Function }; }
 }
@@ -33,11 +33,13 @@ function mixin(obj: any, target: any) {
 			obj[p] = target[p];
 		}
 	}
+	return obj;
 }
 function mixinAll(obj: any, target: any) {
 	for(var p in target) {
 		obj[p] = target[p];
 	}
+	return obj;
 }
 function mixinRecursive(obj: any, target: any) {
 	for(var p in target) {

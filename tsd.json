@@ -8,9 +8,6 @@
     "node/node.d.ts": {
       "commit": "977da240f263e88215a27cb44f2e31524ca07135"
     },
-    "bunyan/bunyan.d.ts": {
-      "commit": "983126e131a2b81739053d60e4bbdbb46d6577b7"
-    },
     "express/express.d.ts": {
       "commit": "e5de5c4daf8cdc33ed60704cd6e8021c99a89f92"
     },

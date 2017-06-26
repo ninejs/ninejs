@@ -1,4 +1,3 @@
-/// <reference types="es6-promise" />
 import { PromiseType } from './core/deferredUtils';
 export interface RawResponse {
     response: any;

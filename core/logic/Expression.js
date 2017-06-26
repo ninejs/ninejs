@@ -18,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Properties_1 = require("../ext/Properties");
     var objUtils_1 = require("../objUtils");
     var i18n_1 = require("../i18n");
@@ -700,7 +701,6 @@ var __extends = (this && this.__extends) || (function () {
         };
         return Expression;
     }(Properties_1.default));
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Expression;
 });
 //# sourceMappingURL=Expression.js.map
