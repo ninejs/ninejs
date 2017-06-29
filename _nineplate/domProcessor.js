@@ -682,7 +682,8 @@
                 .member('addEventListener').noParenthesis().or(renderer
                 .expression('node')
                 .member('on'))).parenthesis()
-                .invoke(renderer.literal(eventName), eventRenderer));
+                .member('call')
+                .invoke(renderer.expression('node'), renderer.literal(eventName), eventRenderer));
         }
         function isSubscribeEvent(xmlNode) {
             return (/^data-ninejs-subscribe-/).test(xmlNode.nodeName());

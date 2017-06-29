@@ -4,6 +4,7 @@
 
 import Skin from '../../Skin';
 
+declare var require: (name: string) => any;
 var template: any = require('./Default.9plate');
 var css: any = require('./Default.ncss');
 export default new Skin({

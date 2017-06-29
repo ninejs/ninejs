@@ -102,7 +102,7 @@ function resolveUrl(url: string, path: string, prefixes: AMDPrefixesType[], base
 }
 var fs: {
 	existsSync: (url: string) => boolean;
-	readFileSync: (url: string, encoding?: string) => Buffer | string;
+	readFileSync: (url: string, encoding?: string) => string;
 }, pathModule: {
 	extname: (url: string) => string;
 };

@@ -4,6 +4,7 @@
 import * as deferredUtils from '../core/deferredUtils';
 import { XmlNode, getParsedXml, InternalNode, TextParseContext, safeFilter, trim, ExpressionToken, ParserType } from './baseProcessor';
 declare var define: any;
+declare var require: (name: string) => any;
 var parser: ParserType,
 	req = require,
 	isNode = typeof(window) === 'undefined',
