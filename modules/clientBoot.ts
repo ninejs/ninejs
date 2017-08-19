@@ -4,7 +4,7 @@ import clientConfig from '../config'
 import { moduleRegistry  as registry } from './moduleRegistry'
 import Module from './Module'
 import extend from '../core/extend'
-import { defer, when, all, PromiseType } from '../core/deferredUtils'
+import { defer, when, all } from '../core/deferredUtils'
 import './client/router'
 import './ninejs-client'
 import './client/container'
@@ -62,7 +62,6 @@ require(moduleArray, function() {
 		moduleLoadPromise.resolve(true);
 	});
 });
-export { PromiseType };
 export default when(moduleLoadPromise.promise, function(){
 	var deferred = defer();
 	when(registry.enableModules(), function(val: any) {

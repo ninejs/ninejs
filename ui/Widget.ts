@@ -4,7 +4,7 @@
 import extend from '../core/extend';
 import Properties from '../core/ext/Properties';
 import { default as on, EventHandler, RemovableType } from '../core/on';
-import { PromiseType, PromiseConstructorType, when, defer, isPromise, resolve } from '../core/deferredUtils';
+import { PromiseConstructorType, when, defer, isPromise, resolve } from '../core/deferredUtils';
 import setClass from './utils/setClass';
 import append from './utils/append';
 import { isArray, isHTMLElement } from '../core/objUtils';
@@ -78,7 +78,7 @@ export class Widget extends Properties {
 	/*
 	Starts as a Promise then turns into a HTMLElement
 	 */
-	domNode: HTMLElement | PromiseType<HTMLElement>;
+	domNode: HTMLElement | Promise<HTMLElement>;
 	skin: any;
 	skinContract: { [name: string]: { type: string } };
 	waitNode: HTMLElement;
@@ -134,13 +134,13 @@ export class Widget extends Properties {
 	 * @return {object}       A promise (if loadSkin() was called); or the actual skin value (object or string)
 	 * @throws {Error} If one function or property is not found
 	 */
-	skinSetter (value: Skin | PromiseType<Skin> | string) {
+	skinSetter (value: Skin | Promise<Skin> | string) {
 		if (typeof(value) === 'string') {
 			return this.loadSkin(value as string);
 		}
 		var self = this;
 		this.skin = value;
-		return when<Skin, Skin>(value as (Skin | PromiseType<Skin>), function (sk: Skin) {
+		return when<Skin, Skin>(value as (Skin | Promise<Skin>), function (sk: Skin) {
 			var skinContract = self.skinContract,
 				p: string,
 				item: { type: string };
@@ -333,7 +333,7 @@ export class Widget extends Properties {
 	 * @param  {string|domNode} parentNode The id of the dom element, or the element itself
 	 * @return {object}            This widget or a promise
 	 */
-	show (parentNode?: HTMLElement | string): PromiseType<HTMLElement> {
+	show (parentNode?: HTMLElement | string): Promise<HTMLElement> {
 		var listeners: { [ name: string ]: EventHandler[] },
 			current: EventHandler[],
 			cnt: number,
@@ -393,7 +393,10 @@ export class Widget extends Properties {
 				else {
 					throw new Error('Invalid domNode');
 				}
-			}, console.error);
+			}, (error => {
+				console.error(error);
+				throw error;
+			}));
 			return this.waitSkin;
 		}
 		else {
@@ -464,7 +467,7 @@ export class Widget extends Properties {
 	 * @param _defer {Promise}
 	 * @returns {Promise}
 	 */
-	wait (_defer: PromiseType<any>) {
+	wait (_defer: Promise<any>) {
 		var d: PromiseConstructorType<any>,
 			self = this;
 		if (_defer) {

@@ -3,7 +3,7 @@
 import extend from './extend';
 import Evented from './ext/Evented';
 import * as amdText from './text';
-import { defer, PromiseType } from './deferredUtils';
+import { defer } from './deferredUtils';
 declare var define: any;
 
 var isAmd = (typeof(define) !== 'undefined' && define.amd),
@@ -29,7 +29,7 @@ function getFile(src: string, require: any, load: (data: any) => void, config?: 
 }
 export interface I18nResource {
 	loadResource: (locale: string, require: any, load: (data: any) => void) => any;
-	setLocale: (locale: string, ignoreChangedEvent: boolean, req: any, originalLoad: (data: any) => void) => PromiseType<any>;
+	setLocale: (locale: string, ignoreChangedEvent: boolean, req: any, originalLoad: (data: any) => void) => Promise<any>;
 	getResource: () => any;
 	root: any;
 	baseUrl: string;

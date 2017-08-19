@@ -1,4 +1,3 @@
-import { PromiseType } from '../core/deferredUtils';
 import Properties from '../core/ext/Properties';
 export interface RouteOptions {
     action: (evt: any) => void;
@@ -47,7 +46,6 @@ export declare class Route extends Properties implements RouterBase {
     parameterNames: string[];
     constructor(options: RouteOptions, router: RouterBase);
 }
-export { PromiseType };
 export declare function on(type: string, listener: (e?: any) => any): any;
 export declare function emit(...arglist: any[]): any;
 export declare function register(route: any, action?: (evt: any) => void): Route;

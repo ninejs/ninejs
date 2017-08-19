@@ -1,5 +1,5 @@
 import Widget from './Widget';
-declare class TransitionPanel extends Widget {
+export declare class TransitionPanel extends Widget {
     transitionDuration: number;
     transitionClass: string;
     activeTransitionClass: string;
@@ -12,8 +12,8 @@ declare class TransitionPanel extends Widget {
     nextPanel: TransitionPanel;
     show(parent?: HTMLElement): Promise<HTMLElement>;
     activeSetter(value: boolean): Promise<void>;
-    previousPanelSetter(value: TransitionPanel): Promise<HTMLElement>;
-    nextPanelSetter(value: TransitionPanel): Promise<HTMLElement>;
+    previousPanelSetter(value: TransitionPanel): Promise<HTMLElement | Promise<HTMLElement>>;
+    nextPanelSetter(value: TransitionPanel): Promise<HTMLElement | Promise<HTMLElement>>;
     setNextAfter(): Promise<void>;
     setPreviousBefore(): Promise<void>;
     next(): Promise<TransitionPanel>;

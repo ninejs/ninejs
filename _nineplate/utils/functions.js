@@ -27,12 +27,12 @@
     };
     exports.e = function appendElement(e, name, doc) {
         var node = doc.createElement(name);
-        e.insertAdjacentElement('beforeEnd', node);
+        e.insertAdjacentElement('beforeend', node);
         return node;
     };
     exports.ens = function appendElementNs(e, name, ns, doc) {
         var node = doc.createElementNS(ns, name);
-        e.insertAdjacentElement('beforeEnd', node);
+        e.insertAdjacentElement('beforeend', node);
         return node;
     };
 });

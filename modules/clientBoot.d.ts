@@ -1,8 +1,6 @@
-import { PromiseType } from '../core/deferredUtils';
 import './client/router';
 import './ninejs-client';
 import './client/container';
 import './client/singlePageContainer';
-export { PromiseType };
-declare var _default: Promise<{}>;
+declare const _default: Promise<{}>;
 export default _default;

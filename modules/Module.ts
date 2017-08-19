@@ -1,10 +1,9 @@
 'use strict';
 
-import extend from '../core/extend';
 import Properties from '../core/ext/Properties';
 import { moduleRegistry } from './moduleRegistry';
 import Evented from '../core/ext/Evented';
-import { when, all, defer, PromiseType } from '../core/deferredUtils';
+import { when, all, defer } from '../core/deferredUtils';
 
 declare var define:{
 	(deps:string[], callback:(...rest:any[]) => any): void;
@@ -107,7 +106,7 @@ class Module extends Properties {
 		}
 		return false;
 	}
-	enable (config: any): PromiseType<any> {
+	enable (config: any): Promise<any> {
 		if (!this.get('enabled')) {
 			var error = moduleRegistry.validate(this, true),
 				errorProvides: string[] = [],

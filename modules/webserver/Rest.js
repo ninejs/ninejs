@@ -26,27 +26,35 @@
                 deferredUtils_1.when(description.inputMap(req), function (inputArgs) {
                     try {
                         action(inputArgs, req, res).then(function (output) {
-                            if (description.contentType) {
-                                res.header('Content-Type', description.contentType);
-                            }
-                            if (description.responseType === ResponseType.RAW) {
-                                res.send(output);
+                            if (output) {
+                                if (description.contentType) {
+                                    res.header('Content-Type', description.contentType);
+                                }
+                                if (description.responseType === ResponseType.RAW) {
+                                    res.send(output);
+                                }
+                                else {
+                                    if (!description.contentType) {
+                                        res.header('Content-Type', 'application/json');
+                                    }
+                                    res.json(output);
+                                }
                             }
                             else {
-                                if (!description.contentType) {
-                                    res.header('Content-Type', 'application/json');
-                                }
-                                res.json(output);
+                                res.send(null);
                             }
                         }, function (err) {
-                            res.status(400).send(err.message);
+                            res.statusMessage = err.message;
+                            res.status(400);
                         });
                     }
                     catch (err) {
-                        res.status(400).send(err.message);
+                        res.statusMessage = err.message;
+                        res.status(400);
                     }
                 }, function (err) {
-                    res.status(400).send(err.message);
+                    res.statusMessage = err.message;
+                    res.status(400);
                 });
             }
         });

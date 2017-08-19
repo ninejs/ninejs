@@ -1,4 +1,3 @@
-/// <reference types="winston" />
 import Module from './Module';
 import winston = require('winston');
 export declare class NineJs extends Module {

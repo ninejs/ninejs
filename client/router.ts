@@ -1,7 +1,6 @@
 'use strict';
 
-import { indexOf, forEach } from '../core/array';
-import { when, PromiseType, defer, PromiseConstructorType } from '../core/deferredUtils';
+import { when, defer, PromiseConstructorType } from '../core/deferredUtils';
 import extend from '../core/extend';
 import Evented from '../core/ext/Evented';
 import Properties from '../core/ext/Properties';
@@ -311,7 +310,6 @@ export class Route extends Properties implements RouterBase {
 	}
 }
 
-export { PromiseType };
 var router = new Router();
 
 export function on (type: string, listener: (e?: any) => any){

@@ -47,13 +47,6 @@ var __extends = (this && this.__extends) || (function () {
         left: 'njsTransitionLeft',
         right: 'njsTransitionRight'
     };
-    TransitionPanel.prototype.transitionDuration = 750;
-    TransitionPanel.prototype.transitionClass = transitionClass;
-    TransitionPanel.prototype.activeTransitionClass = defaultTransitionClasses.active;
-    TransitionPanel.prototype.previousTransitionClass = defaultTransitionClasses.prev;
-    TransitionPanel.prototype.nextTransitionClass = defaultTransitionClasses['next'];
-    TransitionPanel.prototype.leftTransitionClass = defaultTransitionClasses.left;
-    TransitionPanel.prototype.rightTransitionClass = defaultTransitionClasses.right;
     var TransitionPanel = (function (_super) {
         __extends(TransitionPanel, _super);
         function TransitionPanel() {
@@ -200,6 +193,14 @@ var __extends = (this && this.__extends) || (function () {
         };
         return TransitionPanel;
     }(Widget_1.default));
+    exports.TransitionPanel = TransitionPanel;
+    TransitionPanel.prototype.transitionDuration = 750;
+    TransitionPanel.prototype.transitionClass = transitionClass;
+    TransitionPanel.prototype.activeTransitionClass = defaultTransitionClasses.active;
+    TransitionPanel.prototype.previousTransitionClass = defaultTransitionClasses.prev;
+    TransitionPanel.prototype.nextTransitionClass = defaultTransitionClasses['next'];
+    TransitionPanel.prototype.leftTransitionClass = defaultTransitionClasses.left;
+    TransitionPanel.prototype.rightTransitionClass = defaultTransitionClasses.right;
     exports.default = TransitionPanel;
 });
 //# sourceMappingURL=TransitionPanel.js.map

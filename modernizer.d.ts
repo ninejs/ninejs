@@ -10,5 +10,5 @@ export interface ModernizerType {
     mq: (mq: any) => boolean;
     [name: string]: any;
 }
-declare var _default: ModernizerType;
+declare const _default: ModernizerType;
 export default _default;

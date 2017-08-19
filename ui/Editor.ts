@@ -4,7 +4,7 @@ import { default as Widget, WidgetConstructor } from './Widget'
 import extend from '../core/extend'
 import Properties from '../core/ext/Properties'
 import defaultSkin from './Skins/Editor/Default'
-import { defer, when, resolve, isPromise, PromiseConstructorType, PromiseType } from '../core/deferredUtils'
+import { defer, when, resolve, isPromise, PromiseConstructorType } from '../core/deferredUtils'
 import modernizer from '../modernizer'
 import { forEach } from '../core/array'
 import { isString, isHTMLElement, isDate } from '../core/objUtils'
@@ -44,7 +44,7 @@ var editorConfig: any = (((config.ninejs || {}).ui || {}).Editor || {}),
 	ENTER = 13;
 var pad = '00';
 
-let applyToNode = (node: HTMLElement | PromiseType<HTMLElement>, callback: (node: HTMLElement) => void, self: any) => {
+let applyToNode = (node: HTMLElement | Promise<HTMLElement>, callback: (node: HTMLElement) => void, self: any) => {
 	if (isHTMLElement(node)) {
 		return resolve(callback.call(self, node));
 	}
@@ -642,12 +642,12 @@ class Editor extends Widget {
 	DateTextBoxControlSetter: (c: any) => void;
 	NumberTextBoxControlSetter: (c: any) => void;
 
-	NumberTextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
-	DateTextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
-	TimeTextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
-	CheckBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
-	TextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
-	SelectControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
+	NumberTextBoxControl: EditorWidgetConstructor | Promise<EditorWidgetConstructor>;
+	DateTextBoxControl: EditorWidgetConstructor | Promise<EditorWidgetConstructor>;
+	TimeTextBoxControl: EditorWidgetConstructor | Promise<EditorWidgetConstructor>;
+	CheckBoxControl: EditorWidgetConstructor | Promise<EditorWidgetConstructor>;
+	TextBoxControl: EditorWidgetConstructor | Promise<EditorWidgetConstructor>;
+	SelectControl: EditorWidgetConstructor | Promise<EditorWidgetConstructor>;
 
 
 	_clearDataTypeClasses () {
@@ -666,7 +666,7 @@ class Editor extends Widget {
 		});
 	}
 	dataType: string;
-	control: Widget | PromiseType<Widget>;
+	control: Widget | Promise<Widget>;
 	placeholder: string;
 	maxLength: number;
 	title: string;
@@ -884,16 +884,16 @@ class Editor extends Widget {
 						ctrl.destroyRecursive(false);
 					}
 				}
-				var p = when(this._clearDataTypeClasses(), function (): PromiseType<Widget> {
+				var p = when(this._clearDataTypeClasses(), function (): Promise<Widget> {
 					setClass(domNode, ('dataType-' + val));
 
 					var controlMap: {
-						[ name: string ]: (tgt: Editor) => PromiseType<Widget>
+						[ name: string ]: (tgt: Editor) => Promise<Widget>
 					} = {
-						'integer' : function (self: Editor): PromiseType<Widget> {
+						'integer' : function (self: Editor): Promise<Widget> {
 							return buildNumberTextBox(self, 0);
 						},
-						'decimal' : function (self: Editor): PromiseType<Widget> {
+						'decimal' : function (self: Editor): Promise<Widget> {
 							return buildNumberTextBox(self);
 						},
 						'date' : buildDateTextBox,

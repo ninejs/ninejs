@@ -152,7 +152,7 @@
                 xmlDoc = parser.parseFromString(text, 'text/xml');
             }
             else {
-                xmlDoc = new ActiveXObject('Microsoft.XMLDOM');
+                xmlDoc = new window['ActiveXObject']('Microsoft.XMLDOM');
                 xmlDoc.async = false;
                 xmlDoc.loadXML(text);
             }

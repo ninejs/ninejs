@@ -22,7 +22,7 @@ define(['../../core/extend', '../Widget', '../Skin', './Tabbable.9plate', '../ut
 			}
 			else if (val === 'bottom') {
 				setClass(this.domNode, 'tabs-below');
-				append(this.domNode, this.tabsNode, 'beforeEnd');
+				append(this.domNode, this.tabsNode, 'beforeend');
 			}
 			else {
 				append(this.domNode, this.tabsNode, 'afterBegin');

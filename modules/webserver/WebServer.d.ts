@@ -1,4 +1,3 @@
-/// <reference types="winston" />
 import Properties from '../../core/ext/Properties';
 import Endpoint from './Endpoint';
 import StaticResource from './StaticResource';

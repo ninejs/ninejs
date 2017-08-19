@@ -1,6 +1,6 @@
 import Properties from '../core/ext/Properties';
 import { EventHandler, RemovableType } from '../core/on';
-import { PromiseType, PromiseConstructorType } from '../core/deferredUtils';
+import { PromiseConstructorType } from '../core/deferredUtils';
 import Skin from './Skin';
 export interface WidgetArgs {
     skin?: any;
@@ -22,7 +22,7 @@ export declare class Widget extends Properties {
     $njsShowDefer: PromiseConstructorType<HTMLElement>;
     currentSkin: Skin;
     waiting: boolean;
-    domNode: HTMLElement | PromiseType<HTMLElement>;
+    domNode: HTMLElement | Promise<HTMLElement>;
     skin: any;
     skinContract: {
         [name: string]: {
@@ -35,7 +35,7 @@ export declare class Widget extends Properties {
     destroy(): void;
     registerChildWidget(w: Widget): void;
     remove(): boolean;
-    skinSetter(value: Skin | PromiseType<Skin> | string): Promise<Skin>;
+    skinSetter(value: Skin | Promise<Skin> | string): Promise<Skin>;
     classSetter(v: string): Promise<HTMLElement>;
     idSetter(v: string): Promise<HTMLElement>;
     styleSetter(v: string): Promise<HTMLElement>;
@@ -44,12 +44,12 @@ export declare class Widget extends Properties {
     forceUpdateSkin(): void;
     loadSkin(name: string): Promise<Skin>;
     own(...args: RemovableType[]): void;
-    show(parentNode?: HTMLElement | string): PromiseType<HTMLElement>;
+    show(parentNode?: HTMLElement | string): Promise<HTMLElement>;
     on(type: string, action: (e?: any) => any, persistEvent?: boolean): RemovableType;
     emit(type: string, data: any): void;
     subscribe(type: string, action: (data: any) => any): void;
     collect(type: string, data: any): any[];
-    wait(_defer: PromiseType<any>): Promise<void>;
+    wait(_defer: Promise<any>): Promise<any>;
     constructor(args: WidgetArgs, init?: any);
 }
 export default Widget;

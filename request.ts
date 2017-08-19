@@ -1,7 +1,7 @@
 ///<amd-dependency path="reqwest/reqwest" />
 'use strict';
 
-import { defer, PromiseType } from './core/deferredUtils';
+import { defer } from './core/deferredUtils';
 
 declare var require: any;
 declare var define:{
@@ -60,12 +60,12 @@ export function raw (...args: any[]) {
 	return d.promise;
 }
 let result: {
-	(...args: any[]): PromiseType<any>;
-	get: (...args: any[]) => PromiseType<any>;
-	post: (...args: any[]) => PromiseType<any>;
-	put: (...args: any[]) => PromiseType<any>;
-	del: (...args: any[]) => PromiseType<any>;
-	patch: (...args: any[]) => PromiseType<any>;
+	(...args: any[]): Promise<any>;
+	get: (...args: any[]) => Promise<any>;
+	post: (...args: any[]) => Promise<any>;
+	put: (...args: any[]) => Promise<any>;
+	del: (...args: any[]) => Promise<any>;
+	patch: (...args: any[]) => Promise<any>;
 }
 let fn: any;
 fn = (...args: any[]) => {

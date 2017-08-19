@@ -32,15 +32,8 @@ var transitionClass = 'njsTransition750ms',
 		left: 'njsTransitionLeft',
 		right: 'njsTransitionRight'
 	};
-TransitionPanel.prototype.transitionDuration = 750;
-TransitionPanel.prototype.transitionClass = transitionClass;
-TransitionPanel.prototype.activeTransitionClass = defaultTransitionClasses.active;
-TransitionPanel.prototype.previousTransitionClass = defaultTransitionClasses.prev;
-TransitionPanel.prototype.nextTransitionClass = defaultTransitionClasses['next'];
-TransitionPanel.prototype.leftTransitionClass = defaultTransitionClasses.left;
-TransitionPanel.prototype.rightTransitionClass = defaultTransitionClasses.right;
 
-class TransitionPanel extends Widget {
+export class TransitionPanel extends Widget {
 	transitionDuration: number;
 	transitionClass: string;
 	activeTransitionClass: string;
@@ -194,4 +187,13 @@ class TransitionPanel extends Widget {
 		});
 	}
 }
+
+TransitionPanel.prototype.transitionDuration = 750;
+TransitionPanel.prototype.transitionClass = transitionClass;
+TransitionPanel.prototype.activeTransitionClass = defaultTransitionClasses.active;
+TransitionPanel.prototype.previousTransitionClass = defaultTransitionClasses.prev;
+TransitionPanel.prototype.nextTransitionClass = defaultTransitionClasses['next'];
+TransitionPanel.prototype.leftTransitionClass = defaultTransitionClasses.left;
+TransitionPanel.prototype.rightTransitionClass = defaultTransitionClasses.right;
+
 export default TransitionPanel

@@ -316,7 +316,10 @@ var __extends = (this && this.__extends) || (function () {
                     else {
                         throw new Error('Invalid domNode');
                     }
-                }, console.error);
+                }, (function (error) {
+                    console.error(error);
+                    throw error;
+                }));
                 return this.waitSkin;
             }
             else {

@@ -1,7 +1,6 @@
-import { PromiseType } from './deferredUtils';
 export interface I18nResource {
     loadResource: (locale: string, require: any, load: (data: any) => void) => any;
-    setLocale: (locale: string, ignoreChangedEvent: boolean, req: any, originalLoad: (data: any) => void) => PromiseType<any>;
+    setLocale: (locale: string, ignoreChangedEvent: boolean, req: any, originalLoad: (data: any) => void) => Promise<any>;
     getResource: () => any;
     root: any;
     baseUrl: string;

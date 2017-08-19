@@ -1,2 +1,2 @@
-declare var _default: Promise<{}>;
+declare const _default: Promise<{}>;
 export default _default;

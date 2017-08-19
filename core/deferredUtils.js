@@ -56,7 +56,8 @@
         };
         _when = function (v, success, reject) {
             if (isPromise(v)) {
-                return v.then(success, reject);
+                var p = v;
+                return p.then(success, reject);
             }
             else {
                 return Promise.resolve(v).then(success);

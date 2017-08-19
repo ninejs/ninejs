@@ -405,9 +405,9 @@
         }
         if (has('touch')) {
             var Event_1 = (function () {
-                function Event_1() {
+                function Event() {
                 }
-                return Event_1;
+                return Event;
             }());
             ;
             var windowOrientation = window.orientation;

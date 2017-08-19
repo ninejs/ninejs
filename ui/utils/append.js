@@ -15,7 +15,7 @@
             if (typeof (node) === 'string') {
                 node = parentNode.ownerDocument.createElement(node);
             }
-            parentNode.insertAdjacentElement(position || 'beforeEnd', node);
+            parentNode.insertAdjacentElement(position || 'beforeend', node);
             return node;
         };
         if (!window.document.body || !window.document.body.insertAdjacentElement) {

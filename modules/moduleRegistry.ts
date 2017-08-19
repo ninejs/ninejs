@@ -4,7 +4,7 @@ import * as extend from '../core/extend';
 import Properties from '../core/ext/Properties';
 import modulesConfig from './config'
 import ninejsConfig from '../config';
-import { PromiseType, when, all, mapToPromises, defer, resolve } from '../core/deferredUtils';
+import { when, all, mapToPromises, defer, resolve } from '../core/deferredUtils';
 
 declare var require: any;
 var req = require;
@@ -112,12 +112,12 @@ function areVersionsCompatible(source: any, target: string) {
 }
 export class ModuleRegistry extends Properties {
 	addModule: (m: any) => void;
-	build: () => PromiseType<any>;
-	enableModules: () => PromiseType<any>;
+	build: () => Promise<any>;
+	enableModules: () => Promise<any>;
 	enabledUnits: { [ name: string ]: any };
-	initUnit: (unitId: string) => PromiseType<any>;
+	initUnit: (unitId: string) => Promise<any>;
 	providesList: { [ name: string ]: any };
-	validate: (m: any, enableOnDemand: boolean) => PromiseType<string>;
+	validate: (m: any, enableOnDemand: boolean) => Promise<string>;
 	Module: any;
 
 	hasProvide(id: string) {

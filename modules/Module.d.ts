@@ -1,5 +1,4 @@
 import Properties from '../core/ext/Properties';
-import { PromiseType } from '../core/deferredUtils';
 declare class Module extends Properties {
     config: {
         [name: string]: any;
@@ -15,7 +14,7 @@ declare class Module extends Properties {
     init(name: string, config: any): any;
     consumesModule(name: string): boolean;
     providesModule(name: string): boolean;
-    enable(config: any): PromiseType<any>;
+    enable(config: any): Promise<any>;
     constructor(args?: any);
 }
 export default Module;

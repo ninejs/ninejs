@@ -1,6 +1,6 @@
 import { default as Widget } from './Widget';
 import Properties from '../core/ext/Properties';
-import { PromiseConstructorType, PromiseType } from '../core/deferredUtils';
+import { PromiseConstructorType } from '../core/deferredUtils';
 import { RemovableType } from '../core/on';
 export interface EditorWidgetConstructor {
     new (args: any): Widget & {
@@ -50,16 +50,16 @@ declare class Editor extends Widget {
     TimeTextBoxControlSetter: (c: any) => void;
     DateTextBoxControlSetter: (c: any) => void;
     NumberTextBoxControlSetter: (c: any) => void;
-    NumberTextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
-    DateTextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
-    TimeTextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
-    CheckBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
-    TextBoxControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
-    SelectControl: EditorWidgetConstructor | PromiseType<EditorWidgetConstructor>;
+    NumberTextBoxControl: EditorWidgetConstructor | Promise<EditorWidgetConstructor>;
+    DateTextBoxControl: EditorWidgetConstructor | Promise<EditorWidgetConstructor>;
+    TimeTextBoxControl: EditorWidgetConstructor | Promise<EditorWidgetConstructor>;
+    CheckBoxControl: EditorWidgetConstructor | Promise<EditorWidgetConstructor>;
+    TextBoxControl: EditorWidgetConstructor | Promise<EditorWidgetConstructor>;
+    SelectControl: EditorWidgetConstructor | Promise<EditorWidgetConstructor>;
     _clearDataTypeClasses(): Promise<void>;
     onUpdatedSkin(): void;
     dataType: string;
-    control: Widget | PromiseType<Widget>;
+    control: Widget | Promise<Widget>;
     placeholder: string;
     maxLength: number;
     title: string;

@@ -5,7 +5,7 @@ import defaultSkin from './Skin/FullScreenFrame'
 import append from '../../ui/utils/append'
 import setClass from '../../ui/utils/setClass'
 import on from '../../core/on'
-import { when, PromiseType } from '../../core/deferredUtils'
+import { when } from '../../core/deferredUtils'
 import { filter } from '../../core/array'
 import { Container } from './container'
 
@@ -14,7 +14,7 @@ function isNumber(n: any) {
 	return !isNaN(parseFloat(n)) && isFinite(n);
 }
 class FullScreenFrame extends Widget {
-	init: PromiseType<HTMLElement>
+	init: Promise<HTMLElement>
 	containerNode: HTMLElement
 	container: Container;
 	selectedSetter (idx: any) {

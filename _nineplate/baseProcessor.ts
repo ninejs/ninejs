@@ -160,7 +160,7 @@ export function getParsedXml (text: string, sync: boolean): any {
 			var parser = new DOMParser();
 			xmlDoc = parser.parseFromString(text, 'text/xml');
 		} else { // Internet Explorer
-			xmlDoc = new ActiveXObject('Microsoft.XMLDOM');
+			xmlDoc = new (window as any)['ActiveXObject']('Microsoft.XMLDOM');
 			xmlDoc.async = false;
 			xmlDoc.loadXML(text);
 		}

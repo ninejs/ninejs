@@ -4,7 +4,7 @@ import config from './config';
 import extend from '../core/extend';
 import path = require('path');
 import fs = require('fs');
-import { all, nfcall, resolve, defer, PromiseType } from '../core/deferredUtils';
+import { all, nfcall, resolve, defer } from '../core/deferredUtils';
 import { moduleRegistry as registry } from './moduleRegistry';
 
 //trying to autodiscover modules from the /9js/modules folder
