@@ -4,11 +4,12 @@ import extend from '../core/extend';
 import Module from './Module';
 import winston = require('winston');
 import { define } from './moduleDefine';
+import {Logger} from "./logging";
 var njs = require('../lib/ninejs');
 var packageJson = require('../package.json');
 
 export class NineJs extends Module {
-	logger: { [ name: string ]: winston.LoggerInstance };
+	logger: { [ name: string ]: Logger };
 	config: any;
 	configGetter () {
 		var r: any = null;

@@ -83,16 +83,8 @@ function exports(grunt) {
 			files: ncssFiles,
 			options: {}
 		},
-		ts: {
-			default : {
-				tsconfig: './tsconfig.json',
-				options: {
-					"compiler": process.env.TS_COMPILER || "./node_modules/typescript/bin/tsc"
-				}
-			}
-		},
-		tsd: {
-
+		exec: {
+			defaultTs : (process.env.TS_COMPILER || "./node_modules/typescript/bin/tsc") + " -p ./tsconfig.json"
 		},
 		dts_bundle: {
 			build: {
@@ -254,7 +246,7 @@ function exports(grunt) {
 	grunt.registerTask('test', ['mochaTest:normal', 'mocha']);
 	grunt.registerTask('css', ['less', 'ncss', 'stylus']);
 	// Default task.
-	grunt.registerTask('default', ['css', 'nineplate', 'tsd', 'ts', /*'typedoc', */'generateParsers', 'nineplate', 'test']);
+	grunt.registerTask('default', ['css', 'nineplate', 'exec', /*'typedoc', */'generateParsers', 'nineplate', 'test']);
 
 }
 

@@ -1,21 +1,22 @@
 #!/usr/bin/env node
-'use strict';
-var nineplate = require('../nineplate').default,
-	cssBuilder = require('../_css/build/dojo-amd'),
-	argv = require('optimist').argv,
-	fs = require('fs'),
-	path = require('path'),
-	def = require('../core/deferredUtils');
-function generate (text, args) {
-	var options = {};
+import { default as nineplate } from '../nineplate'
+import cssBuilder = require('../_css/build/dojo-amd')
+import optimist = require('optimist')
+import fs = require('fs')
+import path = require('path')
+import {defer } from '../core/deferredUtils'
+
+let argv = optimist.argv;
+function generate (text: string, args: any) {
+	var options: any = {};
 	if ((args.mode === 'css') || (args.sourceExtension === '.css')) {
 		for (var p in args) {
 			options[p] = args[p];
 		}
-		var fn = cssBuilder.buildAppender(text, path.relative(args.baseUrl || '', args.sourcePath).split('\\').join('/'), args.sourcePath, args.cssPrefixes || {}, path.dirname(args.sourcePath), {}, options);
-		var defer = def.defer();
-		defer.resolve(fn);
-		return defer.promise;
+		var fn = cssBuilder.buildAppender(text, path.relative(args.baseUrl || '', args.sourcePath).split('\\').join('/'), args.sourcePath, args.cssPrefixes || {}, path.dirname(args.sourcePath), true, options);
+		var promiseConstruct = defer();
+		promiseConstruct.resolve(fn);
+		return promiseConstruct.promise;
 	}
 	else {
 		try {
@@ -34,7 +35,7 @@ function generate (text, args) {
 			return template.toCommonJs();
 		}
 		else if (args.target === 'text') {
-			return template.compileText();
+			return template.compileText(false);
 		}
 	}
 }
@@ -42,26 +43,26 @@ var realPath = path.resolve(argv._[0]);
 function getFilter () {
 	if (argv.pattern) {
 		var pattern = new RegExp(argv.pattern);
-		return function (fname) {
+		return function (fname: string) {
 			return pattern.test(fname);
 		};
 	}
 	else {
 		if (argv.css) {
-			return function (fname) {
+			return function (fname: string) {
 				return (path.extname(fname) === '.html') || (path.extname(fname) === '.css');
 			};
 		}
 		else {
-			return function (fname) {
+			return function (fname: string) {
 				return path.extname(fname) === '.html';
 			};
 		}
 	}
 }
 var filter = getFilter();
-var watched = {},
-	hasErrors = false;
+var watched: { [name: string]: boolean } = {},
+	hasErrors = 0;
 process.on('beforeExit', function () {
 	if (hasErrors) {
 		console.log(hasErrors + ' Errors');
@@ -97,14 +98,14 @@ process.on('beforeExit', function () {
 							solve(realPath);
 						});
 					}
-					fs.readFile(realPath, { encoding: 'utf8' }, function (err, text) {
+					fs.readFile(realPath, { encoding: 'utf8' }, function (err, text: string) {
 						if (err) {
 							console.error(err);
 							hasErrors += 1;
 						}
 						else {
 							var fileExtension = path.extname(realPath);
-							generate(text, { target: argv.target || 'amd', sourcePath: realPath, sourceExtension: fileExtension, sourceName: path.basename(realPath), baseUrl: argv.baseUrl, toBase64: argv.toBase64, sizeLimit: argv.sizeLimit, mode: argv.mode }).then(function (text) {
+							generate(text, { target: argv.target || 'amd', sourcePath: realPath, sourceExtension: fileExtension, sourceName: path.basename(realPath), baseUrl: argv.baseUrl, toBase64: argv.toBase64, sizeLimit: argv.sizeLimit, mode: argv.mode }).then(function (text: string) {
 								var defaultExt = (fileExtension === '.css')? 'css.js' : '9plate.js';
 								var extension = argv.extension || defaultExt;
 								var newPath = path.resolve(path.dirname(realPath), path.basename(realPath, path.extname(realPath)) + '.' + extension);
@@ -119,7 +120,7 @@ process.on('beforeExit', function () {
 										hasErrors += 1;
 									}
 								});
-							}, function (err) {
+							}, function (err: Error) {
 								console.error('Error generating ' + realPath);
 								console.error(err);
 								console.log(err.stack);

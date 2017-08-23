@@ -5,6 +5,7 @@
 import Skin from '../../../ui/Skin';
 import { StyleType } from '../../../css'
 import { ResultFunction } from '../../../nineplate'
+declare var require: (name: any) => any;
 
 var css: StyleType = require('./FullScreenFrame.ncss');
 var template: ResultFunction = require('./FullScreenFrame.9plate');

@@ -1,38 +1,36 @@
 #!/usr/bin/env node
-'use strict';
-var ninejs,
-	argv,
-	fs = require('fs'),
-	path = require('path'),
-	localCmd;
+import optimist = require('optimist');
+import fs = require('fs');
+import path = require('path');
+
 function globalRun() {
-	argv = require('optimist').argv;
+	let argv = optimist.argv;
 	if (process.env['NINEJS_CWD']) {
 		process.chdir(process.env['NINEJS_CWD']);
 	}
 	if (process.env['NINEJS_ARGS']) {
 		var arr = process.env['NINEJS_ARGS'].split(' ');
-		arr.forEach(function(item) {
+		arr.forEach(function(item: string) {
 			argv._.push(item);
 		});
 	}
 	if (argv.cwd) {
 		process.chdir(argv.cwd);
 	}
-	ninejs = require('../lib/ninejs');
+	let ninejs = require('../lib/ninejs');
 	if (argv.verbose) {
-		ninejs.on('log', function(data) {
+		ninejs.on('log', function(data: any) {
 			console.log(data.message);
 		});
 	}
 	if (!argv.quiet) {
-		ninejs.on('print', function(data) {
+		ninejs.on('print', function(data: any) {
 			console.log(data.message);
 		});
 	}
 	return ninejs.run(argv._);
 }
-localCmd = path.resolve(process.cwd(), 'node_modules', 'ninejs', 'bin', 'ninejs');
+let localCmd = path.resolve(process.cwd(), 'node_modules', 'ninejs', 'bin', 'ninejs');
 fs.exists(localCmd, function(val) {
 	if (val) {
 		fs.realpath(localCmd, {}, function(err, real) {

@@ -15,7 +15,5 @@ results
 npm-debug.log
 node_modules
 /coverage.html
-.idea
 covreporter.html
-.tscache/
-tscommand-*.*
+*.d.ts
