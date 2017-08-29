@@ -269,6 +269,12 @@ describe('nineplate :: Nineplate', function () {
 				assert(r);
 				done();
 			});
+			it('should parse urls with variables', function(done) {
+				var r = parser.parse('<script src="https://maps.googleapis.com/maps/api/js?key=${apiKey}&amp;callback=initMap" />');
+				assert(r);
+				assert(r.type === 'mixed');
+				done();
+			});
 			it('should parse variables as part of attribute value', function(done) {
 				assert(parser.parse('<data id="_${id}Context" key=\'myKey\' value="myValue" />'));
 				assert(parser.parse('<data id=\'_${id}Context\' key=\'myKey\' value="myValue" />'));

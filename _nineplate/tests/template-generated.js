@@ -727,7 +727,7 @@ if (attachTemp){
 	r['emptyNode'] = node;
 
 }
-((node.addEventListener) || node.on)('mouseover',	function () {
+((node.addEventListener) || node.on).call(node,'mouseover',	function () {
 	return context.mouseOver.apply(context,arguments);
 
 });

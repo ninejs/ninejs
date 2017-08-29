@@ -60,7 +60,7 @@
         else {
             if (argv.css) {
                 return function (fname) {
-                    return (path.extname(fname) === '.html') || (path.extname(fname) === '.css');
+                    return (path.extname(fname) === '.css');
                 };
             }
             else {

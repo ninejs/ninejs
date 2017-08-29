@@ -44,7 +44,7 @@ var grammar = {
 			['s', 'return "_s"'],
 			['[a-zA-Z\\:\\_]', 'return "_NameStartChar"'],
 			['[a-zA-Z\\:\\_\\-\\.0-9]', 'return "_NameChar"'],
-			['[\\á\\é\\í\\ó\\ú\\ñ\\Á\\É\\Í\\Ó\\Ú\\Ñ]', 'return "_SpecialChar"'],
+			['[\\á\\é\\í\\ó\\ú\\ñ\\Á\\É\\Í\\Ó\\Ú\\Ñ\\?]', 'return "_SpecialChar"'],
 			['.+', 'return "_Any"']
 		]
 	},

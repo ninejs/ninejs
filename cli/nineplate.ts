@@ -50,7 +50,7 @@ function getFilter () {
 	else {
 		if (argv.css) {
 			return function (fname: string) {
-				return (path.extname(fname) === '.html') || (path.extname(fname) === '.css');
+				return (path.extname(fname) === '.css');
 			};
 		}
 		else {

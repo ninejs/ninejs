@@ -79,10 +79,10 @@ export class Widget extends Properties {
 	Starts as a Promise then turns into a HTMLElement
 	 */
 	domNode: HTMLElement | Promise<HTMLElement>;
-	skin: any;
+	skin: Skin | Skin[] | Promise<Skin> | Promise<Skin[]>;
 	skinContract: { [name: string]: { type: string } };
 	waitNode: HTMLElement;
-	waitSkin: any; //Promise or Skin
+	waitSkin: Promise<HTMLElement>;
 	static extend(...args: any[]) {
 		args.unshift(this);
 		return extend.apply(null, args);
@@ -339,7 +339,7 @@ export class Widget extends Properties {
 			cnt: number,
 			parent: HTMLElement,
 			self = this;
-		function appendIt(domNode: HTMLElement) {
+		function appendIt(domNode: HTMLElement): Promise<HTMLElement> {
 			if (typeof(parentNode) === 'string') {
 				parent = window.document.getElementById(parentNode as string);
 			}
@@ -509,7 +509,6 @@ export class Widget extends Properties {
 	 */
 	constructor (args: WidgetArgs, init?: any) {
 		init = init || {};
-		init.skin = init.skin || [];
 		init.skinContract = init.skinContract || {};
 		init.$njsEventListeners = {};
 		init.$njsEventListenerHandlers = [];
@@ -524,9 +523,12 @@ export class Widget extends Properties {
 			init.$njsShowDefer = null;
 		}
 		super(args, init);
+        if (!init.skin && this.hasOwnProperty('skin')) {
+        	//Skin probably is already in prototype
+			delete this.skin;
+		}
 	}
 }
-
 Widget.prototype.$njsWidget = true;
 Widget.prototype.waiting = false;
 export default Widget;

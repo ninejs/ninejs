@@ -117,36 +117,6 @@ function exports(grunt) {
 				]
 			}
 		},
-		typedoc: {
-			options: {
-				tspath: (process.env.TS_COMPILER ? process.env.TS_COMPILER + '/../../lib/' : '') ||'./node_modules/typescript/lib/',
-				out: './docs/',
-				module: 'umd',
-				excludeExternals: true
-			},
-			main: {
-				src: [
-					'*.ts',
-					'**/*.ts',
-					'!9js.d.ts', '!9js.ts', '!ninejs.d.ts',
-					'!_css.*',
-					'!_nineplate.*',
-					'!_nineplate/utils.*',
-					'!_nineplate/renderers.*',
-					'!client.*',
-					'!core.*',
-					'!core/ext.*',
-					'!core/logic.*',
-					'!modules.*',
-					'!modules/client.*',
-					'!modules/webserver.*',
-					'!ui.*',
-					'!ui/bootstrap.*',
-					'!ui/Skins.*',
-					'!node_modules/**',
-					'!typings/**']
-			}
-		},
 		nineplate: {
 			html: {
 				mode: 'html',
@@ -174,7 +144,6 @@ function exports(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-globaltsd');
-	grunt.loadNpmTasks('typedoc');
 	grunt.task.loadTasks('grunt');
 	grunt.registerMultiTask('mocha','run Phantomjs tests with Mocha', function() {
 		var done = this.async(),

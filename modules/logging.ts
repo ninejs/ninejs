@@ -1,12 +1,12 @@
-type LogCallback = (error?: any, level?: string, msg?: string, meta?: any) => void;
+export type LogCallback = (error?: any, level?: string, msg?: string, meta?: any) => void;
 
-interface LeveledLogMethod {
+export interface LeveledLogMethod {
     (msg: string, callback: LogCallback): Logger;
     (msg: string, meta: any, callback: LogCallback): Logger;
     (msg: string, ...meta: any[]): Logger;
 }
 
-interface LogMethod {
+export interface LogMethod {
     (level: string, msg: string, callback: LogCallback): Logger;
     (level: string, msg: string, meta: any, callback: LogCallback): Logger;
     (level: string, msg: string, ...meta: any[]): Logger;

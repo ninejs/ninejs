@@ -72,7 +72,6 @@ var __extends = (this && this.__extends) || (function () {
         function Widget(args, init) {
             var _this = this;
             init = init || {};
-            init.skin = init.skin || [];
             init.skinContract = init.skinContract || {};
             init.$njsEventListeners = {};
             init.$njsEventListenerHandlers = [];
@@ -87,6 +86,9 @@ var __extends = (this && this.__extends) || (function () {
                 init.$njsShowDefer = null;
             }
             _this = _super.call(this, args, init) || this;
+            if (!init.skin && _this.hasOwnProperty('skin')) {
+                delete _this.skin;
+            }
             return _this;
         }
         Widget.extend = function () {
