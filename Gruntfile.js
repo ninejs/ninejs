@@ -8,7 +8,6 @@ function exports(grunt) {
 		testFiles = ['**/tests/**/*.js', '!coverage/**', '!**/tests/**/phantom*.js', '!node_modules/**', '!out/**', '!nineplate/tests/template-generated.js'],
 		phantomWatch = ['nineplate/tests/phantomTest.js'],
 		stylusFiles = [ '**/*.styl', '!node_modules/**', '!ui/bootstrap/extension.styl' ],
-		lessFiles = ['ui/bootstrap/less/bootstrap.less'],
 		ncssFiles = ['ui/bootstrap/less/bootstrap.ncss'],
 		tsfiles = ['**/*.ts', '!**/*.d.ts', '!node_modules/**/*.ts'],
 		Q = require('kew');
@@ -70,20 +69,13 @@ function exports(grunt) {
 				compress: true
 			}
 		},
-		less:
-		{
-			files: lessFiles,
-			options:
-			{
-				extension: 'ncss'
-			}
-		},
 		ncss:
 		{
 			files: ncssFiles,
 			options: {}
 		},
 		exec: {
+			less: (process.env.LESS_COMPILER || "node ./node_modules/less/bin/lessc") + " ui/bootstrap/less/bootstrap.less > ui/bootstrap/less/bootstrap.ncss",
 			defaultTs : (process.env.TS_COMPILER || "./node_modules/typescript/bin/tsc") + " -p ./tsconfig.json"
 		},
 		dts_bundle: {
@@ -205,7 +197,7 @@ function exports(grunt) {
 		console.log('nineplate ' + files.length + ' files');
 
 		files.forEach(function(file) {
-			childProcess.execSync('node ./bin/nineplate ' + file + ' --target=amd --mode=' + data.mode + ' --toBase64 --baseUrl=' + path.resolve(process.cwd()) + pattern + extension, {
+			childProcess.execSync('node ./cli/nineplate.js ' + file + ' --target=amd --mode=' + data.mode + ' --toBase64 --baseUrl=' + path.resolve(process.cwd()) + pattern + extension, {
 				stdio: 'inherit'
 			});
 		});
@@ -214,6 +206,7 @@ function exports(grunt) {
 
 	grunt.registerTask('test', ['mochaTest:normal', 'mocha']);
 	grunt.registerTask('css', ['less', 'ncss', 'stylus']);
+	grunt.registerTask('less', ['exec:less']);
 	// Default task.
 	grunt.registerTask('default', ['css', 'nineplate', 'exec', /*'typedoc', */'generateParsers', 'nineplate', 'test']);
 

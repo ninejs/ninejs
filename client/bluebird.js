@@ -7,6 +7,12 @@
 		var isNode = typeof(window) === 'undefined';
 		var isDojo = isAmd && define.amd.vendor === 'dojotoolkit.org';
 		if (isAmd) {
+			if (isDojo) {
+				deps.push('dojo/node!bluebird');
+			}
+			else {
+				deps.push('bluebird');
+			}
 			callback = function () {
 				if (typeof(arguments[0]) !== 'undefined') {
 					return arguments[0];
