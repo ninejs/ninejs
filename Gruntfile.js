@@ -208,7 +208,7 @@ function exports(grunt) {
 	grunt.registerTask('css', ['less', 'ncss', 'stylus']);
 	grunt.registerTask('less', ['exec:less']);
 	// Default task.
-	grunt.registerTask('default', ['css', 'nineplate', 'exec', /*'typedoc', */'generateParsers', 'nineplate', 'test']);
+	grunt.registerTask('default', ['css', 'generateParsers', 'nineplate', 'exec', /*'typedoc', */'test']);
 
 }
 
